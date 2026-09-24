@@ -8,7 +8,6 @@ import com.hermes.llm.SpringAiExplanationProvider
 import com.openai.client.okhttp.OpenAIOkHttpClient
 import com.openai.client.okhttp.OpenAIOkHttpClientAsync
 import org.springframework.ai.anthropic.AnthropicChatModel
-import org.springframework.ai.chat.client.ChatClient
 import org.springframework.ai.openai.OpenAiChatModel
 
 /**
@@ -61,12 +60,10 @@ object LlmSelection {
             // 만든다. 그 검사는 LlmCredentialHealthIndicator 가 맡는다.
             "anthropic" -> SpringAiExplanationProvider(
                 name = "anthropic",
-                chatClient = ChatClient.create(
-                    AnthropicChatModel.builder()
-                        .anthropicClient(anthropicClient(baseUrlOverride))
-                        .options(ChatClients.anthropicOptions(model))
-                        .build(),
-                ),
+                chatModel = AnthropicChatModel.builder()
+                    .anthropicClient(anthropicClient(baseUrlOverride))
+                    .options(ChatClients.anthropicOptions(model))
+                    .build(),
             )
             // 분기는 자기를 구분하는 것(이름·키·모델·override)만 넘긴다. baseUrl 은
             // `name` 에서 나오므로, 분기가 이름과 다른 URL 을 짝지을 자리가 없다.
@@ -137,23 +134,21 @@ object LlmSelection {
         val baseUrl = baseUrlOverride ?: defaultBaseUrl(name)
         return SpringAiExplanationProvider(
             name = name,
-            chatClient = ChatClient.create(
-                OpenAiChatModel.builder()
-                    .openAiClient(
-                        OpenAIOkHttpClient.builder()
-                            .apiKey(apiKey)
-                            .baseUrl(baseUrl)
-                            .build(),
-                    )
-                    .openAiClientAsync(
-                        OpenAIOkHttpClientAsync.builder()
-                            .apiKey(apiKey)
-                            .baseUrl(baseUrl)
-                            .build(),
-                    )
-                    .options(ChatClients.openAiCompatibleOptions(model, baseUrl))
-                    .build(),
-            ),
+            chatModel = OpenAiChatModel.builder()
+                .openAiClient(
+                    OpenAIOkHttpClient.builder()
+                        .apiKey(apiKey)
+                        .baseUrl(baseUrl)
+                        .build(),
+                )
+                .openAiClientAsync(
+                    OpenAIOkHttpClientAsync.builder()
+                        .apiKey(apiKey)
+                        .baseUrl(baseUrl)
+                        .build(),
+                )
+                .options(ChatClients.openAiCompatibleOptions(model, baseUrl))
+                .build(),
         )
     }
 
