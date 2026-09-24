@@ -23,6 +23,8 @@
 - 유료 평가(`./gradlew eval`)는 사람의 명시적 승인 없이 실행하지 않는다. CI 에서도 절대 돌지 않는다.
 - 백그라운드 실행 금지. Gradle 도 그 무엇도 백그라운드로 돌리지 않는다 — 타임아웃은 Bash 도구의 timeout 파라미터로 준다.
 - `.env` 는 운영 키를 담고 있다. 출력·인용·커밋하지 않는다.
+- **단일 모듈 Gradle 빌드다.** `server/` 와 `harness/` 는 `sourceSets` 로 엮인 소스 디렉터리이지 서브프로젝트가 아니다 — 테스트 태스크는 `./gradlew test` 이고 `:server:test` 는 존재하지 않는다.
+- **단언은 AssertJ 로 쓴다** (`import org.assertj.core.api.Assertions.assertThat`). 저장소 전체가 그렇다. `kotlin.test` 를 쓰지 않고, 그 의존성을 추가하지도 않는다. sealed 타입은 기존 관례대로 단언한다 — `assertThat(x).isInstanceOf(T::class.java)` 뒤에 필요하면 `val y = x as T`.
 
 ---
 
@@ -73,10 +75,8 @@
 ```kotlin
 package com.hermes.llm
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertIs
-import kotlin.test.assertTrue
 
 private class RecordingProvider(private val result: ProviderResult) : ExplanationProvider {
     override val name = "recording"
@@ -106,9 +106,9 @@ class DefaultConverseTest {
             onChunk = { chunks.add(it) },
         )
 
-        assertIs<Spoke>(step)
-        assertIs<StreamCompleted>(step.end)
-        assertTrue(chunks.joinToString("").contains("본문"))
+        assertThat(step).isInstanceOf(Spoke::class.java)
+        assertThat((step as Spoke).end).isInstanceOf(StreamCompleted::class.java)
+        assertThat(chunks.joinToString("")).contains("본문")
     }
 
     @Test
@@ -127,7 +127,7 @@ class DefaultConverseTest {
             onChunk = {},
         )
 
-        assertEquals("마지막 질문", provider.seenUserText)
+        assertThat(provider.seenUserText).isEqualTo("마지막 질문")
     }
 
     @Test
@@ -136,15 +136,15 @@ class DefaultConverseTest {
 
         val step = provider.converse("SYS", listOf(UserTurn("질문")), emptyList()) {}
 
-        assertIs<Spoke>(step)
-        assertEquals(StreamRefused("safety"), step.end)
+        assertThat(step).isInstanceOf(Spoke::class.java)
+        assertThat((step as Spoke).end).isEqualTo(StreamRefused("safety"))
     }
 }
 ```
 
 - [ ] **Step 2: 실패를 확인한다**
 
-Run: `./gradlew :server:test --tests 'com.hermes.llm.DefaultConverseTest'`
+Run: `./gradlew test --tests 'com.hermes.llm.DefaultConverseTest'`
 Expected: 컴파일 실패 — `Unresolved reference: UserTurn`
 
 - [ ] **Step 3: 타입을 만든다**
@@ -216,12 +216,12 @@ data class Spoke(val end: StreamEnd) : AgentStep
 
 - [ ] **Step 5: 통과를 확인한다**
 
-Run: `./gradlew :server:test --tests 'com.hermes.llm.DefaultConverseTest'`
+Run: `./gradlew test --tests 'com.hermes.llm.DefaultConverseTest'`
 Expected: PASS (3개)
 
 - [ ] **Step 6: 기존 전체 스위트가 그대로인지 확인한다**
 
-Run: `./gradlew :server:test`
+Run: `./gradlew test`
 Expected: PASS. 페이크 7개가 `converse` 를 구현하지 않고도 컴파일되어야 한다.
 
 - [ ] **Step 7: 커밋**
@@ -261,10 +261,8 @@ package com.hermes.explain
 
 import com.hermes.llm.ToolCall
 import java.time.LocalDate
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertIs
-import kotlin.test.assertTrue
 
 class CourseToolsTest {
 
@@ -277,7 +275,7 @@ class CourseToolsTest {
 
     @Test
     fun `도구는 둘이고 이름이 고정이다`() {
-        assertEquals(listOf("congestion", "alternatives"), CourseTools.specs().map { it.name })
+        assertThat("alternatives").isEqualTo(listOf("congestion"), CourseTools.specs().map { it.name })
     }
 
     @Test
@@ -286,7 +284,7 @@ class CourseToolsTest {
             call("congestion", """{"attractionId":11,"date":"2026-10-03"}"""),
             bounds,
         )
-        assertEquals(Congestion(11L, LocalDate.of(2026, 10, 3)), args)
+        assertThat(LocalDate.of(2026, 10, 3).isEqualTo(Congestion(11L)), args)
     }
 
     @Test
@@ -295,7 +293,7 @@ class CourseToolsTest {
             call("alternatives", """{"attractionId":22,"date":"2026-10-01"}"""),
             bounds,
         )
-        assertEquals(Alternatives(22L, LocalDate.of(2026, 10, 1), 15), args)
+        assertThat(LocalDate.of(2026, 10, 1).isEqualTo(Alternatives(22L), 15), args)
     }
 
     @Test
@@ -304,8 +302,8 @@ class CourseToolsTest {
             call("congestion", """{"attractionId":99,"date":"2026-10-01"}"""),
             bounds,
         )
-        assertIs<Rejected>(args)
-        assertTrue(args.reason.contains("99"))
+        assertThat(args).isInstanceOf(Rejected::class.java)
+        assertThat((args as Rejected).reason).contains("99")
     }
 
     @Test
@@ -314,56 +312,47 @@ class CourseToolsTest {
             call("congestion", """{"attractionId":11,"date":"2026-10-16"}"""),
             bounds,
         )
-        assertIs<Rejected>(tooFar)
+        assertThat(tooFar).isInstanceOf(Rejected::class.java)
 
         val tooEarly = CourseTools.parse(
             call("congestion", """{"attractionId":11,"date":"2026-09-16"}"""),
             bounds,
         )
-        assertIs<Rejected>(tooEarly)
+        assertThat(tooEarly).isInstanceOf(Rejected::class.java)
     }
 
     @Test
     fun `정확히 14일 경계는 허용된다`() {
-        assertIs<Congestion>(
-            CourseTools.parse(call("congestion", """{"attractionId":11,"date":"2026-10-15"}"""), bounds),
-        )
-        assertIs<Congestion>(
-            CourseTools.parse(call("congestion", """{"attractionId":11,"date":"2026-09-17"}"""), bounds),
-        )
+        assertThat(CourseTools.parse(call("congestion", """{"attractionId":11,"date":"2026-10-15"}"""), bounds))
+            .isInstanceOf(Congestion::class.java)
+        assertThat(CourseTools.parse(call("congestion", """{"attractionId":11,"date":"2026-09-17"}"""), bounds))
+            .isInstanceOf(Congestion::class.java)
     }
 
     @Test
     fun `radiusKm 상한과 하한을 벗어나면 거부된다`() {
-        assertIs<Rejected>(
-            CourseTools.parse(
-                call("alternatives", """{"attractionId":11,"date":"2026-10-01","radiusKm":51}"""),
-                bounds,
-            ),
-        )
-        assertIs<Rejected>(
-            CourseTools.parse(
-                call("alternatives", """{"attractionId":11,"date":"2026-10-01","radiusKm":0}"""),
-                bounds,
-            ),
-        )
+        assertThat(
+            CourseTools.parse(call("alternatives", """{"attractionId":11,"date":"2026-10-01","radiusKm":51}"""), bounds),
+        ).isInstanceOf(Rejected::class.java)
+        assertThat(
+            CourseTools.parse(call("alternatives", """{"attractionId":11,"date":"2026-10-01","radiusKm":0}"""), bounds),
+        ).isInstanceOf(Rejected::class.java)
     }
 
     @Test
     fun `모르는 도구 이름은 거부된다`() {
-        assertIs<Rejected>(CourseTools.parse(call("weather", "{}"), bounds))
+        assertThat(CourseTools.parse(call("weather", "{}"), bounds)).isInstanceOf(Rejected::class.java)
     }
 
     @Test
     fun `망가진 JSON 은 예외가 아니라 거부다`() {
-        assertIs<Rejected>(CourseTools.parse(call("congestion", "{not json"), bounds))
+        assertThat(CourseTools.parse(call("congestion", "{not json"), bounds)).isInstanceOf(Rejected::class.java)
     }
 
     @Test
     fun `날짜 형식이 틀리면 거부된다`() {
-        assertIs<Rejected>(
-            CourseTools.parse(call("congestion", """{"attractionId":11,"date":"10-01-2026"}"""), bounds),
-        )
+        assertThat(CourseTools.parse(call("congestion", """{"attractionId":11,"date":"10-01-2026"}"""), bounds))
+            .isInstanceOf(Rejected::class.java)
     }
 
     @Test
@@ -372,16 +361,15 @@ class CourseToolsTest {
             call("alternatives", """{"attractionId":11,"date":"2026-10-01","radiusKm":51}"""),
             bounds,
         )
-        assertIs<Rejected>(rejected)
-        assertTrue(rejected.reason.contains("radiusKm"))
-        assertTrue(rejected.reason.contains("50"))
+        assertThat(rejected).isInstanceOf(Rejected::class.java)
+        assertThat((rejected as Rejected).reason).contains("radiusKm", "50")
     }
 }
 ```
 
 - [ ] **Step 2: 실패를 확인한다**
 
-Run: `./gradlew :server:test --tests 'com.hermes.explain.CourseToolsTest'`
+Run: `./gradlew test --tests 'com.hermes.explain.CourseToolsTest'`
 Expected: 컴파일 실패 — `Unresolved reference: CourseTools`
 
 - [ ] **Step 3: 구현한다**
@@ -512,7 +500,7 @@ object CourseTools {
 
 - [ ] **Step 4: 통과를 확인한다**
 
-Run: `./gradlew :server:test --tests 'com.hermes.explain.CourseToolsTest'`
+Run: `./gradlew test --tests 'com.hermes.explain.CourseToolsTest'`
 Expected: PASS (11개)
 
 - [ ] **Step 5: 커밋**
@@ -551,7 +539,7 @@ git commit -m "feat: define the two course tools and refuse arguments out of ran
         gate.accept(CitationsClosed(listOf("concepts/nope.md")))
 
         val unavailable = events.filterIsInstance<UnavailableEvent>().single()
-        assertEquals(FailureCause.INVALID_CITATIONS, unavailable.cause)
+        assertThat(unavailable.cause).isEqualTo(FailureCause.INVALID_CITATIONS)
     }
 
     @Test
@@ -563,7 +551,7 @@ git commit -m "feat: define the two course tools and refuse arguments out of ran
         gate.finish(parseComplete = true)
 
         val unavailable = events.filterIsInstance<UnavailableEvent>().single()
-        assertEquals(FailureCause.EMPTY, unavailable.cause)
+        assertThat(unavailable.cause).isEqualTo(FailureCause.EMPTY)
     }
 
     @Test
@@ -576,13 +564,13 @@ git commit -m "feat: define the two course tools and refuse arguments out of ran
         gate.finish(parseComplete = false)
 
         val aborted = events.filterIsInstance<AbortedEvent>().single()
-        assertEquals(FailureCause.TRUNCATED, aborted.cause)
+        assertThat(aborted.cause).isEqualTo(FailureCause.TRUNCATED)
     }
 ```
 
 - [ ] **Step 2: 실패를 확인한다**
 
-Run: `./gradlew :server:test --tests 'com.hermes.explain.AskStreamGateTest'`
+Run: `./gradlew test --tests 'com.hermes.explain.AskStreamGateTest'`
 Expected: 컴파일 실패 — `Unresolved reference: FailureCause`
 
 - [ ] **Step 3: `AskStreamGate.kt` 를 고친다**
@@ -651,7 +639,7 @@ data class AbortedEvent(val reason: String, val cause: FailureCause) : AskStream
 
 - [ ] **Step 5: 통과를 확인한다**
 
-Run: `./gradlew :server:test`
+Run: `./gradlew test`
 Expected: PASS. 기존 게이트 테스트 전부 + 새 3개.
 
 - [ ] **Step 6: 커밋**
@@ -685,13 +673,11 @@ git commit -m "refactor: give stream failures a typed cause instead of a string"
 ```kotlin
 package com.hermes.llm
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.ai.chat.messages.AssistantMessage
 import org.springframework.ai.chat.model.ChatResponse
 import org.springframework.ai.chat.model.Generation
-import kotlin.test.assertEquals
-import kotlin.test.assertIs
-import kotlin.test.assertTrue
 
 class SpringAiConverseTest {
 
@@ -709,11 +695,12 @@ class SpringAiConverseTest {
             responseWithToolCall("call-1", "congestion", """{"attractionId":11}"""),
         )
 
-        assertIs<ToolRequested>(step)
-        assertEquals(1, step.calls.size)
-        assertEquals("call-1", step.calls[0].id)
-        assertEquals("congestion", step.calls[0].name)
-        assertEquals("""{"attractionId":11}""", step.calls[0].argumentsJson)
+        assertThat(step).isInstanceOf(ToolRequested::class.java)
+        val requested = step as ToolRequested
+        assertThat(requested.calls).hasSize(1)
+        assertThat(requested.calls[0].id).isEqualTo("call-1")
+        assertThat(requested.calls[0].name).isEqualTo("congestion")
+        assertThat(requested.calls[0].argumentsJson).isEqualTo("""{"attractionId":11}""")
     }
 
     @Test
@@ -721,7 +708,7 @@ class SpringAiConverseTest {
         val message = AssistantMessage.builder().content("본문").build()
         val step = SpringAiExplanationProvider.toAgentStep(ChatResponse(listOf(Generation(message))))
 
-        assertTrue(step !is ToolRequested)
+        assertThat(step).isNotInstanceOf(ToolRequested::class.java)
     }
 
     @Test
@@ -732,8 +719,8 @@ class SpringAiConverseTest {
 
         val thrown = runCatching { callback.call("{}") }.exceptionOrNull()
 
-        assertIs<IllegalStateException>(thrown)
-        assertTrue(thrown.message!!.contains("AgentLoop"))
+        assertThat(thrown).isInstanceOf(IllegalStateException::class.java)
+        assertThat(thrown!!.message).contains("AgentLoop")
     }
 
     @Test
@@ -742,16 +729,16 @@ class SpringAiConverseTest {
             ToolSpec("alternatives", "대안", """{"type":"object"}"""),
         )
 
-        assertEquals("alternatives", callback.toolDefinition.name())
-        assertEquals("대안", callback.toolDefinition.description())
-        assertEquals("""{"type":"object"}""", callback.toolDefinition.inputSchema())
+        assertThat(callback.toolDefinition.name().isEqualTo("alternatives"))
+        assertThat(callback.toolDefinition.description().isEqualTo("대안"))
+        assertThat(callback.toolDefinition.inputSchema().isEqualTo("""{"type":"object"}"""))
     }
 }
 ```
 
 - [ ] **Step 2: 실패를 확인한다**
 
-Run: `./gradlew :server:test --tests 'com.hermes.llm.SpringAiConverseTest'`
+Run: `./gradlew test --tests 'com.hermes.llm.SpringAiConverseTest'`
 Expected: 컴파일 실패 — `Unresolved reference: toAgentStep`
 
 - [ ] **Step 3: 어댑터를 고친다**
@@ -938,7 +925,7 @@ import org.springframework.ai.tool.definition.ToolDefinition
 
 - [ ] **Step 5: 통과를 확인한다**
 
-Run: `./gradlew :server:test`
+Run: `./gradlew test`
 Expected: PASS. 특히 `SpringAiRequestShapeTest` 와 `LlmSelectionTest` 의 캡처 테스트가 그대로 통과해야 한다 — 기존 경로의 요청 바이트가 안 바뀌었다는 뜻이다.
 
 - [ ] **Step 6: 커밋**
@@ -973,10 +960,8 @@ package com.hermes.llm
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.hermes.shared.config.LlmSelection
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 class ConverseRequestShapeTest {
 
@@ -1002,14 +987,14 @@ class ConverseRequestShapeTest {
         val body = capture(com.hermes.explain.CourseTools.specs())
 
         val names = body.path("tools").map { it.at("/function/name").asText() }
-        assertEquals(listOf("congestion", "alternatives"), names)
+        assertThat("alternatives").isEqualTo(listOf("congestion"), names)
     }
 
     @Test
     fun `도구를 안 주면 tools 필드 자체가 없다`() {
         val body = capture(emptyList())
 
-        assertTrue(body.path("tools").isMissingNode || body.path("tools").isEmpty)
+        assertThat(body.path("tools").isMissingNode || body.path("tools").isEmpty).isTrue()
     }
 
     @Test
@@ -1017,14 +1002,14 @@ class ConverseRequestShapeTest {
         val body = capture(com.hermes.explain.CourseTools.specs())
 
         val system = body.path("messages").first { it.path("role").asText() == "system" }
-        assertEquals("SYS", system.path("content").asText())
+        assertThat(system.path("content").isEqualTo("SYS").asText())
     }
 
     @Test
     fun `스트리밍으로 나간다`() {
         val body = capture(com.hermes.explain.CourseTools.specs())
 
-        assertTrue(body.path("stream").asBoolean(false))
+        assertThat(body.path("stream").asBoolean(false)).isTrue()
     }
 
     @Test
@@ -1035,7 +1020,7 @@ class ConverseRequestShapeTest {
             val provider = LlmSelection.provider("openai", "gpt-4o", { "test-key" }, endpoint.baseUrl)
             runCatching { provider.stream("SYS", "질문") {} }
             val viaStream = mapper.readTree(endpoint.lastBody()).toString()
-            assertEquals(viaStream, withoutTools)
+            assertThat(withoutTools).isEqualTo(viaStream)
         }
     }
 
@@ -1046,7 +1031,7 @@ class ConverseRequestShapeTest {
         // 자체가 실행되지 않았다는 증거이므로, 여기서는 본문에 tools 가 실렸고
         // 예외 메시지가 응답 경로로 새지 않았음을 본다.
         val body = capture(com.hermes.explain.CourseTools.specs())
-        assertFalse(body.toString().contains("AgentLoop"))
+        assertThat(body.toString().contains("AgentLoop")).isFalse()
     }
 }
 ```
@@ -1065,7 +1050,7 @@ Run: `grep -n "fun lastBody\|fun bodies\|baseUrl" server/src/test/kotlin/com/her
 
 - [ ] **Step 3: 통과를 확인한다**
 
-Run: `./gradlew :server:test --tests 'com.hermes.llm.ConverseRequestShapeTest'`
+Run: `./gradlew test --tests 'com.hermes.llm.ConverseRequestShapeTest'`
 Expected: PASS (6개)
 
 - [ ] **Step 4: 커밋**
@@ -1098,9 +1083,8 @@ git commit -m "test: pin the tool payload and that a tool-free request is unchan
 package com.hermes.explain
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class ToolFactsTest {
 
@@ -1122,10 +1106,10 @@ class ToolFactsTest {
         facts.add("congestion", "attractionId=11 date=2026-10-03", """{"grade":"NORMAL"}""")
 
         val union = mapper.readTree(facts.unionJson())
-        assertEquals("abc", union.path("courseUuid").asText())
-        assertEquals(1, union.path("lookups").size())
-        assertEquals("congestion", union.at("/lookups/0/tool").asText())
-        assertEquals("NORMAL", union.at("/lookups/0/result/grade").asText())
+        assertThat(union.path("courseUuid").isEqualTo("abc").asText())
+        assertThat(union.path("lookups").isEqualTo(1).size())
+        assertThat(union.at("/lookups/0/tool").isEqualTo("congestion").asText())
+        assertThat(union.at("/lookups/0/result/grade").isEqualTo("NORMAL").asText())
     }
 
     @Test
@@ -1135,7 +1119,7 @@ class ToolFactsTest {
         facts.add("alternatives", "b", """{"n":2}""")
 
         val union = mapper.readTree(facts.unionJson())
-        assertEquals(listOf("congestion", "alternatives"), union.path("lookups").map { it.path("tool").asText() })
+        assertThat("alternatives").isEqualTo(listOf("congestion"), union.path("lookups").map { it.path("tool").asText() })
     }
 
     @Test
@@ -1146,8 +1130,8 @@ class ToolFactsTest {
         // 이름이 충돌하면 도구 결과가 아니라 초기 facts 가 이긴다 — 한적이 준 사실이
         // 모델이 유도한 조회보다 우선한다.
         val union = mapper.readTree(facts.unionJson())
-        assertEquals("원래값", union.path("lookups").asText())
-        assertEquals(1, union.path("toolLookups").size())
+        assertThat(union.path("lookups").isEqualTo("원래값").asText())
+        assertThat(union.path("toolLookups").isEqualTo(1).size())
     }
 
     @Test
@@ -1156,21 +1140,21 @@ class ToolFactsTest {
         facts.add("congestion", "attractionId=11 date=2026-10-03", """{"grade":"NORMAL"}""")
 
         val text = facts.promptText()
-        assertTrue(text.contains("congestion"))
-        assertTrue(text.contains("attractionId=11"))
-        assertTrue(text.contains("NORMAL"))
+        assertThat(text.contains("congestion")).isTrue()
+        assertThat(text.contains("attractionId=11")).isTrue()
+        assertThat(text.contains("NORMAL")).isTrue()
     }
 
     @Test
     fun `도구가 안 돌면 promptText 는 비어 있다`() {
-        assertEquals("", ToolFacts("""{"courseUuid":"abc"}""").promptText())
+        assertThat(ToolFacts("""{"courseUuid":"abc"}""").isEqualTo("").promptText())
     }
 }
 ```
 
 - [ ] **Step 2: 실패를 확인한다**
 
-Run: `./gradlew :server:test --tests 'com.hermes.explain.ToolFactsTest'`
+Run: `./gradlew test --tests 'com.hermes.explain.ToolFactsTest'`
 Expected: 컴파일 실패 — `Unresolved reference: ToolFacts`
 
 - [ ] **Step 3: 구현한다**
@@ -1237,7 +1221,7 @@ class ToolFacts(initialJson: String) {
 
 - [ ] **Step 4: 통과를 확인한다**
 
-Run: `./gradlew :server:test --tests 'com.hermes.explain.ToolFactsTest'`
+Run: `./gradlew test --tests 'com.hermes.explain.ToolFactsTest'`
 Expected: PASS (6개)
 
 - [ ] **Step 5: 커밋**
@@ -1299,10 +1283,8 @@ import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertIs
-import kotlin.test.assertTrue
 
 private val BUNDLE = Bundle(
     documents = listOf(BundleDocument("concepts/a.md", "내용")),
@@ -1375,9 +1357,9 @@ class AgentLoopTest {
 
         val events = collect(provider)
 
-        assertEquals(1, provider.calls)
-        assertTrue(events.none { it is LookingEvent })
-        assertTrue(events.last() is DoneEvent)
+        assertThat(provider.calls).isEqualTo(1)
+        assertThat(events.none { it is LookingEvent }).isTrue()
+        assertThat(events.last() is DoneEvent).isTrue()
     }
 
     @Test
@@ -1391,9 +1373,9 @@ class AgentLoopTest {
 
         val events = collect(provider)
 
-        assertEquals(LookingEvent("congestion"), events.first())
-        assertTrue(events.any { it is CitationsEvent })
-        assertTrue(events.last() is DoneEvent)
+        assertThat(events.first().isEqualTo(LookingEvent("congestion")))
+        assertThat(events.any { it is CitationsEvent }).isTrue()
+        assertThat(events.last() is DoneEvent).isTrue()
     }
 
     @Test
@@ -1408,10 +1390,10 @@ class AgentLoopTest {
 
         collect(provider)
 
-        assertEquals(3, provider.calls)
-        assertTrue(provider.toolsPerCall[0].isNotEmpty())
-        assertTrue(provider.toolsPerCall[1].isNotEmpty())
-        assertTrue(provider.toolsPerCall[2].isEmpty())
+        assertThat(provider.calls).isEqualTo(3)
+        assertThat(provider.toolsPerCall[0].isNotEmpty()).isTrue()
+        assertThat(provider.toolsPerCall[1].isNotEmpty()).isTrue()
+        assertThat(provider.toolsPerCall[2].isEmpty()).isTrue()
     }
 
     @Test
@@ -1426,10 +1408,10 @@ class AgentLoopTest {
 
         val events = collect(provider, runner = ToolRunner { ran = true; "{}" })
 
-        assertTrue(!ran)
+        assertThat(!ran).isTrue()
         // 실행하지 않았으므로 조회 중이라고 말하지도 않는다.
-        assertTrue(events.none { it is LookingEvent })
-        assertTrue(events.last() is DoneEvent)
+        assertThat(events.none { it is LookingEvent }).isTrue()
+        assertThat(events.last() is DoneEvent).isTrue()
     }
 
     @Test
@@ -1443,9 +1425,9 @@ class AgentLoopTest {
 
         val events = collect(provider)
 
-        assertTrue(events.none { it is UnavailableEvent })
-        assertTrue(events.last() is DoneEvent)
-        assertEquals(2, provider.calls)
+        assertThat(events.none { it is UnavailableEvent }).isTrue()
+        assertThat(events.last() is DoneEvent).isTrue()
+        assertThat(provider.calls).isEqualTo(2)
     }
 
     @Test
@@ -1459,7 +1441,7 @@ class AgentLoopTest {
 
         collect(provider)
 
-        assertTrue(provider.toolsPerCall[1].isEmpty())
+        assertThat(provider.toolsPerCall[1].isEmpty()).isTrue()
     }
 
     @Test
@@ -1474,8 +1456,8 @@ class AgentLoopTest {
         val events = collect(provider)
 
         val unavailable = events.filterIsInstance<UnavailableEvent>().single()
-        assertEquals(FailureCause.INVALID_CITATIONS, unavailable.cause)
-        assertEquals(2, provider.calls)
+        assertThat(unavailable.cause).isEqualTo(FailureCause.INVALID_CITATIONS)
+        assertThat(provider.calls).isEqualTo(2)
     }
 
     @Test
@@ -1484,8 +1466,8 @@ class AgentLoopTest {
 
         val events = collect(provider)
 
-        assertEquals(1, provider.calls)
-        assertEquals(FailureCause.REFUSED, events.filterIsInstance<UnavailableEvent>().single().cause)
+        assertThat(provider.calls).isEqualTo(1)
+        assertThat(events.filterIsInstance<UnavailableEvent>().isEqualTo(FailureCause.REFUSED).single().cause)
     }
 
     @Test
@@ -1505,8 +1487,8 @@ class AgentLoopTest {
 
         collect(provider, clock = movingClock)
 
-        assertEquals(2, provider.calls)
-        assertTrue(provider.toolsPerCall[1].isEmpty())
+        assertThat(provider.calls).isEqualTo(2)
+        assertThat(provider.toolsPerCall[1].isEmpty()).isTrue()
     }
 
     @Test
@@ -1521,15 +1503,15 @@ class AgentLoopTest {
         collect(provider)
 
         val secondCallTurns = provider.turnsPerCall[1]
-        assertIs<com.hermes.llm.ToolCallTurn>(secondCallTurns[1])
-        assertIs<com.hermes.llm.ToolResultTurn>(secondCallTurns[2])
+        assertThat(secondCallTurns[1]).isInstanceOf(com.hermes.llm.ToolCallTurn::class.java)
+        assertThat(secondCallTurns[2]).isInstanceOf(com.hermes.llm.ToolResultTurn::class.java)
     }
 }
 ```
 
 - [ ] **Step 3: 실패를 확인한다**
 
-Run: `./gradlew :server:test --tests 'com.hermes.explain.AgentLoopTest'`
+Run: `./gradlew test --tests 'com.hermes.explain.AgentLoopTest'`
 Expected: 컴파일 실패 — `Unresolved reference: AgentLoop`
 
 - [ ] **Step 4: 구현한다**
@@ -1687,7 +1669,7 @@ class AgentLoop(
 
 - [ ] **Step 5: 통과를 확인한다**
 
-Run: `./gradlew :server:test --tests 'com.hermes.explain.AgentLoopTest'`
+Run: `./gradlew test --tests 'com.hermes.explain.AgentLoopTest'`
 Expected: PASS (10개)
 
 - [ ] **Step 6: 커밋**
@@ -1726,9 +1708,9 @@ git commit -m "feat: loop over tools within a budget and repair bad citations on
         )
 
         val looking = events.single { it.startsWith("event:looking") }
-        assertTrue(looking.contains("congestion"))
-        assertFalse(looking.contains("attractionId"))
-        assertFalse(looking.contains("2026-10-03"))
+        assertThat(looking.contains("congestion")).isTrue()
+        assertThat(looking.contains("attractionId")).isFalse()
+        assertThat(looking.contains("2026-10-03")).isFalse()
     }
 
     @Test
@@ -1738,14 +1720,14 @@ git commit -m "feat: loop over tools within a budget and repair bad citations on
         val deltaIndexes = events.withIndex().filter { it.value.startsWith("event:delta") }.map { it.index }
         val unavailableIndex = events.indexOfFirst { it.startsWith("event:unavailable") }
 
-        assertTrue(unavailableIndex >= 0)
-        assertTrue(deltaIndexes.none { it < unavailableIndex })
+        assertThat(unavailableIndex >= 0).isTrue()
+        assertThat(deltaIndexes.none { it < unavailableIndex }).isTrue()
     }
 ```
 
 - [ ] **Step 2: 실패를 확인한다**
 
-Run: `./gradlew :server:test --tests 'com.hermes.explain.presentation.AskStreamControllerTest'`
+Run: `./gradlew test --tests 'com.hermes.explain.presentation.AskStreamControllerTest'`
 Expected: FAIL — `looking` 이벤트가 나오지 않는다
 
 - [ ] **Step 3: `FactsSource` 가 경계를 낼 수 있게 한다**
@@ -1841,7 +1823,7 @@ data class FetchedFacts(val facts: BackendFacts, val bounds: CourseBounds)
 
 - [ ] **Step 7: 통과를 확인한다**
 
-Run: `./gradlew :server:test`
+Run: `./gradlew test`
 Expected: PASS 전부
 
 - [ ] **Step 8: 커밋**
@@ -1881,8 +1863,8 @@ import com.hermes.context.Bundle
 import com.hermes.context.BundleDocument
 import com.hermes.explain.ToolFacts
 import com.hermes.llm.Explanation
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import kotlin.test.assertTrue
 
 class ForbiddenBehavioursToolFactsTest {
 
@@ -1902,7 +1884,7 @@ class ForbiddenBehavioursToolFactsTest {
             facts.unionJson(),
         )
 
-        assertTrue(violations.none { it.behaviour == Behaviour.INVENTED_PLACE })
+        assertThat(violations.none { it.behaviour == Behaviour.INVENTED_PLACE }).isTrue()
     }
 
     @Test
@@ -1915,14 +1897,14 @@ class ForbiddenBehavioursToolFactsTest {
             facts.unionJson(),
         )
 
-        assertTrue(violations.any { it.behaviour == Behaviour.INVENTED_PLACE })
+        assertThat(violations.any { it.behaviour == Behaviour.INVENTED_PLACE }).isTrue()
     }
 }
 ```
 
 - [ ] **Step 2: 실패를 확인한다**
 
-Run: `./gradlew :server:test --tests 'com.hermes.harness.ForbiddenBehavioursToolFactsTest'`
+Run: `./gradlew test --tests 'com.hermes.harness.ForbiddenBehavioursToolFactsTest'`
 Expected: 첫 테스트 FAIL — 창덕궁이 지어낸 장소로 잡힌다
 
 - [ ] **Step 3: 장소 수집을 합집합 전체로 넓힌다**
@@ -1949,7 +1931,7 @@ println("tool rounds: ${tally.toolRounds}, budget exhausted: ${tally.exhausted},
 
 - [ ] **Step 5: 통과를 확인한다**
 
-Run: `./gradlew :server:test`
+Run: `./gradlew test`
 Expected: PASS 전부
 
 - [ ] **Step 6: 커밋**
