@@ -1,9 +1,7 @@
 package com.hermes.llm
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertIs
-import kotlin.test.assertTrue
 
 private class RecordingProvider(private val result: ProviderResult) : ExplanationProvider {
     override val name = "recording"
@@ -33,9 +31,9 @@ class DefaultConverseTest {
             onChunk = { chunks.add(it) },
         )
 
-        assertIs<Spoke>(step)
-        assertIs<StreamCompleted>(step.end)
-        assertTrue(chunks.joinToString("").contains("본문"))
+        assertThat(step).isInstanceOf(Spoke::class.java)
+        assertThat((step as Spoke).end).isInstanceOf(StreamCompleted::class.java)
+        assertThat(chunks.joinToString("")).contains("본문")
     }
 
     @Test
@@ -54,7 +52,7 @@ class DefaultConverseTest {
             onChunk = {},
         )
 
-        assertEquals("마지막 질문", provider.seenUserText)
+        assertThat(provider.seenUserText).isEqualTo("마지막 질문")
     }
 
     @Test
@@ -63,7 +61,7 @@ class DefaultConverseTest {
 
         val step = provider.converse("SYS", listOf(UserTurn("질문")), emptyList()) {}
 
-        assertIs<Spoke>(step)
-        assertEquals(StreamRefused("safety"), step.end)
+        assertThat(step).isInstanceOf(Spoke::class.java)
+        assertThat((step as Spoke).end).isEqualTo(StreamRefused("safety"))
     }
 }
