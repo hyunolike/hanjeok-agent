@@ -68,4 +68,25 @@ interface ExplanationProvider {
             is Refused -> StreamRefused(result.category)
             is Failed -> StreamFailed(result.reason)
         }
+
+    /**
+     * 도구를 쓸 수 있는 대화. 도구를 부르지 않으면 [stream] 과 같은 경로다.
+     *
+     * 기본 구현은 도구를 무시하고 마지막 사용자 턴만 [stream] 에 넘긴다. 스트리밍만
+     * 하고 도구를 모르는 프로바이더와 테스트 페이크가 같은 계약을 쓸 수 있고, 같은
+     * explain() 을 거치므로 프롬프트 조립이 갈라지지 않는다.
+     */
+    fun converse(
+        systemText: String,
+        turns: List<Turn>,
+        tools: List<ToolSpec>,
+        onChunk: (String) -> Unit,
+    ): AgentStep = Spoke(
+        stream(
+            systemText,
+            turns.filterIsInstance<UserTurn>().lastOrNull()?.text
+                ?: error("converse called with no user turn"),
+            onChunk,
+        ),
+    )
 }
