@@ -49,7 +49,9 @@ class AskStreamGateTest {
         g.finish(parseComplete = true)
 
         assertThat(deltas(out)).isEmpty()
-        assertThat(out).containsExactly(UnavailableEvent("citations not in bundle: not/in/bundle.md"))
+        assertThat(out).containsExactly(
+            UnavailableEvent("citations not in bundle: not/in/bundle.md", FailureCause.INVALID_CITATIONS),
+        )
     }
 
     @Test
@@ -84,7 +86,7 @@ class AskStreamGateTest {
 
         g.accept(CitationsClosed(emptyList()))
 
-        assertThat(out).containsExactly(UnavailableEvent("no citations"))
+        assertThat(out).containsExactly(UnavailableEvent("no citations", FailureCause.INVALID_CITATIONS))
     }
 
     @Test
@@ -93,9 +95,9 @@ class AskStreamGateTest {
 
         g.accept(CitationsClosed(listOf(known)))
         g.accept(BodyText("미완"))
-        g.fail("IOException: reset")
+        g.fail("IOException: reset", FailureCause.STREAM_FAILED)
 
-        assertThat(out.last()).isEqualTo(AbortedEvent("IOException: reset"))
+        assertThat(out.last()).isEqualTo(AbortedEvent("IOException: reset", FailureCause.STREAM_FAILED))
     }
 
     @Test
@@ -103,9 +105,12 @@ class AskStreamGateTest {
         val (g, out) = gate()
 
         g.accept(CitationsClosed(listOf(known)))
-        g.fail("refusal (unknown)")
+        g.fail("refusal (unknown)", FailureCause.REFUSED)
 
-        assertThat(out).containsExactly(CitationsEvent(listOf(known)), UnavailableEvent("refusal (unknown)"))
+        assertThat(out).containsExactly(
+            CitationsEvent(listOf(known)),
+            UnavailableEvent("refusal (unknown)", FailureCause.REFUSED),
+        )
     }
 
     @Test
@@ -116,7 +121,7 @@ class AskStreamGateTest {
         g.finish(parseComplete = false)
 
         assertThat(deltas(out)).isEmpty()
-        assertThat(out).containsExactly(UnavailableEvent("truncated response"))
+        assertThat(out).containsExactly(UnavailableEvent("truncated response", FailureCause.TRUNCATED))
     }
 
     @Test
@@ -127,7 +132,7 @@ class AskStreamGateTest {
         g.accept(BodyText("잘리"))
         g.finish(parseComplete = false)
 
-        assertThat(out.last()).isEqualTo(AbortedEvent("truncated response"))
+        assertThat(out.last()).isEqualTo(AbortedEvent("truncated response", FailureCause.TRUNCATED))
     }
 
     @Test
@@ -141,7 +146,46 @@ class AskStreamGateTest {
         g.finish(parseComplete = true)
 
         assertThat(deltas(out)).isEmpty()
-        assertThat(out).containsExactly(CitationsEvent(listOf(known)), UnavailableEvent("empty answer"))
+        assertThat(out).containsExactly(
+            CitationsEvent(listOf(known)),
+            UnavailableEvent("empty answer", FailureCause.EMPTY),
+        )
+    }
+
+    @Test
+    fun `인용이 무효면 cause 가 INVALID_CITATIONS 다`() {
+        val events = mutableListOf<AskStreamEvent>()
+        val gate = AskStreamGate(validator, events::add)
+
+        gate.accept(CitationsClosed(listOf("concepts/nope.md")))
+
+        val unavailable = events.filterIsInstance<UnavailableEvent>().single()
+        assertThat(unavailable.cause).isEqualTo(FailureCause.INVALID_CITATIONS)
+    }
+
+    @Test
+    fun `본문이 비면 cause 가 EMPTY 다`() {
+        val events = mutableListOf<AskStreamEvent>()
+        val gate = AskStreamGate(validator, events::add)
+
+        gate.accept(CitationsClosed(listOf(known)))
+        gate.finish(parseComplete = true)
+
+        val unavailable = events.filterIsInstance<UnavailableEvent>().single()
+        assertThat(unavailable.cause).isEqualTo(FailureCause.EMPTY)
+    }
+
+    @Test
+    fun `잘린 응답은 cause 가 TRUNCATED 다`() {
+        val events = mutableListOf<AskStreamEvent>()
+        val gate = AskStreamGate(validator, events::add)
+
+        gate.accept(CitationsClosed(listOf(known)))
+        gate.accept(BodyText("일부"))
+        gate.finish(parseComplete = false)
+
+        val aborted = events.filterIsInstance<AbortedEvent>().single()
+        assertThat(aborted.cause).isEqualTo(FailureCause.TRUNCATED)
     }
 
     @Test

@@ -70,8 +70,8 @@ class CourseQuestionService(
 
         when (end) {
             is StreamCompleted -> gate.finish(parser.complete)
-            is StreamRefused -> gate.fail(refusalReason(end.category))
-            is StreamFailed -> gate.fail(end.reason)
+            is StreamRefused -> gate.fail(refusalReason(end.category), FailureCause.REFUSED)
+            is StreamFailed -> gate.fail(end.reason, FailureCause.STREAM_FAILED)
         }
     }
 

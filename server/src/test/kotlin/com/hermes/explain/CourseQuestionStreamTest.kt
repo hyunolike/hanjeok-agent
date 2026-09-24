@@ -90,7 +90,7 @@ class CourseQuestionStreamTest {
 
         service(recorder).askStream(facts, "질문", emptyList()) { out += it }
 
-        assertThat(out.last()).isEqualTo(AbortedEvent("IOException: reset"))
+        assertThat(out.last()).isEqualTo(AbortedEvent("IOException: reset", FailureCause.STREAM_FAILED))
     }
 
     @Test
@@ -103,7 +103,7 @@ class CourseQuestionStreamTest {
 
         service(recorder).askStream(facts, "질문", emptyList()) { out += it }
 
-        assertThat(out.last()).isEqualTo(AbortedEvent("truncated response"))
+        assertThat(out.last()).isEqualTo(AbortedEvent("truncated response", FailureCause.TRUNCATED))
         assertThat(out).noneMatch { it == DoneEvent }
         assertThat(out.filterIsInstance<DeltaEvent>()).isNotEmpty()
     }

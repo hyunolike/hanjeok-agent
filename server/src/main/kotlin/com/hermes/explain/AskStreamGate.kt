@@ -15,11 +15,18 @@ data class DeltaEvent(val text: String) : AskStreamEvent
 
 data object DoneEvent : AskStreamEvent
 
+/**
+ * 왜 실패했는가. 수리 루프가 "인용이 틀려서 실패했는가" 를 알아야 하는데, 그 판별을
+ * 사유 문자열로 하면 문구를 다듬는 순간 조용히 깨진다. 이 저장소는 하네스가 문자열로
+ * 분류하다 한 번 데인 적이 있다.
+ */
+enum class FailureCause { INVALID_CITATIONS, REFUSED, STREAM_FAILED, EMPTY, TRUNCATED, FACTS }
+
 /** 본문을 하나도 보내기 전의 실패. 이것이 오면 그 전에 DeltaEvent 는 0개다. */
-data class UnavailableEvent(val reason: String) : AskStreamEvent
+data class UnavailableEvent(val reason: String, val cause: FailureCause) : AskStreamEvent
 
 /** 본문을 보내기 시작한 뒤의 실패. 앞의 본문은 검증됐지만 문장이 미완이다. */
-data class AbortedEvent(val reason: String) : AskStreamEvent
+data class AbortedEvent(val reason: String, val cause: FailureCause) : AskStreamEvent
 
 /**
  * 해독된 조각을 받아, 인용 검증을 통과한 본문만 내보낸다.
@@ -52,7 +59,7 @@ class AskStreamGate(
                         held.clear()
                     }
                 }
-                is Invalid -> fail(invalidCitationReason(result))
+                is Invalid -> fail(invalidCitationReason(result), FailureCause.INVALID_CITATIONS)
             }
             is BodyText -> if (validated) send(event.text) else held.append(event.text)
         }
@@ -62,7 +69,7 @@ class AskStreamGate(
     fun finish(parseComplete: Boolean) {
         if (closed) return
         if (!parseComplete || !validated) {
-            fail("truncated response")
+            fail("truncated response", FailureCause.TRUNCATED)
             return
         }
         // 인용은 유효했는데 본문이 한 글자도 없었던 경우다. 그대로 DoneEvent 를 내면
@@ -70,18 +77,18 @@ class AskStreamGate(
         // 실려 간다. 블로킹 경로(SpringAiExplanationProvider)는 빈 본문을 Failed 로
         // 보므로, 여기서 통과시키면 두 경로가 같은 입력에 다르게 답한다.
         if (deltas == 0) {
-            fail("empty answer")
+            fail("empty answer", FailureCause.EMPTY)
             return
         }
         closed = true
         emit(DoneEvent)
     }
 
-    fun fail(reason: String) {
+    fun fail(reason: String, cause: FailureCause) {
         if (closed) return
         closed = true
         held.clear() // 방어적 정리 — closed 가드가 이미 held 를 다시 읽지 못하게 막지만, 나중에 그 가드가 사라져도 여기서 한 번 더 막는다.
-        emit(if (deltas == 0) UnavailableEvent(reason) else AbortedEvent(reason))
+        emit(if (deltas == 0) UnavailableEvent(reason, cause) else AbortedEvent(reason, cause))
     }
 
     private fun send(text: String) {
