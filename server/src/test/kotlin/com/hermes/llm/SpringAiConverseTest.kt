@@ -5,9 +5,22 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.ai.anthropic.AnthropicChatOptions
 import org.springframework.ai.chat.messages.AssistantMessage
+import org.springframework.ai.chat.model.ChatModel
 import org.springframework.ai.chat.model.ChatResponse
 import org.springframework.ai.chat.model.Generation
+import org.springframework.ai.chat.prompt.Prompt
 import org.springframework.ai.model.tool.ToolCallingChatOptions
+import reactor.core.publisher.Flux
+
+/**
+ * 조각 목록을 그대로 흘리는 `ChatModel`. 네트워크도 SSE 파싱도 끼지 않으므로
+ * `converse()` 자신의 분기(도구 호출과 본문의 순서)만 남는다 — 그 분기가
+ * `ToolRequested` 계약을 지키는지가 여기서 검사할 전부다.
+ */
+private class FlowingChatModel(private val chunks: List<ChatResponse>) : ChatModel {
+    override fun call(prompt: Prompt): ChatResponse = chunks.last()
+    override fun stream(prompt: Prompt): Flux<ChatResponse> = Flux.fromIterable(chunks)
+}
 
 class SpringAiConverseTest {
 
@@ -137,6 +150,84 @@ class SpringAiConverseTest {
             assertThat(body["tools"][0]["function"]["name"].asText()).isEqualTo("congestion")
             assertThat(body["tools"][0]["function"]["description"].asText()).isEqualTo("혼잡도")
         }
+    }
+
+    private fun textChunk(text: String): ChatResponse =
+        ChatResponse(listOf(Generation(AssistantMessage.builder().content(text).build())))
+
+    private fun converseOver(chunks: List<ChatResponse>, onChunk: (String) -> Unit): AgentStep =
+        SpringAiExplanationProvider("fake", FlowingChatModel(chunks))
+            .converse("sys", listOf(UserTurn("질문")), emptyList(), onChunk)
+
+    /**
+     * **`ToolRequested` 계약의 시험.** 이 값이 나왔다면 `onChunk` 는 한 번도 불리지
+     * 않았어야 한다. 나중 태스크의 인용 게이트가 통째로 이 불변식 위에 서 있다 —
+     * 도구 델타가 `onChunk` 에 새면 검증되지 않은 텍스트가 독자에게 그대로 간다.
+     *
+     * 도구 호출 뒤에 본문 조각이 따라오는 것은 실제로 일어난다(프로바이더가 도구
+     * 블록 뒤에 텍스트 블록을 더 보낼 수 있다). 그 본문은 버려야 한다.
+     */
+    @Test
+    fun `도구 호출이 먼저면 뒤따르는 본문은 onChunk 에 절대 닿지 않는다`() {
+        val seen = mutableListOf<String>()
+
+        val step = converseOver(
+            listOf(
+                responseWithToolCall("call-1", "congestion", """{"attractionId":11}"""),
+                textChunk("이 본문은 새면 안 된다"),
+            ),
+            onChunk = { seen += it },
+        )
+
+        assertThat(step).isInstanceOf(ToolRequested::class.java)
+        assertThat((step as ToolRequested).calls.map { it.name }).containsExactly("congestion")
+        assertThat(seen).describedAs("ToolRequested 면 onChunk 는 한 번도 불리지 않는다").isEmpty()
+    }
+
+    /**
+     * 혼합 턴 규칙. 본문이 이미 나갔으면 그 턴은 최종 답이고, 같은 턴의 도구 호출은
+     * 무시한다 — 반대로 하면 사용자가 읽고 있던 문장을 되감아 지우는 셈이 된다.
+     */
+    @Test
+    fun `본문이 먼저 나갔으면 뒤따르는 도구 호출은 무시되고 본문이 유지된다`() {
+        val seen = mutableListOf<String>()
+
+        val step = converseOver(
+            listOf(
+                textChunk("이미 나간 본문"),
+                responseWithToolCall("call-1", "congestion", """{"attractionId":11}"""),
+            ),
+            onChunk = { seen += it },
+        )
+
+        assertThat(step).isInstanceOf(Spoke::class.java)
+        assertThat(step).isNotInstanceOf(ToolRequested::class.java)
+        assertThat((step as Spoke).end).isInstanceOf(StreamCompleted::class.java)
+        assertThat(seen).containsExactly("이미 나간 본문")
+    }
+
+    /**
+     * 배선 오류는 요청이 나가기도 전에 터진다. 포트 계약상 예외를 밖으로 던지지는
+     * 않지만(모든 호출자가 다른 프로바이더는 내지 않는 예외를 처리하게 만들 수 없다),
+     * 그 정체는 `StreamFailed` 의 reason 에 남아야 한다 — 로그는 이 경우만 ERROR 다.
+     */
+    @Test
+    fun `프로바이더 옵션이 도구를 실을 수 없으면 정체를 남긴 채 StreamFailed 로 닫힌다`() {
+        val provider = SpringAiExplanationProvider("fake", FlowingChatModel(listOf(textChunk("본문"))))
+
+        val step = provider.converse(
+            systemText = "sys",
+            turns = listOf(UserTurn("질문")),
+            // FlowingChatModel 은 ChatModel 기본 구현을 쓰므로 options 가
+            // ToolCallingChatOptions 가 아니다 — 도구를 실을 수 없는 배선이다.
+            tools = listOf(ToolSpec("congestion", "혼잡도", "{}")),
+            onChunk = {},
+        )
+
+        assertThat(step).isInstanceOf(Spoke::class.java)
+        val end = (step as Spoke).end
+        assertThat(end).isInstanceOf(StreamFailed::class.java)
+        assertThat((end as StreamFailed).reason).contains("IllegalStateException")
     }
 
     /** 증거 묶음은 그대로 system 블록에 실린다 — 도구가 붙어도 아무것도 덧붙지 않는다. */

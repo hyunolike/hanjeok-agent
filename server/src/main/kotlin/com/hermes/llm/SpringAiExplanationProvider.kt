@@ -166,7 +166,21 @@ class SpringAiExplanationProvider(
                 else -> Spoke(StreamCompleted(last?.let { usageOf(it) } ?: ProviderUsage(0, 0, 0, 0)))
             }
         } catch (e: Exception) {
-            log.warn("$name converse failed", e)
+            // 포트 계약대로 언제나 AgentStep 을 돌려준다 — 다른 프로바이더가 절대
+            // 던지지 않는 예외를 호출자마다 처리하게 만들 수는 없다. 대신 **로그에서는
+            // 갈라 놓는다.** `withToolCallbacks` 의 IllegalStateException 과 프로바이더
+            // 옵션 캐스팅의 ClassCastException 은 "요청이 한 번도 나가지 않았다" 는
+            // 뜻이고, 이 부류는 영구적 배선 오류라 재시도가 영원히 같은 결과를 낸다.
+            // 소켓 타임아웃과 같은 WARN 에 묻히면 운영에서 구분할 방법이 없다.
+            if (e is IllegalStateException || e is ClassCastException) {
+                log.error(
+                    "$name converse could not assemble the request — wiring/misconfiguration fault, " +
+                        "not a transient failure: no request was sent and retrying will not help",
+                    e,
+                )
+            } else {
+                log.warn("$name converse failed", e)
+            }
             Spoke(StreamFailed("${e::class.simpleName}: ${e.message}"))
         }
     }
