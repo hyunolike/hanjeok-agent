@@ -57,6 +57,34 @@ Spring AI 없이 돌리기 위해 있는데, 도구 정의가 프레임워크 �
 **빠른 경로가 구조적으로 보장된다.** 모델이 도구를 안 부르면 루프는 0바퀴 돌고 지금과
 같은 1회 호출 경로가 된다.
 
+#### 이것이 가능하다는 근거 (바이트코드로 확인, 2026-09-24)
+
+Spring AI 2.0.1 에서 도구를 **정의해 보내는 일** 과 **실행하는 일** 이 서로 다른 계층에
+있다. 설치된 jar 를 직접 뜯어 확인했다.
+
+| 클래스 | `resolveToolDefinitions` | `executeToolCalls` |
+| --- | --- | --- |
+| `OpenAiChatModel` | 부른다 | **안 부른다** |
+| `AnthropicChatModel` | 부른다 | **안 부른다** |
+| `ToolCallingAdvisor` (spring-ai-client-chat) | — | 부른다 |
+
+즉 **`ChatModel` 을 직접 부르면 도구 호출이 실행되지 않은 채로 `ChatResponse` 에 담겨
+돌아온다.** 우리가 원하는 것이 정확히 이것이다.
+
+주의할 점은 `ChatClient` 쪽이다. `DefaultChatClientBuilder` 는 생성자에서
+`ToolCallingAdvisor.builder()` 를 `Objects.requireNonNullElse` 로 **항상** 하나 만들어
+요청 스펙에 넘긴다. 그래서 `ChatClient.create(model)` 로 만든 클라이언트는 도구 실행
+어드바이저를 달고 있다. **`converse()` 는 `ChatClient` 를 우회하고 `ChatModel` 을 직접
+부른다.**
+
+도구 정의를 실어 보내려면 `ToolCallingChatOptions` 에 `ToolCallback` 을 넣어야 한다
+(`resolveToolDefinitions` 가 콜백에서 정의를 뽑는다). 콜백의 `call()` 은 **우리 경로에서
+절대 불리지 않아야 하므로 즉시 예외를 던지게 둔다** — 실행 주체가 `AgentLoop` 라는 것을
+코드가 스스로 주장하게 만들고, 그 주장이 깨지면 조용히 넘어가는 대신 터진다.
+
+`explain()` 과 `stream()` 은 지금처럼 `ChatClient` 를 계속 쓴다. 기존 경로의 요청
+바이트를 건드리지 않기 위해서다.
+
 ### 포트 확장
 
 기존 `stream()` 이 쓴 수법을 그대로 쓴다 — 기본 구현을 주어 테스트 페이크 7개를
