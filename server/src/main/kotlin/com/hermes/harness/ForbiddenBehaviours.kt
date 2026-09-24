@@ -1,5 +1,6 @@
 package com.hermes.harness
 
+import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.hermes.context.Bundle
 import com.hermes.llm.Explanation
@@ -109,15 +110,31 @@ object ForbiddenBehaviours {
     fun unavailableReasonIndicatesUncitedClaim(reason: String): Boolean =
         reason == "no citations" || reason.startsWith("citations not in bundle:")
 
+    /**
+     * facts 트리 어디에 있든 `name` 을 전부 모은다 — `items`/`alternatives` 뿐 아니라
+     * `lookups`/`toolLookups` 아래 `result` 에 들어온 **도구가 가져온 사실**까지.
+     *
+     * 초기 facts 만 보면 도구가 조회한 장소가 전부 INVENTED_PLACE 로 잡히고, 도구를
+     * 켜는 것만으로 위반율이 치솟는다 — 그 상승은 모델에 대해 아무것도 말하지 않는다.
+     *
+     * 트리 전체를 훑는 대가는 안다: 이름과 무관한 필드에 우연히 `name` 으로 들어 있는
+     * 문자열이 있으면 진짜로 지어낸 이름 하나를 놓칠 수 있다. 그 거래를 받아들이는
+     * 이유는 두 실패의 값이 다르기 때문이다. 오탐은 표 전체를 못 쓰게 만들고(도구를
+     * 켰다는 이유만으로 숫자가 움직이면 아무도 그 숫자를 믿지 않는다), 놓친 검출
+     * 하나는 사람이 본문을 읽는 기존 절차가 여전히 잡는다.
+     *
+     * **순서와 목적지 검사는 이것을 쓰지 않는다.** 그 둘은 `/items` 만 본다 — 도구
+     * 조회 하나로 "이 코스가 선언한 순서"가 달라 보이면 안 된다.
+     */
+    private fun knownNames(facts: JsonNode): Set<String> =
+        facts.findValues("name").mapNotNull { it.asText(null) }.toSet()
+
     fun check(explanation: Explanation, factsJson: String, bundle: Bundle): List<Violation> {
         val text = explanation.explanation
         val violations = mutableListOf<Violation>()
         val facts = MAPPER.readTree(factsJson)
 
-        val knownNames = buildSet {
-            facts.at("/items").forEach { add(it.at("/name").asText()) }
-            facts.at("/alternatives").forEach { add(it.at("/name").asText()) }
-        }
+        val knownNames = knownNames(facts)
 
         // 지어낸 관광지. 한국어 고유명사를 형태소 없이 자르면 오탐이 나므로,
         // 2자 이상 한글 덩어리 중 아는 이름의 부분문자열이 아닌 것만 본다.
