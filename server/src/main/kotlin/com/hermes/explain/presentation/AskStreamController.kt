@@ -90,12 +90,25 @@ class AskStreamController(
                 "done",
                 mapOf("generatedAt" to Instant.now().toString(), "model" to model),
             )
+            // 프레임은 코드만 싣는다. 그래서 **원인이 관찰되는 곳은 이 로그뿐이다** —
+            // 한적이 죽은 것과 모델이 거절한 것과 인용이 틀린 것을 운영자가 사유
+            // 문자열로 짐작하지 않게 타입을 그대로 찍는다.
             is UnavailableEvent -> {
-                log.warn("answer unavailable for course {}: {}", request.courseUuid, event.reason)
+                log.warn(
+                    "answer unavailable for course {} ({}): {}",
+                    request.courseUuid,
+                    event.cause,
+                    event.reason,
+                )
                 send(emitter, "unavailable", UNAVAILABLE)
             }
             is AbortedEvent -> {
-                log.warn("answer aborted for course {}: {}", request.courseUuid, event.reason)
+                log.warn(
+                    "answer aborted for course {} ({}): {}",
+                    request.courseUuid,
+                    event.cause,
+                    event.reason,
+                )
                 send(emitter, "aborted", ABORTED)
             }
         }

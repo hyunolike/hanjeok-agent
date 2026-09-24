@@ -225,4 +225,39 @@ class FactsSourceTest {
 
         assertThat(facts.courseUuid).isEqualTo("abc")
     }
+
+    /** targetDate 가 ISO 가 아닌 코스. 사실 조립은 이 필드를 문자열로만 읽는다. */
+    private inner class OddDateClient : FakeClient() {
+        override fun course(courseUuid: String): JsonNode =
+            mapper.readTree(courseJson.replace("\"2026-08-15\"", "\"2026/08/15\""))
+    }
+
+    @Test
+    fun `targetDate 가 ISO 가 아니어도 fetch 는 사실을 그대로 돌려준다`() {
+        // 설명·이어묻기 비스트리밍·facts 세 경로가 fetch 를 탄다. 경계 계산을
+        // fetch 안에 넣으면 도구와 아무 상관 없는 이 코스들이 500 으로 죽는다 —
+        // FactsProjection 은 targetDate 를 asText() 로만 읽으므로 예전에는 통했다.
+        val facts = FactsSource(OddDateClient(), 15, executor).fetch("abc")
+
+        assertThat(facts.courseUuid).isEqualTo("abc")
+        assertThat(facts.json).contains("2026/08/15")
+    }
+
+    @Test
+    fun `targetDate 가 ISO 가 아니면 fetchWithBounds 는 HanjeokUnavailableException 이다`() {
+        // 스트리밍 경로는 경계가 있어야 도구를 쓸 수 있다. 다만 파싱 예외가 그대로
+        // 새면 위층이 아는 유일한 실패 타입이 아니므로, 안전한 unavailable 프레임
+        // 대신 처리되지 않은 500 이 된다.
+        assertThatThrownBy { FactsSource(OddDateClient(), 15, executor).fetchWithBounds("abc") }
+            .isInstanceOf(HanjeokUnavailableException::class.java)
+    }
+
+    @Test
+    fun `fetchWithBounds 는 코스가 정한 관광지와 날짜를 경계로 낸다`() {
+        val fetched = FactsSource(FakeClient(), 15, executor).fetchWithBounds("abc")
+
+        assertThat(fetched.bounds.attractionIds).containsExactlyInAnyOrder(1001L, 1003L)
+        assertThat(fetched.bounds.targetDate).isEqualTo(java.time.LocalDate.of(2026, 8, 15))
+        assertThat(fetched.facts.courseUuid).isEqualTo("abc")
+    }
 }

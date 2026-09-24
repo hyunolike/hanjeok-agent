@@ -5,6 +5,7 @@ import com.hermes.explain.BackendFacts
 import com.hermes.explain.CourseBounds
 import com.hermes.explain.FactsProjection
 import java.time.LocalDate
+import java.time.format.DateTimeParseException
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionException
 import java.util.concurrent.ExecutorService
@@ -33,17 +34,35 @@ class FactsSource(
 ) {
 
     /**
-     * 사실만 필요한 쪽(설명 경로)이 쓴다. 도구 경계는 이어 묻기에서만 필요하다.
+     * 사실만 필요한 쪽(설명 경로)이 쓴다.
+     *
+     * **경계를 계산하지 않는다.** 경계는 `targetDate` 를 `LocalDate` 로 파싱하는데,
+     * 사실 조립(`FactsProjection`)은 그 필드를 문자열로만 읽는다 — 즉 ISO 가 아닌
+     * 날짜로도 설명은 멀쩡히 나간다. 여기서 파싱하면 그 코스들이 도구와 아무 상관
+     * 없이 500 으로 죽는다. `/agent/ask`, `/agent/explain`, `/agent/facts` 셋이
+     * 이 함수를 탄다.
      */
-    fun fetch(courseUuid: String): BackendFacts = fetchWithBounds(courseUuid).facts
+    fun fetch(courseUuid: String): BackendFacts = gather(courseUuid).facts
 
     /**
-     * 사실과 함께 이 코스의 도구 경계를 돌려준다.
+     * 사실과 함께 이 코스의 도구 경계를 돌려준다. 이어 묻기의 스트리밍 경로만 쓴다.
      *
      * 경계를 따로 뽑는 함수를 두지 않는 이유는 코스 JSON 을 두 번 파싱하지 않기
      * 위해서다 — 한적을 한 번 더 부르는 것은 왕복 하나를 그냥 버리는 것이다.
+     *
+     * 날짜가 ISO 가 아니면 [HanjeokUnavailableException] 이다. 위층이 아는 실패
+     * 타입은 그것 하나뿐이라, 파싱 예외가 그대로 새면 안전한 unavailable 프레임
+     * 대신 처리되지 않은 500 이 된다.
      */
     fun fetchWithBounds(courseUuid: String): FetchedFacts {
+        val gathered = gather(courseUuid)
+        return FetchedFacts(facts = gathered.facts, bounds = boundsFor(gathered.course))
+    }
+
+    /** 코스 원문과 사실을 함께 들고 있는 중간 결과. 경계는 필요한 쪽만 뽑는다. */
+    private class Gathered(val course: JsonNode, val facts: BackendFacts)
+
+    private fun gather(courseUuid: String): Gathered {
         val course = client.course(courseUuid)
 
         val items = course.get("items")
@@ -88,10 +107,7 @@ class FactsSource(
             throw HanjeokUnavailableException("hanjeok response did not carry the expected fields: ${e.message}", e)
         }
 
-        return FetchedFacts(
-            facts = BackendFacts(courseUuid = courseUuid, json = facts.toString()),
-            bounds = boundsFor(course),
-        )
+        return Gathered(course, BackendFacts(courseUuid = courseUuid, json = facts.toString()))
     }
 
     /**
@@ -100,6 +116,10 @@ class FactsSource(
      *
      * 범위는 코스가 정한다 — 모델이 정하지 않는다. `CourseTools.parse` 가 이 집합
      * 밖의 인자를 거부하므로, 여기서 빠진 관광지는 도구로 조회되지 않는다.
+     *
+     * 파싱 실패를 여기서 [HanjeokUnavailableException] 으로 바꾼다. 부르는 쪽마다
+     * 감싸게 하면 한 곳이 빠졌을 때 그 경로만 500 이 되고, 그 차이는 테스트가
+     * 아니라 운영에서 드러난다.
      */
     fun boundsFor(course: JsonNode): CourseBounds {
         val ids = course.path("items")
@@ -107,7 +127,12 @@ class FactsSource(
             .toSet()
         val date = course.path("targetDate").asText(null)
             ?: throw HanjeokUnavailableException("course has no targetDate")
-        return CourseBounds(attractionIds = ids, targetDate = LocalDate.parse(date))
+        val targetDate = try {
+            LocalDate.parse(date)
+        } catch (e: DateTimeParseException) {
+            throw HanjeokUnavailableException("course targetDate is not an ISO date", e)
+        }
+        return CourseBounds(attractionIds = ids, targetDate = targetDate)
     }
 
     private fun join(future: CompletableFuture<JsonNode>, what: String): JsonNode = try {

@@ -42,8 +42,10 @@ class AgentLoop(
     private val validator: CitationValidator,
     private val toolRunner: ToolRunner,
     private val clock: Clock,
-    private val maxToolRounds: Int = 2,
-    private val deadlineMs: Long = 60_000L,
+    // 예산은 읽을 수 있다. 배선이 이것을 키워도 테스트가 아니라 요금과 멈춘
+    // 스트림으로만 드러나므로, 운영 빈의 값을 고정하는 테스트가 읽어야 한다.
+    val maxToolRounds: Int = 2,
+    val deadlineMs: Long = 60_000L,
 ) {
 
     fun run(

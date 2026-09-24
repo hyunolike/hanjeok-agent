@@ -1,5 +1,7 @@
 package com.hermes.explain.presentation
 
+import ch.qos.logback.classic.spi.ILoggingEvent
+import ch.qos.logback.core.read.ListAppender
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.hermes.context.BundleLoader
@@ -8,6 +10,7 @@ import com.hermes.context.PromptAssembler
 import com.hermes.explain.AgentLoop
 import com.hermes.explain.CourseQuestionService
 import com.hermes.explain.CourseTools
+import com.hermes.explain.FailureCause
 import com.hermes.explain.ToolArgs
 import com.hermes.explain.ToolRunner
 import com.hermes.facts.FactsSource
@@ -27,6 +30,7 @@ import com.hermes.llm.ToolSpec
 import com.hermes.llm.Turn
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.asyncDispatch
@@ -234,8 +238,29 @@ class AskStreamControllerTest {
         assertThat(body).doesNotContain("INTERNAL DETAIL THAT MUST NOT LEAK")
     }
 
+    /**
+     * 컨트롤러가 남긴 로그를 이 블록 동안만 붙잡는다.
+     *
+     * 실패 프레임은 코드만 싣는 계약이므로 [FailureCause] 는 SSE 본문에 절대 나오지
+     * 않는다. 그래서 원인이 관찰되는 곳은 로그 한 줄뿐이고, 그 줄을 보지 않으면
+     * FACTS 를 STREAM_FAILED 로 바꿔도 아무 테스트가 울지 않는다.
+     */
+    private fun <T> withControllerLogs(block: () -> T): Pair<T, List<String>> {
+        val logger = LoggerFactory.getLogger(AskStreamController::class.java) as ch.qos.logback.classic.Logger
+        val appender = ListAppender<ILoggingEvent>()
+        appender.start()
+        logger.addAppender(appender)
+        try {
+            val result = block()
+            return result to appender.list.map { it.formattedMessage }
+        } finally {
+            logger.detachAppender(appender)
+            appender.stop()
+        }
+    }
+
     @Test
-    fun `사실을 못 받으면 불투명한 unavailable 만 나가고 사유는 새지 않는다`() {
+    fun `사실을 못 받으면 불투명한 unavailable 만 나가고 사유는 FACTS 로 기록된다`() {
         val broken = object : FakeClient() {
             override fun course(courseUuid: String): JsonNode =
                 throw HanjeokUnavailableException("SENTINEL COURSE 404 DETAIL")
@@ -255,18 +280,26 @@ class AskStreamControllerTest {
             .setControllerAdvice(ApiErrorHandler())
             .build()
 
-        val started = mvc
-            .perform(
-                post("/agent/ask/stream")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content("""{"courseUuid":"abc","question":"왜 이 순서예요?"}"""),
-            )
-            .andExpect(request().asyncStarted())
-            .andReturn()
-        val body = mvc.perform(asyncDispatch(started)).andReturn().response.getContentAsString(Charsets.UTF_8)
+        val (body, logs) = withControllerLogs {
+            val started = mvc
+                .perform(
+                    post("/agent/ask/stream")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""{"courseUuid":"abc","question":"왜 이 순서예요?"}"""),
+                )
+                .andExpect(request().asyncStarted())
+                .andReturn()
+            mvc.perform(asyncDispatch(started)).andReturn().response.getContentAsString(Charsets.UTF_8)
+        }
 
         assertThat(body).contains("event:unavailable").contains("EXPLANATION_UNAVAILABLE")
         assertThat(body).doesNotContain("SENTINEL COURSE 404 DETAIL")
+        // 사실 조회 실패는 FACTS 다 — 이 경로가 그 원인의 유일한 생산자이고,
+        // 프레임이 불투명한 만큼 로그가 유일한 관찰 지점이다.
+        assertThat(logs).anyMatch { it.contains(FailureCause.FACTS.name) }
+        assertThat(logs).noneMatch { it.contains(FailureCause.STREAM_FAILED.name) }
+        // 사유는 브라우저에는 안 가지만 로그에는 남아야 진단이 된다.
+        assertThat(logs).anyMatch { it.contains("SENTINEL COURSE 404 DETAIL") }
     }
 
     @Test
