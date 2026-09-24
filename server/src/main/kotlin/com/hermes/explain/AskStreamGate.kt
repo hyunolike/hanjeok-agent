@@ -16,6 +16,14 @@ data class DeltaEvent(val text: String) : AskStreamEvent
 data object DoneEvent : AskStreamEvent
 
 /**
+ * 도구를 실행하기 직전. **게이트가 내지 않는다 — [AgentLoop] 가 낸다.**
+ *
+ * 인자가 거부된 호출에는 내지 않는다. 조회한다고 말해 놓고 조회하지 않으면 화면이
+ * 거짓말을 한다.
+ */
+data class LookingEvent(val what: String) : AskStreamEvent
+
+/**
  * 왜 실패했는가. 수리 루프가 "인용이 틀려서 실패했는가" 를 알아야 하는데, 그 판별을
  * 사유 문자열로 하면 문구를 다듬는 순간 조용히 깨진다. 이 저장소는 하네스가 문자열로
  * 분류하다 한 번 데인 적이 있다.

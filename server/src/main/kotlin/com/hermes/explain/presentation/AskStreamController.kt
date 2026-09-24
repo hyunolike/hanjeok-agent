@@ -6,6 +6,7 @@ import com.hermes.explain.CitationsEvent
 import com.hermes.explain.CourseQuestionService
 import com.hermes.explain.DeltaEvent
 import com.hermes.explain.DoneEvent
+import com.hermes.explain.LookingEvent
 import com.hermes.explain.QuestionTurn
 import com.hermes.explain.UnavailableEvent
 import com.hermes.facts.FactsSource
@@ -70,6 +71,9 @@ class AskStreamController(
             when (event) {
                 is CitationsEvent -> send(emitter, "citations", mapOf("citations" to event.citations))
                 is DeltaEvent -> send(emitter, "delta", mapOf("text" to event.text))
+                // 도구 이름은 CourseTools 가 아는 둘 중 하나다 — 모델이 부른 이름이
+                // 그대로 나가는 것이 아니라, 인자 검증을 통과한 호출만 여기 온다.
+                is LookingEvent -> send(emitter, "looking", mapOf("what" to event.what))
                 is DoneEvent -> send(
                     emitter,
                     "done",
