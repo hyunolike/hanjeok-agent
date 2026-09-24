@@ -14,12 +14,15 @@ import com.hermes.llm.StreamEnd
 import com.hermes.llm.StreamFailed
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.time.Clock
+import java.time.LocalDate
 
 class CourseQuestionStreamTest {
 
     private val bundle = BundleLoader.load()
     private val known = bundle.paths().first()
     private val facts = BackendFacts("course-1", """{"courseUuid":"course-1"}""")
+    private val bounds = CourseBounds(setOf(11L), LocalDate.of(2026, 10, 1))
 
     /** 두 경로가 받은 텍스트를 기록하고, stream 은 주어진 조각을 흘린다. */
     private class Recorder(
@@ -42,19 +45,39 @@ class CourseQuestionStreamTest {
         }
     }
 
-    private fun service(provider: ExplanationProvider) =
-        CourseQuestionService(PromptAssembler(bundle), CitationValidator(bundle), provider)
+    private fun service(provider: ExplanationProvider): CourseQuestionService {
+        val validator = CitationValidator(bundle)
+        val loop = AgentLoop(
+            provider,
+            validator,
+            ToolRunner { error("이 테스트의 프로바이더는 도구를 부르지 않는다") },
+            Clock.systemUTC(),
+        )
+        return CourseQuestionService(PromptAssembler(bundle), validator, provider, loop)
+    }
 
     @Test
-    fun `스트리밍과 비스트리밍이 같은 system 과 user 텍스트를 조립한다`() {
+    fun `스트리밍과 비스트리밍이 같은 system 을 쓰고 도구 지침은 user 턴에만 붙는다`() {
         val recorder = Recorder(listOf("""{"citations":["$known"],"explanation":"x"}"""))
         val history = listOf(QuestionTurn("앞 질문", "앞 답"))
 
         service(recorder).ask(facts, "질문", history)
-        service(recorder).askStream(facts, "질문", history) {}
+        service(recorder).askStream(facts, bounds, "질문", history) {}
 
-        // 이 동일성이 캐시가 유지되고 하네스 숫자가 스트리밍에도 유효하다는 근거다.
-        assertThat(recorder.streamed.single()).isEqualTo(recorder.explained.single())
+        val (askSystem, askUser) = recorder.explained.single()
+        val (streamSystem, streamUser) = recorder.streamed.single()
+
+        // system 이 바이트까지 같아야 1시간 캐시가 유지되고, 하네스가 비스트리밍
+        // 경로로 잰 숫자가 스트리밍에도 유효하다. 도구 지침을 system 으로 옮기면
+        // 응답은 멀쩡하고 요금만 오른다 — 그 드리프트를 잡는 자리가 여기다.
+        assertThat(streamSystem.toByteArray()).isEqualTo(askSystem.toByteArray())
+        assertThat(streamSystem).isEqualTo(bundle.raw)
+        assertThat(streamSystem).doesNotContain("## 도구")
+
+        // user 턴은 같은 조립에 도구 지침만 뒤에 붙은 것이다.
+        assertThat(streamUser).startsWith(askUser)
+        assertThat(streamUser).contains("## 도구")
+        assertThat(streamUser.indexOf("질문")).isLessThan(streamUser.indexOf("## 도구"))
     }
 
     @Test
@@ -62,7 +85,7 @@ class CourseQuestionStreamTest {
         val recorder = Recorder(listOf("""{"citations":["$known"],""", """"explanation":"가나"}"""))
         val out = mutableListOf<AskStreamEvent>()
 
-        service(recorder).askStream(facts, "질문", emptyList()) { out += it }
+        service(recorder).askStream(facts, bounds, "질문", emptyList()) { out += it }
 
         assertThat(out.first()).isEqualTo(CitationsEvent(listOf(known)))
         assertThat(out.filterIsInstance<DeltaEvent>().joinToString("") { it.text }).isEqualTo("가나")
@@ -74,7 +97,7 @@ class CourseQuestionStreamTest {
         val recorder = Recorder(listOf("""{"citations":["not/in/bundle.md"],"explanation":"새면 안 됨"}"""))
         val out = mutableListOf<AskStreamEvent>()
 
-        service(recorder).askStream(facts, "질문", emptyList()) { out += it }
+        service(recorder).askStream(facts, bounds, "질문", emptyList()) { out += it }
 
         assertThat(out.filterIsInstance<DeltaEvent>()).isEmpty()
         assertThat(out.single()).isInstanceOf(UnavailableEvent::class.java)
@@ -88,7 +111,7 @@ class CourseQuestionStreamTest {
         )
         val out = mutableListOf<AskStreamEvent>()
 
-        service(recorder).askStream(facts, "질문", emptyList()) { out += it }
+        service(recorder).askStream(facts, bounds, "질문", emptyList()) { out += it }
 
         assertThat(out.last()).isEqualTo(AbortedEvent("IOException: reset", FailureCause.STREAM_FAILED))
     }
@@ -101,7 +124,7 @@ class CourseQuestionStreamTest {
         val recorder = Recorder(listOf("""{"citations":["$known"],"explanation":"미"""))
         val out = mutableListOf<AskStreamEvent>()
 
-        service(recorder).askStream(facts, "질문", emptyList()) { out += it }
+        service(recorder).askStream(facts, bounds, "질문", emptyList()) { out += it }
 
         assertThat(out.last()).isEqualTo(AbortedEvent("truncated response", FailureCause.TRUNCATED))
         assertThat(out).noneMatch { it == DoneEvent }
@@ -120,7 +143,7 @@ class CourseQuestionStreamTest {
 
         val askOutcome = service(refusing).ask(facts, "질문", emptyList())
         val out = mutableListOf<AskStreamEvent>()
-        service(refusing).askStream(facts, "질문", emptyList()) { out += it }
+        service(refusing).askStream(facts, bounds, "질문", emptyList()) { out += it }
 
         val streamEvent = out.single() as UnavailableEvent
         assertThat((askOutcome as Unavailable).reason).isEqualTo(streamEvent.reason)
@@ -137,7 +160,7 @@ class CourseQuestionStreamTest {
         }
         val out = mutableListOf<AskStreamEvent>()
 
-        service(plain).askStream(facts, "질문", emptyList()) { out += it }
+        service(plain).askStream(facts, bounds, "질문", emptyList()) { out += it }
 
         assertThat(out).containsExactly(CitationsEvent(listOf(known)), DeltaEvent("본문"), DoneEvent)
     }

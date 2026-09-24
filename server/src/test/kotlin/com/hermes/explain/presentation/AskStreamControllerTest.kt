@@ -5,16 +5,26 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.hermes.context.BundleLoader
 import com.hermes.context.CitationValidator
 import com.hermes.context.PromptAssembler
+import com.hermes.explain.AgentLoop
 import com.hermes.explain.CourseQuestionService
+import com.hermes.explain.CourseTools
+import com.hermes.explain.ToolArgs
+import com.hermes.explain.ToolRunner
 import com.hermes.facts.FactsSource
 import com.hermes.facts.HanjeokClient
 import com.hermes.facts.HanjeokUnavailableException
+import com.hermes.llm.AgentStep
 import com.hermes.llm.ExplanationProvider
 import com.hermes.llm.ProviderResult
 import com.hermes.llm.ProviderUsage
+import com.hermes.llm.Spoke
 import com.hermes.llm.StreamCompleted
 import com.hermes.llm.StreamEnd
 import com.hermes.llm.StreamFailed
+import com.hermes.llm.ToolCall
+import com.hermes.llm.ToolRequested
+import com.hermes.llm.ToolSpec
+import com.hermes.llm.Turn
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.http.MediaType
@@ -24,7 +34,16 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.request
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import java.time.Clock
 import java.util.concurrent.Executors
+
+/**
+ * FakeClient 코스(관광지 1001, 2026-09-12)가 허락하는 도구 인자.
+ *
+ * 경계 밖이면 `CourseTools.parse` 가 거부하고, 거부된 호출에는 `looking` 이
+ * 나가지 않는다 — 그러면 이 파일의 테스트가 "도구를 안 부른 것"과 구별되지 않는다.
+ */
+private const val IN_BOUNDS_ARGS = """{"attractionId":1001,"date":"2026-09-13"}"""
 
 /**
  * AskControllerTest 와 같이 진짜 객체를 조립한다. 가짜는 한적 클라이언트와 프로바이더뿐이다.
@@ -70,12 +89,71 @@ class AskStreamControllerTest {
         }
     }
 
-    private fun mvc(provider: ExplanationProvider): MockMvc =
+    /**
+     * 첫 호출에 도구를 요청하고, 그 뒤로는 주어진 조각을 흘린다.
+     *
+     * `stream` 을 막아 둔다 — 이어 묻기가 루프를 타지 않고 예전 한 방 경로로 새면
+     * 도구가 통째로 사라지므로, 그 회귀를 여기서 터뜨린다.
+     */
+    private class ToolThenAnswerProvider(
+        private val toolName: String,
+        private val argumentsJson: String,
+        private val chunks: List<String>,
+    ) : ExplanationProvider {
+        override val name = "tool-then-answer"
+        var calls = 0
+
+        override fun explain(systemText: String, userText: String): ProviderResult =
+            error("스트리밍 경로에서 explain 이 불리면 안 된다")
+
+        override fun stream(systemText: String, userText: String, onChunk: (String) -> Unit): StreamEnd =
+            error("이어 묻기는 converse 를 타야 한다 — stream 으로 새면 도구가 사라진다")
+
+        override fun converse(
+            systemText: String,
+            turns: List<Turn>,
+            tools: List<ToolSpec>,
+            onChunk: (String) -> Unit,
+        ): AgentStep {
+            if (calls++ == 0) {
+                return ToolRequested(
+                    listOf(ToolCall("call-1", toolName, argumentsJson)),
+                    ProviderUsage(0, 0, 0, 0),
+                )
+            }
+            chunks.forEach(onChunk)
+            return Spoke(StreamCompleted(ProviderUsage(0, 0, 0, 0)))
+        }
+    }
+
+    /** 도구가 실제로 실행됐는지 센다. 결과 JSON 은 한적 혼잡도 응답 모양이면 족하다. */
+    private class CountingRunner : ToolRunner {
+        var calls = 0
+        override fun run(args: ToolArgs): String {
+            calls++
+            return """{"diagnosis":{"grade":"NORMAL"}}"""
+        }
+    }
+
+    private fun questionService(provider: ExplanationProvider, runner: ToolRunner): CourseQuestionService {
+        val validator = CitationValidator(bundle)
+        return CourseQuestionService(
+            PromptAssembler(bundle),
+            validator,
+            provider,
+            AgentLoop(provider, validator, runner, Clock.systemUTC()),
+        )
+    }
+
+    private fun mvc(
+        provider: ExplanationProvider,
+        runner: ToolRunner = ToolRunner { error("이 테스트는 도구를 부르지 않는다") },
+    ): MockMvc =
         MockMvcBuilders
             .standaloneSetup(
                 AskStreamController(
                     FactsSource(FakeClient(), 15, factsExecutor),
-                    CourseQuestionService(PromptAssembler(bundle), CitationValidator(bundle), provider),
+                    questionService(provider, runner),
                     AskStreamExecutor(Executors.newSingleThreadExecutor()),
                     "gpt-4o",
                 ),
@@ -84,8 +162,11 @@ class AskStreamControllerTest {
             .build()
 
     /** 스트림을 끝까지 받아 본문을 돌려준다. SSE 는 UTF-8 로 읽어야 한글이 안 깨진다. */
-    private fun streamed(provider: ExplanationProvider): String {
-        val mvc = mvc(provider)
+    private fun streamed(
+        provider: ExplanationProvider,
+        runner: ToolRunner = ToolRunner { error("이 테스트는 도구를 부르지 않는다") },
+    ): String {
+        val mvc = mvc(provider, runner)
         val started = mvc
             .perform(
                 post("/agent/ask/stream")
@@ -96,6 +177,26 @@ class AskStreamControllerTest {
             .andReturn()
         return mvc.perform(asyncDispatch(started)).andReturn().response.getContentAsString(Charsets.UTF_8)
     }
+
+    /** SSE 프레임 하나씩으로 자른다. 프레임은 빈 줄로 나뉘고 `event:` 로 시작한다. */
+    private fun sseFrom(provider: ExplanationProvider, runner: ToolRunner = CountingRunner()): List<String> =
+        streamed(provider, runner)
+            .split("\n\n")
+            .map { it.trim() }
+            .filter { it.isNotEmpty() }
+
+    /** 코스에 실제로 있는 관광지와 코스 날짜 근처 — 경계를 통과해야 도구가 실행된다. */
+    private fun providerRequestingTool(name: String, args: String) = ToolThenAnswerProvider(
+        name,
+        args,
+        listOf("""{"citations":["$known"],"explanation":"답"}"""),
+    )
+
+    private fun providerRequestingToolThenInvalidCitations() = ToolThenAnswerProvider(
+        CourseTools.CONGESTION,
+        IN_BOUNDS_ARGS,
+        listOf("""{"citations":["not/in/bundle.md"],"explanation":"새면 안 되는 문장"}"""),
+    )
 
     @Test
     fun `인용이 유효하면 citations 뒤에 delta 와 done 이 나간다`() {
@@ -143,10 +244,9 @@ class AskStreamControllerTest {
             .standaloneSetup(
                 AskStreamController(
                     FactsSource(broken, 15, factsExecutor),
-                    CourseQuestionService(
-                        PromptAssembler(bundle),
-                        CitationValidator(bundle),
+                    questionService(
                         StreamingProvider(emptyList()),
+                        ToolRunner { error("사실을 못 받으면 모델도 도구도 부르지 않는다") },
                     ),
                     AskStreamExecutor(Executors.newSingleThreadExecutor()),
                     "gpt-4o",
@@ -178,6 +278,41 @@ class AskStreamControllerTest {
                     .content("""{"courseUuid":"abc","question":"   "}"""),
             )
             .andExpect(status().isBadRequest)
+    }
+
+    @Test
+    fun `looking 이벤트는 도구 이름만 싣는다`() {
+        // 인자에는 질문에서 유도된 값이 섞인다. 화면에 필요한 것은 "무엇을 조회
+        // 중인가" 뿐이므로 프레임에는 도구 이름 말고 아무것도 싣지 않는다.
+        val provider = providerRequestingTool(CourseTools.CONGESTION, IN_BOUNDS_ARGS)
+        val runner = CountingRunner()
+
+        val events = sseFrom(provider = provider, runner = runner)
+
+        val looking = events.single { it.startsWith("event:looking") }
+        assertThat(looking).contains(CourseTools.CONGESTION)
+        assertThat(looking).doesNotContain("attractionId")
+        assertThat(looking).doesNotContain("1001")
+        assertThat(looking).doesNotContain("2026-09-13")
+        // 도구를 실제로 실행했고, 예산 안이다 — 도구 라운드 1회에 모델 호출 2회.
+        assertThat(runner.calls).isEqualTo(1)
+        assertThat(provider.calls).isEqualTo(2)
+        assertThat(events.last()).startsWith("event:done")
+    }
+
+    @Test
+    fun `looking 이 온 뒤에도 unavailable 앞의 delta 는 0개다`() {
+        // looking 은 delta 가 아니다. 도구 프레임이 섞여도 "본문을 한 글자도 보내기
+        // 전에 실패한다" 는 불변식은 그대로여야 한다.
+        val events = sseFrom(provider = providerRequestingToolThenInvalidCitations())
+
+        val deltaIndexes = events.withIndex().filter { it.value.startsWith("event:delta") }.map { it.index }
+        val unavailableIndex = events.indexOfFirst { it.startsWith("event:unavailable") }
+
+        assertThat(unavailableIndex).isNotNegative()
+        assertThat(events.any { it.startsWith("event:looking") }).isTrue()
+        assertThat(deltaIndexes.filter { it < unavailableIndex }).isEmpty()
+        assertThat(events.joinToString("\n")).doesNotContain("새면 안 되는 문장")
     }
 
     @Test

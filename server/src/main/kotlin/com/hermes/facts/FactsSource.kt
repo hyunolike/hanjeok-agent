@@ -2,11 +2,19 @@ package com.hermes.facts
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.hermes.explain.BackendFacts
+import com.hermes.explain.CourseBounds
 import com.hermes.explain.FactsProjection
+import java.time.LocalDate
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionException
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.RejectedExecutionException
+
+/**
+ * 사실과, 같은 파싱에서 뽑은 도구 경계. 이어 묻기는 둘 다 필요하고, 설명 경로는
+ * 사실만 필요하다.
+ */
+data class FetchedFacts(val facts: BackendFacts, val bounds: CourseBounds)
 
 /**
  * 한적에서 사실을 모은다 — 호출 3회, 왕복 2회.
@@ -24,7 +32,18 @@ class FactsSource(
     private val executor: ExecutorService,
 ) {
 
-    fun fetch(courseUuid: String): BackendFacts {
+    /**
+     * 사실만 필요한 쪽(설명 경로)이 쓴다. 도구 경계는 이어 묻기에서만 필요하다.
+     */
+    fun fetch(courseUuid: String): BackendFacts = fetchWithBounds(courseUuid).facts
+
+    /**
+     * 사실과 함께 이 코스의 도구 경계를 돌려준다.
+     *
+     * 경계를 따로 뽑는 함수를 두지 않는 이유는 코스 JSON 을 두 번 파싱하지 않기
+     * 위해서다 — 한적을 한 번 더 부르는 것은 왕복 하나를 그냥 버리는 것이다.
+     */
+    fun fetchWithBounds(courseUuid: String): FetchedFacts {
         val course = client.course(courseUuid)
 
         val items = course.get("items")
@@ -69,7 +88,26 @@ class FactsSource(
             throw HanjeokUnavailableException("hanjeok response did not carry the expected fields: ${e.message}", e)
         }
 
-        return BackendFacts(courseUuid = courseUuid, json = facts.toString())
+        return FetchedFacts(
+            facts = BackendFacts(courseUuid = courseUuid, json = facts.toString()),
+            bounds = boundsFor(course),
+        )
+    }
+
+    /**
+     * 이 코스에서 도구가 움직일 수 있는 범위. [fetchWithBounds] 가 이미 파싱한 것을
+     * 다시 파싱하지 않도록, 코스 JSON 을 받아 경계만 뽑는 순수 함수로 둔다.
+     *
+     * 범위는 코스가 정한다 — 모델이 정하지 않는다. `CourseTools.parse` 가 이 집합
+     * 밖의 인자를 거부하므로, 여기서 빠진 관광지는 도구로 조회되지 않는다.
+     */
+    fun boundsFor(course: JsonNode): CourseBounds {
+        val ids = course.path("items")
+            .mapNotNull { it.path("attractionId").asLong(0L).takeIf { id -> id != 0L } }
+            .toSet()
+        val date = course.path("targetDate").asText(null)
+            ?: throw HanjeokUnavailableException("course has no targetDate")
+        return CourseBounds(attractionIds = ids, targetDate = LocalDate.parse(date))
     }
 
     private fun join(future: CompletableFuture<JsonNode>, what: String): JsonNode = try {

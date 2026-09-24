@@ -5,10 +5,15 @@ import com.hermes.context.Bundle
 import com.hermes.context.BundleLoader
 import com.hermes.context.CitationValidator
 import com.hermes.context.PromptAssembler
+import com.hermes.explain.AgentLoop
+import com.hermes.explain.Alternatives
+import com.hermes.explain.Congestion
 import com.hermes.explain.CourseExplainer
 import com.hermes.explain.CourseQuestionService
 import com.hermes.explain.ExplanationCache
 import com.hermes.explain.ExplanationService
+import com.hermes.explain.Rejected
+import com.hermes.explain.ToolRunner
 import com.hermes.explain.presentation.AskStreamExecutor
 import com.hermes.facts.FactsSource
 import com.hermes.facts.HanjeokClient
@@ -19,6 +24,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.client.SimpleClientHttpRequestFactory
 import org.springframework.web.client.RestClient
+import java.time.Clock
 import java.time.Duration
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -102,12 +108,36 @@ class HermesConfig {
         explanationProvider: ExplanationProvider,
     ): ExplanationService = ExplanationService(promptAssembler, citationValidator, explanationProvider)
 
+    /**
+     * 검증을 통과한 인자만 여기 온다 — [AgentLoop] 이 [Rejected] 를 먼저 갈라내고
+     * 실행하지 않는다. 그래서 이 람다는 경계를 다시 보지 않는다.
+     */
+    @Bean
+    fun toolRunner(hanjeokClient: HanjeokClient): ToolRunner = ToolRunner { args ->
+        when (args) {
+            is Congestion -> hanjeokClient.congestion(args.attractionId, args.date.toString()).toString()
+            is Alternatives ->
+                hanjeokClient.alternatives(args.attractionId, args.date.toString(), args.radiusKm).toString()
+            is Rejected -> error("거부된 인자는 실행되지 않는다 — AgentLoop 이 먼저 갈라낸다")
+        }
+    }
+
+    /** 예산은 [AgentLoop] 기본값이다 — 도구 라운드 2회, 마감 60초. 여기서 늘리지 않는다. */
+    @Bean
+    fun agentLoop(
+        explanationProvider: ExplanationProvider,
+        citationValidator: CitationValidator,
+        toolRunner: ToolRunner,
+    ): AgentLoop = AgentLoop(explanationProvider, citationValidator, toolRunner, Clock.systemUTC())
+
     @Bean
     fun courseQuestionService(
         promptAssembler: PromptAssembler,
         citationValidator: CitationValidator,
         explanationProvider: ExplanationProvider,
-    ): CourseQuestionService = CourseQuestionService(promptAssembler, citationValidator, explanationProvider)
+        agentLoop: AgentLoop,
+    ): CourseQuestionService =
+        CourseQuestionService(promptAssembler, citationValidator, explanationProvider, agentLoop)
 
     @Bean
     fun courseExplainer(

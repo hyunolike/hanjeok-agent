@@ -10,6 +10,7 @@ import com.hermes.llm.ProviderResult
 import com.hermes.llm.ProviderUsage
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.time.Clock
 
 class CourseQuestionServiceTest {
 
@@ -30,8 +31,18 @@ class CourseQuestionServiceTest {
     private fun answered(text: String = "북촌이 두 번째예요.") =
         Answered(Explanation(text, listOf("concepts/course-generation-policy.md")), ProviderUsage(0, 0, 0, 0))
 
-    private fun service(provider: ExplanationProvider) =
-        CourseQuestionService(PromptAssembler(bundle), CitationValidator(bundle), provider)
+    private fun service(provider: ExplanationProvider): CourseQuestionService {
+        val validator = CitationValidator(bundle)
+        // 비스트리밍 경로는 루프를 타지 않는다. 그래도 루프는 주입돼야 하므로, 여기서
+        // 도구가 실행되면 그 자리에서 터지는 러너를 준다.
+        val loop = AgentLoop(
+            provider,
+            validator,
+            ToolRunner { error("ask() 는 도구를 부르지 않는다") },
+            Clock.systemUTC(),
+        )
+        return CourseQuestionService(PromptAssembler(bundle), validator, provider, loop)
+    }
 
     @Test
     fun `답과 인용을 돌려준다`() {
