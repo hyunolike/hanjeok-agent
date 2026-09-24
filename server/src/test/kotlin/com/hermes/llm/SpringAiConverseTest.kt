@@ -246,4 +246,90 @@ class SpringAiConverseTest {
             assertThat(body["messages"][0]["content"].asText()).isEqualTo("번들 원문")
         }
     }
+
+    /**
+     * 프로덕션 도구 목록이 정확히 나간다. CourseTools.specs() 에서 나오는 실제 도구 목록을
+     * 캐잡한 요청 본문에 비춰 확인한다. 이것이 실제 도구 목록을 실제 요청 바이트에 비춰
+     * 확인하는 유일한 장소다.
+     */
+    @Test
+    fun `CourseTools 의 도구 목록이 요청에 정확히 실린다`() {
+        CapturingEndpoint().use { endpoint ->
+            openAiProvider(endpoint).converse(
+                systemText = "sys",
+                turns = listOf(UserTurn("user")),
+                tools = com.hermes.explain.CourseTools.specs(),
+                onChunk = {},
+            )
+            val body = endpoint.capturedBody()
+
+            assertThat(body["tools"]).hasSize(2)
+            assertThat(body["tools"][0]["function"]["name"].asText()).isEqualTo("congestion")
+            assertThat(body["tools"][1]["function"]["name"].asText()).isEqualTo("alternatives")
+        }
+    }
+
+    /**
+     * 각 도구는 JSON 매개변수 스키마를 갖는다. 스키마는 비어 있지 않으며 유효한 JSON 이다.
+     */
+    @Test
+    fun `각 도구는 매개변수 스키마를 갖는다`() {
+        CapturingEndpoint().use { endpoint ->
+            openAiProvider(endpoint).converse(
+                systemText = "sys",
+                turns = listOf(UserTurn("user")),
+                tools = com.hermes.explain.CourseTools.specs(),
+                onChunk = {},
+            )
+            val body = endpoint.capturedBody()
+
+            // 첫 번째 도구 (congestion) 의 스키마 확인
+            val congestionSchema = body["tools"][0]["function"]["parameters"]
+            assertThat(congestionSchema.isMissingNode).isFalse()
+            assertThat(congestionSchema.path("type").asText()).isEqualTo("object")
+            assertThat(congestionSchema.toString()).isNotEmpty()
+
+            // 두 번째 도구 (alternatives) 의 스키마 확인
+            val alternativesSchema = body["tools"][1]["function"]["parameters"]
+            assertThat(alternativesSchema.isMissingNode).isFalse()
+            assertThat(alternativesSchema.path("type").asText()).isEqualTo("object")
+            assertThat(alternativesSchema.toString()).isNotEmpty()
+        }
+    }
+
+    /**
+     * 요청이 스트리밍으로 나간다 — stream 필드가 true 다.
+     */
+    @Test
+    fun `요청은 stream 이 true 로 나간다`() {
+        CapturingEndpoint().use { endpoint ->
+            openAiProvider(endpoint).converse(
+                systemText = "sys",
+                turns = listOf(UserTurn("user")),
+                tools = com.hermes.explain.CourseTools.specs(),
+                onChunk = {},
+            )
+            val body = endpoint.capturedBody()
+
+            assertThat(body["stream"].asBoolean(false)).isTrue()
+        }
+    }
+
+    /**
+     * 도구가 없으면 요청에 tools 필드가 전혀 없다 — 빈 배열도 아니고 null 도 아니다.
+     */
+    @Test
+    fun `도구가 없으면 tools 필드가 없다`() {
+        CapturingEndpoint().use { endpoint ->
+            openAiProvider(endpoint).converse(
+                systemText = "sys",
+                turns = listOf(UserTurn("user")),
+                tools = emptyList(),
+                onChunk = {},
+            )
+            val body = endpoint.capturedBody()
+
+            assertThat(body.path("tools").isMissingNode || body.path("tools").isEmpty).isTrue()
+        }
+    }
 }
