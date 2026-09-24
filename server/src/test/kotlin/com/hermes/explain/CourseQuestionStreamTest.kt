@@ -122,9 +122,10 @@ class CourseQuestionStreamTest {
         val out = mutableListOf<AskStreamEvent>()
         service(refusing).askStream(facts, "질문", emptyList()) { out += it }
 
-        val streamReason = (out.single() as UnavailableEvent).reason
-        assertThat((askOutcome as Unavailable).reason).isEqualTo(streamReason)
-        assertThat(streamReason).isEqualTo("refusal (cyber)")
+        val streamEvent = out.single() as UnavailableEvent
+        assertThat((askOutcome as Unavailable).reason).isEqualTo(streamEvent.reason)
+        assertThat(streamEvent.reason).isEqualTo("refusal (cyber)")
+        assertThat(streamEvent.cause).isEqualTo(FailureCause.REFUSED)
     }
 
     @Test
