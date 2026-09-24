@@ -51,9 +51,10 @@ private class ScriptedProvider(private val script: List<(onChunk: (String) -> Un
         onChunk: (String) -> Unit,
     ): AgentStep {
         toolsPerCall.add(tools.map { it.name })
-        // 루프가 건네는 리스트는 계속 커지는 같은 객체다. 스냅샷을 떠 두지 않으면
-        // 나중에 읽는 turnsPerCall[0] 이 첫 호출이 아니라 마지막 상태를 보여 준다.
-        turnsPerCall.add(turns.toList())
+        // 복사하지 않고 그대로 담는다. 루프가 스냅샷을 건네므로 이대로 안전하고,
+        // 혹시 살아 있는 리스트를 건네게 되면 turnsPerCall[0] 이 첫 호출이 아니라
+        // 마지막 상태를 보여 주게 되어 아래 `hasSize(1)` 단언이 그 자리에서 깨진다.
+        turnsPerCall.add(turns)
         return script[calls++](onChunk)
     }
 }
@@ -65,6 +66,31 @@ private fun answering(citations: String, body: String): (((String) -> Unit) -> A
 
 private fun requestingTool(name: String, args: String): (((String) -> Unit) -> AgentStep) = {
     ToolRequested(listOf(ToolCall("call-1", name, args)), ProviderUsage(0, 0, 0, 0))
+}
+
+/**
+ * 본문을 흘린 **뒤** 도구를 요청한다. 실제 프로바이더는 이러지 않는다 — 도구 델타를
+ * onChunk 에 넣지 않으므로 `ToolRequested` 를 낸 호출은 onChunk 를 한 번도 부르지
+ * 않는다. 그 불변식은 다른 파일(`SpringAiExplanationProvider`)에 있으므로, 여기서는
+ * 일부러 어겨 본다: 그것이 깨져도 루프가 종결 이벤트를 빠뜨리면 안 된다.
+ */
+private fun answeringThenRequestingTool(
+    citations: String,
+    body: String,
+    args: String,
+): (((String) -> Unit) -> AgentStep) = { onChunk ->
+    onChunk("""{"citations":[$citations],"explanation":"$body"}""")
+    ToolRequested(listOf(ToolCall("call-9", "congestion", args)), ProviderUsage(0, 0, 0, 0))
+}
+
+/** 스크립트가 직접 시간을 밀 수 있는 시계. */
+private class MovingClock(private var now: Instant) : Clock() {
+    override fun getZone(): ZoneId = ZoneOffset.UTC
+    override fun withZone(zone: ZoneId?): Clock = this
+    override fun instant(): Instant = now
+    fun advance(duration: Duration) {
+        now = now.plus(duration)
+    }
 }
 
 /**
@@ -305,16 +331,11 @@ class AgentLoopTest {
 
     @Test
     fun `마감을 넘기면 도구 없는 마지막 호출로 넘어간다`() {
-        var now = Instant.parse("2026-10-01T00:00:00Z")
-        val movingClock = object : Clock() {
-            override fun getZone() = ZoneOffset.UTC
-            override fun withZone(zone: ZoneId?) = this
-            override fun instant(): Instant = now
-        }
+        val movingClock = MovingClock(Instant.parse("2026-10-01T00:00:00Z"))
         val provider = ScriptedProvider(
             listOf(
                 {
-                    now = now.plus(Duration.ofSeconds(61))
+                    movingClock.advance(Duration.ofSeconds(61))
                     requestingTool("congestion", """{"attractionId":11,"date":"2026-10-02"}""")(it)
                 },
                 answering(""""concepts/a.md"""", "답"),
@@ -345,5 +366,50 @@ class AgentLoopTest {
         assertThat(secondCallTurns[2]).isInstanceOf(ToolResultTurn::class.java)
         assertThat((secondCallTurns[2] as ToolResultTurn).results.single().contentJson)
             .isEqualTo("""{"grade":"NORMAL"}""")
+    }
+
+    @Test
+    fun `인용 무효를 삼킨 호출이 도구까지 부르면 종결 이벤트 없이 나가지 않는다`() {
+        val provider = ScriptedProvider(
+            listOf(
+                requestingTool("congestion", """{"attractionId":11,"date":"2026-10-02"}"""),
+                requestingTool("congestion", """{"attractionId":11,"date":"2026-10-03"}"""),
+                // 예산이 떨어진 호출. 인용 무효를 흘린 뒤 도구까지 부른다 —
+                // 게이트가 이미 닫혀 있어 STREAM_FAILED 로 닫으려는 시도가 무동작이 된다.
+                answeringThenRequestingTool(""""concepts/nope.md"""", "틀린 답", """{"attractionId":11,"date":"2026-10-04"}"""),
+                answering(""""concepts/a.md"""", "고친 답"),
+            ),
+        )
+
+        val events = collect(provider)
+
+        // 삼킨 인용 무효는 사라지지 않는다 — 수리로 이어지고, 수리가 종결 이벤트를 낸다.
+        assertThat(events.last()).isEqualTo(DoneEvent)
+        assertThat(provider.calls).isEqualTo(4)
+        assertThat(provider.toolsPerCall[3]).isEmpty()
+        // 싣지도 않은 도구를 부른 호출은 실행하지 않았다.
+        assertThat(events.filterIsInstance<LookingEvent>()).hasSize(2)
+    }
+
+    @Test
+    fun `마감을 넘겼으면 수리하지 않는다`() {
+        val movingClock = MovingClock(Instant.parse("2026-10-01T00:00:00Z"))
+        val provider = ScriptedProvider(
+            listOf(
+                {
+                    movingClock.advance(Duration.ofSeconds(61))
+                    answering(""""concepts/nope.md"""", "틀린 답")(it)
+                },
+                answering(""""concepts/a.md"""", "고친 답"),
+            ),
+        )
+
+        val events = collect(provider, clock = movingClock)
+
+        // 마감은 도구 라운드와 수리가 함께 쓴다. 59초에 시작한 수리는 SSE 에미터(90초)를
+        // 넘기기 쉽다 — 포기하는 쪽이 에미터가 되면 마감이 있는 이유가 없어진다.
+        assertThat(provider.calls).isEqualTo(1)
+        assertThat(events.filterIsInstance<UnavailableEvent>().single().cause)
+            .isEqualTo(FailureCause.INVALID_CITATIONS)
     }
 }

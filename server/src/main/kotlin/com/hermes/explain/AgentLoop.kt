@@ -58,7 +58,7 @@ class AgentLoop(
 
         var round = 0
         while (true) {
-            val outOfBudget = round >= maxToolRounds || clock.millis() - startedAt > deadlineMs
+            val outOfBudget = round >= maxToolRounds || pastDeadline(startedAt)
             val tools = if (outOfBudget) emptyList() else CourseTools.specs()
 
             when (val outcome = attempt(systemText, turns, tools, bounds, facts, emit)) {
@@ -72,7 +72,7 @@ class AgentLoop(
                 // 인용이 틀린 것은 사실이 모자라서가 아니라 경로를 잘못 적어서다.
                 // 수리는 인용 무효에만 있고, 딱 한 번이며, 도구를 싣지 않는다.
                 is NeedsRepair -> {
-                    repair(systemText, turns, outcome.reason, bounds, facts, emit)
+                    repair(systemText, turns, outcome.reason, startedAt, bounds, facts, emit)
                     return
                 }
             }
@@ -90,10 +90,20 @@ class AgentLoop(
         systemText: String,
         turns: MutableList<Turn>,
         reason: String,
+        startedAt: Long,
         bounds: CourseBounds,
         facts: ToolFacts,
         emit: (AskStreamEvent) -> Unit,
     ) {
+        // 마감은 도구 라운드와 수리가 **함께** 쓴다. 59초에 시작한 수리는 SSE 에미터의
+        // 90초를 넘기기 쉽고, 그러면 포기하는 쪽이 우리가 아니라 에미터가 된다 —
+        // 마감이 있는 이유가 바로 그것을 막기 위해서다. 그때는 수리하지 않고 원래의
+        // 인용 무효 실패로 닫는다.
+        if (pastDeadline(startedAt)) {
+            emit(UnavailableEvent(reason, FailureCause.INVALID_CITATIONS))
+            return
+        }
+
         turns.add(UserTurn(repairText(reason)))
 
         when (val repaired = attempt(systemText, turns, emptyList(), bounds, facts, emit)) {
@@ -118,6 +128,18 @@ class AgentLoop(
     /** 인용 무효를 삼켰다. 종결 이벤트는 아직 없고, 부르는 쪽이 반드시 하나 내야 한다. */
     private data class NeedsRepair(val reason: String) : Attempt
 
+    /**
+     * 모델을 한 번 부르고, 그 한 번이 무엇으로 끝났는지 돌려준다.
+     *
+     * 도구를 실행한 [Continued] 말고는 **나가는 문이 `outcome()` 하나다.** 종결 이벤트가
+     * 실제로 [emit] 을 통과했는지 여기서 직접 세는 이유는, `gate.fail` 이 **이미 닫힌
+     * 게이트에서는 조용한 무동작**이기 때문이다 — 그 경우를 다른 파일의 불변식에 기대
+     * 넘기면 아무것도 내지 않고 나가는 길이 생긴다.
+     *
+     * 기대는 하나 있다: [ToolRequested] 를 낸 호출은 onChunk 를 한 번도 부르지 않는다
+     * (`SpringAiExplanationProvider` 가 도구 델타를 onChunk 에 넣지 않는다). 그 불변식이
+     * 깨져도 "종결 이벤트 정확히 하나" 는 어긋나지 않는다 — `outcome()` 이 막는다.
+     */
     private fun attempt(
         systemText: String,
         turns: List<Turn>,
@@ -131,15 +153,33 @@ class AgentLoop(
         // 삼키고 수리한다. 분류는 반드시 타입으로 한다. 사유 문자열로 갈랐다가
         // 문구를 다듬는 순간 조용히 깨진 적이 있다.
         var repairReason: String? = null
+        var terminated = false
         val gate = AskStreamGate(validator) { event ->
             if (event is UnavailableEvent && event.cause == FailureCause.INVALID_CITATIONS) {
                 repairReason = event.reason
             } else {
+                if (isTerminal(event)) terminated = true
                 emit(event)
             }
         }
 
-        val step = provider.converse(systemText, turns, tools) { chunk ->
+        fun outcome(): Attempt {
+            val reason = repairReason
+            return when {
+                reason != null -> NeedsRepair(reason)
+                terminated -> Closed
+                // 게이트가 이미 닫혀 있어 위의 fail 이 무동작이었다. 그래도 스트림은
+                // 종결 이벤트 하나로 끝나야 한다 — 여기서 직접 낸다.
+                else -> {
+                    emit(UnavailableEvent(NO_TERMINAL, FailureCause.STREAM_FAILED))
+                    Closed
+                }
+            }
+        }
+
+        // 스냅샷을 건넨다. 이 리스트는 루프가 계속 키우는 것이라, 참조를 넘기면
+        // 협력자가 나중에 바뀌는 대화를 들고 있게 된다.
+        val step = provider.converse(systemText, turns.toList(), tools) { chunk ->
             parser.feed(chunk).forEach(gate::accept)
         }
 
@@ -149,7 +189,7 @@ class AgentLoop(
             // 돈다. 안전한 실패가 무한한 지출보다 낫다.
             if (tools.isEmpty()) {
                 gate.fail(UNOFFERED_TOOL, FailureCause.STREAM_FAILED)
-                return Closed
+                return outcome()
             }
             return Continued(step.calls, execute(step.calls, bounds, facts, emit))
         }
@@ -160,8 +200,13 @@ class AgentLoop(
             is StreamFailed -> gate.fail(end.reason, FailureCause.STREAM_FAILED)
         }
 
-        return repairReason?.let { NeedsRepair(it) } ?: Closed
+        return outcome()
     }
+
+    private fun isTerminal(event: AskStreamEvent): Boolean =
+        event is DoneEvent || event is UnavailableEvent || event is AbortedEvent
+
+    private fun pastDeadline(startedAt: Long): Boolean = clock.millis() - startedAt > deadlineMs
 
     private fun execute(
         calls: List<ToolCall>,
@@ -193,5 +238,8 @@ class AgentLoop(
 
         /** 제안하지 않은 도구를 모델이 부른 경우. 정상 응답이 아니므로 실패로 닫는다. */
         const val UNOFFERED_TOOL = "tool requested when no tools were offered"
+
+        /** 한 호출이 아무 종결 이벤트도 내지 못하고 끝난 경우. 스트림을 열어 둔 채 나가지 않는다. */
+        const val NO_TERMINAL = "stream ended with no terminal event"
     }
 }
