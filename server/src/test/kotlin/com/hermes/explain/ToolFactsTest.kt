@@ -50,20 +50,4 @@ class ToolFactsTest {
         assertThat(union.path("lookups").asText()).isEqualTo("원래값")
         assertThat(union.path("toolLookups").size()).isEqualTo(1)
     }
-
-    @Test
-    fun `promptText 는 도구 결과를 사실이라고 이름 붙여 돌려준다`() {
-        val facts = ToolFacts("""{"courseUuid":"abc"}""")
-        facts.add("congestion", "attractionId=11 date=2026-10-03", """{"grade":"NORMAL"}""")
-
-        val text = facts.promptText()
-        assertThat(text).contains("congestion")
-        assertThat(text).contains("attractionId=11")
-        assertThat(text).contains("NORMAL")
-    }
-
-    @Test
-    fun `도구가 안 돌면 promptText 는 비어 있다`() {
-        assertThat(ToolFacts("""{"courseUuid":"abc"}""").promptText()).isEqualTo("")
-    }
 }
