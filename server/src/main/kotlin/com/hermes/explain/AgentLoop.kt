@@ -17,8 +17,14 @@ import com.hermes.llm.ToolSpec
 import com.hermes.llm.Turn
 import com.hermes.llm.UserTurn
 import java.time.Clock
+import org.slf4j.LoggerFactory
 
-/** 검증을 통과한 인자로 실제 한적을 부른다. 결과 JSON 을 그대로 돌려준다. */
+/**
+ * 검증을 통과한 인자로 실제 한적을 부른다. 결과 JSON 을 그대로 돌려준다.
+ *
+ * **던져도 된다.** 네트워크 너머를 부르는 구현이라 타임아웃·5xx·빈 본문이 예외로
+ * 올라오는 것이 정상이고, [AgentLoop] 이 그것을 잡아 도구 결과 자리로 되먹인다.
+ */
 fun interface ToolRunner {
     fun run(args: ToolArgs): String
 }
@@ -61,6 +67,7 @@ fun interface LoopObserver {
  * 아니므로 [FailureCause.STREAM_FAILED] 로 닫는다 — 끝없이 돈을 쓰느니 안전하게 실패한다.
  *
  * **[run] 에서 나가는 모든 길은 종결 이벤트를 정확히 하나 낸 뒤다.** SSE 계약이 그렇다.
+ * 예외로 나가는 길도 없다 — 도구 러너가 던지는 것은 [execute] 가 잡아 되먹인다.
  * 그 성질은 [Attempt] 세 갈래가 지킨다:
  * - [Closed] — [attempt] 안에서 게이트가 이미 종결 이벤트를 하나 냈다. 그대로 return.
  * - [NeedsRepair] — 아직 아무것도 내지 않았다. 부르는 쪽이 수리하거나 직접 낸다.
@@ -178,7 +185,9 @@ class AgentLoop(
      *
      * 기대는 하나 있다: [ToolRequested] 를 낸 호출은 onChunk 를 한 번도 부르지 않는다
      * (`SpringAiExplanationProvider` 가 도구 델타를 onChunk 에 넣지 않는다). 그 불변식이
-     * 깨져도 "종결 이벤트 정확히 하나" 는 어긋나지 않는다 — `outcome()` 이 막는다.
+     * 깨져도 "종결 이벤트 정확히 하나" 는 어긋나지 않는다 — 그때는 게이트가 인용 무효를
+     * 삼킨 상태라 `outcome()` 이 [NeedsRepair] 를 내고, 수리 쪽이 종결 이벤트를 낸다.
+     * (`인용 무효를 삼킨 호출이 도구까지 부르면...` 테스트가 보는 길이 그것이다.)
      */
     private fun attempt(
         systemText: String,
@@ -208,8 +217,17 @@ class AgentLoop(
             return when {
                 reason != null -> NeedsRepair(reason)
                 terminated -> Closed
-                // 게이트가 이미 닫혀 있어 위의 fail 이 무동작이었다. 그래도 스트림은
-                // 종결 이벤트 하나로 끝나야 한다 — 여기서 직접 낸다.
+                // **오늘 이 가지는 도달 불가다.** 게이트에서 종결 이벤트가 나가는 문은
+                // `fail()` 과 `finish()` 둘뿐이고 둘 다 닫으면서 이벤트를 낸다. 그래서
+                // "닫혔다" 는 곧 `repairReason != null`(인용 무효를 삼켰다) 아니면
+                // `terminated`(하나 내보냈다) 다 — 위 두 갈래가 그것을 전부 먹는다.
+                // 증거도 있다: 이 `else` 를 통째로 지워도 스위트가 전부 통과한다.
+                // 도구 러너가 던지는 경우도 여기로 오지 않는다 — [execute] 가 잡아
+                // 도구 결과로 되먹이므로 그 길은 [Continued] 로 나간다.
+                //
+                // 그래도 남겨 둔다. "종결 이벤트 정확히 하나" 는 이 파일 밖(게이트의
+                // 닫힘 규칙)에 근거를 둔 성질이고, 그 규칙이 바뀌면 여기가 유일하게
+                // 남는 그물이다. 값은 `if` 하나다.
                 else -> {
                     emit(UnavailableEvent(NO_TERMINAL, FailureCause.STREAM_FAILED))
                     Closed
@@ -260,9 +278,36 @@ class AgentLoop(
             is Rejected -> ToolResult(call.id, """{"rejected":${quote(args.reason)}}""")
             else -> {
                 emit(LookingEvent(call.name))
-                val result = toolRunner.run(args)
-                facts.add(call.name, call.argumentsJson, result)
-                ToolResult(call.id, result)
+                // 러너는 네트워크 너머를 부른다. 타임아웃·5xx·빈 본문은 드문 일이 아니고,
+                // 그 예외가 여기를 그냥 지나면 run() 이 종결 이벤트를 하나도 내지 못한 채
+                // 끝난다 — 독자는 이미 looking 을 본 뒤다. 그 뒤를 프런트엔드가
+                // `done` 없는 스트림을 unavailable 로 합성해 덮고 있었는데, 불변식을
+                // 그것에 기대는 것이 이 브랜치가 이미 한 번 고친 결함의 모양이다.
+                //
+                // 그래서 **되먹인다.** 거부된 인자와 같은 처리이고, 설계 문서가 거부에
+                // 대해 적은 이유가 그대로 적용된다 — "던지면 한 번 잘못 부른 것이 요청
+                // 전체를 죽인다". 조회 하나가 실패했다고 답 전체를 없애는 것보다, 모델이
+                // 그 조회 없이 답하게 두는 편이 독자에게 낫다. 실패가 이어져도 예산이
+                // 묶는다: 도구 라운드는 여전히 최대 [maxToolRounds] 회다.
+                //
+                // 타입을 좁히지 않고 Exception 을 잡는다. [ToolRunner] 는 포트이고 루프는
+                // 그 너머에 무엇이 있는지 모른다 — 특정 예외만 잡으면 러너를 갈아끼우는
+                // 순간 이 불변식이 조용히 다시 깨진다.
+                val result = try {
+                    toolRunner.run(args)
+                } catch (e: Exception) {
+                    // 원인이 관찰되는 자리는 이 로그뿐이다. 되먹이는 문구에는 싣지 않는다 —
+                    // 모델 문맥에 들어간 내부 사정은 본문으로 새어 나올 자리가 된다.
+                    log.warn("tool {} failed; feeding the failure back to the model", call.name, e)
+                    null
+                }
+                // 가져오지 못한 사실은 facts 합집합에 넣지 않는다. 거부와 같은 이유다.
+                if (result == null) {
+                    ToolResult(call.id, LOOKUP_FAILED)
+                } else {
+                    facts.add(call.name, call.argumentsJson, result)
+                    ToolResult(call.id, result)
+                }
             }
         }
     }
@@ -276,10 +321,22 @@ class AgentLoop(
     private companion object {
         val MAPPER = ObjectMapper()
 
+        val log = LoggerFactory.getLogger(AgentLoop::class.java)
+
+        /**
+         * 도구 호출이 예외로 끝났을 때 모델에게 돌려주는 결과. **고정 문구다** —
+         * 러너가 남긴 메시지에는 주소나 상태 코드 같은 내부 사정이 섞이고, 그것이
+         * 모델 문맥에 들어가면 본문으로 새어 나올 자리가 생긴다.
+         */
+        const val LOOKUP_FAILED = """{"unavailable":"lookup failed"}"""
+
         /** 제안하지 않은 도구를 모델이 부른 경우. 정상 응답이 아니므로 실패로 닫는다. */
         const val UNOFFERED_TOOL = "tool requested when no tools were offered"
 
-        /** 한 호출이 아무 종결 이벤트도 내지 못하고 끝난 경우. 스트림을 열어 둔 채 나가지 않는다. */
+        /**
+         * 한 호출이 아무 종결 이벤트도 내지 못하고 끝난 경우. 스트림을 열어 둔 채
+         * 나가지 않는다. 오늘은 도달 불가다 — `outcome()` 의 주석 참고.
+         */
         const val NO_TERMINAL = "stream ended with no terminal event"
     }
 }

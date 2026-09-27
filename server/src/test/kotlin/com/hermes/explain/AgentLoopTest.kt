@@ -3,6 +3,7 @@ package com.hermes.explain
 import com.hermes.context.Bundle
 import com.hermes.context.BundleDocument
 import com.hermes.context.CitationValidator
+import com.hermes.facts.HanjeokUnavailableException
 import com.hermes.llm.AgentStep
 import com.hermes.llm.ExplanationProvider
 import com.hermes.llm.ProviderResult
@@ -192,6 +193,51 @@ class AgentLoopTest {
     }
 
     @Test
+    fun `도구가 예외를 던져도 종결 이벤트 없이 나가지 않는다`() {
+        // 운영 러너는 한적을 부른다. 타임아웃·5xx·빈 본문은 드문 일이 아니라
+        // 평범한 일이고, 그때 HanjeokUnavailableException 이 올라온다. 그것이
+        // run() 밖으로 새면 이미 looking 을 본 독자에게 종결 이벤트가 0개다.
+        val provider = ScriptedProvider(
+            listOf(
+                requestingTool("congestion", """{"attractionId":11,"date":"2026-10-02"}"""),
+                answering(""""concepts/a.md"""", "답"),
+            ),
+        )
+
+        // collect() 가 "종결 이벤트는 정확히 하나" 를 모든 시나리오에 건다.
+        val events = collect(provider, runner = ToolRunner { throw HanjeokUnavailableException("hanjeok 503") })
+
+        assertThat(events.first()).isEqualTo(LookingEvent("congestion"))
+        assertThat(events.last()).isEqualTo(DoneEvent)
+        // 실패는 도구 결과 자리로 되먹인다 — 모델이 그 조회 없이 답할 수 있어야 한다.
+        val fedBack = provider.turnsPerCall[1].filterIsInstance<ToolResultTurn>().single()
+        assertThat(fedBack.results.single().contentJson).contains("unavailable")
+        // 러너가 남긴 문구는 되먹이지 않는다 — 모델 문맥에 내부 사정이 들어가면
+        // 본문으로 새어 나올 자리가 생긴다.
+        assertThat(fedBack.results.single().contentJson).doesNotContain("503")
+    }
+
+    @Test
+    fun `실패한 조회는 facts 에 들어가지 않는다`() {
+        val facts = ToolFacts(INITIAL_FACTS)
+        val provider = ScriptedProvider(
+            listOf(
+                requestingTool("congestion", """{"attractionId":11,"date":"2026-10-02"}"""),
+                answering(""""concepts/a.md"""", "답"),
+            ),
+        )
+
+        collect(
+            provider,
+            runner = ToolRunner { throw HanjeokUnavailableException("hanjeok 503") },
+            facts = facts,
+        )
+
+        // 가져오지 못한 사실이 근거로 잡히면 안 된다 — 거부된 호출과 같은 이유다.
+        assertThat(facts.unionJson()).isEqualTo(INITIAL_FACTS)
+    }
+
+    @Test
     fun `인자가 범위를 벗어나면 도구를 실행하지 않고 거부 사유를 되먹인다`() {
         var ran = false
         val provider = ScriptedProvider(
@@ -225,7 +271,6 @@ class AgentLoopTest {
 
         // 실행되지 않은 조회가 근거로 잡히면 안 된다.
         assertThat(facts.unionJson()).isEqualTo(INITIAL_FACTS)
-        assertThat(facts.promptText()).isEmpty()
     }
 
     @Test
@@ -241,7 +286,7 @@ class AgentLoopTest {
         collect(provider, runner = ToolRunner { """{"grade":"BUSY"}""" }, facts = facts)
 
         assertThat(facts.unionJson()).contains("BUSY")
-        assertThat(facts.promptText()).contains("congestion")
+        assertThat(facts.unionJson()).contains("congestion")
     }
 
     @Test
