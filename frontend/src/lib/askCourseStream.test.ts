@@ -143,6 +143,42 @@ describe('askCourseStream', () => {
     ])
   })
 
+  it('looking 이벤트를 kind looking 으로 넘긴다', async () => {
+    const events = await collect(
+      fetchStreaming([
+        encode(
+          'event:looking\ndata:{"what":"congestion"}\n\n' +
+            'event:citations\ndata:{"citations":["concepts/a.md"]}\n\n' +
+            'event:delta\ndata:{"text":"답"}\n\n' +
+            'event:done\ndata:{"generatedAt":"t","model":"m"}\n\n',
+        ),
+      ]),
+    )
+
+    expect(events[0]).toEqual({ kind: 'looking', what: 'congestion' })
+    expect(events.at(-1)).toEqual({ kind: 'done', generatedAt: 't', model: 'm' })
+  })
+
+  it('모르는 what 이 와도 터지지 않고 그대로 넘긴다', async () => {
+    const events = await collect(
+      fetchStreaming([
+        encode(
+          'event:looking\ndata:{"what":"weather"}\n\nevent:done\ndata:{"generatedAt":"t","model":"m"}\n\n',
+        ),
+      ]),
+    )
+
+    expect(events[0]).toEqual({ kind: 'looking', what: 'weather' })
+  })
+
+  it('looking 은 delta 가 아니다 — done 없이 끊기면 본문 없음으로 취급된다', async () => {
+    // looking 만 오고 delta 는 한 번도 오지 않은 채 연결이 끊기면, "본문을 받았는가"
+    // 기준(aborted/unavailable 을 가르는 그 기준)은 여전히 아니오여야 한다.
+    const events = await collect(fetchStreaming([encode('event:looking\ndata:{"what":"congestion"}\n\n')]))
+
+    expect(events).toEqual([{ kind: 'looking', what: 'congestion' }, { kind: 'unavailable' }])
+  })
+
   it('data: 가 깨진 이름 없는 프레임은 JSON.parse 에 닿지 않고 무시된다', async () => {
     const events = await collect(
       fetchStreaming([
