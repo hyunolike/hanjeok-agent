@@ -27,7 +27,17 @@ sealed interface AgentStep
  * **이 값이 나왔다면 onChunk 는 한 번도 불리지 않았다.** 어댑터가 도구 델타를
  * onChunk 에 넣지 않기 때문이고, 그래서 도구 턴은 AskStreamGate 에 도달하지 않는다.
  */
-data class ToolRequested(val calls: List<ToolCall>, val usage: ProviderUsage) : AgentStep
+data class ToolRequested(
+    val calls: List<ToolCall>,
+    /**
+     * **예산 집계에 쓰지 마라.** OpenAI 스트리밍에서는 도구 호출로 끝난 턴에 사용량이
+     * 실려 오지 않아 네 값이 전부 0 이다. 0 을 그대로 더하면 토큰 예산이나 비용 한도가
+     * "아직 한 푼도 안 썼다"고 읽고 그대로 통과시킨다 — 틀린 값을 믿는 쪽이 값이 없는
+     * 것보다 나쁘다. 실제 사용량이 필요하면 [Spoke] 로 끝난 턴의 [StreamCompleted] 를
+     * 봐야 한다.
+     */
+    val usage: ProviderUsage,
+) : AgentStep
 
 /** 모델이 답했다. 조각은 onChunk 로 이미 나갔다. */
 data class Spoke(val end: StreamEnd) : AgentStep
