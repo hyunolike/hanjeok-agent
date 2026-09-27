@@ -3,15 +3,21 @@ package com.hermes.explain
 import com.hermes.context.BundleLoader
 import com.hermes.context.CitationValidator
 import com.hermes.context.PromptAssembler
+import com.hermes.llm.AgentStep
 import com.hermes.llm.Answered
 import com.hermes.llm.Explanation
 import com.hermes.llm.ExplanationProvider
 import com.hermes.llm.ProviderResult
 import com.hermes.llm.ProviderUsage
 import com.hermes.llm.Refused
+import com.hermes.llm.Spoke
 import com.hermes.llm.StreamCompleted
 import com.hermes.llm.StreamEnd
 import com.hermes.llm.StreamFailed
+import com.hermes.llm.ToolCall
+import com.hermes.llm.ToolRequested
+import com.hermes.llm.ToolSpec
+import com.hermes.llm.Turn
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.Clock
@@ -78,6 +84,50 @@ class CourseQuestionStreamTest {
         assertThat(streamUser).startsWith(askUser)
         assertThat(streamUser).contains("## 도구")
         assertThat(streamUser.indexOf("질문")).isLessThan(streamUser.indexOf("## 도구"))
+    }
+
+    /** 도구 한 번을 요청한 뒤 답한다. `converse` 를 직접 구현해 [ToolRequested] 를 낸다. */
+    private class ToolThenAnswerProvider(private val citedPath: String) : ExplanationProvider {
+        override val name = "tool-then-answer"
+        var calls = 0
+
+        override fun explain(systemText: String, userText: String): ProviderResult =
+            error("이 테스트는 converse 만 쓴다")
+
+        override fun converse(
+            systemText: String,
+            turns: List<Turn>,
+            tools: List<ToolSpec>,
+            onChunk: (String) -> Unit,
+        ): AgentStep {
+            calls++
+            return if (calls == 1) {
+                ToolRequested(
+                    listOf(ToolCall("call-1", "congestion", """{"attractionId":11,"date":"2026-10-02"}""")),
+                    ProviderUsage(0, 0, 0, 0),
+                )
+            } else {
+                onChunk("""{"citations":["$citedPath"],"explanation":"답"}""")
+                Spoke(StreamCompleted(ProviderUsage(0, 0, 0, 0)))
+            }
+        }
+    }
+
+    @Test
+    fun `askStream 이 돌려주는 factsJson 은 도구가 가져온 사실까지 포함한 합집합이다`() {
+        // CourseQuestionService.askStream 이 내부 union 을 만들고도 초기 facts.json 을
+        // 그대로 돌려주면(합집합을 만들지 않으면) 이 테스트만 그것을 잡는다 — 아래
+        // service() 헬퍼의 AgentLoop 은 도구를 부르면 에러를 내므로 여기서는 직접
+        // 조립한다.
+        val provider = ToolThenAnswerProvider(citedPath = known)
+        val validator = CitationValidator(bundle)
+        val loop = AgentLoop(provider, validator, ToolRunner { """{"grade":"BUSY"}""" }, Clock.systemUTC())
+        val service = CourseQuestionService(PromptAssembler(bundle), validator, provider, loop)
+
+        val union = service.askStream(facts, bounds, "질문", emptyList()) {}
+
+        assertThat(union).contains("BUSY")
+        assertThat(union).isNotEqualTo(facts.json)
     }
 
     @Test

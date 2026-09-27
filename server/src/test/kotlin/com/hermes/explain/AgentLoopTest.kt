@@ -109,9 +109,10 @@ class AgentLoopTest {
         runner: ToolRunner = ToolRunner { """{"grade":"NORMAL"}""" },
         clock: Clock = fixedClock,
         facts: ToolFacts = ToolFacts(INITIAL_FACTS),
+        observer: LoopObserver = LoopObserver { },
     ): List<AskStreamEvent> {
         val events = mutableListOf<AskStreamEvent>()
-        AgentLoop(provider, validator, runner, clock).run(
+        AgentLoop(provider, validator, runner, clock, observer = observer).run(
             systemText = BUNDLE.raw,
             baseUserText = "질문",
             bounds = bounds,
@@ -411,5 +412,80 @@ class AgentLoopTest {
         assertThat(provider.calls).isEqualTo(1)
         assertThat(events.filterIsInstance<UnavailableEvent>().single().cause)
             .isEqualTo(FailureCause.INVALID_CITATIONS)
+    }
+
+    // ── LoopObserver ──
+    // EvalMain 이 찍는 "tool rounds / budget exhausted / repairs" 는 이 신호들을 그대로
+    // 센 것이다. 신호가 실제로 맞는 순간에만 오는지 여기서 직접 본다 — 그렇지 않으면
+    // 하네스의 숫자는 관측 대신 우연을 세는 것이 된다.
+
+    @Test
+    fun `도구 라운드마다 TOOL_ROUND 가 한 번씩 온다`() {
+        // maxToolRounds 는 기본 2다. 라운드 하나만 쓰고 답하면(round 는 그 뒤 1) 아직
+        // 예산 안이므로 마지막 호출도 도구를 실은 채 나가고, BUDGET_EXHAUSTED 는 나지
+        // 않는다 — 그래서 이 시나리오가 TOOL_ROUND 만 보는 데 맞다.
+        val signals = mutableListOf<LoopSignal>()
+        val provider = ScriptedProvider(
+            listOf(
+                requestingTool("congestion", """{"attractionId":11,"date":"2026-10-03"}"""),
+                answering(""""concepts/a.md"""", "답"),
+            ),
+        )
+
+        collect(provider, observer = LoopObserver { signals += it })
+
+        assertThat(signals).containsExactly(LoopSignal.TOOL_ROUND)
+    }
+
+    @Test
+    fun `BUDGET_EXHAUSTED 는 실행당 최대 한 번이다`() {
+        val signals = mutableListOf<LoopSignal>()
+        val provider = ScriptedProvider(
+            listOf(
+                requestingTool("congestion", """{"attractionId":11,"date":"2026-10-02"}"""),
+                requestingTool("congestion", """{"attractionId":11,"date":"2026-10-03"}"""),
+                // 예산이 떨어진 세 번째 호출. 도구를 또 부르면 실패로 닫는다 — 그래도
+                // BUDGET_EXHAUSTED 는 그 루프 턴에서 딱 한 번만 났어야 한다.
+                requestingTool("congestion", """{"attractionId":11,"date":"2026-10-04"}"""),
+            ),
+        )
+
+        collect(provider, observer = LoopObserver { signals += it })
+
+        assertThat(signals.count { it == LoopSignal.BUDGET_EXHAUSTED }).isEqualTo(1)
+    }
+
+    @Test
+    fun `수리가 실제로 다시 물으면 REPAIR_ASKED 가 온다`() {
+        val signals = mutableListOf<LoopSignal>()
+        val provider = ScriptedProvider(
+            listOf(
+                answering(""""concepts/nope.md"""", "틀린 답"),
+                answering(""""concepts/a.md"""", "고친 답"),
+            ),
+        )
+
+        collect(provider, observer = LoopObserver { signals += it })
+
+        assertThat(signals).containsExactly(LoopSignal.REPAIR_ASKED)
+    }
+
+    @Test
+    fun `마감 때문에 수리를 포기하면 REPAIR_ASKED 는 안 온다`() {
+        val signals = mutableListOf<LoopSignal>()
+        val movingClock = MovingClock(Instant.parse("2026-10-01T00:00:00Z"))
+        val provider = ScriptedProvider(
+            listOf(
+                {
+                    movingClock.advance(Duration.ofSeconds(61))
+                    answering(""""concepts/nope.md"""", "틀린 답")(it)
+                },
+                answering(""""concepts/a.md"""", "고친 답"),
+            ),
+        )
+
+        collect(provider, clock = movingClock, observer = LoopObserver { signals += it })
+
+        assertThat(signals).doesNotContain(LoopSignal.REPAIR_ASKED)
     }
 }

@@ -52,6 +52,11 @@ class CourseQuestionService(
      *
      * 여기는 배선뿐이다. 예산·실행·수리는 [AgentLoop] 이, 안전 판단은 [AskStreamGate] 가
      * 전부 한다. 도구를 한 번도 부르지 않는 질문은 예전과 같은 한 번의 모델 호출로 끝난다.
+     *
+     * @return 이 답이 실제로 딛고 선 사실 — 초기 facts 와 도구가 가져온 것의 합집합
+     * ([ToolFacts.unionJson]). 컨트롤러는 쓰지 않는다. **평가 하네스가 이것과 주장을
+     * 대조한다** — 초기 facts 하고만 대조하면 도구가 가져온 사실을 말할 때마다 근거
+     * 없는 주장으로 잡혀, 도구를 켰다는 이유만으로 위반율이 오른다.
      */
     fun askStream(
         facts: BackendFacts,
@@ -59,14 +64,16 @@ class CourseQuestionService(
         question: String,
         history: List<QuestionTurn>,
         emit: (AskStreamEvent) -> Unit,
-    ) {
+    ): String {
+        val union = ToolFacts(facts.json)
         loop.run(
             systemText = assembler.systemText,
             baseUserText = buildUserText(facts, question, history) + TOOL_GUIDANCE,
             bounds = bounds,
-            facts = ToolFacts(facts.json),
+            facts = union,
             emit = emit,
         )
+        return union.unionJson()
     }
 
     /**

@@ -23,6 +23,35 @@ fun interface ToolRunner {
     fun run(args: ToolArgs): String
 }
 
+/** 루프가 한 일 중 밖에서는 볼 수 없는 것들. [LoopObserver] 참고. */
+enum class LoopSignal {
+    /** 도구를 실제로 실행하고 한 바퀴 더 돌았다. */
+    TOOL_ROUND,
+
+    /** 예산(라운드 또는 마감)이 떨어져 마지막 호출에 도구를 싣지 않았다. 실행당 최대 1회. */
+    BUDGET_EXHAUSTED,
+
+    /** 인용 무효를 삼키고 실제로 다시 물었다. 마감 때문에 수리를 포기한 경우는 내지 않는다. */
+    REPAIR_ASKED,
+}
+
+/**
+ * 루프가 무엇을 했는지 밖에 알린다. **운영은 쓰지 않는다** — 기본값이 무동작이고,
+ * 이 자리가 있는 이유는 평가 하네스가 도구 라운드·예산 소진·수리 발동을 **관측**해야
+ * 하기 때문이다.
+ *
+ * 밖에서 추론할 수 없어서 둔다. 이벤트 스트림에는 이 셋이 전혀 나타나지 않고(수리는
+ * 인용 무효 이벤트를 삼키는 것이 존재 이유다), 프로바이더를 감싸 "도구 없이 나간
+ * 호출"을 세면 예산이 떨어진 호출과 수리 호출을 구분할 수 없다. 그 구분을 프롬프트
+ * 문자열로 하면 문구를 다듬는 순간 조용히 깨진다 — 이 저장소가 한 번 데인 방식이다.
+ *
+ * 재지 않으면 하네스의 숫자는 배포된 것에 대해 아무 말도 하지 못한다. 이 저장소는
+ * 이미 한 번 그 실수를 했다(잰 프로바이더와 띄운 프로바이더가 달랐다).
+ */
+fun interface LoopObserver {
+    fun note(signal: LoopSignal)
+}
+
 /**
  * 도구 루프. **안전 판단은 하지 않는다** — 그것은 [AskStreamGate] 가 한다.
  * 여기가 정하는 것은 몇 번 더 물을 것인가, 무엇을 실행해도 되는가, 언제 포기하는가다.
@@ -46,6 +75,8 @@ class AgentLoop(
     // 스트림으로만 드러나므로, 운영 빈의 값을 고정하는 테스트가 읽어야 한다.
     val maxToolRounds: Int = 2,
     val deadlineMs: Long = 60_000L,
+    // 기본값은 무동작이다. 운영 배선은 이 인자를 주지 않는다.
+    private val observer: LoopObserver = LoopObserver { },
 ) {
 
     fun run(
@@ -61,6 +92,9 @@ class AgentLoop(
         var round = 0
         while (true) {
             val outOfBudget = round >= maxToolRounds || pastDeadline(startedAt)
+            // 도구를 뺀 호출은 여기서 딱 한 번 나간다 — 그 뒤 attempt 는 Closed 아니면
+            // NeedsRepair 이고 둘 다 while 을 빠져나간다.
+            if (outOfBudget) observer.note(LoopSignal.BUDGET_EXHAUSTED)
             val tools = if (outOfBudget) emptyList() else CourseTools.specs()
 
             when (val outcome = attempt(systemText, turns, tools, bounds, facts, emit)) {
@@ -68,6 +102,7 @@ class AgentLoop(
                     turns.add(ToolCallTurn(outcome.calls))
                     turns.add(ToolResultTurn(outcome.results))
                     round++
+                    observer.note(LoopSignal.TOOL_ROUND)
                 }
                 // 게이트가 done/unavailable/aborted 중 하나를 이미 냈다.
                 is Closed -> return
@@ -106,6 +141,9 @@ class AgentLoop(
             return
         }
 
+        // 여기부터가 "수리가 발동했다" 이다. 위에서 마감 때문에 되돌아간 경우는 다시
+        // 묻지 않았으므로 세지 않는다.
+        observer.note(LoopSignal.REPAIR_ASKED)
         turns.add(UserTurn(repairText(reason)))
 
         when (val repaired = attempt(systemText, turns, emptyList(), bounds, facts, emit)) {
