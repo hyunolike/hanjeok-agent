@@ -125,7 +125,9 @@
 
 **인자는 모델을 믿지 않고 코스 자체와 대조합니다.** `attractionId` 는 이 코스에 실제로 있는 장소여야 하고, `date` 는 코스의 `targetDate` 에서 ±14일 안이어야 하며(한적 예보가 그보다 먼 날짜를 갖고 있지 않습니다), `radiusKm` 은 1~50(기본 15)이어야 합니다. **거부된 인자는 도구 결과 자리에 그대로 되먹입니다 — 던지지 않습니다.** 던지면 한 번 잘못 부른 것이 요청 전체를 죽이지만, 사유를 되먹이면 모델이 스스로 고쳐 부르거나 그 도구 없이 포기하고 답할 수 있습니다.
 
-**루프는 스스로 멈춥니다.** 도구 라운드는 최대 2회이고, 이는 모델 호출을 최대 3회로 묶으며, 이 라운드들과 아래 수리가 함께 쓰는 마감 60초 안에서 돕니다. 라운드나 마감이 떨어지면 모델을 **그 호출에서만 도구를 뺀 채** 한 번 더 부릅니다 — 다시 부르는 것이 프롬프트 문구로 말리는 수준이 아니라 구조적으로 불가능해집니다. 그런데도 제안하지 않은 도구를 부르면 예산 밖에서 계속 도는 대신 실패로 닫습니다 — 끝없는 지출보다 안전한 실패가 낫습니다. 도구 라운드마다 도구를 실행하기 전에 `event: looking` 을 `{"what":"congestion"}`(또는 `"alternatives"`)과 함께 보내 화면이 "조회 중"을 말할 수 있게 합니다 — 프레임에는 도구 이름만 실리고 인자는 실리지 않습니다.
+**조회가 실패했을 때도 같은 방식으로 되먹입니다.** 한적이 타임아웃을 내거나 5xx 를 주거나 빈 본문을 돌려주는 것은 드문 일이 아니라 평범한 일입니다. 그때 도구 결과 자리에는 고정된 `{"unavailable":"lookup failed"}` 가 들어가고 루프는 계속 돌아, 모델이 그 조회 없이 답합니다 — 조회 하나가 죽었다고 독자가 답 전체를 잃지는 않습니다. 진짜 사유는 서버 로그에만 남고 모델 문맥에는 들어가지 않으며, 실패한 조회는 facts 합집합에도 넣지 않습니다. 결과를 받지 못한 조회는 근거가 아니기 때문입니다. 그러고도 루프에서 나가는 모든 길은 여전히 종결 이벤트를 정확히 하나 냅니다.
+
+**루프는 스스로 멈춥니다.** 도구 라운드는 최대 2회이고, 이는 모델 호출을 최대 3회로 묶으며, 이 라운드들과 아래 수리가 마감 60초를 함께 씁니다. **이 마감이 정하는 것은 "호출을 하나 더 시작할 것인가" 이지 "호출이 얼마나 걸려도 되는가" 가 아닙니다** — 마감은 각 호출을 시작하기 전에만 보고, LLM 클라이언트에 호출별 HTTP 타임아웃이 걸려 있지 않아서, 이미 나간 호출 하나가 60초를 넘길 수 있습니다. 마감이 사 주는 것은 벽시계 상한이 아니라 "앞으로 몇 번 더 부를 것인가" 의 상한입니다. 라운드나 마감이 떨어지면 모델을 **그 호출에서만 도구를 뺀 채** 한 번 더 부릅니다 — 다시 부르는 것이 프롬프트 문구로 말리는 수준이 아니라 구조적으로 불가능해집니다. 그런데도 제안하지 않은 도구를 부르면 예산 밖에서 계속 도는 대신 실패로 닫습니다 — 끝없는 지출보다 안전한 실패가 낫습니다. 도구 라운드마다 도구를 실행하기 전에 `event: looking` 을 `{"what":"congestion"}`(또는 `"alternatives"`)과 함께 보내 화면이 "조회 중"을 말할 수 있게 합니다 — 프레임에는 도구 이름만 실리고 인자는 실리지 않습니다.
 
 **인용 무효에는 수리가 딱 한 번, 도구 없이 있습니다.** 답의 인용이 검증을 통과하지 못하면 모델을 도구 없이 한 번 더 불러 번들에 실재하는 경로로 다시 쓰게 합니다. 이건 오직 그 이유로만 발동합니다 — 거절이나 본문 중간에 끊긴 스트림은 이미 자기 종결 이벤트가 있어 수리로 돌아가지 않습니다.
 
@@ -137,7 +139,7 @@
 
 <div align="center">
 
-<img src="docs/images/flow.svg" alt="설명 요청 흐름도 — 백엔드 응답 3종은 FactsNormalizer 를 지나 BackendFacts 로, hanjeok-bundle.txt 는 BundleLoader·PromptAssembler 를 지나 systemText 로 들어가 ExplanationService.explain() 에서 만난다. ProviderResult 가 Refused·Failed 면 Unavailable, Answered 면 CitationValidator 로 가고, 인용이 유효하면 Explained 가 되어 ForbiddenBehaviours.check() 를 거친다. 두 갈래 모두 ViolationTally 로 모인다. 아래 두 번째 갈래는 POST /agent/ask/stream 전용이다 — CourseQuestionService.askStream() 이 AgentLoop 를 돌려 congestion·alternatives 를 최대 2라운드, 마감 60초 안에서 부를 수 있고, AskStreamGate 가 인용을 검증한 뒤 답을 흘리거나 한 번 수리하거나 unavailable·aborted 로 끝난다 — unavailable 앞의 delta 는 언제나 0개다." width="900">
+<img src="docs/images/flow.svg" alt="설명 요청 흐름도 — 백엔드 응답 3종은 FactsNormalizer 를 지나 BackendFacts 로, hanjeok-bundle.txt 는 BundleLoader·PromptAssembler 를 지나 systemText 로 들어가 ExplanationService.explain() 에서 만난다. ProviderResult 가 Refused·Failed 면 Unavailable, Answered 면 CitationValidator 로 가고, 인용이 유효하면 Explained 가 되어 ForbiddenBehaviours.check() 를 거친다. 두 갈래 모두 ViolationTally 로 모인다. 아래 두 번째 갈래는 POST /agent/ask/stream 전용이다 — CourseQuestionService.askStream() 이 AgentLoop 를 돌려 congestion·alternatives 를 최대 2라운드 부를 수 있고 그 라운드들이 마감 60초를 함께 쓰며, AskStreamGate 가 인용을 검증한 뒤 답을 흘리거나 한 번 수리하거나 unavailable·aborted 로 끝난다 — unavailable 앞의 delta 는 언제나 0개다." width="900">
 
 </div>
 
