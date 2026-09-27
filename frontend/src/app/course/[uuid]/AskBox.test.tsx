@@ -255,6 +255,36 @@ describe('코스 후속 질문', () => {
     expect(screen.queryByText(/혼잡도를 다시 확인/)).not.toBeInTheDocument()
   })
 
+  it('looking 중 unavailable 이 오면 안내가 사라지고 실패 문구만 보인다', async () => {
+    const { impl, advance } = stepStream([{ kind: 'looking', what: 'congestion' }, { kind: 'unavailable' }])
+    vi.spyOn(agent, 'askCourseStream').mockImplementation(impl)
+
+    render(<AskBox courseUuid="abc" />)
+    await userEvent.type(screen.getByLabelText('이 코스에 대해 더 묻기'), '왜요?')
+    await userEvent.click(screen.getByRole('button', { name: '묻기' }))
+
+    expect(await screen.findByText(/혼잡도를 다시 확인/)).toBeInTheDocument()
+
+    advance(0)
+    expect(await screen.findByText(/답을 만들지 못했어요/)).toBeInTheDocument()
+    expect(screen.queryByText(/혼잡도를 다시 확인/)).not.toBeInTheDocument()
+  })
+
+  it('looking 중 aborted 가 오면 안내가 사라지고 실패 문구만 보인다', async () => {
+    const { impl, advance } = stepStream([{ kind: 'looking', what: 'alternatives' }, { kind: 'aborted' }])
+    vi.spyOn(agent, 'askCourseStream').mockImplementation(impl)
+
+    render(<AskBox courseUuid="abc" />)
+    await userEvent.type(screen.getByLabelText('이 코스에 대해 더 묻기'), '왜요?')
+    await userEvent.click(screen.getByRole('button', { name: '묻기' }))
+
+    expect(await screen.findByText(/주변 대안을 찾아보는 중/)).toBeInTheDocument()
+
+    advance(0)
+    expect(await screen.findByText(/답을 만들지 못했어요/)).toBeInTheDocument()
+    expect(screen.queryByText(/주변 대안을 찾아보는 중/)).not.toBeInTheDocument()
+  })
+
   it('모르는 what 이 와도 화면이 비지 않는다', async () => {
     const { impl } = stepStream([{ kind: 'looking', what: 'weather' }, DONE])
     vi.spyOn(agent, 'askCourseStream').mockImplementation(impl)
