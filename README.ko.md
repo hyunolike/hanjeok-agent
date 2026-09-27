@@ -119,19 +119,33 @@
 
 **첫 글자가 보이기까지 4.7~6.9초에서 1.1~3.5초로.** 설계 스파이크(`docs/superpowers/specs/2026-09-21-ask-streaming-design.md`)가 raw HTTP 로 `gpt-4o` 를 **3회** 잰 값입니다. 3회는 작은 표본이라 하나의 숫자보다 방향으로 읽는 편이 맞습니다. Anthropic 과 OpenRouter 는 재지 않았습니다. `explanation` 을 먼저 보내는 프로바이더라면 답이 늦게 보일 뿐, 덜 안전해지지는 않습니다.
 
+### 7. 초기 사실에 없는 것을 위한 도구 루프
+
+`POST /agent/ask/stream` 은 처음 받은 `facts` 밖으로 나갈 수 있습니다. `AgentLoop` 가 모델에게 도구 둘을 내줍니다 — `congestion(attractionId, date)` 와 `alternatives(attractionId, date, radiusKm)` — 그리고 이건 그 스트리밍 이어 묻기 경로에만 있습니다. 첫 설명도, 블로킹 `POST /agent/ask` 도 도구를 보지 못합니다. 범용 조회가 아니라 고정된 사실이 답하지 못하는 질문 하나를 위한 것입니다.
+
+**인자는 모델을 믿지 않고 코스 자체와 대조합니다.** `attractionId` 는 이 코스에 실제로 있는 장소여야 하고, `date` 는 코스의 `targetDate` 에서 ±14일 안이어야 하며(한적 예보가 그보다 먼 날짜를 갖고 있지 않습니다), `radiusKm` 은 1~50(기본 15)이어야 합니다. **거부된 인자는 도구 결과 자리에 그대로 되먹입니다 — 던지지 않습니다.** 던지면 한 번 잘못 부른 것이 요청 전체를 죽이지만, 사유를 되먹이면 모델이 스스로 고쳐 부르거나 그 도구 없이 포기하고 답할 수 있습니다.
+
+**루프는 스스로 멈춥니다.** 도구 라운드는 최대 2회이고, 이는 모델 호출을 최대 3회로 묶으며, 이 라운드들과 아래 수리가 함께 쓰는 마감 60초 안에서 돕니다. 라운드나 마감이 떨어지면 모델을 **그 호출에서만 도구를 뺀 채** 한 번 더 부릅니다 — 다시 부르는 것이 프롬프트 문구로 말리는 수준이 아니라 구조적으로 불가능해집니다. 그런데도 제안하지 않은 도구를 부르면 예산 밖에서 계속 도는 대신 실패로 닫습니다 — 끝없는 지출보다 안전한 실패가 낫습니다. 도구 라운드마다 도구를 실행하기 전에 `event: looking` 을 `{"what":"congestion"}`(또는 `"alternatives"`)과 함께 보내 화면이 "조회 중"을 말할 수 있게 합니다 — 프레임에는 도구 이름만 실리고 인자는 실리지 않습니다.
+
+**인용 무효에는 수리가 딱 한 번, 도구 없이 있습니다.** 답의 인용이 검증을 통과하지 못하면 모델을 도구 없이 한 번 더 불러 번들에 실재하는 경로로 다시 쓰게 합니다. 이건 오직 그 이유로만 발동합니다 — 거절이나 본문 중간에 끊긴 스트림은 이미 자기 종결 이벤트가 있어 수리로 돌아가지 않습니다.
+
+**`unavailable` 앞에는 `delta` 가 0개라는 불변식은 이 브랜치 이전부터 있었고 지금도 그대로입니다.** looking 프레임과 도구 라운드는 전부 `AskStreamGate` 앞에 있고, 게이트의 규칙은 바뀌지 않았습니다 — `unavailable` 로 끝나는 스트림 앞에는 `delta` 가 0개입니다. `looking` 프레임은 `unavailable` 앞에 올 수 있습니다 — `looking` 은 `delta` 가 아닙니다.
+
 <br/>
 
-## 🔀 설명 요청 흐름도
+## 🔀 요청 흐름도
 
 <div align="center">
 
-<img src="docs/images/flow.svg" alt="설명 요청 흐름도 — 백엔드 응답 3종은 FactsNormalizer 를 지나 BackendFacts 로, hanjeok-bundle.txt 는 BundleLoader·PromptAssembler 를 지나 systemText 로 들어가 ExplanationService.explain() 에서 만난다. ProviderResult 가 Refused·Failed 면 Unavailable, Answered 면 CitationValidator 로 가고, 인용이 유효하면 Explained 가 되어 ForbiddenBehaviours.check() 를 거친다. 두 갈래 모두 ViolationTally 로 모인다." width="900">
+<img src="docs/images/flow.svg" alt="설명 요청 흐름도 — 백엔드 응답 3종은 FactsNormalizer 를 지나 BackendFacts 로, hanjeok-bundle.txt 는 BundleLoader·PromptAssembler 를 지나 systemText 로 들어가 ExplanationService.explain() 에서 만난다. ProviderResult 가 Refused·Failed 면 Unavailable, Answered 면 CitationValidator 로 가고, 인용이 유효하면 Explained 가 되어 ForbiddenBehaviours.check() 를 거친다. 두 갈래 모두 ViolationTally 로 모인다. 아래 두 번째 갈래는 POST /agent/ask/stream 전용이다 — CourseQuestionService.askStream() 이 AgentLoop 를 돌려 congestion·alternatives 를 최대 2라운드, 마감 60초 안에서 부를 수 있고, AskStreamGate 가 인용을 검증한 뒤 답을 흘리거나 한 번 수리하거나 unavailable·aborted 로 끝난다 — unavailable 앞의 delta 는 언제나 0개다." width="900">
 
 </div>
 
 `백엔드 응답 3종 → FactsNormalizer → BackendFacts` 와 `hanjeok-bundle.txt → BundleLoader → PromptAssembler` 가 `ExplanationService.explain()` 에서 만나고, `ExplanationProvider → ProviderResult → CitationValidator` 를 지나 `Explained` 또는 `Unavailable` 로 갈라진 뒤 `ForbiddenBehaviours.check()` · `ViolationTally` 로 모입니다.
 
 `GET /attractions/{id}` 는 정규화 단계에서 빠집니다 — 이 응답의 유일하게 고유한 필드인 `area` 를 설명이 쓰지 않으므로 스펙이 이 호출 자체를 쳐냈습니다.
+
+구분선 아래 갈래는 위 흐름이 이어진 것이 아니라 별도 진입점입니다 — `POST /agent/ask/stream` 은 `ExplanationService` 를 전혀 거치지 않습니다. 대신 `CourseQuestionService.askStream()` 이 `AgentLoop` 를 돌리고, 위 "주요 기능"에서 설명한 도구 루프가 거기 있습니다. 끝나는 곳도 `ForbiddenBehaviours` 가 아니라 `AskStreamGate` 입니다 — 금지 행동 8종 판정은 이 요청 경로가 아니라 평가 하네스가 합니다.
 
 어댑터는 하나입니다(`SpringAiExplanationProvider`). 프로바이더별 차이는 어댑터 코드가 아니라 `ChatClients`가 조립하는 옵션에만 있습니다 — openai와 openrouter는 둘 다 OpenAI 호환 규격을 타므로 이 표에서는 한 열로 묶입니다.
 

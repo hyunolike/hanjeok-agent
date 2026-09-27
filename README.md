@@ -119,19 +119,33 @@ The `user` turn puts **the facts first and the question last**. A question is te
 
 **Time to the first visible character: 4.7–6.9s before, 1.1–3.5s after.** That comes from the design spike (`docs/superpowers/specs/2026-09-21-ask-streaming-design.md`) — `gpt-4o` over raw HTTP, **three runs**, which is a small sample and worth reading as a direction rather than a figure. Anthropic and OpenRouter were never measured. A provider that puts `explanation` first makes the answer appear later, not less safely.
 
+### 7. A tool loop for facts the initial payload doesn't carry
+
+`POST /agent/ask/stream` can reach past the `facts` it was given. `AgentLoop` offers the model two tools — `congestion(attractionId, date)` and `alternatives(attractionId, date, radiusKm)` — only on that streaming follow-up path; the initial explanation and the blocking `POST /agent/ask` never see a tool. They exist for the question the fixed facts don't answer, not as a general-purpose lookup.
+
+**Arguments are checked against the course, not trusted from the model.** `attractionId` must be one of this course's own places, `date` must fall within ±14 days of the course's `targetDate` (hanjeok's forecast has nothing further out), and `radiusKm` must be 1–50 (default 15). **A rejected argument is fed back to the model as the tool's result — never thrown.** Throwing would let one bad call kill the whole request; feeding the reason back lets the model correct itself or give up and answer without it.
+
+**The loop stops on its own.** At most 2 tool rounds run, which caps the request at 3 model calls, inside a 60-second deadline shared across every round and the repair below. When the rounds or the deadline run out, the model is asked once more **with the tools removed from that call** — asking again becomes structurally impossible, not just discouraged by a sentence in the prompt. If a call still tries to invoke a tool it wasn't offered, that is treated as a failure rather than run past budget: an unbounded loop costs more than a safe failure does. Each tool round sends `event: looking` with `{"what":"congestion"}` (or `"alternatives"`) before the tool runs, so the UI can say a lookup is in progress — the frame carries the tool's name only, never its arguments.
+
+**Invalid citations get exactly one repair, and it never carries tools.** If an answer's citations don't validate, the model is asked once more, tools removed, to rewrite using paths that actually exist in the bundle. This fires only for that reason — a refusal or a stream that breaks mid-body already has its own terminal event and is never sent back for repair.
+
+**The zero-`delta`-before-`unavailable` invariant predates this branch and still holds.** Looking frames and tool rounds all sit in front of `AskStreamGate`, and the gate's rule is unchanged: a stream that ends `unavailable` was preceded by zero `delta` events. `looking` frames can appear before `unavailable` — a `looking` frame is not a `delta`.
+
 <br/>
 
-## 🔀 Explanation Request Flow
+## 🔀 Request Flow
 
 <div align="center">
 
-<img src="docs/images/flow.en.svg" alt="Explanation request flow — three backend responses pass through FactsNormalizer into BackendFacts, while hanjeok-bundle.txt passes through BundleLoader and PromptAssembler into systemText; both meet in ExplanationService.explain(). A ProviderResult that is Refused or Failed becomes Unavailable, one that is Answered goes to CitationValidator, and valid citations make it Explained, which ForbiddenBehaviours.check() judges. Both branches end in ViolationTally." width="900">
+<img src="docs/images/flow.en.svg" alt="Explanation request flow — three backend responses pass through FactsNormalizer into BackendFacts, while hanjeok-bundle.txt passes through BundleLoader and PromptAssembler into systemText; both meet in ExplanationService.explain(). A ProviderResult that is Refused or Failed becomes Unavailable, one that is Answered goes to CitationValidator, and valid citations make it Explained, which ForbiddenBehaviours.check() judges. Both branches end in ViolationTally. A second, separate lane below it covers POST /agent/ask/stream: CourseQuestionService.askStream() runs AgentLoop, which can call congestion and alternatives for up to 2 tool rounds inside a 60-second deadline before AskStreamGate validates citations and either streams the answer, repairs it once, or ends unavailable or aborted — with zero delta events before any unavailable." width="900">
 
 </div>
 
 `3 backend responses → FactsNormalizer → BackendFacts` and `hanjeok-bundle.txt → BundleLoader → PromptAssembler` meet in `ExplanationService.explain()`, pass through `ExplanationProvider → ProviderResult → CitationValidator`, split into `Explained` or `Unavailable`, and end up in `ForbiddenBehaviours.check()` · `ViolationTally`.
 
 `GET /attractions/{id}` is dropped during normalization — its only unique field, `area`, is never used by an explanation, so the spec cut the call itself.
+
+The lane below the divider is a separate entry point, not a continuation of the one above — `POST /agent/ask/stream` never runs through `ExplanationService`. `CourseQuestionService.askStream()` drives `AgentLoop` instead, which is where the tool loop described under "Key Features" above lives, and it ends at `AskStreamGate`, not at `ForbiddenBehaviours` — the eight forbidden behaviours are judged by the evaluation harness, not on this request path.
 
 There is one adapter (`SpringAiExplanationProvider`). Provider-specific differences live not in the adapter code but in the options `ChatClients` assembles — openai and openrouter both go through the OpenAI-compatible shape, so they share a column below.
 
