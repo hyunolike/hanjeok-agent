@@ -39,11 +39,9 @@
 
 ### 🎬 What this agent actually does
 
-<video src="https://raw.githubusercontent.com/hyunolike/hanjeok-agent/main/docs/media/hanjeok-agent.mp4" poster="docs/media/hanjeok-agent.jpg" controls muted playsinline width="820">
-  <a href="docs/media/hanjeok-agent.mp4">Watch the 21-second overview</a>
-</video>
+<a href="docs/media/hanjeok-agent.mp4"><img src="docs/media/hanjeok-agent.gif" alt="A question is typed, an answer begins to stream, and it stops — EXPLANATION_UNAVAILABLE. The cited path was not in the bundle, so the whole answer was withheld. Then: the nine documents that are the entire evidence set, a normal run where citations arrive before the body, the tool loop fetching a fact it was missing, and the closing line — no grounds, no answer." width="820"></a>
 
-<sub>21 seconds. The agent's main job is not answering — it is refusing to.<br/>Every number in it is measured: 9 documents, 23,079 bytes, and a fabricated citation blocked 5 times out of 5 on the first real run.</sub>
+<sub>21 seconds. The agent's main job is not answering — it is refusing to. **[Click for the version with sound →](docs/media/hanjeok-agent.mp4)**<br/>Every number in it is measured: 9 documents, 23,079 bytes, and a fabricated citation blocked 5 times out of 5 on the first real run.</sub>
 
 </div>
 
