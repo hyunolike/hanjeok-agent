@@ -39,11 +39,9 @@
 
 ### 🎬 이 에이전트가 실제로 하는 일
 
-<video src="https://raw.githubusercontent.com/hyunolike/hanjeok-agent/main/docs/media/hanjeok-agent.mp4" poster="docs/media/hanjeok-agent.jpg" controls muted playsinline width="820">
-  <a href="docs/media/hanjeok-agent.mp4">21초짜리 소개 영상 보기</a>
-</video>
+<a href="docs/media/hanjeok-agent.mp4"><img src="docs/media/hanjeok-agent.gif" alt="질문이 타이핑되고 답이 흐르다 멎는다 — EXPLANATION_UNAVAILABLE. 인용한 경로가 번들에 없어 답변 전체가 나가지 않았다. 이어서 근거의 전부인 문서 9개, 인용이 본문보다 먼저 오는 정상 동작, 모자란 사실을 직접 조회하는 도구 루프, 그리고 마지막 문장 — 근거가 없으면 답하지 않는다." width="820"></a>
 
-<sub>21초. 이 에이전트의 주요 역할은 답하는 것이 아니라 막는 것입니다.<br/>영상 속 숫자는 전부 실측입니다 — 문서 9개, 23,079바이트, 첫 실전 실행에서 지어낸 출처 5번이 5번 다 막혔습니다.</sub>
+<sub>21초. 이 에이전트의 주요 역할은 답하는 것이 아니라 막는 것입니다. **[소리까지 있는 버전 →](docs/media/hanjeok-agent.mp4)**<br/>영상 속 숫자는 전부 실측입니다 — 문서 9개, 23,079바이트, 첫 실전 실행에서 지어낸 출처 5번이 5번 다 막혔습니다.</sub>
 
 </div>
 
