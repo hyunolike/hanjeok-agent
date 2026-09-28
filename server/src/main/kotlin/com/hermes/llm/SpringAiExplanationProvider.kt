@@ -3,14 +3,24 @@ package com.hermes.llm
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.LoggerFactory
 import org.springframework.ai.chat.client.ChatClient
+import org.springframework.ai.chat.messages.AssistantMessage
+import org.springframework.ai.chat.messages.Message
 import org.springframework.ai.chat.messages.SystemMessage
+import org.springframework.ai.chat.messages.ToolResponseMessage
 import org.springframework.ai.chat.messages.UserMessage
+import org.springframework.ai.chat.model.ChatModel
 import org.springframework.ai.chat.model.ChatResponse
 import org.springframework.ai.chat.model.Generation
+import org.springframework.ai.chat.model.ToolContext
+import org.springframework.ai.chat.prompt.ChatOptions
 import org.springframework.ai.chat.prompt.Prompt
+import org.springframework.ai.model.tool.ToolCallingChatOptions
+import org.springframework.ai.tool.ToolCallback
+import org.springframework.ai.tool.definition.DefaultToolDefinition
+import org.springframework.ai.tool.definition.ToolDefinition
 
 /**
- * 포트 뒤의 단일 구현. 프로바이더별 차이는 주입된 `ChatClient` 가 들고 있고,
+ * 포트 뒤의 단일 구현. 프로바이더별 차이는 주입된 `ChatModel` 이 들고 있고,
  * 여기서는 어느 프로바이더인지 알 필요가 없다.
  *
  * 포트를 남긴 이유는 바뀌지 않았다 — "같은 프롬프트와 같은 검증으로 비교한다"는
@@ -18,10 +28,16 @@ import org.springframework.ai.chat.prompt.Prompt
  */
 class SpringAiExplanationProvider(
     override val name: String,
-    private val chatClient: ChatClient,
+    private val chatModel: ChatModel,
 ) : ExplanationProvider {
 
     private val log = LoggerFactory.getLogger(SpringAiExplanationProvider::class.java)
+
+    // explain()/stream() 은 지금까지와 똑같이 ChatClient 를 쓴다. 기존 경로의 요청
+    // 바이트를 건드리지 않기 위해서다 — `ChatClient.create(model)` 는 지금까지
+    // LlmSelection 이 세 분기에서 하던 것과 **같은 조립**이다. 달라진 것은 그 호출이
+    // 일어나는 자리뿐이다.
+    private val chatClient: ChatClient = ChatClient.create(chatModel)
 
     // 블록 바디다 — 응답이 null 일 때 조기 return 이 필요한데, 식 바디(`= try { ... }`)
     // 에서는 Kotlin 2.2 가 그 return 을 금지한다(컴파일로 확인: "Returns are
@@ -88,6 +104,127 @@ class SpringAiExplanationProvider(
         StreamFailed("${e::class.simpleName}: ${e.message}")
     }
 
+    /**
+     * 도구를 실을 수 있는 대화. **ChatClient 를 우회하고 ChatModel 을 직접 부른다.**
+     *
+     * Spring AI 2.0.1 에서 도구를 정의해 보내는 일과 실행하는 일이 다른 계층에 있다.
+     * `OpenAiChatModel`/`AnthropicChatModel` 은 `resolveToolDefinitions` 만 부르고
+     * `executeToolCalls` 는 부르지 않는다(설치된 jar 를 뜯어 확인 — 두 클래스의
+     * 바이트코드에 `executeToolCalls` 참조가 0 개다). 실행은 `ToolCallingAdvisor` 가
+     * 하고, `DefaultChatClientBuilder` 는 그 어드바이저를 항상 하나 만들어 단다.
+     * 그래서 ChatClient 를 타면 도구가 우리 모르게 실행된다 — 예산도, 인자 검증도,
+     * 인용 게이트도 거치지 않고. 루프는 AgentLoop 의 것이므로 여기서는 실행되지 않은
+     * 도구 호출을 그대로 돌려준다.
+     *
+     * 도구가 비어 있으면 옵션을 얹지 않는다 — 요청 바이트가 기존 stream() 과 같아야
+     * 프롬프트 캐시 접두사가 갈라지지 않는다.
+     *
+     * 블록 바디다 — 식 바디에서는 Kotlin 이 return 을 금지하는데(`explain` 의 주석
+     * 참고), 여기서도 도구 호출을 만나면 나머지 판정을 건너뛰어야 한다.
+     */
+    override fun converse(
+        systemText: String,
+        turns: List<Turn>,
+        tools: List<ToolSpec>,
+        onChunk: (String) -> Unit,
+    ): AgentStep {
+        return try {
+            var last: ChatResponse? = null
+            var refused = false
+            var toolStep: ToolRequested? = null
+            var sawBody = false
+
+            chatModel.stream(promptFor(systemText, turns, tools))
+                .doOnNext { response ->
+                    last = response
+                    val generation = response.result
+                    if (generation != null && isRefusal(generation)) refused = true
+
+                    // 본문이 이미 나가기 시작했으면 그 턴은 최종 답이다. 같은 턴의 도구
+                    // 호출은 무시한다 — 나간 본문은 게이트가 인용을 검증한 것이고,
+                    // 여기서 끊으면 사용자가 읽던 문장이 사라진다.
+                    if (!sawBody && toolStep == null) {
+                        toolStep = toAgentStep(response) as? ToolRequested
+                    }
+
+                    val text = generation?.output?.text
+                    if (!text.isNullOrEmpty()) {
+                        // 도구 호출로 이미 갈렸으면 본문을 내보내지 않는다 —
+                        // ToolRequested 계약이 "onChunk 가 한 번도 안 불렸다" 이기
+                        // 때문이다.
+                        if (toolStep == null) {
+                            sawBody = true
+                            onChunk(text)
+                        }
+                    }
+                }
+                .blockLast()
+
+            toolStep ?: when {
+                refused -> Spoke(StreamRefused(category = null))
+                // 스트리밍에서 usage 가 없을 수 있는 것은 stream() 과 같다.
+                else -> Spoke(StreamCompleted(last?.let { usageOf(it) } ?: ProviderUsage(0, 0, 0, 0)))
+            }
+        } catch (e: Exception) {
+            // 포트 계약대로 언제나 AgentStep 을 돌려준다 — 다른 프로바이더가 절대
+            // 던지지 않는 예외를 호출자마다 처리하게 만들 수는 없다. 대신 **로그에서는
+            // 갈라 놓는다.** `withToolCallbacks` 의 IllegalStateException 과 프로바이더
+            // 옵션 캐스팅의 ClassCastException 은 "요청이 한 번도 나가지 않았다" 는
+            // 뜻이고, 이 부류는 영구적 배선 오류라 재시도가 영원히 같은 결과를 낸다.
+            // 소켓 타임아웃과 같은 WARN 에 묻히면 운영에서 구분할 방법이 없다.
+            if (e is IllegalStateException || e is ClassCastException) {
+                log.error(
+                    "$name converse could not assemble the request — wiring/misconfiguration fault, " +
+                        "not a transient failure: no request was sent and retrying will not help",
+                    e,
+                )
+            } else {
+                log.warn("$name converse failed", e)
+            }
+            Spoke(StreamFailed("${e::class.simpleName}: ${e.message}"))
+        }
+    }
+
+    private fun promptFor(systemText: String, turns: List<Turn>, tools: List<ToolSpec>): Prompt {
+        val messages = toMessages(systemText, turns)
+        // 도구가 없으면 옵션 자리를 비워 둔다. 이 경로의 요청 바이트는 stream() 과
+        // 같아야 한다 — 프롬프트 캐시 접두사가 갈라지면 캐시가 통째로 무효가 된다.
+        if (tools.isEmpty()) return Prompt(messages)
+        return Prompt(messages, withToolCallbacks(chatModel.options, tools))
+    }
+
+    /**
+     * `system` 블록은 증거 묶음 그대로다 — 여기에 아무것도 덧붙이지 않는다.
+     */
+    private fun toMessages(systemText: String, turns: List<Turn>): List<Message> =
+        buildList {
+            add(SystemMessage(systemText))
+            turns.forEach { turn ->
+                when (turn) {
+                    is UserTurn -> add(UserMessage(turn.text))
+                    is ToolCallTurn -> add(
+                        AssistantMessage.builder()
+                            .content("")
+                            .toolCalls(
+                                turn.calls.map {
+                                    AssistantMessage.ToolCall(it.id, "function", it.name, it.argumentsJson)
+                                },
+                            )
+                            .build(),
+                    )
+                    // 생성자가 아니라 빌더다 — `ToolResponseMessage` 의 유일한 생성자는
+                    // protected 라 밖에서 부를 수 없다(javap 로 확인).
+                    is ToolResultTurn -> add(
+                        ToolResponseMessage.builder()
+                            .responses(
+                                turn.results.map { ToolResponseMessage.ToolResponse(it.id, "", it.contentJson) },
+                            )
+                            .build(),
+                    )
+                }
+            }
+        }
+
     // public 이다(companion 자체를 private 로 두지 않는다) — Task 6 리뷰가 요구한
     // "매핑은 손으로 조립한 ChatResponse 로 직접 테스트할 수 있어야 한다" 를 만족하려면
     // SpringAiResponseMappingTest 가 SpringAiExplanationProvider.toProviderResult 를
@@ -141,6 +278,63 @@ class SpringAiExplanationProvider(
                 ),
                 usage = usageOf(response),
             )
+        }
+
+        /**
+         * 응답에 실행되지 않은 도구 호출이 담겨 있으면 `ToolRequested` 로, 아니면
+         * "도구는 없었다"는 뜻의 `Spoke` 자리표시자를 낸다. 순수 함수라 손으로 조립한
+         * `ChatResponse` 로 직접 테스트한다 — `toProviderResult` 와 같은 이유다.
+         */
+        fun toAgentStep(response: ChatResponse): AgentStep {
+            val calls = response.result?.output?.toolCalls.orEmpty()
+            if (calls.isEmpty()) return Spoke(StreamCompleted(usageOf(response)))
+            return ToolRequested(
+                calls = calls.map { ToolCall(it.id(), it.name(), it.arguments()) },
+                usage = usageOf(response),
+            )
+        }
+
+        /**
+         * 도구 정의만 싣기 위한 콜백. `resolveToolDefinitions` 가 콜백에서 정의를
+         * 뽑으므로 콜백 자체는 있어야 하는데, **실행은 AgentLoop 가 한다.**
+         * 여기가 불렸다면 ChatClient 를 타고 있다는 뜻이므로 조용히 넘어가지 않고
+         * 터뜨린다.
+         */
+        fun neverExecutedCallback(spec: ToolSpec): ToolCallback = object : ToolCallback {
+            override fun getToolDefinition(): ToolDefinition =
+                DefaultToolDefinition.builder()
+                    .name(spec.name)
+                    .description(spec.description)
+                    .inputSchema(spec.parametersSchema)
+                    .build()
+
+            override fun call(toolInput: String): String =
+                error("도구는 AgentLoop 가 실행한다. 이 콜백이 불렸다면 ChatClient 경로를 탄 것이다.")
+
+            override fun call(toolInput: String, toolContext: ToolContext?): String = call(toolInput)
+        }
+
+        /**
+         * 프로바이더의 **기본 옵션 위에** 도구 콜백만 얹는다. 빈
+         * `ToolCallingChatOptions` 를 새로 만들면 안 된다 — 프롬프트에 옵션이 실리면
+         * 기본 옵션은 병합되는 게 아니라 **통째로 대체된다**. 두 모델의
+         * `buildRequestPrompt` 를 바이트코드로 확인했다: 둘 다
+         * `prompt.getOptions() == null` 일 때만 모델의 기본 옵션을 끼워 넣고,
+         * 아니면 프롬프트 옵션을 그대로 흘린다. 게다가
+         * `AnthropicChatModel.resolveAnthropicOptions` 는 프롬프트 옵션이
+         * `AnthropicChatOptions` 가 아니면 **빈** `AnthropicChatOptions` 를 만들어
+         * 쓰므로, 빈 옵션을 넘기면 `createRequest` 가 `getMaxTokens().intValue()` 에서
+         * NPE 로 죽는다. `mutate()` 로 가면 model/maxTokens/캐시 전략/출력 스키마가
+         * 그대로 남는다.
+         */
+        fun withToolCallbacks(base: ChatOptions, tools: List<ToolSpec>): ChatOptions {
+            val callbacks = tools.map { neverExecutedCallback(it) }
+            val toolCapable = base as? ToolCallingChatOptions
+                ?: error(
+                    "provider options ${base::class.simpleName} are not ToolCallingChatOptions — " +
+                        "tools cannot be sent without dropping the provider's model and max_tokens",
+                )
+            return toolCapable.mutate().toolCallbacks(callbacks).build()
         }
 
         /**

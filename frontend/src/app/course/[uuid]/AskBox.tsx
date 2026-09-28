@@ -5,11 +5,20 @@ import { askCourseStream, type AskTurn } from '@/lib/agent'
 import { CitationSheet } from './CitationSheet'
 
 type Exchange =
-  | { question: string; status: 'streaming'; citations: string[]; text: string }
+  | { question: string; status: 'streaming'; citations: string[]; text: string; looking: string | null }
   | { question: string; status: 'answered'; answer: string; citations: string[] }
   | { question: string; status: 'failed' }
 
 const SUGGESTIONS = ['왜 이 순서예요?', '왜 이 장소들이에요?', '다른 날이 더 나은가요?']
+
+const LOOKING_LABEL: Record<string, string> = {
+  congestion: '혼잡도를 다시 확인하는 중',
+  alternatives: '주변 대안을 찾아보는 중',
+}
+
+// 모르는 이름이 와도 화면이 비지 않게 한다 — 서버가 도구를 늘려도 프론트가 먼저
+// 깨지지 않는다.
+const labelFor = (what: string) => LOOKING_LABEL[what] ?? '자료를 더 찾아보는 중'
 
 /**
  * 코스에 대해 이어 묻는다.
@@ -40,7 +49,10 @@ export function AskBox({ courseUuid }: { courseUuid: string }) {
     // asking 이 동시 질문을 막으므로 이 자리는 끝날 때까지 이 질문의 것이다.
     const index = exchanges.length
     const put = (next: Exchange) => setExchanges((prev) => prev.map((e, i) => (i === index ? next : e)))
-    setExchanges((prev) => [...prev, { question: trimmed, status: 'streaming', citations: [], text: '' }])
+    setExchanges((prev) => [
+      ...prev,
+      { question: trimmed, status: 'streaming', citations: [], text: '', looking: null },
+    ])
 
     let citations: string[] = []
     let body = ''
@@ -48,11 +60,16 @@ export function AskBox({ courseUuid }: { courseUuid: string }) {
       switch (event.kind) {
         case 'citations':
           citations = event.citations
-          put({ question: trimmed, status: 'streaming', citations, text: body })
+          put({ question: trimmed, status: 'streaming', citations, text: body, looking: null })
           break
         case 'delta':
           body += event.text
-          put({ question: trimmed, status: 'streaming', citations, text: body })
+          put({ question: trimmed, status: 'streaming', citations, text: body, looking: null })
+          break
+        case 'looking':
+          // delta 가 아니다 — "답이 시작됐다"는 상태를 만들지 않고, 이미 흐르고
+          // 있는 본문(citations/text) 은 그대로 둔 채 안내만 얹는다.
+          put({ question: trimmed, status: 'streaming', citations, text: body, looking: event.what })
           break
         case 'done':
           // 본문을 확정하는 조건은 이것 하나뿐이다.
@@ -79,6 +96,9 @@ export function AskBox({ courseUuid }: { courseUuid: string }) {
             <p className="text-sm opacity-70">답을 만들지 못했어요. 잠시 후 다시 물어봐 주세요.</p>
           ) : (
             <>
+              {exchange.status === 'streaming' && exchange.looking && (
+                <p className="text-sm opacity-70">{labelFor(exchange.looking)}</p>
+              )}
               <p className="whitespace-pre-wrap text-sm leading-relaxed opacity-90">
                 {exchange.status === 'answered' ? exchange.answer : exchange.text}
               </p>

@@ -78,6 +78,7 @@ export function fetchContextList(fetchImpl?: Fetch): Promise<Result<ContextEntry
 export type AskStreamEvent =
   | { kind: 'citations'; citations: string[] }
   | { kind: 'delta'; text: string }
+  | { kind: 'looking'; what: string }
   | { kind: 'done'; generatedAt: string; model: string }
   | { kind: 'unavailable' }
   | { kind: 'aborted' }
@@ -135,6 +136,12 @@ export async function askCourseStream(
       case 'delta':
         deltas++
         onEvent({ kind: 'delta', text: payload.text })
+        break
+      case 'looking':
+        // 도구 이름만 온다 — 인자는 실려 오지 않는다. delta 가 아니므로 deltas 는
+        // 건드리지 않는다: done 없이 끊겼을 때 aborted/unavailable 을 가르는 신호가
+        // "본문을 받았는가"이지 "뭔가 왔는가"가 아니기 때문이다.
+        onEvent({ kind: 'looking', what: String(payload.what ?? '') })
         break
       case 'done':
         terminated = true

@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.hermes.context.BundleLoader
 import com.hermes.context.CitationValidator
 import com.hermes.context.PromptAssembler
+import com.hermes.explain.AgentLoop
 import com.hermes.explain.CourseQuestionService
+import com.hermes.explain.ToolRunner
 import com.hermes.facts.FactsSource
 import com.hermes.facts.HanjeokClient
 import com.hermes.facts.HanjeokUnavailableException
@@ -22,6 +24,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import java.time.Clock
 import java.util.concurrent.Executors
 
 /**
@@ -63,12 +66,23 @@ class AskControllerTest {
     private fun answered(citations: List<String> = listOf("concepts/course-generation-policy.md")) =
         Answered(Explanation("이동 시간이 가장 짧아요.", citations), ProviderUsage(0, 0, 0, 0))
 
+    /** 비스트리밍 경로는 루프를 타지 않는다 — 여기서 도구가 실행되면 배선이 샌 것이다. */
+    private fun questionService(provider: ExplanationProvider): CourseQuestionService {
+        val validator = CitationValidator(bundle)
+        return CourseQuestionService(
+            PromptAssembler(bundle),
+            validator,
+            provider,
+            AgentLoop(provider, validator, ToolRunner { error("ask() 는 도구를 부르지 않는다") }, Clock.systemUTC()),
+        )
+    }
+
     private fun mvc(provider: ExplanationProvider, client: HanjeokClient = FakeClient()): MockMvc =
         MockMvcBuilders
             .standaloneSetup(
                 AskController(
                     FactsSource(client, 15, executor),
-                    CourseQuestionService(PromptAssembler(bundle), CitationValidator(bundle), provider),
+                    questionService(provider),
                     "gpt-4o",
                 ),
             )

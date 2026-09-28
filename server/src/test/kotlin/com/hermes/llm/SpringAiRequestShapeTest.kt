@@ -6,7 +6,6 @@ import com.hermes.shared.config.LlmSelection
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.ai.anthropic.AnthropicChatModel
-import org.springframework.ai.chat.client.ChatClient
 import com.anthropic.client.okhttp.AnthropicOkHttpClient
 
 /**
@@ -32,7 +31,7 @@ class SpringAiRequestShapeTest {
             .anthropicClient(client)
             .options(ChatClients.anthropicOptions("claude-opus-5"))
             .build()
-        return SpringAiExplanationProvider("anthropic", ChatClient.create(model))
+        return SpringAiExplanationProvider("anthropic", model)
     }
 
     // baseUrl 은 이미 /v1 로 끝난 값을 받는다 — 호출부가 endpoint.baseUrl + "/v1" 을 준다.

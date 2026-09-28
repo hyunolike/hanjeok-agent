@@ -1,11 +1,13 @@
 package com.hermes.explain.presentation
 
 import com.hermes.explain.AbortedEvent
-import com.hermes.explain.BackendFacts
+import com.hermes.explain.AskStreamEvent
 import com.hermes.explain.CitationsEvent
 import com.hermes.explain.CourseQuestionService
 import com.hermes.explain.DeltaEvent
 import com.hermes.explain.DoneEvent
+import com.hermes.explain.FailureCause
+import com.hermes.explain.LookingEvent
 import com.hermes.explain.QuestionTurn
 import com.hermes.explain.UnavailableEvent
 import com.hermes.facts.FactsSource
@@ -56,33 +58,58 @@ class AskStreamController(
     }
 
     private fun run(request: AskRequest, emitter: SseEmitter) {
-        val facts = try {
-            source.fetch(request.courseUuid)
+        // 사실 조회 실패도 스트림 이벤트 하나로 끝난다 — 여기만 다른 길로 내보내면
+        // 프레임을 만드는 곳이 둘이 되고, 둘 중 하나만 불투명해지기 쉽다.
+        val fetched = try {
+            // 도구 경계는 코스가 정한다. 같은 파싱에서 나오므로 왕복은 늘지 않는다.
+            source.fetchWithBounds(request.courseUuid)
         } catch (e: HanjeokUnavailableException) {
             log.warn("facts unavailable for course {}", request.courseUuid, e)
-            send(emitter, "unavailable", UNAVAILABLE)
+            emit(request, emitter, UnavailableEvent("facts: ${e.message}", FailureCause.FACTS))
             return
         }
 
         val history = request.history.orEmpty().map { QuestionTurn(it.question, it.answer) }
 
-        service.askStream(BackendFacts(facts.courseUuid, facts.json), request.question, history) { event ->
-            when (event) {
-                is CitationsEvent -> send(emitter, "citations", mapOf("citations" to event.citations))
-                is DeltaEvent -> send(emitter, "delta", mapOf("text" to event.text))
-                is DoneEvent -> send(
-                    emitter,
-                    "done",
-                    mapOf("generatedAt" to Instant.now().toString(), "model" to model),
+        service.askStream(fetched.facts, fetched.bounds, request.question, history) { event ->
+            emit(request, emitter, event)
+        }
+    }
+
+    private fun emit(request: AskRequest, emitter: SseEmitter, event: AskStreamEvent) {
+        when (event) {
+            is CitationsEvent -> send(emitter, "citations", mapOf("citations" to event.citations))
+            is DeltaEvent -> send(emitter, "delta", mapOf("text" to event.text))
+            // 도구 이름은 CourseTools 가 아는 둘 중 하나다 — 모델이 부른 이름이
+            // 그대로 나가는 것이 아니라, 인자 검증을 통과한 호출만 여기 온다.
+            // **인자는 싣지 않는다.** 화면에 필요한 것은 "무엇을 조회 중인가" 뿐이고,
+            // 인자에는 질문에서 유도된 값이 섞인다.
+            is LookingEvent -> send(emitter, "looking", mapOf("what" to event.what))
+            is DoneEvent -> send(
+                emitter,
+                "done",
+                mapOf("generatedAt" to Instant.now().toString(), "model" to model),
+            )
+            // 프레임은 코드만 싣는다. 그래서 **원인이 관찰되는 곳은 이 로그뿐이다** —
+            // 한적이 죽은 것과 모델이 거절한 것과 인용이 틀린 것을 운영자가 사유
+            // 문자열로 짐작하지 않게 타입을 그대로 찍는다.
+            is UnavailableEvent -> {
+                log.warn(
+                    "answer unavailable for course {} ({}): {}",
+                    request.courseUuid,
+                    event.cause,
+                    event.reason,
                 )
-                is UnavailableEvent -> {
-                    log.warn("answer unavailable for course {}: {}", request.courseUuid, event.reason)
-                    send(emitter, "unavailable", UNAVAILABLE)
-                }
-                is AbortedEvent -> {
-                    log.warn("answer aborted for course {}: {}", request.courseUuid, event.reason)
-                    send(emitter, "aborted", ABORTED)
-                }
+                send(emitter, "unavailable", UNAVAILABLE)
+            }
+            is AbortedEvent -> {
+                log.warn(
+                    "answer aborted for course {} ({}): {}",
+                    request.courseUuid,
+                    event.cause,
+                    event.reason,
+                )
+                send(emitter, "aborted", ABORTED)
             }
         }
     }

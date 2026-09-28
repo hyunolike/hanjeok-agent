@@ -228,6 +228,74 @@ describe('코스 후속 질문', () => {
     expect(ask.mock.calls[1][2]).toEqual([])
   })
 
+  it('조회 중에는 안내를 보여 주고 citations/delta 가 오면 치운다', async () => {
+    const { impl, advance } = stepStream([
+      { kind: 'looking', what: 'congestion' },
+      { kind: 'citations', citations: ['a.md'] },
+      { kind: 'delta', text: '답' },
+      DONE,
+    ])
+    vi.spyOn(agent, 'askCourseStream').mockImplementation(impl)
+
+    render(<AskBox courseUuid="abc" />)
+    await userEvent.type(screen.getByLabelText('이 코스에 대해 더 묻기'), '다른 날은 어때요?')
+    await userEvent.click(screen.getByRole('button', { name: '묻기' }))
+
+    expect(await screen.findByText(/혼잡도를 다시 확인/)).toBeInTheDocument()
+
+    advance(0)
+    await waitFor(() => expect(screen.queryByText(/혼잡도를 다시 확인/)).not.toBeInTheDocument())
+
+    advance(1)
+    advance(2)
+    await waitFor(() => expect(screen.queryByRole('button', { name: '묻는 중…' })).not.toBeInTheDocument())
+    expect(screen.getByText('답')).toBeInTheDocument()
+    // done 이후에도 안내가 남아 있지 않아야 한다 — done 은 답을 확정하는 유일한
+    // 조건이므로, 여기서 이전 looking 문구가 되살아나면 안 된다.
+    expect(screen.queryByText(/혼잡도를 다시 확인/)).not.toBeInTheDocument()
+  })
+
+  it('looking 중 unavailable 이 오면 안내가 사라지고 실패 문구만 보인다', async () => {
+    const { impl, advance } = stepStream([{ kind: 'looking', what: 'congestion' }, { kind: 'unavailable' }])
+    vi.spyOn(agent, 'askCourseStream').mockImplementation(impl)
+
+    render(<AskBox courseUuid="abc" />)
+    await userEvent.type(screen.getByLabelText('이 코스에 대해 더 묻기'), '왜요?')
+    await userEvent.click(screen.getByRole('button', { name: '묻기' }))
+
+    expect(await screen.findByText(/혼잡도를 다시 확인/)).toBeInTheDocument()
+
+    advance(0)
+    expect(await screen.findByText(/답을 만들지 못했어요/)).toBeInTheDocument()
+    expect(screen.queryByText(/혼잡도를 다시 확인/)).not.toBeInTheDocument()
+  })
+
+  it('looking 중 aborted 가 오면 안내가 사라지고 실패 문구만 보인다', async () => {
+    const { impl, advance } = stepStream([{ kind: 'looking', what: 'alternatives' }, { kind: 'aborted' }])
+    vi.spyOn(agent, 'askCourseStream').mockImplementation(impl)
+
+    render(<AskBox courseUuid="abc" />)
+    await userEvent.type(screen.getByLabelText('이 코스에 대해 더 묻기'), '왜요?')
+    await userEvent.click(screen.getByRole('button', { name: '묻기' }))
+
+    expect(await screen.findByText(/주변 대안을 찾아보는 중/)).toBeInTheDocument()
+
+    advance(0)
+    expect(await screen.findByText(/답을 만들지 못했어요/)).toBeInTheDocument()
+    expect(screen.queryByText(/주변 대안을 찾아보는 중/)).not.toBeInTheDocument()
+  })
+
+  it('모르는 what 이 와도 화면이 비지 않는다', async () => {
+    const { impl } = stepStream([{ kind: 'looking', what: 'weather' }, DONE])
+    vi.spyOn(agent, 'askCourseStream').mockImplementation(impl)
+
+    render(<AskBox courseUuid="abc" />)
+    await userEvent.type(screen.getByLabelText('이 코스에 대해 더 묻기'), '왜요?')
+    await userEvent.click(screen.getByRole('button', { name: '묻기' }))
+
+    expect(await screen.findByText(/자료를 더 찾아보는 중/)).toBeInTheDocument()
+  })
+
   it('답이 흐르는 동안에는 둘째 질문이 나가지 않는다', async () => {
     // 두 스트림이 겹치면 둘 다 같은 자리(index)를 잡아, 한 질문이 다른 질문의 답과
     // 인용을 달고 있게 된다. 막는 자리는 세 군데 모두여야 한다 — 버튼의 disabled,

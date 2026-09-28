@@ -29,7 +29,7 @@ STYLES = {
     "note": ("#FFFFFF", "#C3BAAC"),
 }
 
-W, H = 1030, 1270
+W, H = 1030, 2050
 
 
 def defs():
@@ -155,6 +155,17 @@ LAYOUT = {
     "explained": Node(326, 920, 378, 62, "good"),
     "forbidden": Node(300, 1026, 430, 76),
     "tally":    Node(300, 1148, 430, 76, "good"),
+
+    # ── 이어 묻기 스트리밍(도구 루프) — 위와 갈라지는 두 번째 진입점 ──────────────
+    "ask_entry":   Node(300, 1320, 430, 62),
+    "tool_loop":   Node(286, 1420, 448, 84, "fork", "hex"),
+    "tool_exec":   Node(52, 1546, 372, 90),
+    "looking_note": Node(752, 1428, 200, 76, "note"),
+    "ask_gate":    Node(300, 1668, 430, 84, "fork", "hex"),
+    "repair":      Node(52, 1788, 372, 76),
+    "sse_ok":      Node(52, 1906, 300, 84, "good"),
+    "sse_unavail": Node(386, 1906, 300, 84, "fail"),
+    "sse_abort":   Node(720, 1906, 258, 84, "fail"),
 }
 
 KO = {
@@ -183,7 +194,31 @@ KO = {
             "(anthropic 또는 openai·openrouter 경로)가 낸 ProviderResult 는 Refused·Failed 면 "
             "Unavailable, Answered 면 CitationValidator 로 간다. 인용이 유효하면 "
             "Explained 가 되어 ForbiddenBehaviours.check() 를 거치고, 두 갈래 모두 "
-            "ViolationTally 로 모인다."),
+            "ViolationTally 로 모인다. 아래 두 번째 흐름은 POST /agent/ask/stream 전용 "
+            "진입점이다: CourseQuestionService.askStream() 이 AgentLoop 를 돌려, 도구가 "
+            "필요하면 congestion·alternatives 를 최대 2라운드(모델 호출 최대 3회, 마감 "
+            "60초 공유) 실행하고 예산이 떨어지면 도구 없이 마지막 한 번을 더 부른다. "
+            "AskStreamGate 가 인용을 먼저 검증해 통과해야 본문을 내보내고, 인용이 "
+            "무효면 도구 없이 한 번만 수리를 시도한다. unavailable 로 끝나는 스트림은 "
+            "그 앞에 delta 가 0개다 — 이 불변식은 도구 루프가 생긴 뒤에도 그대로다."),
+    "subtitle": "이어 묻기 스트리밍 — 도구 루프 (POST /agent/ask/stream)",
+    "ask_entry": ["CourseQuestionService.askStream()", "같은 systemText · 이어 묻기 전용"],
+    "tool_loop": ["AgentLoop", "도구 ≤2라운드 · 호출 ≤3회",
+                  "마감 60초 · 소진 시 도구 없이 1회 더"],
+    "tool_exec": ["congestion · alternatives 실행",
+                  "인자 검증: attractionId·date·radiusKm",
+                  "거부 사유는 결과로 되먹인다"],
+    "looking_note": ["looking 프레임", "도구 이름만 싣는다", "인자는 싣지 않는다"],
+    "ask_gate": ["AskStreamGate", "인용 먼저 검증 → 통과해야 본문 방출"],
+    "repair": ["수리 1회 (도구 없이)", "실재하는 경로만 인용하라고 재요청"],
+    "sse_ok": ["citations → delta* → done", "인용 통과, 본문 방출 시작"],
+    "sse_unavail": ["unavailable", "delta 0개 (불변식 유지)"],
+    "sse_abort": ["aborted", "본문 미완 — 버려진다"],
+    "ask_edges": {"tool_needed": "도구 요청", "tool_loopback": "결과 추가 · 라운드+1",
+                  "no_tool": "도구 없이 답", "valid": "유효",
+                  "invalid_first": "인용 무효(첫 시도)", "failed": "거절/실패/빈 응답",
+                  "broke": "전송 중 끊김", "repaired": "고쳐서 통과",
+                  "still_bad": "그래도 무효/실패"},
 }
 
 EN = {
@@ -212,7 +247,32 @@ EN = {
             "ExplanationService.explain(). The ProviderResult from ExplanationProvider "
             "(anthropic or the openai-compatible path) becomes Unavailable when Refused or Failed, and "
             "goes to CitationValidator when Answered. Valid citations make it Explained, "
-            "which ForbiddenBehaviours.check() judges; both branches end in ViolationTally."),
+            "which ForbiddenBehaviours.check() judges; both branches end in ViolationTally. "
+            "The second flow below is a separate entry point, for POST /agent/ask/stream only: "
+            "CourseQuestionService.askStream() runs AgentLoop, which executes congestion and "
+            "alternatives for up to 2 tool rounds (at most 3 model calls, a 60s deadline shared "
+            "across them) when the model needs them, and asks once more with no tools when the "
+            "budget runs out. AskStreamGate validates citations before releasing any body text, "
+            "and repairs invalid citations once, with no tools. A stream that ends unavailable "
+            "still has zero delta events before it — that invariant holds with the tool loop too."),
+    "subtitle": "Follow-up streaming — the tool loop (POST /agent/ask/stream)",
+    "ask_entry": ["CourseQuestionService.askStream()", "same systemText · follow-ups only"],
+    "tool_loop": ["AgentLoop", "tool rounds ≤2 · model calls ≤3",
+                  "60s deadline · budget out → no tools, once"],
+    "tool_exec": ["execute congestion · alternatives",
+                  "checks attractionId · date · radiusKm",
+                  "a rejection feeds back as the result"],
+    "looking_note": ["the looking frame", "carries the tool name only", "never the arguments"],
+    "ask_gate": ["AskStreamGate", "validates citations first, then releases body"],
+    "repair": ["one repair (no tools)", "asks again for real bundle paths"],
+    "sse_ok": ["citations → delta* → done", "citations passed, body flows"],
+    "sse_unavail": ["unavailable", "zero delta before it, still"],
+    "sse_abort": ["aborted", "sentence unfinished — dropped"],
+    "ask_edges": {"tool_needed": "tool requested", "tool_loopback": "result added, round+1",
+                  "no_tool": "answers with no tools", "valid": "Valid",
+                  "invalid_first": "invalid citations (1st try)", "failed": "refused/failed/empty",
+                  "broke": "broke mid-stream", "repaired": "repaired, now valid",
+                  "still_bad": "still invalid/failed"},
 }
 
 
@@ -289,6 +349,47 @@ def render(words):
     parts.append(arrow([(n["unavail"].cx, n["unavail"].y + n["unavail"].h),
                         (n["unavail"].cx, 1122), (n["tally"].cx + 125, 1122),
                         (n["tally"].cx + 125, n["tally"].y - 6)]))
+
+    # ── 두 번째 진입점: 이어 묻기 스트리밍의 도구 루프 ──────────────────────
+    # 위 흐름과 코드로 이어지지 않는다(다른 컨트롤러 · 다른 서비스) — 구분선과
+    # 소제목으로 갈라 그린다. 공유하는 것은 같은 systemText 와 같은 인용 검증뿐이다.
+    ae, tl, tx, ln, ag, rp = (n["ask_entry"], n["tool_loop"], n["tool_exec"],
+                              n["looking_note"], n["ask_gate"], n["repair"])
+    ok, ua, ab = n["sse_ok"], n["sse_unavail"], n["sse_abort"]
+    ax = words["ask_edges"]
+
+    parts.append(sketch(f'<path d="M60 {ae.y - 44} Q{W / 2} {ae.y - 36} 970 {ae.y - 46}" '
+                        f'fill="none" stroke="#C9BFAE" stroke-width="2.2" stroke-dasharray="2 7" '
+                        f'stroke-linecap="round"/>'))
+    parts.append(text(W / 2, ae.y - 18, words["subtitle"], size=20, color="#8A5A3C"))
+
+    parts.append(arrow([(ae.cx, ae.y + ae.h), (tl.cx, tl.y - 6)]))
+
+    # 도구 필요 → 실행 → 대화에 결과를 더하고 한 바퀴 더(최대 2라운드). 루프백은
+    # 오른쪽 여백을 돌아 tool_loop 의 아래쪽으로 들어온다 — looking_note 를
+    # 가로지르지 않기 위해서다.
+    parts.append(arrow([(tl.x + 90, tl.y + tl.h), (tx.cx, tx.y - 6)], label=ax["tool_needed"]))
+    parts.append(arrow(
+        [(tx.x + tx.w, tx.cy), (940, tx.cy), (940, tl.y + tl.h + 14),
+         (tl.x + tl.w - 40, tl.y + tl.h + 14), (tl.x + tl.w - 40, tl.y + tl.h)],
+        label=ax["tool_loopback"], label_at=(940, (tx.cy + tl.y + tl.h) / 2)))
+
+    # looking 프레임은 도구 실행 자체가 아니라 tool_loop 가 여는 도구 라운드에
+    # 딸린 메모다 — provider 옆의 anthropic·openrouter 메모와 같은 손법.
+    parts.append(sketch(f'<path d="M{ln.x - 4} {ln.cy} L{tl.x + tl.w + 2} {ln.cy}" fill="none" '
+                        f'stroke="#C3BAAC" stroke-width="2.2" stroke-dasharray="6 5"/>'))
+
+    parts.append(arrow([(tl.cx, tl.y + tl.h), (ag.cx, ag.y - 6)], label=ax["no_tool"]))
+
+    parts.append(arrow([(ag.x + 70, ag.y + ag.h), (ok.cx, ok.y - 6)], label=ax["valid"]))
+    parts.append(arrow([(ag.x + 140, ag.y + ag.h), (rp.cx, rp.y - 6)], label=ax["invalid_first"]))
+    parts.append(arrow(
+        [(ag.x + ag.w, ag.cy), (940, ag.cy), (940, 1880), (ua.cx, 1880), (ua.cx, ua.y - 6)],
+        label=ax["failed"], label_at=(940, ag.cy - 16)))
+    parts.append(arrow([(ag.x + ag.w - 40, ag.y + ag.h), (ab.cx, ab.y - 6)], label=ax["broke"]))
+
+    parts.append(arrow([(rp.x + 60, rp.y + rp.h), (ok.cx, ok.y - 6)], label=ax["repaired"]))
+    parts.append(arrow([(rp.x + rp.w - 60, rp.y + rp.h), (ua.cx, ua.y - 6)], label=ax["still_bad"]))
 
     for key, node in n.items():
         parts.append(node.render(words[key]))
