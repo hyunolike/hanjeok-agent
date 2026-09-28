@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🧭 hermes-agent
+# 🧭 hanjeok-agent
 
 **An LLM agent that explains travel courses from a preserved evidence bundle**
 
@@ -35,11 +35,53 @@
 
 <br/>
 
+<div align="center">
+
+### 🎬 What this agent actually does
+
+<video src="https://raw.githubusercontent.com/hyunolike/hanjeok-agent/main/docs/media/hanjeok-agent.mp4" poster="docs/media/hanjeok-agent.jpg" controls muted playsinline width="820">
+  <a href="docs/media/hanjeok-agent.mp4">Watch the 21-second overview</a>
+</video>
+
+<sub>21 seconds. The agent's main job is not answering — it is refusing to.<br/>Every number in it is measured: 9 documents, 23,079 bytes, and a fabricated citation blocked 5 times out of 5 on the first real run.</sub>
+
+</div>
+
+<br/>
+
 **The short version**
 
 - **The backend ranks. The LLM only explains.** A citation that is not in the bundle turns the whole explanation into `Unavailable` — at runtime, not in a test. No explanation is the safe failure.
 - **Eight forbidden behaviours, counted on every run.** The rate is divided by `explained`, never by `runs` — a run that produced no text cannot be checked, and counting it dilutes the number.
 - **The violation rate did not pick the model.** Both candidates scored 0% on all eight. A separate, non-blocking LLM judge did: 1.2 vs 0.5 readability findings per run, which is why `gpt-4o` ships.
+
+<br/>
+
+## 🏗 The system, twice
+
+Two drawings answer two different questions. The first is what happens inside one request; the second is where that code actually runs. Both are drawn by this repository — see [Tech Stack](#-tech-stack) for how.
+
+<div align="center">
+
+**What one request does**
+
+<img src="docs/images/flow.en.svg" alt="Explanation request flow — three backend responses pass through FactsNormalizer into BackendFacts, while hanjeok-bundle.txt passes through BundleLoader and PromptAssembler into systemText; both meet in ExplanationService.explain(). A ProviderResult that is Refused or Failed becomes Unavailable, one that is Answered goes to CitationValidator, and valid citations make it Explained, which ForbiddenBehaviours.check() judges. Both branches end in ViolationTally. A second, separate lane below it covers POST /agent/ask/stream: CourseQuestionService.askStream() runs AgentLoop, which can call congestion and alternatives for up to 2 tool rounds with a 60-second deadline shared across them before AskStreamGate validates citations and either streams the answer, repairs it once, or ends unavailable or aborted — with zero delta events before any unavailable." width="900">
+
+<sub>The upper lane is the first explanation. The lower lane is a follow-up question, where the model may call two lookup tools inside a budget — and where no body text leaves until its citations validate.</sub>
+
+<br/><br/>
+
+**Where it runs**
+
+<img src="docs/images/deploy.en.svg" alt="Deployment diagram — the browser opens the Next.js UI on Vercel, which calls the server on Cloud Run (presentation · explain · context · llm). The server calls the hanjeok backend three times per request and the LLM provider once; keys arrive from Secret Manager as environment variables. GitHub Actions rebuilds the evidence bundle from the wiki, fails on drift, and bakes it into the image that gets deployed. The evaluation harness sits outside the deployment path." width="900">
+
+<sub>The browser never calls the hanjeok backend or the LLM provider directly, so CORS has exactly one target. The evidence bundle is baked into the image at build time — CI fails if it has drifted from the wiki.</sub>
+
+</div>
+
+<br/>
+
+**Three timeouts, one ordering.** `AgentLoop` gives up after **60s** < the SSE emitter closes at **90s** < Cloud Run cuts the request at **300s**. Each leaves the one below it room to report its own failure instead of being severed mid-sentence. Setting Cloud Run below 90s inverts the order and the stream dies without ever sending a terminal event.
 
 <br/>
 
@@ -57,7 +99,7 @@ What is left is answering **"why this place, why today, why in this order?"**
 
 <br/>
 
-`hermes-agent` answers those questions using nothing but the **facts the backend returned** and a **preserved evidence bundle**. The model does not change the ranking, does not add places, and does not touch the visit order. Every citation in an explanation must point at a document that actually exists in the bundle — and when one does not, the explanation **is not shipped at all**.
+`hanjeok-agent` answers those questions using nothing but the **facts the backend returned** and a **preserved evidence bundle**. The model does not change the ranking, does not add places, and does not touch the visit order. Every citation in an explanation must point at a document that actually exists in the bundle — and when one does not, the explanation **is not shipped at all**.
 
 None of this is verified by eye. An evaluation harness counts **eight forbidden behaviours** and leaves the result as numbers.
 
@@ -137,11 +179,7 @@ The `user` turn puts **the facts first and the question last**. A question is te
 
 ## 🔀 Request Flow
 
-<div align="center">
-
-<img src="docs/images/flow.en.svg" alt="Explanation request flow — three backend responses pass through FactsNormalizer into BackendFacts, while hanjeok-bundle.txt passes through BundleLoader and PromptAssembler into systemText; both meet in ExplanationService.explain(). A ProviderResult that is Refused or Failed becomes Unavailable, one that is Answered goes to CitationValidator, and valid citations make it Explained, which ForbiddenBehaviours.check() judges. Both branches end in ViolationTally. A second, separate lane below it covers POST /agent/ask/stream: CourseQuestionService.askStream() runs AgentLoop, which can call congestion and alternatives for up to 2 tool rounds with a 60-second deadline shared across them before AskStreamGate validates citations and either streams the answer, repairs it once, or ends unavailable or aborted — with zero delta events before any unavailable." width="900">
-
-</div>
+> The diagram for this section is at the top — [**What one request does**](#-the-system-twice).
 
 `3 backend responses → FactsNormalizer → BackendFacts` and `hanjeok-bundle.txt → BundleLoader → PromptAssembler` meet in `ExplanationService.explain()`, pass through `ExplanationProvider → ProviderResult → CitationValidator`, split into `Explained` or `Unavailable`, and end up in `ForbiddenBehaviours.check()` · `ViolationTally`.
 
@@ -184,7 +222,7 @@ Each one is a claim the policy documents (`decisions/keep-llm-out-of-ranking.md`
 
 <div align="center">
 
-<img src="docs/images/tech-stack.svg" alt="hermes-agent tech stack, drawn by hand" width="740">
+<img src="docs/images/tech-stack.svg" alt="hanjeok-agent tech stack, drawn by hand" width="740">
 
 </div>
 
@@ -336,7 +374,7 @@ Same prompt, same fixture, 5 runs each, judged by `gpt-4o`.
 One Gradle module, two source sets.
 
 ```
-hermes-agent
+hanjeok-agent
 ├── server/src/main/kotlin/com/hermes
 │   ├── context/          # bundle loading · prompt assembly · citation validation
 │   │   ├── BundleLoader.kt       # parses FILE markers, rejects the bundle on a forged one
@@ -378,11 +416,7 @@ hermes-agent
 
 ## 🗺 Deployment
 
-<div align="center">
-
-<img src="docs/images/deploy.en.svg" alt="Deployment diagram — the browser opens the Next.js UI on Vercel, which calls the hermes-agent server on Cloud Run (presentation · explain · context · llm). The server calls the hanjeok backend three times per request and the LLM provider once; keys arrive from Secret Manager as environment variables. GitHub Actions rebuilds the evidence bundle from the wiki, fails on drift, and bakes it into the image that gets deployed. The evaluation harness sits outside the deployment path." width="900">
-
-</div>
+> The diagram for this section is at the top — [**Where it runs**](#-the-system-twice).
 
 The server runs on Cloud Run, the UI on Vercel. With no state and no database, it **scales down to zero.** Three things to read off the diagram:
 

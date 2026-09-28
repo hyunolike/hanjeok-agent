@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🧭 hermes-agent
+# 🧭 hanjeok-agent
 
 **보존된 근거 번들(evidence bundle)로 여행 코스를 설명하는 LLM 에이전트**
 
@@ -35,11 +35,53 @@
 
 <br/>
 
+<div align="center">
+
+### 🎬 이 에이전트가 실제로 하는 일
+
+<video src="https://raw.githubusercontent.com/hyunolike/hanjeok-agent/main/docs/media/hanjeok-agent.mp4" poster="docs/media/hanjeok-agent.jpg" controls muted playsinline width="820">
+  <a href="docs/media/hanjeok-agent.mp4">21초짜리 소개 영상 보기</a>
+</video>
+
+<sub>21초. 이 에이전트의 주요 역할은 답하는 것이 아니라 막는 것입니다.<br/>영상 속 숫자는 전부 실측입니다 — 문서 9개, 23,079바이트, 첫 실전 실행에서 지어낸 출처 5번이 5번 다 막혔습니다.</sub>
+
+</div>
+
+<br/>
+
 **세 줄 요약**
 
 - **순위는 백엔드가, 설명은 LLM이.** 번들에 없는 경로를 인용하면 설명 전체가 `Unavailable` 이 됩니다 — 테스트가 아니라 런타임에서. 설명이 없는 것은 안전한 실패입니다.
 - **금지 행동 8종을 매 실행 셉니다.** 분모는 `runs` 가 아니라 `explained` 입니다 — 설명이 안 나온 실행은 점검할 텍스트가 없고, 분모에 넣으면 위반율이 희석됩니다.
 - **모델을 가른 것은 위반율이 아니었습니다.** 두 후보 모두 8종 0% 였고, 가른 것은 차단하지 않는 별도의 LLM 판정이었습니다(실행당 가독성 지적 1.2건 대 0.5건). 그래서 배포는 `gpt-4o` 입니다.
+
+<br/>
+
+## 🏗 구조 두 장
+
+두 그림이 서로 다른 질문에 답합니다. 앞의 것은 요청 하나가 안에서 무엇을 하는지, 뒤의 것은 그 코드가 실제로 어디서 도는지입니다. 둘 다 이 저장소가 직접 그립니다 — 방식은 [기술 스택](#-기술-스택) 절에 있습니다.
+
+<div align="center">
+
+**요청 하나가 하는 일**
+
+<img src="docs/images/flow.svg" alt="설명 요청 흐름도 — 백엔드 응답 3종은 FactsNormalizer 를 지나 BackendFacts 로, hanjeok-bundle.txt 는 BundleLoader·PromptAssembler 를 지나 systemText 로 들어가 ExplanationService.explain() 에서 만난다. ProviderResult 가 Refused·Failed 면 Unavailable, Answered 면 CitationValidator 로 가고, 인용이 유효하면 Explained 가 되어 ForbiddenBehaviours.check() 를 거친다. 두 갈래 모두 ViolationTally 로 모인다. 아래 두 번째 갈래는 POST /agent/ask/stream 전용이다 — CourseQuestionService.askStream() 이 AgentLoop 를 돌려 congestion·alternatives 를 최대 2라운드 부를 수 있고 그 라운드들이 마감 60초를 함께 쓰며, AskStreamGate 가 인용을 검증한 뒤 답을 흘리거나 한 번 수리하거나 unavailable·aborted 로 끝난다 — unavailable 앞의 delta 는 언제나 0개다." width="900">
+
+<sub>위 갈래가 첫 설명, 아래 갈래가 이어 묻기입니다. 이어 묻기에서는 모델이 예산 안에서 조회 도구 둘을 부를 수 있고, 인용이 검증되기 전에는 본문이 한 글자도 나가지 않습니다.</sub>
+
+<br/><br/>
+
+**어디서 도는가**
+
+<img src="docs/images/deploy.svg" alt="배포 구성도 — 브라우저가 Vercel 의 Next.js 화면을 열고, 화면은 Cloud Run 의 hanjeok-agent 서버(presentation · explain · context · llm)를 부른다. 서버는 한적 백엔드를 요청당 3회, LLM 프로바이더를 1회 부르고, 키는 Secret Manager 에서 환경 변수로 주입된다. 근거 번들은 GitHub Actions 가 위키에서 다시 만들어 표류를 검사한 뒤 이미지에 구워 배포한다. 평가 하네스는 배포 경로 밖에 있다." width="900">
+
+<sub>브라우저는 한적 백엔드도 LLM 프로바이더도 직접 부르지 않습니다. 그래서 CORS 대상이 하나뿐입니다. 근거 번들은 빌드 시점에 이미지로 구워지고, 위키와 어긋나면 CI 가 실패합니다.</sub>
+
+</div>
+
+<br/>
+
+**타임아웃 셋은 하나의 순서입니다.** `AgentLoop` 마감 **60초** < SSE emitter **90초** < Cloud Run **300초**. 각각이 아래 것에게 자기 실패를 보고할 여유를 줍니다. Cloud Run 을 90초 밑으로 두면 순서가 뒤집혀, 스트림이 종료 이벤트를 한 번도 못 보낸 채 끊깁니다.
 
 <br/>
 
@@ -57,7 +99,7 @@
 
 <br/>
 
-`hermes-agent`는 이 질문에 **백엔드가 준 사실(facts)** 과 **보존된 근거 번들** 만으로 답합니다. 모델은 순위를 바꾸지도, 장소를 더하지도, 방문 순서를 손대지도 않습니다. 설명에 붙는 인용은 번들에 실재하는 문서만 가리켜야 하고, 그렇지 않으면 설명은 **아예 나가지 않습니다.**
+`hanjeok-agent`는 이 질문에 **백엔드가 준 사실(facts)** 과 **보존된 근거 번들** 만으로 답합니다. 모델은 순위를 바꾸지도, 장소를 더하지도, 방문 순서를 손대지도 않습니다. 설명에 붙는 인용은 번들에 실재하는 문서만 가리켜야 하고, 그렇지 않으면 설명은 **아예 나가지 않습니다.**
 
 그리고 이 규칙이 지켜졌는지를 사람이 눈으로 확인하지 않습니다. 평가 하네스가 **금지 행동 8종**을 세어 숫자로 남깁니다.
 
@@ -137,11 +179,7 @@
 
 ## 🔀 요청 흐름도
 
-<div align="center">
-
-<img src="docs/images/flow.svg" alt="설명 요청 흐름도 — 백엔드 응답 3종은 FactsNormalizer 를 지나 BackendFacts 로, hanjeok-bundle.txt 는 BundleLoader·PromptAssembler 를 지나 systemText 로 들어가 ExplanationService.explain() 에서 만난다. ProviderResult 가 Refused·Failed 면 Unavailable, Answered 면 CitationValidator 로 가고, 인용이 유효하면 Explained 가 되어 ForbiddenBehaviours.check() 를 거친다. 두 갈래 모두 ViolationTally 로 모인다. 아래 두 번째 갈래는 POST /agent/ask/stream 전용이다 — CourseQuestionService.askStream() 이 AgentLoop 를 돌려 congestion·alternatives 를 최대 2라운드 부를 수 있고 그 라운드들이 마감 60초를 함께 쓰며, AskStreamGate 가 인용을 검증한 뒤 답을 흘리거나 한 번 수리하거나 unavailable·aborted 로 끝난다 — unavailable 앞의 delta 는 언제나 0개다." width="900">
-
-</div>
+> 이 절의 그림은 맨 위에 있습니다 — [**요청 하나가 하는 일**](#-구조-두-장).
 
 `백엔드 응답 3종 → FactsNormalizer → BackendFacts` 와 `hanjeok-bundle.txt → BundleLoader → PromptAssembler` 가 `ExplanationService.explain()` 에서 만나고, `ExplanationProvider → ProviderResult → CitationValidator` 를 지나 `Explained` 또는 `Unavailable` 로 갈라진 뒤 `ForbiddenBehaviours.check()` · `ViolationTally` 로 모입니다.
 
@@ -184,7 +222,7 @@
 
 <div align="center">
 
-<img src="docs/images/tech-stack.svg" alt="hermes-agent 기술 스택 — 손으로 그린 로고 모음" width="740">
+<img src="docs/images/tech-stack.svg" alt="hanjeok-agent 기술 스택 — 손으로 그린 로고 모음" width="740">
 
 </div>
 
@@ -338,7 +376,7 @@ judge model : gpt-4o
 단일 Gradle 모듈이지만 소스셋은 둘입니다.
 
 ```
-hermes-agent
+hanjeok-agent
 ├── server/src/main/kotlin/com/hermes
 │   ├── context/          # 번들 로딩 · 프롬프트 조립 · 인용 검증
 │   │   ├── BundleLoader.kt       # FILE 마커 파싱, 위조 마커 발견 시 번들 전체 거부
@@ -380,11 +418,7 @@ hermes-agent
 
 ## 🗺 배포 구성
 
-<div align="center">
-
-<img src="docs/images/deploy.svg" alt="배포 구성도 — 브라우저가 Vercel 의 Next.js 화면을 열고, 화면은 Cloud Run 의 hermes-agent 서버(presentation · explain · context · llm)를 부른다. 서버는 한적 백엔드를 요청당 3회, LLM 프로바이더를 1회 부르고, 키는 Secret Manager 에서 환경 변수로 주입된다. 근거 번들은 GitHub Actions 가 위키에서 다시 만들어 표류를 검사한 뒤 이미지에 구워 배포한다. 평가 하네스는 배포 경로 밖에 있다." width="900">
-
-</div>
+> 이 절의 그림은 맨 위에 있습니다 — [**어디서 도는가**](#-구조-두-장).
 
 서버는 Cloud Run, 화면은 Vercel. 상태도 DB도 없어 **0으로 스케일다운됩니다.** 그림에서 읽을 것 셋:
 
