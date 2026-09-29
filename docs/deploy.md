@@ -97,7 +97,8 @@ emitter(90초)이고, 그 뒤를 Cloud Run(300초)이 받는다 — 그래서 `-
 BASE=$(gcloud run services describe hermes-agent --region "$REGION" --format='value(status.url)')
 
 curl -s "$BASE/actuator/health"        # UP 이어야 한다. DOWN 이면 번들이나 키다
-curl -s "$BASE/agent/context" | head   # 문서 9개. 번들이 이미지에 구워졌다는 증거
+                                       # documents 와 bytes 가 함께 나온다 — 번들이 이미지에 구워졌다는 증거
+curl -s "$BASE/agent/context" | head   # {documents: [...], systemTextBytes} 모양이어야 한다
 curl -s "$BASE/agent/facts/<uuid>"     # 한적 연결 확인. 503이면 한적에 못 닿은 것
 ```
 

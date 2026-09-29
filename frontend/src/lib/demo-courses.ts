@@ -13,6 +13,8 @@
  * 깨지는데, 그건 결함이 아니라 "사실은 백엔드에서만 온다"를 지킨 대가다 —
  * `./gradlew demoReachability` 가 조용히 깨지지 않게 감시한다.
  */
+import type { Lang } from './i18n'
+
 export type DemoKind =
   /** 예보 커버리지가 없어 목적지 진단 자체가 없는 코스. */
   | 'no-forecast'
@@ -26,6 +28,37 @@ export type DemoKind =
   | 'better-date'
 
 export type DemoCourse = { uuid: string; label: string; kind: DemoKind }
+
+/**
+ * 각 종류가 무엇을 걸고 있는지 한 줄.
+ *
+ * 홈은 여태 `kind` 를 **원문 그대로** 찍었다(`no-alternatives`). 이 값은 어떤 코스를
+ * 골라 두었는지 기억하려고 만든 내부 식별자여서, 처음 온 사람에게는 아무 뜻도 없다.
+ * 위 `DemoKind` 주석에 이미 답이 다 적혀 있었으므로 화면이 읽을 수 있는 자리로 옮긴다.
+ *
+ * `Record<DemoKind, string>` 이라 종류를 하나 늘리면 두 언어 모두 컴파일이 깨진다 —
+ * 새 데모를 넣고 설명만 빠뜨리는 것을 타입이 막는다.
+ */
+export const DEMO_PROVES: Record<Lang, Record<DemoKind, string>> = {
+  ko: {
+    'crowded-with-alternatives':
+      '붐비는 목적지를 빼지 않고, 주변의 조용한 곳을 대안으로 함께 답니다.',
+    'no-alternatives':
+      '대안이 비어 있을 때, 점수에 밀린 것과 후보가 아예 없던 것을 구별해 말합니다.',
+    'better-date': '설명이 오늘 말고 다른 날을 권할 수 있습니다.',
+    'no-forecast': '예보가 없는 장소에 없는 혼잡도 등급을 지어내지 않습니다.',
+    'four-stops': '대안 세 곳이 모두 붙어 네 정거장이 된 코스입니다.',
+  },
+  en: {
+    'crowded-with-alternatives':
+      'A crowded destination is kept, not dropped, and quieter places nearby are offered alongside it.',
+    'no-alternatives':
+      'With no alternatives, it distinguishes candidates that scored too low from there being none at all.',
+    'better-date': 'The explanation is allowed to recommend a different day.',
+    'no-forecast': 'Where there is no forecast, it does not invent a congestion grade.',
+    'four-stops': 'All three alternatives attached, making it a four-stop course.',
+  },
+}
 
 export const DEMO_COURSES: DemoCourse[] = [
   {

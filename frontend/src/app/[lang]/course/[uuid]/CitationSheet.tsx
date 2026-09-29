@@ -2,12 +2,22 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { fetchContextDocument, type Result } from '@/lib/agent'
+import { dict, type Lang } from '@/lib/i18n'
 
 /**
  * 인용 문서를 그 자리에서 연다. 화면을 떠나지 않는 것이 요점이다 — 근거를 보려고
  * 코스를 잃으면, 설명과 근거를 나란히 두고 볼 수 없다.
  */
-export function CitationSheet({ path, onClose }: { path: string; onClose: () => void }) {
+export function CitationSheet({
+  path,
+  lang,
+  onClose,
+}: {
+  path: string
+  lang: Lang
+  onClose: () => void
+}) {
+  const t = dict(lang).citation
   const [state, setState] = useState<Result<string> | null>(null)
   const closeButton = useRef<HTMLButtonElement>(null)
 
@@ -59,15 +69,15 @@ export function CitationSheet({ path, onClose }: { path: string; onClose: () => 
             onClick={onClose}
             className="text-sm opacity-60 hover:opacity-100"
           >
-            닫기
+            {t.close}
           </button>
         </div>
 
-        {state === null && <p className="text-sm opacity-60">불러오는 중…</p>}
+        {state === null && <p className="text-sm opacity-60">{t.loading}</p>}
         {state?.kind === 'unavailable' && (
           // 빈 시트를 띄우면 "문서에 내용이 없다"로 읽힌다. 번들에 없다는 것은
           // 인용이 잘못되었다는 뜻이라 그 자체가 알려야 할 정보다.
-          <p className="text-sm opacity-70">이 문서는 번들에 없습니다 ({state.status}).</p>
+          <p className="text-sm opacity-70">{t.notInBundle(state.status)}</p>
         )}
         {state?.kind === 'loaded' && (
           <pre className="overflow-x-auto whitespace-pre-wrap font-mono text-xs leading-relaxed">

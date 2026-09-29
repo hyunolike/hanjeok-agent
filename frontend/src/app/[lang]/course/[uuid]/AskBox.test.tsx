@@ -51,7 +51,7 @@ describe('코스 후속 질문', () => {
       ),
     )
 
-    render(<AskBox courseUuid="abc" />)
+    render(<AskBox courseUuid="abc" lang="ko" />)
     await userEvent.type(screen.getByLabelText('이 코스에 대해 더 묻기'), '왜 이 순서예요?')
     await userEvent.click(screen.getByRole('button', { name: '묻기' }))
 
@@ -68,7 +68,7 @@ describe('코스 후속 질문', () => {
       .mockImplementationOnce(eagerStream({ kind: 'delta', text: '이동 시간 때문이에요.' }, DONE))
       .mockImplementationOnce(eagerStream({ kind: 'delta', text: '네, 붐벼요.' }, DONE))
 
-    render(<AskBox courseUuid="abc" />)
+    render(<AskBox courseUuid="abc" lang="ko" />)
     const input = screen.getByLabelText('이 코스에 대해 더 묻기')
 
     await userEvent.type(input, '왜 이 순서예요?')
@@ -88,7 +88,7 @@ describe('코스 후속 질문', () => {
     // 사라지면 사용자는 자기가 뭘 물었는지도, 답이 없었다는 사실도 잃는다.
     vi.spyOn(agent, 'askCourseStream').mockImplementation(eagerStream({ kind: 'unavailable' }))
 
-    render(<AskBox courseUuid="abc" />)
+    render(<AskBox courseUuid="abc" lang="ko" />)
     await userEvent.type(screen.getByLabelText('이 코스에 대해 더 묻기'), '왜요?')
     await userEvent.click(screen.getByRole('button', { name: '묻기' }))
 
@@ -103,7 +103,7 @@ describe('코스 후속 질문', () => {
       .mockImplementationOnce(eagerStream({ kind: 'unavailable' }))
       .mockImplementationOnce(eagerStream({ kind: 'delta', text: '답' }, DONE))
 
-    render(<AskBox courseUuid="abc" />)
+    render(<AskBox courseUuid="abc" lang="ko" />)
     const input = screen.getByLabelText('이 코스에 대해 더 묻기')
 
     await userEvent.type(input, '첫 질문')
@@ -120,7 +120,7 @@ describe('코스 후속 질문', () => {
   it('빈 질문은 보내지 않는다', async () => {
     const ask = vi.spyOn(agent, 'askCourseStream')
 
-    render(<AskBox courseUuid="abc" />)
+    render(<AskBox courseUuid="abc" lang="ko" />)
     await userEvent.type(screen.getByLabelText('이 코스에 대해 더 묻기'), '   ')
 
     expect(screen.getByRole('button', { name: '묻기' })).toBeDisabled()
@@ -132,7 +132,7 @@ describe('코스 후속 질문', () => {
       .spyOn(agent, 'askCourseStream')
       .mockImplementation(eagerStream({ kind: 'delta', text: '답' }, DONE))
 
-    render(<AskBox courseUuid="abc" />)
+    render(<AskBox courseUuid="abc" lang="ko" />)
     await userEvent.click(screen.getByRole('button', { name: '왜 이 순서예요?' }))
 
     await waitFor(() => expect(ask.mock.calls[0][1]).toBe('왜 이 순서예요?'))
@@ -146,7 +146,7 @@ describe('코스 후속 질문', () => {
     ])
     vi.spyOn(agent, 'askCourseStream').mockImplementation(impl)
 
-    render(<AskBox courseUuid="abc" />)
+    render(<AskBox courseUuid="abc" lang="ko" />)
     await userEvent.type(screen.getByLabelText('이 코스에 대해 더 묻기'), '왜요?')
     await userEvent.click(screen.getByRole('button', { name: '묻기' }))
 
@@ -165,7 +165,7 @@ describe('코스 후속 질문', () => {
     ])
     vi.spyOn(agent, 'askCourseStream').mockImplementation(impl)
 
-    render(<AskBox courseUuid="abc" />)
+    render(<AskBox courseUuid="abc" lang="ko" />)
     await userEvent.type(screen.getByLabelText('이 코스에 대해 더 묻기'), '왜요?')
     await userEvent.click(screen.getByRole('button', { name: '묻기' }))
 
@@ -181,7 +181,7 @@ describe('코스 후속 질문', () => {
   it('unavailable 이면 "답을 만들지 못했어요" 가 보이고 본문은 없다', async () => {
     vi.spyOn(agent, 'askCourseStream').mockImplementation(eagerStream({ kind: 'unavailable' }))
 
-    render(<AskBox courseUuid="abc" />)
+    render(<AskBox courseUuid="abc" lang="ko" />)
     await userEvent.type(screen.getByLabelText('이 코스에 대해 더 묻기'), '왜요?')
     await userEvent.click(screen.getByRole('button', { name: '묻기' }))
 
@@ -200,7 +200,7 @@ describe('코스 후속 질문', () => {
       ),
     )
 
-    render(<AskBox courseUuid="abc" />)
+    render(<AskBox courseUuid="abc" lang="ko" />)
     await userEvent.type(screen.getByLabelText('이 코스에 대해 더 묻기'), '왜요?')
     await userEvent.click(screen.getByRole('button', { name: '묻기' }))
 
@@ -214,7 +214,7 @@ describe('코스 후속 질문', () => {
       .mockImplementationOnce(eagerStream({ kind: 'delta', text: '미완' }, { kind: 'aborted' }))
       .mockImplementationOnce(eagerStream({ kind: 'delta', text: '답' }, DONE))
 
-    render(<AskBox courseUuid="abc" />)
+    render(<AskBox courseUuid="abc" lang="ko" />)
     const input = screen.getByLabelText('이 코스에 대해 더 묻기')
 
     await userEvent.type(input, '첫 질문')
@@ -237,7 +237,7 @@ describe('코스 후속 질문', () => {
     ])
     vi.spyOn(agent, 'askCourseStream').mockImplementation(impl)
 
-    render(<AskBox courseUuid="abc" />)
+    render(<AskBox courseUuid="abc" lang="ko" />)
     await userEvent.type(screen.getByLabelText('이 코스에 대해 더 묻기'), '다른 날은 어때요?')
     await userEvent.click(screen.getByRole('button', { name: '묻기' }))
 
@@ -259,7 +259,7 @@ describe('코스 후속 질문', () => {
     const { impl, advance } = stepStream([{ kind: 'looking', what: 'congestion' }, { kind: 'unavailable' }])
     vi.spyOn(agent, 'askCourseStream').mockImplementation(impl)
 
-    render(<AskBox courseUuid="abc" />)
+    render(<AskBox courseUuid="abc" lang="ko" />)
     await userEvent.type(screen.getByLabelText('이 코스에 대해 더 묻기'), '왜요?')
     await userEvent.click(screen.getByRole('button', { name: '묻기' }))
 
@@ -274,7 +274,7 @@ describe('코스 후속 질문', () => {
     const { impl, advance } = stepStream([{ kind: 'looking', what: 'alternatives' }, { kind: 'aborted' }])
     vi.spyOn(agent, 'askCourseStream').mockImplementation(impl)
 
-    render(<AskBox courseUuid="abc" />)
+    render(<AskBox courseUuid="abc" lang="ko" />)
     await userEvent.type(screen.getByLabelText('이 코스에 대해 더 묻기'), '왜요?')
     await userEvent.click(screen.getByRole('button', { name: '묻기' }))
 
@@ -289,7 +289,7 @@ describe('코스 후속 질문', () => {
     const { impl } = stepStream([{ kind: 'looking', what: 'weather' }, DONE])
     vi.spyOn(agent, 'askCourseStream').mockImplementation(impl)
 
-    render(<AskBox courseUuid="abc" />)
+    render(<AskBox courseUuid="abc" lang="ko" />)
     await userEvent.type(screen.getByLabelText('이 코스에 대해 더 묻기'), '왜요?')
     await userEvent.click(screen.getByRole('button', { name: '묻기' }))
 
@@ -323,7 +323,7 @@ describe('코스 후속 질문', () => {
         onEvent(DONE)
       })
 
-    render(<AskBox courseUuid="abc" />)
+    render(<AskBox courseUuid="abc" lang="ko" />)
     const input = screen.getByLabelText('이 코스에 대해 더 묻기')
     await userEvent.type(input, '첫 질문')
     await userEvent.click(screen.getByRole('button', { name: '묻기' }))

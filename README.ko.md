@@ -25,9 +25,9 @@
 
 <div align="center">
 
-<img src="docs/images/screens/course.png" alt="코스 화면 — 혼잡도 등급이 붙은 장소 셋, 그 아래 설명, 설명이 쓴 문서를 가리키는 인용 칩 셋." width="820">
+<img src="docs/images/screens/course.png" alt="코스 화면 — 혼잡도 등급이 붙은 장소 셋, 백엔드의 결과가 여기까지임을 알리는 구분선, 그 아래 LLM이 썼다고 표시된 설명과 모델 이름, 설명이 쓴 문서를 가리키는 인용 칩 셋." width="820">
 
-<sub>설명은 코스 아래에 붙고, 인용 칩을 누르면 모델이 본 그 문서가 열립니다.<br/>스크린샷은 데모 코스로 로컬 실행한 화면이라, 여기 보이는 설명 문장은 실제 모델 응답이 아니라 픽스처입니다.</sub>
+<sub>백엔드의 결과가 어디까지이고 LLM의 문단이 어디부터인지 구분선이 알려 주며, 인용 칩을 누르면 모델이 본 그 문서가 열립니다.<br/>스크린샷은 데모 코스로 로컬 실행한 화면이라, 여기 보이는 설명 문장은 실제 모델 응답이 아니라 픽스처입니다.</sub>
 
 **[데모](https://agent.hanjeok.com)** · **[근거 문서 화면](https://agent.hanjeok.com/evidence)**
 
@@ -127,11 +127,11 @@
 
 ### 5. 화면 둘 — 설명과 근거를 나란히
 
-`frontend/`의 `/course/[uuid]`는 코스를 그리고 그 아래 설명을 붙입니다. 인용 칩을 누르면 모델이 본 그 문서가 화면을 떠나지 않고 열립니다. `/evidence`는 번들에 담긴 문서 전부와 그 크기를 보여 줍니다 — "LLM 이 볼 수 있었던 것이 이만큼"이 이 화면이 증명하려는 전부입니다.
+`frontend/`의 `/{lang}/course/[uuid]`는 코스를 그리고 그 아래 설명을 붙입니다. 인용 칩을 누르면 모델이 본 그 문서가 화면을 떠나지 않고 열립니다. `/{lang}/evidence`는 번들에 담긴 문서 전부와 그 크기를 보여 줍니다 — "LLM 이 볼 수 있었던 것이 이만큼"이 이 화면이 증명하려는 전부입니다. `lang`은 `ko`와 `en` 둘이고, 화면 문구만 번역됩니다 — 코스와 설명, 근거 문서는 한국어로 생성됩니다. 언어 없는 예전 주소(`/evidence`)는 `ko`로 넘어갑니다.
 
 <div align="center">
 
-<img src="docs/images/screens/citation.png" alt="인용 칩을 누른 화면 — 모델이 인용한 위키 문서가 화면을 떠나지 않고 그대로 열린다." width="440"> <img src="docs/images/screens/evidence.png" alt="근거 문서 화면 — 번들에 담긴 문서 9개와 각각의 바이트 크기, 그리고 선택한 문서의 본문." width="440">
+<img src="docs/images/screens/citation.png" alt="인용 칩을 누른 화면 — 모델이 인용한 위키 문서가 화면을 떠나지 않고 그대로 열린다." width="440"> <img src="docs/images/screens/evidence.png" alt="근거 문서 화면 — 번들에 담긴 문서 9개와 각각의 바이트 크기, 검색이 아니라 번들 전체가 프롬프트에 들어간다는 설명, 그리고 선택한 문서의 본문." width="440">
 
 <sub>왼쪽: 인용 칩을 누르면 모델이 인용한 문서가 열립니다. 오른쪽: `/evidence` — 번들에 담긴 문서 전부와 그 크기.</sub>
 
@@ -143,7 +143,7 @@
 
 ### 6. 이어 묻기 — 같은 검증, 저장하지 않는 대화
 
-`POST /agent/ask`(`CourseQuestionService`)는 코스에 대해 이어 묻는 경로입니다. 설명과 나란히 있고 **같은 번들, 같은 인용 검증**을 씁니다 — 답도 `{explanation, citations}` 로 모양이 같아, 번들에 없는 경로를 인용하면 설명과 똑같이 무효가 됩니다. 화면은 `/course/[uuid]` 의 `AskBox` 입니다.
+`POST /agent/ask`(`CourseQuestionService`)는 코스에 대해 이어 묻는 경로입니다. 설명과 나란히 있고 **같은 번들, 같은 인용 검증**을 씁니다 — 답도 `{explanation, citations}` 로 모양이 같아, 번들에 없는 경로를 인용하면 설명과 똑같이 무효가 됩니다. 화면은 `/{lang}/course/[uuid]` 의 `AskBox` 입니다.
 
 **클라이언트는 사실을 실어 보낼 수 없습니다.** 보내는 것은 `courseUuid` 와 질문뿐이고 사실은 서버가 한적에서 다시 받아옵니다. 그 통로가 열리면 위조된 혼잡도를 모델이 그럴듯하게 설명해 주는 경로가 생깁니다.
 

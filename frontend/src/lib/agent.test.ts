@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { fetchContextDocument, fetchExplanation, fetchFacts } from './agent'
+import { fetchContextDocument, fetchContextList, fetchExplanation, fetchFacts } from './agent'
 import { factsFixture } from './fixtures'
 
 function jsonResponse(body: unknown, status = 200) {
@@ -64,6 +64,29 @@ describe('에이전트 클라이언트', () => {
       kind: 'unavailable',
       status: 404,
     })
+  })
+
+  it('번들 목록은 문서별 크기와 프롬프트 크기를 함께 받는다', async () => {
+    // 화면이 "모델이 매 요청 보는 전부"라고 적는 숫자는 문서 본문 합계가 아니라
+    // systemTextBytes 다. 서버가 이 필드를 빼면 화면은 그 말을 할 수 없다.
+    const listing = {
+      documents: [{ path: 'concepts/alternative-scoring.md', bytes: 2276 }],
+      systemTextBytes: 23079,
+    }
+    const stub = vi.fn().mockResolvedValue(jsonResponse(listing))
+
+    expect(await fetchContextList(stub)).toEqual({ kind: 'loaded', value: listing })
+    expect(stub.mock.calls[0][0]).toContain('/agent/context')
+  })
+
+  it('예전 배열 모양이 오면 파싱이 실패한다', async () => {
+    // 서버가 목록만 돌려주던 때의 모양이다. 조용히 통과시키면 프롬프트 크기가
+    // undefined 가 되고, 화면은 "모델이 보는 전부"라는 자리에 빈 칸을 그린다.
+    const stub = vi.fn().mockResolvedValue(
+      jsonResponse([{ path: 'concepts/alternative-scoring.md', bytes: 2276 }]),
+    )
+
+    await expect(fetchContextList(stub)).rejects.toThrow()
   })
 })
 

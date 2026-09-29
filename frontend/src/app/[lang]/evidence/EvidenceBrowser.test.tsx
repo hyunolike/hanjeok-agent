@@ -17,9 +17,12 @@ describe('근거 열람', () => {
     // 합이 아니라 어림수를 적으면 그 주장이 검증 불가능한 문구가 된다.
     vi.spyOn(agent, 'fetchContextDocument').mockResolvedValue({ kind: 'loaded', value: '본문' })
 
-    render(<EvidenceBrowser entries={entries} />)
+    render(<EvidenceBrowser entries={entries} systemTextBytes={3600} lang="ko" />)
 
-    expect(screen.getByText(/문서 2개 · 전체 3,500바이트/)).toBeInTheDocument()
+    // 머리글의 숫자는 프롬프트에 실리는 크기이고, 아래 목록의 합은 그보다 작다.
+    // 둘을 같은 수로 적으면 화면이 자기 목록과 어긋난다.
+    expect(screen.getByText(/문서 2개 · 3,600바이트/)).toBeInTheDocument()
+    expect(screen.getByText(/3,500바이트입니다/)).toBeInTheDocument()
   })
 
   it('문서를 고르면 본문이 바뀐다', async () => {
@@ -27,7 +30,7 @@ describe('근거 열람', () => {
       .spyOn(agent, 'fetchContextDocument')
       .mockResolvedValue({ kind: 'loaded', value: '본문' })
 
-    render(<EvidenceBrowser entries={entries} />)
+    render(<EvidenceBrowser entries={entries} systemTextBytes={3600} lang="ko" />)
     await waitFor(() => expect(document).toHaveBeenCalledWith(entries[0].path))
 
     await userEvent.click(screen.getByRole('button', { name: /alternative-scoring/ }))
@@ -36,8 +39,8 @@ describe('근거 열람', () => {
   })
 
   it('목록이 비어도 무너지지 않는다', () => {
-    render(<EvidenceBrowser entries={[]} />)
+    render(<EvidenceBrowser entries={[]} systemTextBytes={0} lang="ko" />)
 
-    expect(screen.getByText(/문서 0개 · 전체 0바이트/)).toBeInTheDocument()
+    expect(screen.getByText(/문서 0개 · 0바이트/)).toBeInTheDocument()
   })
 })

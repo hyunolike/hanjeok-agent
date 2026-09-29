@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { fetchContextDocument, type Result } from '@/lib/agent'
+import { dict, type Lang } from '@/lib/i18n'
 import type { ContextEntry } from '@/lib/schema'
 
 /**
@@ -11,7 +12,17 @@ import type { ContextEntry } from '@/lib/schema'
  * 총 바이트를 함께 내는 것이 "벡터 검색이 필요 없는 크기"라는 주장을 화면이
  * 스스로 보이게 하는 방법이다.
  */
-export function EvidenceBrowser({ entries }: { entries: ContextEntry[] }) {
+export function EvidenceBrowser({
+  entries,
+  systemTextBytes,
+  lang,
+}: {
+  entries: ContextEntry[]
+  /** 모델이 실제로 받는 바이트. 아래 목록의 합보다 크다 — 구분 줄이 더해진다. */
+  systemTextBytes: number
+  lang: Lang
+}) {
+  const t = dict(lang).evidence
   const [selected, setSelected] = useState(entries[0]?.path ?? null)
   const [body, setBody] = useState<Result<string> | null>(null)
 
@@ -31,12 +42,15 @@ export function EvidenceBrowser({ entries }: { entries: ContextEntry[] }) {
 
   return (
     <div className="space-y-6">
-      <header className="space-y-1">
-        <h1 className="text-2xl font-semibold">근거 문서</h1>
+      <header className="space-y-2">
+        <h1 className="text-2xl font-semibold">{t.title}</h1>
         <p className="text-sm opacity-70">
-          문서 {entries.length}개 · 전체 {totalBytes.toLocaleString()}바이트. 모델은 매 요청
-          이 전부를 봅니다.
+          {t.count(entries.length, systemTextBytes.toLocaleString())}
         </p>
+        <p className="text-xs opacity-55">{t.sumNote(totalBytes.toLocaleString())}</p>
+        {/* 개수와 바이트만 있을 때는 이 화면이 왜 있는지가 없었다. 숫자가 무엇을
+            뒷받침하는 숫자인지 적어야 세어 볼 이유가 생긴다. */}
+        <p className="max-w-prose text-sm leading-relaxed opacity-65">{t.why}</p>
       </header>
 
       <div className="grid gap-6 md:grid-cols-[minmax(0,16rem)_1fr]">
@@ -59,9 +73,9 @@ export function EvidenceBrowser({ entries }: { entries: ContextEntry[] }) {
         </ul>
 
         <div className="min-w-0">
-          {body === null && <p className="text-sm opacity-60">불러오는 중…</p>}
+          {body === null && <p className="text-sm opacity-60">{t.loading}</p>}
           {body?.kind === 'unavailable' && (
-            <p className="text-sm opacity-70">문서를 불러오지 못했습니다 ({body.status}).</p>
+            <p className="text-sm opacity-70">{t.loadFailBody(body.status)}</p>
           )}
           {body?.kind === 'loaded' && (
             <pre className="overflow-x-auto whitespace-pre-wrap font-mono text-xs leading-relaxed">

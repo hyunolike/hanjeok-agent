@@ -24,7 +24,7 @@ describe('설명 블록', () => {
     // 굳이 알리느라 읽을 수 있는 화면을 어지럽힌다.
     vi.spyOn(agent, 'fetchExplanation').mockResolvedValue({ kind: 'unavailable', status: 503 })
 
-    const { container } = render(<ExplanationBlock courseUuid="abc" />)
+    const { container } = render(<ExplanationBlock courseUuid="abc" lang="ko" />)
 
     await waitFor(() => expect(container).toBeEmptyDOMElement())
   })
@@ -33,7 +33,7 @@ describe('설명 블록', () => {
     // 번들 전체를 칩으로 깔면 모델이 실제로 무엇을 봤는지가 흐려진다.
     vi.spyOn(agent, 'fetchExplanation').mockResolvedValue(answered)
 
-    render(<ExplanationBlock courseUuid="abc" />)
+    render(<ExplanationBlock courseUuid="abc" lang="ko" />)
 
     await screen.findByText('경복궁은 이 날 매우 붐빕니다.')
     expect(screen.getAllByRole('button')).toHaveLength(2)
@@ -46,7 +46,7 @@ describe('설명 블록', () => {
       .spyOn(agent, 'fetchContextDocument')
       .mockResolvedValue({ kind: 'loaded', value: '# 혼잡 진단' })
 
-    render(<ExplanationBlock courseUuid="abc" />)
+    render(<ExplanationBlock courseUuid="abc" lang="ko" />)
     await userEvent.click(await screen.findByRole('button', { name: 'concepts/congestion-diagnosis.md' }))
 
     await waitFor(() => expect(document).toHaveBeenCalledWith('concepts/congestion-diagnosis.md'))
@@ -57,7 +57,7 @@ describe('설명 블록', () => {
     // 서버가 응답 모양을 바꾼 경우다. 예외가 페이지까지 올라가면 코스까지 사라진다.
     vi.spyOn(agent, 'fetchExplanation').mockRejectedValue(new Error('zod'))
 
-    const { container } = render(<ExplanationBlock courseUuid="abc" />)
+    const { container } = render(<ExplanationBlock courseUuid="abc" lang="ko" />)
 
     await waitFor(() => expect(container).toBeEmptyDOMElement())
   })
