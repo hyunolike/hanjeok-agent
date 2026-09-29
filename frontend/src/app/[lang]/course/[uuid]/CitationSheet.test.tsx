@@ -12,7 +12,7 @@ describe('인용 시트', () => {
     // 잘못되었다는 뜻이라 그 자체가 알려야 할 정보다.
     vi.spyOn(agent, 'fetchContextDocument').mockResolvedValue({ kind: 'unavailable', status: 404 })
 
-    render(<CitationSheet path="nope.md" onClose={() => {}} />)
+    render(<CitationSheet path="nope.md" lang="ko" onClose={() => {}} />)
 
     expect(await screen.findByText(/번들에 없습니다/)).toBeInTheDocument()
   })
@@ -21,7 +21,7 @@ describe('인용 시트', () => {
     vi.spyOn(agent, 'fetchContextDocument').mockResolvedValue({ kind: 'loaded', value: '본문' })
     const onClose = vi.fn()
 
-    render(<CitationSheet path="a.md" onClose={onClose} />)
+    render(<CitationSheet path="a.md" lang="ko" onClose={onClose} />)
     await userEvent.keyboard('{Escape}')
 
     expect(onClose).toHaveBeenCalled()
@@ -31,7 +31,7 @@ describe('인용 시트', () => {
     vi.spyOn(agent, 'fetchContextDocument').mockResolvedValue({ kind: 'loaded', value: '본문' })
     const onClose = vi.fn()
 
-    render(<CitationSheet path="a.md" onClose={onClose} />)
+    render(<CitationSheet path="a.md" lang="ko" onClose={onClose} />)
     await userEvent.click(await screen.findByRole('dialog'))
     expect(onClose).not.toHaveBeenCalled()
 
@@ -45,7 +45,7 @@ describe('키보드 접근', () => {
     // 초점이 뒤에 남으면, 화면에는 시트가 떠 있는데 Tab 은 그 아래를 돌아다닌다.
     vi.spyOn(agent, 'fetchContextDocument').mockResolvedValue({ kind: 'loaded', value: '본문' })
 
-    render(<CitationSheet path="a.md" onClose={() => {}} />)
+    render(<CitationSheet path="a.md" lang="ko" onClose={() => {}} />)
 
     await waitFor(() =>
       expect(screen.getByRole('button', { name: '닫기' })).toHaveFocus(),
@@ -55,7 +55,7 @@ describe('키보드 접근', () => {
   it('대화상자임을 알린다', async () => {
     vi.spyOn(agent, 'fetchContextDocument').mockResolvedValue({ kind: 'loaded', value: '본문' })
 
-    render(<CitationSheet path="concepts/x.md" onClose={() => {}} />)
+    render(<CitationSheet path="concepts/x.md" lang="ko" onClose={() => {}} />)
 
     const dialog = await screen.findByRole('dialog')
     expect(dialog).toHaveAttribute('aria-modal', 'true')

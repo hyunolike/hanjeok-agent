@@ -25,9 +25,9 @@
 
 <div align="center">
 
-<img src="docs/images/screens/course.png" alt="The course screen: three stops with congestion grades, an explanation beneath them, and three citation chips naming the documents it used." width="820">
+<img src="docs/images/screens/course.png" alt="The course screen: three stops with congestion grades, then a line marking where the backend's output ends, then the explanation — labelled as written by the LLM, with the model name — and three citation chips naming the documents it used." width="820">
 
-<sub>The explanation sits under the course, and every citation chip opens the exact document the model saw.<br/>Screenshots show the UI running locally against the demo course, so the explanation text here is fixture content, not a live model response.</sub>
+<sub>A line marks where the backend's output ends and the LLM's paragraph begins, and every citation chip opens the exact document the model saw.<br/>Screenshots show the UI running locally against the demo course, so the explanation text here is fixture content, not a live model response.</sub>
 
 **[Live demo](https://agent.hanjeok.com)** · **[evidence browser](https://agent.hanjeok.com/evidence)**
 
@@ -127,11 +127,11 @@ After moving provider assembly to Spring AI, this repository re-measured the dep
 
 ### 5. Two screens — the explanation next to its evidence
 
-`frontend/`'s `/course/[uuid]` draws the course and puts the explanation beneath it. Clicking a citation chip opens the exact document the model saw, without leaving the page. `/evidence` lists every document in the bundle with its size — "this much is what the LLM could see" is all that screen sets out to prove.
+`frontend/`'s `/{lang}/course/[uuid]` draws the course and puts the explanation beneath it. Clicking a citation chip opens the exact document the model saw, without leaving the page. `/{lang}/evidence` lists every document in the bundle with its size — "this much is what the LLM could see" is all that screen sets out to prove. `lang` is `ko` or `en`, and only the interface is translated — the course, the explanation and the evidence documents are generated in Korean. The older paths without a language (`/evidence`) redirect to `ko`.
 
 <div align="center">
 
-<img src="docs/images/screens/citation.png" alt="A citation chip opened: the wiki document the model cited, shown in full without leaving the page." width="440"> <img src="docs/images/screens/evidence.png" alt="The evidence browser: nine documents with their byte sizes, and the selected document's text." width="440">
+<img src="docs/images/screens/citation.png" alt="A citation chip opened: the wiki document the model cited, shown in full without leaving the page." width="440"> <img src="docs/images/screens/evidence.png" alt="The evidence browser: nine documents with their byte sizes, a note that the whole bundle goes into the prompt rather than anything being retrieved, and the selected document's text." width="440">
 
 <sub>Left: a citation chip opens the document the model cited. Right: `/evidence` — every document in the bundle, with its size.</sub>
 
@@ -143,7 +143,7 @@ After moving provider assembly to Spring AI, this repository re-measured the dep
 
 ### 6. Follow-up questions — same validation, no stored conversation
 
-`POST /agent/ask` (`CourseQuestionService`) answers follow-up questions about a course. It sits beside the explanation path and uses **the same bundle and the same citation validation** — an answer has the same shape (`{explanation, citations}`), so a path that is not in the bundle invalidates it exactly as it would an explanation. The UI for it is the `AskBox` on `/course/[uuid]`.
+`POST /agent/ask` (`CourseQuestionService`) answers follow-up questions about a course. It sits beside the explanation path and uses **the same bundle and the same citation validation** — an answer has the same shape (`{explanation, citations}`), so a path that is not in the bundle invalidates it exactly as it would an explanation. The UI for it is the `AskBox` on `/{lang}/course/[uuid]`.
 
 **The client cannot send facts.** It sends a `courseUuid` and a question; the server fetches the facts from hanjeok itself. Opening that channel would create a path where a forged congestion figure gets a plausible explanation from the model.
 

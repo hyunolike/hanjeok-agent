@@ -5,22 +5,32 @@
  */
 export const dynamic = 'force-dynamic'
 
+import { notFound } from 'next/navigation'
 import { fetchContextList } from '@/lib/agent'
+import { dict, isLang } from '@/lib/i18n'
 import { EvidenceBrowser } from './EvidenceBrowser'
 
-export default async function EvidencePage() {
+export default async function EvidencePage({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params
+  if (!isLang(lang)) notFound()
+  const t = dict(lang).evidence
+
   const list = await fetchContextList()
 
   if (list.kind === 'unavailable') {
     return (
       <div className="space-y-2">
-        <h1 className="text-xl font-semibold">근거 문서를 불러오지 못했습니다</h1>
-        <p className="text-sm opacity-70">
-          에이전트 서버가 번들 목록을 주지 않았습니다({list.status}).
-        </p>
+        <h1 className="text-xl font-semibold">{t.listFailTitle}</h1>
+        <p className="text-sm opacity-70">{t.listFailBody(list.status)}</p>
       </div>
     )
   }
 
-  return <EvidenceBrowser entries={list.value} />
+  return (
+    <EvidenceBrowser
+      entries={list.value.documents}
+      systemTextBytes={list.value.systemTextBytes}
+      lang={lang}
+    />
+  )
 }

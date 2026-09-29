@@ -8,17 +8,17 @@ vi.mock('next/navigation', () => ({ useRouter: () => ({ push }) }))
 
 describe('코스 uuid로 열기', () => {
   it('입력한 uuid의 코스로 이동한다', async () => {
-    render(<OpenAnyCourse />)
+    render(<OpenAnyCourse lang="ko" />)
 
     await userEvent.type(screen.getByLabelText('코스 uuid로 열기'), 'abc-123')
     await userEvent.click(screen.getByRole('button', { name: '열기' }))
 
-    expect(push).toHaveBeenCalledWith('/course/abc-123')
+    expect(push).toHaveBeenCalledWith('/ko/course/abc-123')
   })
 
   it('빈 값으로는 이동하지 않는다', async () => {
     push.mockClear()
-    render(<OpenAnyCourse />)
+    render(<OpenAnyCourse lang="ko" />)
 
     // 공백만 넣어도 마찬가지다 — /course/%20 은 아무것도 아닌 주소다.
     await userEvent.type(screen.getByLabelText('코스 uuid로 열기'), '   ')
@@ -32,7 +32,7 @@ describe('코스 uuid로 열기', () => {
     // 수 있고(jsdom 은 그러지 않는다), 그 경로로 빠지면 /course/ 라는 아무것도 아닌
     // 주소로 이동한다. 그래서 제출 처리기 자체를 직접 검증한다.
     push.mockClear()
-    const { container } = render(<OpenAnyCourse />)
+    const { container } = render(<OpenAnyCourse lang="ko" />)
 
     fireEvent.submit(container.querySelector('form')!)
 

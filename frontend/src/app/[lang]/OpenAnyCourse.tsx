@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { dict, type Lang } from '@/lib/i18n'
 
 /**
  * 데모 목록에 없는 코스를 열어 본다.
@@ -10,9 +11,10 @@ import { useState } from 'react'
  * 이미 있는 코스의 uuid 를 받아 그 설명을 보여 줄 뿐이다. 서버는 데모 uuid 를
  * 특별 취급하지 않으므로, 한적에 있는 코스라면 어느 것이든 그대로 열린다.
  */
-export function OpenAnyCourse() {
+export function OpenAnyCourse({ lang }: { lang: Lang }) {
   const router = useRouter()
   const [value, setValue] = useState('')
+  const t = dict(lang).openAny
 
   const uuid = value.trim()
 
@@ -20,18 +22,18 @@ export function OpenAnyCourse() {
     <form
       onSubmit={(event) => {
         event.preventDefault()
-        if (uuid) router.push(`/course/${encodeURIComponent(uuid)}`)
+        if (uuid) router.push(`/${lang}/course/${encodeURIComponent(uuid)}`)
       }}
       className="flex flex-wrap items-center gap-2"
     >
       <label htmlFor="course-uuid" className="text-sm opacity-70">
-        코스 uuid로 열기
+        {t.label}
       </label>
       <input
         id="course-uuid"
         value={value}
         onChange={(event) => setValue(event.target.value)}
-        placeholder="한적에서 만든 코스의 uuid"
+        placeholder={t.placeholder}
         spellCheck={false}
         className="min-w-0 flex-1 rounded border border-black/15 bg-transparent px-3 py-1.5 font-mono text-xs dark:border-white/20"
       />
@@ -40,7 +42,7 @@ export function OpenAnyCourse() {
         disabled={uuid.length === 0}
         className="rounded border border-black/15 px-3 py-1.5 text-sm disabled:opacity-40 dark:border-white/20"
       >
-        열기
+        {t.submit}
       </button>
     </form>
   )

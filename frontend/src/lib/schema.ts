@@ -92,9 +92,21 @@ export const explainResponseSchema = z.object({
 })
 
 export const contextEntrySchema = z.object({ path: z.string(), bytes: z.number() })
-export const contextListSchema = z.array(contextEntrySchema)
+
+/**
+ * 문서별 크기와, **모델이 실제로 받는 바이트**를 따로 받는다.
+ *
+ * `bytes` 의 합은 `systemTextBytes` 보다 작다 — 문서 사이의 `----- FILE: … -----`
+ * 줄은 어느 문서의 본문도 아니지만 프롬프트에는 실린다. 화면이 합계 하나만 들고
+ * "모델이 보는 전부"라고 말하면 그 차이만큼 틀린 말이 된다.
+ */
+export const contextListingSchema = z.object({
+  documents: z.array(contextEntrySchema),
+  systemTextBytes: z.number(),
+})
 
 export type Facts = z.infer<typeof factsSchema>
 export type CourseItem = z.infer<typeof courseItemSchema>
 export type ExplainResponse = z.infer<typeof explainResponseSchema>
 export type ContextEntry = z.infer<typeof contextEntrySchema>
+export type ContextListing = z.infer<typeof contextListingSchema>

@@ -1,8 +1,8 @@
 import {
-  contextListSchema,
+  contextListingSchema,
   explainResponseSchema,
   factsResponseSchema,
-  type ContextEntry,
+  type ContextListing,
   type ExplainResponse,
   type Facts,
 } from './schema'
@@ -71,8 +71,8 @@ export function fetchExplanation(
 /** 서버는 대화를 저장하지 않는다 — 이전 turn 을 매 요청 함께 보낸다. */
 export type AskTurn = { question: string; answer: string }
 
-export function fetchContextList(fetchImpl?: Fetch): Promise<Result<ContextEntry[]>> {
-  return get('/agent/context', (raw) => contextListSchema.parse(raw), { fetchImpl })
+export function fetchContextList(fetchImpl?: Fetch): Promise<Result<ContextListing>> {
+  return get('/agent/context', (raw) => contextListingSchema.parse(raw), { fetchImpl })
 }
 
 export type AskStreamEvent =

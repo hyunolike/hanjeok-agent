@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { askCourseStream, type AskTurn } from '@/lib/agent'
+import { dict, type Dict, type Lang } from '@/lib/i18n'
 import { CitationSheet } from './CitationSheet'
 
 type Exchange =
@@ -9,16 +10,10 @@ type Exchange =
   | { question: string; status: 'answered'; answer: string; citations: string[] }
   | { question: string; status: 'failed' }
 
-const SUGGESTIONS = ['왜 이 순서예요?', '왜 이 장소들이에요?', '다른 날이 더 나은가요?']
-
-const LOOKING_LABEL: Record<string, string> = {
-  congestion: '혼잡도를 다시 확인하는 중',
-  alternatives: '주변 대안을 찾아보는 중',
-}
-
 // 모르는 이름이 와도 화면이 비지 않게 한다 — 서버가 도구를 늘려도 프론트가 먼저
 // 깨지지 않는다.
-const labelFor = (what: string) => LOOKING_LABEL[what] ?? '자료를 더 찾아보는 중'
+const labelFor = (looking: Dict['ask']['looking'], what: string) =>
+  what === 'congestion' || what === 'alternatives' ? looking[what] : looking.fallback
 
 /**
  * 코스에 대해 이어 묻는다.
@@ -29,7 +24,8 @@ const labelFor = (what: string) => LOOKING_LABEL[what] ?? '자료를 더 찾아�
  * 실패한 질문도 목록에 남긴다. 사라지면 사용자는 자기가 뭘 물었는지 잃고, 답이
  * 없었다는 사실도 잃는다.
  */
-export function AskBox({ courseUuid }: { courseUuid: string }) {
+export function AskBox({ courseUuid, lang }: { courseUuid: string; lang: Lang }) {
+  const t = dict(lang).ask
   const [exchanges, setExchanges] = useState<Exchange[]>([])
   const [question, setQuestion] = useState('')
   const [asking, setAsking] = useState(false)
@@ -87,17 +83,17 @@ export function AskBox({ courseUuid }: { courseUuid: string }) {
 
   return (
     <section className="space-y-4">
-      <h2 className="text-sm font-semibold opacity-70">이 코스에 대해 더 묻기</h2>
+      <h2 className="text-sm font-semibold opacity-70">{t.heading}</h2>
 
       {exchanges.map((exchange, index) => (
         <div key={index} className="space-y-2 rounded-lg border border-black/10 p-4 dark:border-white/10">
           <p className="text-sm font-medium">{exchange.question}</p>
           {exchange.status === 'failed' ? (
-            <p className="text-sm opacity-70">답을 만들지 못했어요. 잠시 후 다시 물어봐 주세요.</p>
+            <p className="text-sm opacity-70">{t.failed}</p>
           ) : (
             <>
               {exchange.status === 'streaming' && exchange.looking && (
-                <p className="text-sm opacity-70">{labelFor(exchange.looking)}</p>
+                <p className="text-sm opacity-70">{labelFor(t.looking, exchange.looking)}</p>
               )}
               <p className="whitespace-pre-wrap text-sm leading-relaxed opacity-90">
                 {exchange.status === 'answered' ? exchange.answer : exchange.text}
@@ -121,7 +117,7 @@ export function AskBox({ courseUuid }: { courseUuid: string }) {
 
       {exchanges.length === 0 && (
         <div className="flex flex-wrap gap-2">
-          {SUGGESTIONS.map((suggestion) => (
+          {t.suggestions.map((suggestion) => (
             <button
               key={suggestion}
               type="button"
@@ -142,13 +138,13 @@ export function AskBox({ courseUuid }: { courseUuid: string }) {
         className="flex gap-2"
       >
         <label htmlFor="question" className="sr-only">
-          이 코스에 대해 더 묻기
+          {t.heading}
         </label>
         <input
           id="question"
           value={question}
           onChange={(event) => setQuestion(event.target.value)}
-          placeholder="이 코스에 대해 물어보세요"
+          placeholder={t.placeholder}
           className="min-w-0 flex-1 rounded border border-black/15 bg-transparent px-3 py-1.5 text-sm dark:border-white/20"
         />
         <button
@@ -156,11 +152,13 @@ export function AskBox({ courseUuid }: { courseUuid: string }) {
           disabled={asking || question.trim().length === 0}
           className="rounded border border-black/15 px-3 py-1.5 text-sm disabled:opacity-40 dark:border-white/20"
         >
-          {asking ? '묻는 중…' : '묻기'}
+          {asking ? t.submitting : t.submit}
         </button>
       </form>
 
-      {openPath && <CitationSheet path={openPath} onClose={() => setOpenPath(null)} />}
+      {openPath && (
+        <CitationSheet path={openPath} lang={lang} onClose={() => setOpenPath(null)} />
+      )}
     </section>
   )
 }
