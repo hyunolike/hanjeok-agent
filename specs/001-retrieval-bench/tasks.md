@@ -31,12 +31,12 @@ below are repository-relative.
 
 **Purpose**: A runnable, lintable, testable skeleton that CI ignores.
 
-- [ ] T001 Create the package skeleton from plan.md's tree in `bench/src/bench/` with empty `corpus/`, `graph/`, `answer/`, `eval/` packages and `bench/tests/{unit,contract,integration}/`
-- [ ] T002 Write `bench/pyproject.toml` pinning Python 3.13 and declaring fastapi, langgraph, langchain-core, langchain-openai, langchain-neo4j, neo4j, ragas, pyyaml, pytest; lock with `uv sync`
-- [ ] T003 [P] Configure ruff and formatting in `bench/pyproject.toml`
-- [ ] T004 [P] Configure pytest in `bench/pyproject.toml` with markers `integration` and `costly`, defaulting to deselect both so a bare `uv run pytest` needs no Docker, no network and no key
-- [ ] T005 [P] Write `bench/docker-compose.yml` with Neo4j 5.x, a named volume and the ports quickstart.md assumes
-- [ ] T006 [P] Add `bench/runs/` and `bench/reports/` with `.gitkeep`, and add `bench/.venv/` plus `bench/**/__pycache__/` to the repository `.gitignore`
+- [X] T001 Create the package skeleton from plan.md's tree in `bench/src/bench/` with empty `corpus/`, `graph/`, `answer/`, `eval/` packages and `bench/tests/{unit,contract,integration}/`
+- [X] T002 Write `bench/pyproject.toml` pinning Python 3.13 and declaring fastapi, langgraph, langchain-core, langchain-openai, langchain-neo4j, neo4j, ragas, pyyaml, pytest; lock with `uv sync`
+- [X] T003 [P] Configure ruff and formatting in `bench/pyproject.toml`
+- [X] T004 [P] Configure pytest in `bench/pyproject.toml` with markers `integration` and `costly`, defaulting to deselect both so a bare `uv run pytest` needs no Docker, no network and no key
+- [X] T005 [P] Write `bench/docker-compose.yml` with Neo4j 5.x, a named volume and the ports quickstart.md assumes
+- [X] T006 [P] Add `bench/runs/` and `bench/reports/` with `.gitkeep`, and add `bench/.venv/` plus `bench/**/__pycache__/` to the repository `.gitignore`
 
 **Checkpoint**: `uv run pytest` passes with zero tests collected and no services running.
 
@@ -47,16 +47,16 @@ below are repository-relative.
 **Purpose**: The seam, the graph, and the fakes every story depends on. No user
 story can start until this phase is done.
 
-- [ ] T007 Define `LoadedDoc` exactly as data-model.md specifies in `bench/src/bench/corpus/loader.py`, with `attrs` as an opaque mapping and a `CorpusLoader` protocol
-- [ ] T008 [P] Implement heading-path chunking in `bench/src/bench/corpus/chunk.py` — split at markdown headings, keep the heading path, never merge across documents, leave short documents whole
-- [ ] T009 [P] Write `bench/tests/unit/test_chunk.py` covering a document with no headings, nested headings, and a document shorter than the target size
-- [ ] T010 Implement the travel-context-wiki loader in `bench/src/bench/corpus/wiki.py`: parse frontmatter into `LoadedDoc`, resolve `[[wikilinks]]` and `sources:` within the corpus, and return unresolved references as a reported list rather than failing the load
-- [ ] T011 Write `bench/tests/unit/test_wiki_loader.py` asserting an unresolved link is reported and dropped while the load still succeeds (spec edge case), and that `conflicts` arrives as verbatim prose in `attrs`
-- [ ] T012 Implement `bench/src/bench/graph/store.py`: driver lifecycle, constraint on `(corpus, path)`, `Doc.path` lookup index, and the `Chunk.embedding` vector index
-- [ ] T013 Implement `bench/src/bench/graph/build.py` writing `Doc`, `Tag`, `Source`, `Chunk` and the four edge types from a `LoadedDoc` stream, copying `attrs` onto `Doc` without reading any key
-- [ ] T014 Capture the corpus git revision at load time and store it with the corpus record in `bench/src/bench/graph/store.py` (FR-012, and the pair validity rule depends on it)
-- [ ] T015 [P] Implement a deterministic fake embedder and a scripted fake chat model in `bench/tests/conftest.py` so unit tests never load the real model or call an API
-- [ ] T016 [P] Build a tiny synthetic corpus fixture under `bench/tests/fixtures/synthetic/` — a third corpus, unlike both real ones — and a test in `bench/tests/unit/test_loader_seam.py` that runs build against it, which fails the moment anything downstream branches on a corpus name (Principle III)
+- [X] T007 Define `LoadedDoc` exactly as data-model.md specifies in `bench/src/bench/corpus/loader.py`, with `attrs` as an opaque mapping and a `CorpusLoader` protocol
+- [X] T008 [P] Implement heading-path chunking in `bench/src/bench/corpus/chunk.py` — split at markdown headings, keep the heading path, never merge across documents, leave short documents whole
+- [X] T009 [P] Write `bench/tests/unit/test_chunk.py` covering a document with no headings, nested headings, and a document shorter than the target size
+- [X] T010 Implement the travel-context-wiki loader in `bench/src/bench/corpus/wiki.py`: parse frontmatter into `LoadedDoc`, resolve `[[wikilinks]]` and `sources:` within the corpus, and return unresolved references as a reported list rather than failing the load
+- [X] T011 Write `bench/tests/unit/test_wiki_loader.py` asserting an unresolved link is reported and dropped while the load still succeeds (spec edge case), and that `conflicts` arrives as verbatim prose in `attrs`
+- [X] T012 Implement `bench/src/bench/graph/store.py`: driver lifecycle, constraint on `(corpus, path)`, `Doc.path` lookup index, and the `Chunk.embedding` vector index
+- [X] T013 Implement `bench/src/bench/graph/build.py` writing `Doc`, `Tag`, `Source`, `Chunk` and the four edge types from a `LoadedDoc` stream, copying `attrs` onto `Doc` without reading any key
+- [X] T014 Capture the corpus git revision at load time and store it with the corpus record in `bench/src/bench/graph/store.py` (FR-012, and the pair validity rule depends on it)
+- [X] T015 [P] Implement a deterministic fake embedder and a scripted fake chat model in `bench/tests/conftest.py` so unit tests never load the real model or call an API
+- [X] T016 [P] Build a tiny synthetic corpus — a third one, unlike both real ones — as a `CorpusLoader` inside `bench/tests/unit/test_loader_seam.py`, with tests that fail the moment anything downstream branches on a corpus name (Principle III). *Implemented in code rather than as markdown under `tests/fixtures/`: the seam is `LoadedDoc`, so constructing those directly tests it at the right level, and files on disk would only exercise the wiki loader a second time.*
 
 **Checkpoint**: `uv run bench corpus load wiki` writes a graph; `uv run pytest` is green offline.
 

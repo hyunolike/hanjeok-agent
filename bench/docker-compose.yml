@@ -1,0 +1,40 @@
+# Neo4j only. Nothing else in this subproject needs a container, and the graph
+# it holds is derived — `bench corpus rebuild` reconstructs every node and edge
+# from files, so losing this volume costs time and nothing else.
+services:
+  neo4j:
+    image: neo4j:5.26
+    container_name: bench-neo4j
+    ports:
+      - "7474:7474" # browser
+      - "7687:7687" # bolt
+    environment:
+      # Local-only credentials. Nothing here reaches a deployment: this
+      # subproject is not deployed, and the constitution keeps it that way.
+      NEO4J_AUTH: neo4j/benchbench
+      # Bound every pool, not just the heap. Left to size itself against the
+      # host, Neo4j took 6.4 GiB of an 8 GiB Docker VM and thrashed at 438% CPU
+      # without ever finishing startup. The corpora here are a few hundred
+      # markdown files; this is far more than they need.
+      NEO4J_server_memory_heap_initial__size: 512m
+      NEO4J_server_memory_heap_max__size: 1G
+      NEO4J_server_memory_pagecache_size: 512m
+      # Neo4j warns on startup that vector search runs below its potential
+      # without this. Every retrieval in this subproject is a vector query, so
+      # the one arm being measured would be measured slow.
+      NEO4J_server_jvm_additional: "--add-modules jdk.incubator.vector"
+    mem_limit: 2g
+    cpus: 2.0
+    volumes:
+      - neo4j-data:/data
+    healthcheck:
+      # Waiting on the bolt port alone is not enough — Neo4j accepts a
+      # connection before it will answer a query, and a load started in that
+      # window fails in a way that looks like a bad query.
+      test: ["CMD", "cypher-shell", "-u", "neo4j", "-p", "benchbench", "RETURN 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  neo4j-data:

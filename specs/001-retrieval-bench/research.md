@@ -160,6 +160,35 @@ passages that cannot be quoted back to a reader. Never merging across documents
 keeps the passage-to-document mapping total, which FR-004 and the scoring both
 depend on.
 
+## 8. The one dependency that does not resolve cleanly (found during setup)
+
+**Decision**: Hold `langchain-community` below 0.4 and leave the rest of the
+stack on the 1.x line.
+
+**Finding**: `ragas` 0.4.3 — the latest release — imports
+`langchain_community.chat_models.vertexai` when its LLM base module loads.
+`langchain-community` 0.4 removed that path; the package is being sunset in
+favour of standalone integration packages and says so in a deprecation warning
+on import. With 0.4 resolved, `import ragas` fails outright, so no metric is
+reachable.
+
+Pinning only that package resolves it: `langchain-core` stays at 1.6, `langgraph`
+at 1.2, and all four metrics import. The ceiling is on a package this subproject
+never calls directly, which is the smallest version constraint that fixes it.
+
+**Consequence for scoring**: `ragas.metrics` warns that the metric objects move
+to `ragas.metrics.collections` before v1.0. The scoring task imports from the
+new path so the code does not need revisiting when the old one is removed.
+
+**Alternatives rejected**:
+- *Pin the whole stack to the pre-1.0 LangChain line*: everything agrees, but
+  the subproject exists partly to show current practice, and shipping on a
+  sunset package to keep one library happy is the wrong trade.
+- *Drop ragas and write the metrics directly*: they are judge prompts and would
+  be perhaps 150 lines. Rejected because a hand-written judge is one more thing
+  a reader has to trust, and the point of using a published implementation is
+  that its definition of faithfulness is not mine to argue with.
+
 ## Open Items Carried Into Planning
 
 None. Every deferral the specification listed is resolved above. The
