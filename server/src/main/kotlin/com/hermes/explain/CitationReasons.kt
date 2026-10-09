@@ -10,7 +10,9 @@ import com.hermes.context.Invalid
  * 세 곳이 각자 문자열을 조립하다 한 곳이 어긋나면 그 경로의 위반이 조용히 안 세어진다.
  */
 internal fun invalidCitationReason(invalid: Invalid): String =
-    if (invalid.unknownPaths.isEmpty()) {
+    if (invalid.missingPolicyPaths.isNotEmpty()) {
+        "citations missing policy support: ${invalid.missingPolicyPaths.joinToString()}"
+    } else if (invalid.unknownPaths.isEmpty()) {
         "no citations"
     } else {
         "citations not in bundle: ${invalid.unknownPaths.joinToString()}"

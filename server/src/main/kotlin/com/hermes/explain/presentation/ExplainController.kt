@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import tools.jackson.databind.util.RawValue
-import java.time.Instant
 
 data class ExplainRequest(val courseUuid: String)
 
@@ -28,6 +27,10 @@ data class ExplainResponse(
     val facts: RawValue,
     val generatedAt: String,
     val model: String,
+    val retrievedAt: String,
+    val cached: Boolean,
+    val factsSha256: String,
+    val bundleSha256: String,
 )
 
 @RestController
@@ -55,8 +58,12 @@ class ExplainController(
             explanation = result.explanation.explanation,
             citations = result.explanation.citations,
             facts = RawValue(result.factsJson),
-            generatedAt = Instant.now().toString(),
+            generatedAt = result.generatedAt.toString(),
             model = model,
+            retrievedAt = result.retrievedAt.toString(),
+            cached = result.cached,
+            factsSha256 = result.factsSha256,
+            bundleSha256 = result.bundleSha256,
         )
     }
 }

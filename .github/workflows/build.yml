@@ -21,11 +21,17 @@ jobs:
         uses: actions/checkout@v5
         with:
           repository: hyunolike/travel-context-wiki
+          # Requires the source-version generator/sidecar contract; merge wiki first.
+          # Keep the full commit pinned so CI can validate this draft before integration.
+          ref: f628c4cf25ae0e493a69cbf242a421ad2bfcd28e
+          fetch-depth: 0
           path: wiki
 
       - name: Rebuild the bundle from the wiki
         working-directory: wiki
-        run: ./scripts/build-bundle.sh hanjeok > "$RUNNER_TEMP/hanjeok-bundle.txt"
+        run: |
+          ./scripts/build-bundle.sh hanjeok > "$RUNNER_TEMP/hanjeok-bundle.txt"
+          python3 scripts/provenance.py metadata hanjeok > "$RUNNER_TEMP/hanjeok-bundle.meta.json"
 
       - name: Fail if the committed bundle has drifted
         run: |
@@ -37,6 +43,9 @@ jobs:
                  server/src/main/resources/prompts/hanjeok-bundle.txt | head -40
             exit 1
           fi
+
+      - name: Fail if bundle provenance has drifted
+        run: diff -u "$RUNNER_TEMP/hanjeok-bundle.meta.json" server/src/main/resources/prompts/hanjeok-bundle.meta.json
 
       - uses: actions/setup-java@v5
         with:

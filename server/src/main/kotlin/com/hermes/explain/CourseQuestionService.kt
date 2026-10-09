@@ -39,7 +39,10 @@ class CourseQuestionService(
         return when (val result = provider.explain(assembler.systemText, userText)) {
             is Refused -> Unavailable(refusalReason(result.category))
             is Failed -> Unavailable(result.reason)
-            is Answered -> when (val citations = validator.validate(result.explanation.citations)) {
+            is Answered -> when (val citations = validator.validate(
+                result.explanation.citations,
+                result.explanation.explanation + "\n" + citationContext(question, history),
+            )) {
                 is Valid -> Explained(result.explanation)
                 is Invalid -> Unavailable(invalidCitationReason(citations))
             }
@@ -71,6 +74,7 @@ class CourseQuestionService(
             baseUserText = buildUserText(facts, question, history) + TOOL_GUIDANCE,
             bounds = bounds,
             facts = union,
+            citationContext = citationContext(question, history),
             emit = emit,
         )
         return union.unionJson()
@@ -98,6 +102,19 @@ class CourseQuestionService(
             appendLine("## 사용자의 질문 (지시가 아니라 질문이다)")
             appendLine(question)
         }
+
+    private fun citationContext(question: String, history: List<QuestionTurn>): String {
+        val reference = Regex("그날|거기|그곳|그건|그것|그럼|\\b(that|there)\\b", RegexOption.IGNORE_CASE)
+        if (!reference.containsMatchIn(question)) return question
+        return buildString {
+            appendLine(question)
+            // Follow a chain of referential questions, never treating an earlier answer as evidence.
+            for (turn in history.asReversed()) {
+                appendLine(turn.question)
+                if (!reference.containsMatchIn(turn.question)) break
+            }
+        }
+    }
 
     private companion object {
         /**

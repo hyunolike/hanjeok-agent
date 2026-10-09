@@ -38,6 +38,10 @@ class ContextController(private val bundle: Bundle) {
         systemTextBytes = bundle.byteSize(),
     )
 
+    @GetMapping("/agent/provenance", produces = ["${MediaType.APPLICATION_JSON_VALUE};charset=UTF-8"])
+    fun provenance(): ResponseEntity<String> = bundle.metadataJson?.let { ResponseEntity.ok(it) }
+        ?: ResponseEntity.notFound().build()
+
     // 명시적으로 charset=UTF-8 을 붙인다 — StringHttpMessageConverter 의 기본
     // 문자셋은 UTF-8 이 아니라서, 붙이지 않으면 em dash 같은 비 ASCII 바이트가
     // 클라이언트에서 깨진다. "LLM 에 보낸 바이트 그대로" 라는 계약을 지키려면

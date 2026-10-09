@@ -533,4 +533,24 @@ class AgentLoopTest {
 
         assertThat(signals).doesNotContain(LoopSignal.REPAIR_ASKED)
     }
+
+    @Test
+    fun `실패 후 다른 날짜 조회가 성공하면 성공한 사실만 근거에 남긴다`() {
+        val facts = ToolFacts(INITIAL_FACTS)
+        val provider = ScriptedProvider(listOf(
+            requestingTool("congestion", """{"attractionId":11,"date":"2026-10-02"}"""),
+            requestingTool("congestion", """{"attractionId":11,"date":"2026-10-03"}"""),
+            answering("\"concepts/a.md\"", "확인된 날짜 자료만 답합니다"),
+        ))
+        var attempts = 0
+        val events = collect(provider, runner = ToolRunner {
+            attempts++
+            if (attempts == 1) throw HanjeokUnavailableException("failed lookup")
+            """{"diagnosis":{"grade":"NORMAL"}}"""
+        }, facts = facts)
+        val union = com.fasterxml.jackson.databind.ObjectMapper().readTree(facts.unionJson())
+        assertThat(events.last()).isEqualTo(DoneEvent)
+        assertThat(union.path("lookups").size()).isEqualTo(1)
+        assertThat(union.at("/lookups/0/args").asText()).contains("2026-10-03").doesNotContain("2026-10-02")
+    }
 }
