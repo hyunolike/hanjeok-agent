@@ -1,0 +1,26 @@
+{
+  "wikiBaseline": "7fc19c0c4a034868866bcf5a920e3f82050830c7",
+  "agentBaseline": "ea47917fd6e031b0f2c6ae387249dabd690d2aed",
+  "inventoryOrder": [
+    "concepts/travel-context-layer.md",
+    "concepts/congestion-diagnosis.md",
+    "concepts/alternative-scoring.md",
+    "concepts/course-generation-policy.md",
+    "decisions/keep-llm-out-of-ranking.md",
+    "queries/why-this-place-today.md",
+    "records/places/gyeongbokgung.json",
+    "records/congestion/grade-policy.json",
+    "packages/hanjeok/prompt.md"
+  ],
+  "mandatoryDocuments": 8,
+  "optionalDocuments": 1,
+  "bundleUtf8Bytes": 24703,
+  "bundleSha256": "ec60e6f912d16ec8d04b158504c99fc81b2c9edb6179c5da3cc0671a45b619c9",
+  "metadataSha256": "62d758526e28fff443d21a9c4beb7d7f474031d5cd5698341bb1126a0af671eb",
+  "producerRunsByteIdentical": true,
+  "producerConsumerBodyByteIdentical": true,
+  "producerConsumerMetadataByteIdentical": true,
+  "bundledRuleHomesRetained": true,
+  "selectionClassificationVerified": true,
+  "scope": "local read-only compatibility; no deploy or model call"
+}

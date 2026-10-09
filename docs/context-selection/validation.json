@@ -1,0 +1,36 @@
+{
+  "scope": "local offline validation only",
+  "serverBuild": "SUCCESS",
+  "testSuites": 55,
+  "tests": {
+    "tests": 325,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "newExperimentTests": 6,
+  "scriptedFixtureCases": 29,
+  "scriptedArmExecutions": 58,
+  "bootJar": "SUCCESS",
+  "experimentAndPaidEvalMainAbsentFromBootJar": true,
+  "packagedFullBundleAndSidecarUnchanged": true,
+  "productionSourceAndResourcesUnchanged": true,
+  "wikiCommand": "./harness/scripts/smoke.sh; scripts/build-index.sh --check",
+  "wikiSmoke": "PASS: 18 canonical pages",
+  "wikiProvenanceTests": "PASS: 8 tests",
+  "wikiIndexCheck": "PASS",
+  "wikiCanonicalSourcesAndPackagesUnchanged": true,
+  "producerConsumerBodyAndSidecarByteIdentical": true,
+  "diffWhitespaceCheck": "PASS: both worktrees",
+  "frontendCodeChanged": false,
+  "frontendBuildRepeated": false,
+  "paidModelEvaluationPerformed": false,
+  "newRemotePushPrMergeDeployment": false,
+  "credentialSmtpDatabaseDataChanges": false,
+  "remainingWork": "Parent creates/installs the specified README soft-3D images. Actual LLM behavior for this deployment/selection remains unmeasured.",
+  "serverCommands": [
+    "./gradlew --offline --no-daemon test bootJar offlineContextEval --args=docs/context-selection/results.json"
+  ],
+  "finalFullTestExecutedFromCache": false,
+  "versionedFixturesDeclaredAsGradleTestInputs": true
+}

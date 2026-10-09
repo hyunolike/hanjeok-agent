@@ -41,7 +41,7 @@
 
 <a href="docs/media/hanjeok-agent.mp4"><img src="docs/media/hanjeok-agent.gif" alt="질문이 타이핑되고 답이 흐르다 멎는다 — EXPLANATION_UNAVAILABLE. 인용한 경로가 번들에 없어 답변 전체가 나가지 않았다. 이어서 근거의 전부인 문서 9개, 인용이 본문보다 먼저 오는 정상 동작, 모자란 사실을 직접 조회하는 도구 루프, 그리고 마지막 문장 — 근거가 없으면 답하지 않는다." width="820"></a>
 
-<sub>21초. 이 에이전트의 주요 역할은 답하는 것이 아니라 막는 것입니다. **[소리까지 있는 버전 →](docs/media/hanjeok-agent.mp4)**<br/>영상 속 숫자는 전부 실측입니다 — 문서 9개, 23,079바이트, 첫 실전 실행에서 지어낸 출처 5번이 5번 다 막혔습니다.</sub>
+<sub>21초. 이 에이전트의 주요 역할은 답하는 것이 아니라 막는 것입니다. **[소리까지 있는 버전 →](docs/media/hanjeok-agent.mp4)**<br/>과거 녹화 당시에는 문서 9개, 23,079 bytes였고 이전 모델 실행에서 지어낸 출처 5번을 모두 막았습니다. 현재 번들은 24,703 bytes이며 10월 9일 운영 검증은 LLM을 호출하지 않았습니다.</sub>
 
 </div>
 
@@ -55,27 +55,29 @@
 
 <br/>
 
-## 🏗 구조 두 장
+## 🏗 두 입력과 세 요청 경로
 
-두 그림이 서로 다른 질문에 답합니다. 앞의 것은 요청 하나가 안에서 무엇을 하는지, 뒤의 것은 그 코드가 실제로 어디서 도는지입니다. 둘 다 이 저장소가 직접 그립니다 — 방식은 [기술 스택](#-기술-스택) 절에 있습니다.
+모델은 두 입력을 받습니다. `system`에는 **정적 위키 매뉴얼**, `user`에는 **현재 백엔드 facts**가 들어갑니다. 위키는 정책을 설명하고, 백엔드는 코스와 순위, 방문 순서를 계산합니다. 백엔드 facts가 우선입니다. 새 조회 시각은 조회 완료 시각이며 예보 발행 시각이나 원천 데이터의 최신성을 보장하지 않습니다.
 
-<div align="center">
+빌드 단계에서 출처를 검사하고 `hanjeok-bundle.txt`와 metadata sidecar를 생성합니다. CI가 두 산출물을 비교한 뒤 서버 이미지에 함께 넣습니다. 기동 시 `BundleLoader`가 한 번 검증하고, 9문서 전체 매뉴얼(UTF-8 24,703 bytes)을 그대로 프롬프트에 넣습니다. sidecar는 서버의 무결성 검사와 `/agent/provenance`에만 쓰며 모델 입력에는 넣지 않습니다.
 
-**요청 하나가 하는 일**
+<!-- IMAGE SLOT: docs/images/hanjeok-two-inputs.png; readme-diagram-spec.md Image A -->
 
-<img src="docs/images/flow.svg" alt="설명 요청 흐름도 — 백엔드 응답 3종은 FactsNormalizer 를 지나 BackendFacts 로, hanjeok-bundle.txt 는 BundleLoader·PromptAssembler 를 지나 systemText 로 들어가 ExplanationService.explain() 에서 만난다. ProviderResult 가 Refused·Failed 면 Unavailable, Answered 면 CitationValidator 로 가고, 인용이 유효하면 Explained 가 되어 ForbiddenBehaviours.check() 를 거친다. 두 갈래 모두 ViolationTally 로 모인다. 아래 두 번째 갈래는 POST /agent/ask/stream 전용이다 — CourseQuestionService.askStream() 이 AgentLoop 를 돌려 congestion·alternatives 를 최대 2라운드 부를 수 있고 그 라운드들이 마감 60초를 함께 쓰며, AskStreamGate 가 인용을 검증한 뒤 답을 흘리거나 한 번 수리하거나 unavailable·aborted 로 끝난다 — unavailable 앞의 delta 는 언제나 0개다." width="900">
+브라우저는 Vercel 프론트에서 Cloud Run agent를 호출합니다. agent가 한적 백엔드의 facts를 조회하고 필요할 때 프로바이더를 부릅니다.
 
-<sub>위 갈래가 첫 설명, 아래 갈래가 이어 묻기입니다. 이어 묻기에서는 모델이 예산 안에서 조회 도구 둘을 부를 수 있고, 인용이 검증되기 전에는 본문이 한 글자도 나가지 않습니다.</sub>
+| 요청 | 경로 | EXPLAIN 캐시 | 도구 |
+| --- | --- | --- | --- |
+| `POST /agent/explain` | facts 조회 → UUID/facts hash 캐시 → 저장된 답, 또는 LLM → 인용 검증 → 저장 | 생성 완료부터 5분, 같은 키의 진행 중 생성 공유 | 없음 |
+| `POST /agent/ask` | facts + 질문/이력 → LLM → 인용 검증 → 답 | 없음 | 없음 |
+| `POST /agent/ask/stream` | facts + 질문/이력 → agent loop → 인용 gate → SSE | 없음 | 검증된 혼잡도/대안 조회, 최대 2라운드와 60초 |
 
-<br/><br/>
+EXPLAIN은 캐시 hit에서도 백엔드 응답 3종을 조회하고 모델 호출을 건너뜁니다. facts가 바뀌면 새 키를 사용하며 조회나 생성 실패를 옛 캐시로 숨기지 않습니다. ASK 이력은 클라이언트가 보유하는 맥락이며 새 근거가 아닙니다. 스트림은 본문 전에 인용을 검증하고 실패하거나 거부된 도구 조회는 근거 합집합에 넣지 않습니다.
 
-**어디서 도는가**
+<!-- IMAGE SLOT: docs/images/request-paths.png; readme-diagram-spec.md Image B -->
 
-<img src="docs/images/deploy.svg" alt="배포 구성도 — 브라우저가 Vercel 의 Next.js 화면을 열고, 화면은 Cloud Run 의 hanjeok-agent 서버(presentation · explain · context · llm)를 부른다. 서버는 한적 백엔드를 요청당 3회, LLM 프로바이더를 1회 부르고, 키는 Secret Manager 에서 환경 변수로 주입된다. 근거 번들은 GitHub Actions 가 위키에서 다시 만들어 표류를 검사한 뒤 이미지에 구워 배포한다. 평가 하네스는 배포 경로 밖에 있다." width="900">
+새 soft-3D 그림은 [코드 기준 그림 명세](docs/context-selection/readme-diagram-spec.md)로 준비 중입니다. 이전 [요청 SVG](docs/images/flow.svg)와 [배포 SVG](docs/images/deploy.svg)는 위 캐시와 blocking ASK 차이를 담지 않은 과거 그림입니다. `ForbiddenBehaviours`와 `ViolationTally`는 오프라인 평가 하네스에 속합니다.
 
-<sub>브라우저는 한적 백엔드도 LLM 프로바이더도 직접 부르지 않습니다. 그래서 CORS 대상이 하나뿐입니다. 근거 번들은 빌드 시점에 이미지로 구워지고, 위키와 어긋나면 CI 가 실패합니다.</sub>
-
-</div>
+[배포 상세](docs/deploy.md)와 [시각이 기록된 운영 검증](docs/context-selection/production-verification.json): 2026-10-09 09:13 UTC에 agent `ea47917`의 Ready와 트래픽 100%, health/readiness UP, 번들/sidecar hash 일치를 확인했습니다. 프론트 배포도 완료됐습니다. 이 검증에서는 **실제 LLM을 호출하지 않았습니다**. 과거 모델 평가를 이번 변경의 운영 품질 검증으로 읽으면 안 됩니다. 별도 한적 본체 DB/SMTP 배포 보류는 유지합니다.
 
 <br/>
 
@@ -177,13 +179,13 @@
 
 ## 🔀 요청 흐름도
 
-> 이 절의 그림은 맨 위에 있습니다 — [**요청 하나가 하는 일**](#-구조-두-장).
+> 현재 경로는 위 [**두 입력과 세 요청 경로**](#-두-입력과-세-요청-경로)에 정리했습니다.
 
-`백엔드 응답 3종 → FactsNormalizer → BackendFacts` 와 `hanjeok-bundle.txt → BundleLoader → PromptAssembler` 가 `ExplanationService.explain()` 에서 만나고, `ExplanationProvider → ProviderResult → CitationValidator` 를 지나 `Explained` 또는 `Unavailable` 로 갈라진 뒤 `ForbiddenBehaviours.check()` · `ViolationTally` 로 모입니다.
+런타임의 `FactsSource`는 `FactsProjection`으로 백엔드 응답 3종을 `BackendFacts`로 조립합니다. `CourseExplainer`가 facts를 조회한 뒤 캐시를 확인합니다. miss이면 facts와 `BundleLoader → PromptAssembler`의 전체 번들이 `ExplanationService.explain()`에서 만나고, `ExplanationProvider → CitationValidator`를 거쳐 `Explained` 또는 `Unavailable`을 반환합니다. 오프라인 평가 하네스는 fixture용 `FactsNormalizer`를 사용하며 `ForbiddenBehaviours.check()`와 `ViolationTally`를 따로 실행합니다. 이 판정은 운영 요청 경로 밖에 있습니다.
 
 `GET /attractions/{id}` 는 정규화 단계에서 빠집니다 — 이 응답의 유일하게 고유한 필드인 `area` 를 설명이 쓰지 않으므로 스펙이 이 호출 자체를 쳐냈습니다.
 
-구분선 아래 갈래는 위 흐름이 이어진 것이 아니라 별도 진입점입니다 — `POST /agent/ask/stream` 은 `ExplanationService` 를 전혀 거치지 않습니다. 대신 `CourseQuestionService.askStream()` 이 `AgentLoop` 를 돌리고, 위 "주요 기능"에서 설명한 도구 루프가 거기 있습니다. 끝나는 곳도 `ForbiddenBehaviours` 가 아니라 `AskStreamGate` 입니다 — 금지 행동 8종 판정은 이 요청 경로가 아니라 평가 하네스가 합니다.
+streaming ASK는 별도 진입점입니다 — `POST /agent/ask/stream` 은 `ExplanationService` 를 전혀 거치지 않습니다. 대신 `CourseQuestionService.askStream()` 이 `AgentLoop` 를 돌리고, 위 "주요 기능"에서 설명한 도구 루프가 거기 있습니다. 끝나는 곳도 `ForbiddenBehaviours` 가 아니라 `AskStreamGate` 입니다 — 금지 행동 8종 판정은 이 요청 경로가 아니라 평가 하네스가 합니다.
 
 어댑터는 하나입니다(`SpringAiExplanationProvider`). 프로바이더별 차이는 어댑터 코드가 아니라 `ChatClients`가 조립하는 옵션에만 있습니다 — openai와 openrouter는 둘 다 OpenAI 호환 규격을 타므로 이 표에서는 한 열로 묶입니다.
 
@@ -235,7 +237,7 @@
 | <img src="docs/images/stack/nextjs.svg" width="24" alt=""> <img src="docs/images/stack/react.svg" width="24" alt=""> <img src="docs/images/stack/typescript.svg" width="24" alt=""> <img src="docs/images/stack/tailwind.svg" width="24" alt=""> 화면 | Next.js 16, React 19, TypeScript 5, Tailwind CSS 4 |
 | <img src="docs/images/stack/docker.svg" width="24" alt=""> <img src="docs/images/stack/cloud-run.svg" width="24" alt=""> <img src="docs/images/stack/vercel.svg" width="24" alt=""> 배포 | 서버는 Docker 이미지로 Cloud Run, 화면은 Vercel ([`docs/deploy.md`](./docs/deploy.md)) |
 
-> 위 로고는 외부에서 가져온 이미지가 아니라 이 저장소가 직접 그린 SVG 입니다(`docs/images/`). 선을 흔드는 필터를 얹어 손그림처럼 보이게 했고, 배경에 종이색 카드를 깔아 깃허브 라이트·다크 어느 테마에서도 읽힙니다. 위 흐름도(`flow.svg`)도 같은 방식입니다. 고칠 일이 생기면 `generate.py` · `generate_flow.py` · `generate_deploy.py` 를 다시 돌립니다(`python3 docs/images/<이름>`).
+> 위 로고는 외부에서 가져온 이미지가 아니라 이 저장소가 직접 그린 SVG 입니다(`docs/images/`). 선을 흔드는 필터를 얹어 손그림처럼 보이게 했고, 배경에 종이색 카드를 깔아 깃허브 라이트·다크 어느 테마에서도 읽힙니다. 과거 흐름도(`flow.svg`)도 같은 방식으로 그렸습니다. 고칠 일이 생기면 `generate.py` · `generate_flow.py` · `generate_deploy.py` 를 다시 돌립니다(`python3 docs/images/<이름>`).
 
 <br/>
 
@@ -456,7 +458,7 @@ hanjeok-agent
 
 ## 설명 캐시와 출처 판본
 
-이 브랜치의 변경은 로컬에서 테스트했으며 배포하지 않았습니다. 빌드 단계에서는
+출처/cache 계약은 agent `ea47917`에 배포됐습니다(wiki #31, agent #12 머지). [2026-10-09 검증](docs/context-selection/production-verification.json)은 운영 상태와 산출물 hash를 확인했으며 실제 LLM은 호출하지 않았습니다. 빌드 단계에서는
 wiki 출처 hash와 Git revision을 검사한 뒤 전체 번들 본문과 JSON sidecar를 만들어
 agent에 함께 패키징합니다. 요청 시점에는 브라우저가 agent를 부르고 agent가
 백엔드 facts를 조회한 뒤 필요한 경우 모델을 호출합니다. sidecar는 무결성과 출처
@@ -492,7 +494,10 @@ facts와 대화 맥락 → agent 루프 → 인용 게이트 → 스트림의 �
 않습니다. [설계](docs/source-cache-contract/plan.md)와
 [검증 절차](docs/source-cache-contract/quickstart.md)를 참고하세요.
 
-wiki 생성기와 계약을 먼저 반영한 뒤 agent를 통합해야 합니다. 새 agent는 sidecar를
-요구하므로 본문과 메타데이터를 함께 동기화합니다. CI는 wiki 커밋
-`f628c4cf25ae0e493a69cbf242a421ad2bfcd28e`에 고정해 두 저장소의 merge나 배포 없이
-이 Draft의 호환성을 확인합니다.
+wiki 생성기와 agent 소비 코드는 통합됐습니다. agent가 sidecar를 요구하므로 이후 갱신도 본문과 메타데이터를 함께 동기화합니다. CI는 머지된 wiki main `7fc19c0c4a034868866bcf5a920e3f82050830c7`에 고정해 두 산출물을 검사합니다. [오프라인 보고서](docs/context-selection/report.md)에 두 저장소의 호환성 검증을 기록합니다.
+
+## 오프라인 문서 선택 실험
+
+운영 기본값은 **FULL**을 유지합니다. `./gradlew offlineContextEval --args=docs/context-selection/results.json`은 별도 scripted 비교를 실행합니다. 필수 정책 8개는 모두 유지하고 경복궁 seed만 선택적으로 넣습니다. 불명확한 질문이나 참조는 검증된 전체 번들로 fallback하고 본문/sidecar hash가 잘못되면 fail closed합니다. 문서 순서와 원문 구간을 보존하며 인용 허용 목록은 요청 번들로 제한합니다. singleton과 운영 요청 경로는 바꾸지 않습니다.
+
+[설계](docs/context-selection/design.md), [버전 관리 fixture](harness/fixtures/context-selection/suite.json), [fallback을 분리한 결과](docs/context-selection/report.md)를 참고하세요. 최대 system bytes 감소는 501/24,703 = 2.03%입니다. 토큰이나 비용, 정확도, 지연 개선은 측정하지 않았고 scripted provider/tool은 배선만 검증합니다.
