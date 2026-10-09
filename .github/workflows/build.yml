@@ -21,6 +21,9 @@ jobs:
         uses: actions/checkout@v5
         with:
           repository: hyunolike/travel-context-wiki
+          # Requires the source-version generator/sidecar contract; merge wiki first.
+          # Keep the full commit pinned so CI can validate this draft before integration.
+          ref: f628c4cf25ae0e493a69cbf242a421ad2bfcd28e
           fetch-depth: 0
           path: wiki
 

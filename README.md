@@ -454,8 +454,15 @@ The procedure and the values actually deployed (URLs · region · secret names �
 
 ## Explanation freshness and evidence versions
 
+These branch changes have been tested locally and have not been deployed.
+At build time, wiki source hash/revision checks produce the full bundle text and
+its JSON sidecar, which the agent packages together. At runtime, the browser
+calls the agent, and the agent fetches backend facts and conditionally calls the
+model. The sidecar is used for integrity checks and provenance, never model input.
+Backend ranking stays deterministic.
+
 The explanation cache and in-flight coalescing use course UUID plus SHA-256 of the
-exact facts JSON. The cache keeps the generation timestamp for five minutes and
+exact facts UTF-8 bytes. The cache expires five minutes after generation completion and
 still fetches backend facts on every request. A changed congestion/alternative
 snapshot gets its own explanation. Failed facts queries never return stale cache.
 `generatedAt` is generation completion; additive `retrievedAt` is facts query
@@ -470,9 +477,25 @@ are unverified, and refreshes leave changed claims needing review. No old experi
 result or approval is inferred. Low-confidence/contested content remains qualified
 policy context. Hanjeok weather remains inactive.
 
+`POST /agent/explain` fetches facts, checks the UUID/hash cache, and returns a hit
+with its saved generation timestamp. A miss or expiry runs model generation and
+validation, then saves and returns the result; generation failures are not cached.
+`POST /agent/ask/stream` has a separate facts/history → agent loop → citation gate
+→ stream path. The model proposes congestion/alternative tools; the server checks
+arguments, executes lookups and returns results to the loop. Failed or rejected
+lookups do not enter the evidence union, and history is context rather than facts.
+The blocking `POST /agent/ask` has no tool loop. Neither ASK endpoint uses the
+explanation cache. Citation checks run before streaming body text.
+
 Citations remain path arrays. Limited congestion and alternative-score topic
-checks reject some unrelated valid paths; they do not certify semantic correctness.
+checks reject some unrelated valid paths; integrity and citation checks do not
+prove semantic truth or attest to experiment approval.
 The evaluation harness records input fingerprints, including tool-facts union
 hashes, but paid evaluation is separate from local tests. See
 [the contract](docs/source-cache-contract/plan.md) and
 [local validation](docs/source-cache-contract/quickstart.md).
+
+Integrate the wiki generator and contract first, then the agent consumer. The new
+agent requires the sidecar, so bundle text and metadata must be synchronized
+together. CI pins wiki commit `f628c4cf25ae0e493a69cbf242a421ad2bfcd28e` to validate
+this draft without merging or deploying either repository.
