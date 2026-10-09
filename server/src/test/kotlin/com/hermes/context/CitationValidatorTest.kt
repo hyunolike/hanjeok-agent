@@ -39,4 +39,18 @@ class CitationValidatorTest {
 
         assertThat(result).isEqualTo(Invalid(listOf("concepts/nope.md")))
     }
+
+    @Test
+    fun `유효하지만 무관한 경로는 혼잡도 주장을 뒷받침하지 못한다`() {
+        assertThat(validator.validate(listOf("concepts/travel-context-layer.md"), "백분위 92로 혼잡합니다"))
+            .isEqualTo(Invalid(emptyList(), listOf("concepts/congestion-diagnosis.md")))
+        assertThat(validator.validate(listOf("concepts/congestion-diagnosis.md"), "백분위 92로 혼잡합니다"))
+            .isEqualTo(Valid)
+    }
+
+    @Test
+    fun `대안 가중치 정책은 대안 정책 경로를 요구한다`() {
+        assertThat(validator.validate(listOf("concepts/congestion-diagnosis.md"), "대안 점수의 가중치"))
+            .isEqualTo(Invalid(emptyList(), listOf("concepts/alternative-scoring.md")))
+    }
 }

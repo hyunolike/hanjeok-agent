@@ -453,3 +453,25 @@ hanjeok-agent
 ## 📄 라이선스
 
 [MIT](./LICENSE) — © 2026 hyunolike.
+
+## 설명 캐시와 출처 판본
+
+캐시와 진행 중 호출 병합은 코스 UUID와 실제 facts JSON의 SHA-256을 함께 확인합니다.
+생성 완료 후 5분이 지나면 만료됩니다. 혼잡도나 대안 데이터가 바뀌면 새 설명을 만들고,
+facts 조회가 실패하면 이전 캐시로 숨기지 않습니다. `generatedAt`은 실제 생성 완료,
+추가된 `retrievedAt`은 facts 조회 완료 시각입니다. 예보 발표 시각이나 신선함을 뜻하지
+않습니다. `cached`, `factsSha256`, `bundleSha256`도 추가 필드이며 기존 프론트엔드는
+기존 필드 형식을 그대로 읽습니다.
+
+전체 정적 번들은 유지합니다. 별도 `hanjeok-bundle.meta.json`에 문서와 claim hash,
+원문 source hash 및 Git revision, 검토 상태를 기록합니다. 서버 적재와 CI에서 번들
+본문과 연결을 검사하며 `/agent/provenance`로 같은 메타데이터를 읽을 수 있습니다.
+기존 claims는 미검증이며 변경된 근거는 재검토 상태입니다. 과거 실험 결과와 승인
+기록은 추정하지 않습니다. low/contested 자료는 한정된 정책 맥락으로 남기고,
+Hanjeok 날씨는 활성화하지 않습니다.
+
+인용은 기존 경로 배열입니다. 혼잡도와 대안 점수의 일부 주제는 관련 정책 경로를
+요구하지만 문장 전체의 의미적 정답을 보장하지는 않습니다. 평가 하네스는 입력과
+도구 facts 합집합의 hash를 기록합니다. 실제 유료 평가는 로컬 테스트에 포함되지
+않습니다. [설계](docs/source-cache-contract/plan.md)와
+[검증 절차](docs/source-cache-contract/quickstart.md)를 참고하세요.

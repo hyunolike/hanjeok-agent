@@ -451,3 +451,28 @@ The procedure and the values actually deployed (URLs · region · secret names �
 ## 📄 License
 
 [MIT](./LICENSE) — © 2026 hyunolike.
+
+## Explanation freshness and evidence versions
+
+The explanation cache and in-flight coalescing use course UUID plus SHA-256 of the
+exact facts JSON. The cache keeps the generation timestamp for five minutes and
+still fetches backend facts on every request. A changed congestion/alternative
+snapshot gets its own explanation. Failed facts queries never return stale cache.
+`generatedAt` is generation completion; additive `retrievedAt` is facts query
+completion, not forecast publication. Responses also carry `cached`, `factsSha256`
+and `bundleSha256`. The existing frontend accepts the additive fields.
+
+The full static bundle remains unchanged in structure. A separate
+`hanjeok-bundle.meta.json` pins its documents, raw source revisions/hashes and
+claim review states. Startup verifies body/sidecar integrity; `/agent/provenance`
+returns the same sidecar. CI rebuilds and compares both artifacts. Imported claims
+are unverified, and refreshes leave changed claims needing review. No old experiment
+result or approval is inferred. Low-confidence/contested content remains qualified
+policy context. Hanjeok weather remains inactive.
+
+Citations remain path arrays. Limited congestion and alternative-score topic
+checks reject some unrelated valid paths; they do not certify semantic correctness.
+The evaluation harness records input fingerprints, including tool-facts union
+hashes, but paid evaluation is separate from local tests. See
+[the contract](docs/source-cache-contract/plan.md) and
+[local validation](docs/source-cache-contract/quickstart.md).

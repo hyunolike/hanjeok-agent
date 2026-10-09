@@ -81,7 +81,7 @@ class CourseExplainerTest {
         explainer.explain("abc")
         val second = explainer.explain("abc")
 
-        assertThat(provider.calls).describedAs("코스는 불변이므로 한 번이면 된다").isEqualTo(1)
+        assertThat(provider.calls).describedAs("facts 가 같을 때만 한 번이면 된다").isEqualTo(1)
         assertThat(second.cached).isTrue()
     }
 
@@ -179,6 +179,6 @@ class CourseExplainerTest {
         assertThatThrownBy { explainer.explain("abc") }.isInstanceOf(ExplanationUnavailableException::class.java)
 
         assertThat(cache.size()).isZero()
-        assertThat(cache.get("abc")).isNull()
+        assertThat(cache.get(ExplanationKey("abc", "unused"))).isNull()
     }
 }

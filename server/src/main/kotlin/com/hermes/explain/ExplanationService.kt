@@ -23,11 +23,13 @@ class ExplanationService(
     private val provider: ExplanationProvider,
 ) {
 
+    val bundleSha256: String = sha256(assembler.systemText)
+
     fun explain(facts: BackendFacts): ExplainOutcome =
         when (val result = provider.explain(assembler.systemText, facts.json)) {
             is Refused -> Unavailable(refusalReason(result.category))
             is Failed -> Unavailable(result.reason)
-            is Answered -> when (val citations = validator.validate(result.explanation.citations)) {
+            is Answered -> when (val citations = validator.validate(result.explanation.citations, result.explanation.explanation)) {
                 is Valid -> Explained(result.explanation)
                 is Invalid -> Unavailable(invalidCitationReason(citations))
             }

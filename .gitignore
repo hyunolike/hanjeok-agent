@@ -7,3 +7,5 @@ build/
 # 그림 생성 스크립트(docs/images)를 돌리면 생긴다
 __pycache__/
 brag-output
+
+.kotlin/

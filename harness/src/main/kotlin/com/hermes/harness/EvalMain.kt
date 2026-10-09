@@ -191,6 +191,10 @@ fun main(args: Array<String>) {
         BackendFacts(fixture.get("courseUuid").asText(), FactsNormalizer.normalize(fixture).toString())
     }
     val factsJson = facts.json
+    val fingerprint = EvidenceFingerprint.of(bundle, factsJson)
+    println("bundle SHA-256: ${fingerprint.bundleSha256}")
+    println("provenance SHA-256: ${fingerprint.provenanceSha256}")
+    println("facts SHA-256: ${fingerprint.factsSha256}")
 
     // 실행마다 그 실행에서 있었던 위반의 전체 다중집합을 모아 뒀다가, 루프가
     // 끝난 뒤 ViolationTally.aggregate 로 한 번에 집계한다 — "실행당 최대 1"과
@@ -285,6 +289,7 @@ fun main(args: Array<String>) {
             // 이유만으로 위반율이 오른다 — 그 상승은 모델에 대해 아무 말도 하지
             // 않는다.
             val unionJson = questionService.askStream(facts, askBounds, askQuestion, emptyList()) { events += it }
+            println("[$i] ask facts SHA-256: ${EvidenceFingerprint.of(bundle, unionJson).factsSha256}")
 
             toolRounds += signals.count { it == LoopSignal.TOOL_ROUND }
             if (signals.contains(LoopSignal.BUDGET_EXHAUSTED)) budgetExhausted++
