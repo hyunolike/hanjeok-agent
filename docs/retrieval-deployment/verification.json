@@ -6,7 +6,7 @@
   "runtimeSemanticActuallyExecuted": true,
   "runtimeTfidfActuallyExecuted": true,
   "pythonApiTests": {
-    "tests": 18,
+    "tests": 19,
     "failures": 0,
     "errors": 0
   },
@@ -33,15 +33,6 @@
       "actualSemanticBuild": true,
       "separateBuildSameImmutableVersion": true
     }
-  },
-  "actualApiE2e": {
-    "backends": 2,
-    "fixturesPerBackend": 35,
-    "routeChecksPerBackend": 105,
-    "deterministicChecksPerBackend": 35,
-    "authStaleIndexGraphUnavailableFullFallback": true,
-    "llmCalls": 0,
-    "graphDisabled": true
   },
   "packagePreparation": {
     "tfidfContextStaged": true,
@@ -81,12 +72,21 @@
   },
   "freshReview": {
     "reviewer": "fresh read-only gpt-6-astra agent",
-    "reviewedRange": "aaed277..70f379b",
+    "reviewedRange": "915c91db4338280a2282e88a25c4b1c0472b158a..fa0ccce391b85a8a9b354e1af565d5d84fe451e5",
     "critical": 0,
-    "important": 0,
-    "independentPythonTests": 15,
-    "deferredMinors": [
-      "Previous two minor gaps closed by this follow-up; fresh delta review pending"
+    "importantAsReported": 0,
+    "independentPythonTests": 18,
+    "reportedMinor": "graph-load-only incorrectly claimed actualHttp true",
+    "authorRegradedImportant": "false actual execution evidence conflicts with required actual/unexecuted distinction",
+    "fixed": "test_graph_load_only_does_not_claim_http_execution RED (True is not false) -> GREEN, full Python19/19",
+    "remainingDeferredMinors": [],
+    "declinedToJudge": [
+      "live Docker cleanup",
+      "independent JVM/container E2E reproduction",
+      "cloud IAM/private networking",
+      "Enterprise reader ACL",
+      "Linux semantic image",
+      "answer quality"
     ]
   },
   "existingPRs": {
@@ -113,10 +113,10 @@
     "wiki": "e92675aa8f3f75316c97c83a5518af62734320c7",
     "note": "Read-only state; merges occurred outside this follow-up; current cloud production not inspected."
   },
-  "ownedTemporaryApiServersStopped": false,
+  "ownedTemporaryApiServersStopped": true,
   "gapClosure": {
     "baseCommit": "915c91db4338280a2282e88a25c4b1c0472b158a",
-    "pythonApiTests": 18,
+    "pythonApiTests": 19,
     "jvmTests": {
       "tests": 339,
       "failures": 0,
@@ -164,8 +164,59 @@
     ],
     "cloudIamAndProductionReaderCredentialsConfigured": false,
     "remotePushOrDeployment": false,
-    "freshReview": "pending",
-    "cleanup": "pending"
+    "freshReview": {
+      "reviewer": "fresh read-only gpt-6-astra agent",
+      "reviewedRange": "915c91db4338280a2282e88a25c4b1c0472b158a..fa0ccce391b85a8a9b354e1af565d5d84fe451e5",
+      "critical": 0,
+      "importantAsReported": 0,
+      "independentPythonTests": 18,
+      "reportedMinor": "graph-load-only incorrectly claimed actualHttp true",
+      "authorRegradedImportant": "false actual execution evidence conflicts with required actual/unexecuted distinction",
+      "fixed": "test_graph_load_only_does_not_claim_http_execution RED (True is not false) -> GREEN, full Python19/19",
+      "remainingDeferredMinors": [],
+      "declinedToJudge": [
+        "live Docker cleanup",
+        "independent JVM/container E2E reproduction",
+        "cloud IAM/private networking",
+        "Enterprise reader ACL",
+        "Linux semantic image",
+        "answer quality"
+      ]
+    },
+    "cleanup": {
+      "nativePids": [
+        {
+          "pid": 96210,
+          "port": 17782,
+          "terminated": true
+        },
+        {
+          "pid": 96348,
+          "port": 17783,
+          "terminated": true
+        }
+      ],
+      "dockerContainers": [
+        "hanjeok-retrieval-api-task8",
+        "hanjeok-retrieval-task8"
+      ],
+      "removedImages": [
+        "sha256:f07a1ba5b600ca75655e0c499ded857849cca537ad3391a04c332275d6655c67",
+        "sha256:b58fe4874bb86d664a3abbe2bd5ed56f8c5449735fa17f8644aaf9bc1f8a1c87"
+      ],
+      "unrelatedServicesModified": false,
+      "networkRemoved": "hanjeok-retrieval-task8-net",
+      "ownedPortsClosed": [
+        17782,
+        17783,
+        17880,
+        17687
+      ],
+      "remainingContainers": [
+        "ogu-b7-redis",
+        "ogu-b7-pg"
+      ]
+    }
   },
   "mergeRelationship": {
     "branchForkBase": "aaed27772a48e19c465cab6b37717b6909c807d7",
@@ -174,5 +225,58 @@
     "sameTreeAtForkAndMergedMain": "52bc832cec0baeae2e947004f5979e93204850a4",
     "forkHeadIsDirectAncestorOfSquashMain": false,
     "operation": "fetch/read only; no rebase, merge, reset, main overwrite or push"
-  }
+  },
+  "baselineActualApiE2eAt915c91d": {
+    "backends": 2,
+    "fixturesPerBackend": 35,
+    "routeChecksPerBackend": 105,
+    "deterministicChecksPerBackend": 35,
+    "authStaleIndexGraphUnavailableFullFallback": true,
+    "llmCalls": 0,
+    "graphDisabled": true
+  },
+  "actualApiE2e": {
+    "backends": 3,
+    "fixturesPerBackend": 35,
+    "routeChecksPerBackend": 105,
+    "extraActualFactsExplainPerBackend": 1,
+    "actualNeo4j": true,
+    "llmCalls": 0,
+    "scriptedProvider": true
+  },
+  "readmeUpdate": {
+    "languages": {
+      "agent": [
+        "en",
+        "ko"
+      ],
+      "wiki": [
+        "en",
+        "ko",
+        "ja"
+      ]
+    },
+    "mermaidActualParser": "11.12.2",
+    "mermaidDiagramsParsed": 35,
+    "localLinksAndAnchorsChecked": 200,
+    "localLinkFailures": 0,
+    "externalUrls": "inventoried only, not network checked",
+    "newOverviewRequestRetrievalLabNodeCounts": [
+      7,
+      7,
+      7,
+      6
+    ],
+    "historicalPngEmbedsRemoved": true,
+    "historicalPngFilesDeleted": false,
+    "remainingAssetReferences": "historical specifications/hash records",
+    "wikiSmoke": {
+      "tests": 8,
+      "canonicalPages": 18,
+      "passed": true,
+      "indexCheckPassed": true
+    }
+  },
+  "protectedFilesRecheckedAfterFollowup": true,
+  "reportingFixCommit": "76959aa26b20f2a3f87dbaa20883019d31b13832"
 }

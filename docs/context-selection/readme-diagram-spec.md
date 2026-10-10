@@ -1,3 +1,5 @@
+> Historical image specification. On 2026-10-10 the README 3D embeds were replaced with Mermaid diagrams. The assets remain referenced by this record and the historical image validation manifest; their presence does not describe the current README or a retrieval deployment.
+
 # README diagram specification (2026-10-09)
 
 Operational raster diagrams A/B were received and visually reviewed on 2026-10-10; the applicable images are installed below. English experiment diagram C is installed; Korean B/C and English/Korean overall architecture diagrams are installed. Korean A is installed and visually reviewed. Keep labels short, arrows explicit and the build/runtime boundary visible. Decorative icons may be cute; no decoration may imply the LLM chooses a route or sidecar enters a prompt.

@@ -1,0 +1,39 @@
+{
+  "readme3dEmbedsRemaining": 0,
+  "imageFilesDeleted": [],
+  "retainedHistoricalAssets": {
+    "docs/images/hanjeok-two-inputs-ko.png": [
+      "docs/context-selection/readme-diagram-spec.md",
+      "docs/context-selection/readme-images-validation.json"
+    ],
+    "docs/images/hanjeok-two-inputs.png": [
+      "docs/context-selection/readme-diagram-spec.md",
+      "docs/context-selection/readme-images-validation.json"
+    ],
+    "docs/images/hanjeok-wiki-agent-overview.en.png": [
+      "docs/context-selection/readme-diagram-spec.md",
+      "docs/context-selection/readme-images-validation.json"
+    ],
+    "docs/images/hanjeok-wiki-agent-overview.ko.png": [
+      "docs/context-selection/readme-diagram-spec.md",
+      "docs/context-selection/readme-images-validation.json"
+    ],
+    "docs/images/local-retrieval-lab-ko.png": [
+      "docs/context-selection/readme-diagram-spec.md",
+      "docs/context-selection/readme-images-validation.json"
+    ],
+    "docs/images/local-retrieval-lab.png": [
+      "docs/context-selection/readme-diagram-spec.md",
+      "docs/context-selection/readme-images-validation.json"
+    ],
+    "docs/images/request-paths-ko.png": [
+      "docs/context-selection/readme-diagram-spec.md",
+      "docs/context-selection/readme-images-validation.json"
+    ],
+    "docs/images/request-paths.png": [
+      "docs/context-selection/readme-diagram-spec.md",
+      "docs/context-selection/readme-images-validation.json"
+    ]
+  },
+  "reason": "README embeds replaced by native Mermaid; historical diagram specifications/hash verification records still reference these assets."
+}

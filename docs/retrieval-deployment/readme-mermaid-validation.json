@@ -1,0 +1,36 @@
+{
+  "parser": "mermaid 11.12.2",
+  "actualParserRun": true,
+  "files": [
+    {
+      "repo": "hanjeok-agent",
+      "path": "README.md",
+      "diagrams": 4,
+      "allParsed": true
+    },
+    {
+      "repo": "hanjeok-agent",
+      "path": "README.ko.md",
+      "diagrams": 4,
+      "allParsed": true
+    },
+    {
+      "repo": "travel-context-wiki",
+      "path": "README.md",
+      "diagrams": 9,
+      "allParsed": true
+    },
+    {
+      "repo": "travel-context-wiki",
+      "path": "README.ko.md",
+      "diagrams": 9,
+      "allParsed": true
+    },
+    {
+      "repo": "travel-context-wiki",
+      "path": "README.ja.md",
+      "diagrams": 9,
+      "allParsed": true
+    }
+  ]
+}
