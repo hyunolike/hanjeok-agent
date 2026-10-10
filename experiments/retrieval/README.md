@@ -115,7 +115,7 @@ Executed extension: 34 Python tests in both isolated environments, 105 actual se
 
 Executed Neo4j extension: actual Community server/loader/driver traversals and negative checks, 210 primary arm rows/420 RAGAS samples, equal in-process selections, two byte-identical independent reruns, 210 real citation contracts. The earlier automatic review blocker was cleared by the explicit follow-up authorization; historical extension-validation.json retains that earlier status. Current status is results/neo4j-validation.json.
 
-Still unexecuted: answer generation, faithfulness/relevancy judging, paid APIs, external corpus upload, remote push/PR/merge/new deployment and the separate Hanjeok DB/SMTP rollout. Production remains FULL; operational and English experiment diagrams are installed; Korean-labelled replacements and the overall architecture image await receipt.
+Still unexecuted: answer generation, faithfulness/relevancy judging, paid APIs, external corpus upload, merge/new deployment and the separate Hanjeok DB/SMTP rollout. Production remains FULL; operational and English experiment diagrams are installed; Korean request/experiment diagrams and overall diagrams are installed; Korean A detail image awaits local receipt.
 
 judge_scores is opt-in and requires caller-supplied real RAGAS LLM/embedding adapters; it constructs no client and is never called by the runner. faithfulness and responseRelevancy stay null / not_executed. No mock or deterministic gate score is represented as LLM judging.
 
