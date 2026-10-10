@@ -176,3 +176,16 @@ tasks.register<JavaExec>("demoReachability") {
     mainClass.set("com.hermes.harness.DemoReachabilityMainKt")
     applyDotEnv()
 }
+
+// Explicit localhost integration only; does not load .env or call a model provider.
+tasks.register<JavaExec>("retrievalServiceE2e") {
+    group = "verification"
+    classpath = sourceSets["harness"].runtimeClasspath
+    mainClass.set("com.hermes.harness.RetrievalServiceE2eMainKt")
+}
+
+tasks.register<JavaExec>("retrievalRecoverySmoke") {
+    group = "verification"
+    classpath = sourceSets["harness"].runtimeClasspath
+    mainClass.set("com.hermes.harness.RetrievalRecoverySmokeMainKt")
+}

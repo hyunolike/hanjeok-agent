@@ -1,0 +1,1287 @@
+{
+  "actualLocalLinkCheck": true,
+  "externalUrls": "inventoried, not network requested",
+  "files": [
+    {
+      "repo": "hanjeok-agent",
+      "path": "README.ko.md",
+      "localTargets": 52,
+      "externalTargets": 10,
+      "links": [
+        {
+          "target": "https://img.shields.io/badge/Kotlin-2.2.21-7F52FF?logo=kotlin&logoColor=white",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/JDK-21-ED8B00?logo=openjdk&logoColor=white",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/Spring%20Boot-4.1.0-6DB33F?logo=springboot&logoColor=white",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/Gradle-Kotlin%20DSL-02303A?logo=gradle&logoColor=white",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/Spring%20AI-2.0.1-6DB33F?logo=springboot&logoColor=white",
+          "scope": "external"
+        },
+        {
+          "target": "docs/images/stack/kotlin.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/spring-boot.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/gradle.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/anthropic.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/nextjs.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/docker.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "./README.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/screens/course.png",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "https://agent.hanjeok.com",
+          "scope": "external"
+        },
+        {
+          "target": "https://agent.hanjeok.com/evidence",
+          "scope": "external"
+        },
+        {
+          "target": "docs/media/hanjeok-agent.mp4",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/media/hanjeok-agent.gif",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/media/hanjeok-agent.mp4",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/retrieval-deployment/verification.json",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "deployment/retrieval/README.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/deploy.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/context-selection/production-verification.json",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/screens/citation.png",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/screens/evidence.png",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-두-입력과-세-요청-경로",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/tech-stack.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/kotlin.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/java.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/spring-boot.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/gradle.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/anthropic.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/openai.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/junit.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/nextjs.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/react.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/typescript.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/tailwind.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/docker.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/cloud-run.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/vercel.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "./docs/deploy.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "https://github.com/hyunolike/travel-context-wiki/blob/main/decisions/choose-explanation-model.md",
+          "scope": "external"
+        },
+        {
+          "target": "#한적-위키에이전트-전체-구조",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "./docs/deploy.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "https://github.com/hyunolike.png",
+          "scope": "external"
+        },
+        {
+          "target": "https://github.com/hyunolike",
+          "scope": "external"
+        },
+        {
+          "target": "./LICENSE",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/context-selection/production-verification.json",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/source-cache-contract/plan.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/source-cache-contract/quickstart.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/context-selection/report.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "experiments/retrieval/README.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "experiments/retrieval/results/semantic-in-process/results.json",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "experiments/retrieval/results/semantic-in-process/dataset.jsonl",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "experiments/retrieval/results/extension-validation.json",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "experiments/retrieval/README.md#actual-isolated-neo4j-integration-2026-10-10",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "experiments/retrieval/results/neo4j-validation.json",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/context-selection/design.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "harness/fixtures/context-selection/suite.json",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/context-selection/report.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "deployment/retrieval/README.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/retrieval-deployment/verification.json",
+          "scope": "local",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "repo": "hanjeok-agent",
+      "path": "README.md",
+      "localTargets": 52,
+      "externalTargets": 10,
+      "links": [
+        {
+          "target": "https://img.shields.io/badge/Kotlin-2.2.21-7F52FF?logo=kotlin&logoColor=white",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/JDK-21-ED8B00?logo=openjdk&logoColor=white",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/Spring%20Boot-4.1.0-6DB33F?logo=springboot&logoColor=white",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/Gradle-Kotlin%20DSL-02303A?logo=gradle&logoColor=white",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/Spring%20AI-2.0.1-6DB33F?logo=springboot&logoColor=white",
+          "scope": "external"
+        },
+        {
+          "target": "docs/images/stack/kotlin.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/spring-boot.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/gradle.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/anthropic.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/nextjs.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/docker.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "./README.ko.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/screens/course.png",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "https://agent.hanjeok.com",
+          "scope": "external"
+        },
+        {
+          "target": "https://agent.hanjeok.com/evidence",
+          "scope": "external"
+        },
+        {
+          "target": "docs/media/hanjeok-agent.mp4",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/media/hanjeok-agent.gif",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/media/hanjeok-agent.mp4",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/retrieval-deployment/verification.json",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "deployment/retrieval/README.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/deploy.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/context-selection/production-verification.json",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/screens/citation.png",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/screens/evidence.png",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-two-inputs-three-request-paths",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/tech-stack.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/kotlin.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/java.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/spring-boot.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/gradle.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/anthropic.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/openai.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/junit.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/nextjs.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/react.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/typescript.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/tailwind.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/docker.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/cloud-run.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/images/stack/vercel.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "./docs/deploy.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "https://github.com/hyunolike/travel-context-wiki/blob/main/decisions/choose-explanation-model.md",
+          "scope": "external"
+        },
+        {
+          "target": "#hanjeok-wiki-and-agent-overview",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "./docs/deploy.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "https://github.com/hyunolike.png",
+          "scope": "external"
+        },
+        {
+          "target": "https://github.com/hyunolike",
+          "scope": "external"
+        },
+        {
+          "target": "./LICENSE",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/context-selection/production-verification.json",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/source-cache-contract/plan.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/source-cache-contract/quickstart.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/context-selection/report.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "experiments/retrieval/README.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "experiments/retrieval/results/semantic-in-process/results.json",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "experiments/retrieval/results/semantic-in-process/dataset.jsonl",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "experiments/retrieval/results/extension-validation.json",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "experiments/retrieval/README.md#actual-isolated-neo4j-integration-2026-10-10",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "experiments/retrieval/results/neo4j-validation.json",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/context-selection/design.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "harness/fixtures/context-selection/suite.json",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/context-selection/report.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "deployment/retrieval/README.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/retrieval-deployment/verification.json",
+          "scope": "local",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "repo": "travel-context-wiki",
+      "path": "README.ja.md",
+      "localTargets": 32,
+      "externalTargets": 13,
+      "links": [
+        {
+          "target": "https://img.shields.io/badge/公共データ-韓国観光公社%20TourAPI-0088cc.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/出典-data.go.kr-1a4b8c.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/license-Unlicensed-lightgrey.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/docs-SCHEMA.md-blue.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/workflow-Spec%20Kit-6f42c1.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/CI-smoke.sh-brightgreen.svg",
+          "scope": "external"
+        },
+        {
+          "target": "./README.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "./README.ko.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/retrieval-api-followup-verification.json",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/retrieval-api-followup-report.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-これは何ですか",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-travel-context-layer",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-データ出典",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-収集状況",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-ナレッジレイヤー",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-リポジトリ構成",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-データフロー",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-サービス連携モデル",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-バッチ収集モデル",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-ナレッジストアの境界",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-エージェントへの配信",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-説明モデル",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-プロジェクト成果物のリンク",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-クイックスタート",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-仕様駆動ワークフロー",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-mvp-スコープ",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-スコープ外",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-コントリビュート",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-ライセンス",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "https://img.shields.io/badge/韓国観光公社-TourAPI-0088cc.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/公共データポータル-data.go.kr-1a4b8c.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/観光地-混雑度予測-e07b39.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/観光地-関連情報-6f42c1.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/エアコリア-測定所リスト-2e8b57.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/韓国観光データラボ-地域別訪問者数-e07b39.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://www.data.go.kr/",
+          "scope": "external"
+        },
+        {
+          "target": "#スケジュールされたワークフロー",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/collection-stats.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-エージェントへの配信",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/production-verification.json",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "decisions/bind-claims-to-source-versions.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/retrieval-experiment-report.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/context-selection-report.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "./README.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "./README.ko.md",
+          "scope": "local",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "repo": "travel-context-wiki",
+      "path": "README.ko.md",
+      "localTargets": 32,
+      "externalTargets": 13,
+      "links": [
+        {
+          "target": "https://img.shields.io/badge/공공데이터-한국관광공사%20TourAPI-0088cc.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/출처-data.go.kr-1a4b8c.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/license-Unlicensed-lightgrey.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/docs-SCHEMA.md-blue.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/workflow-Spec%20Kit-6f42c1.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/CI-smoke.sh-brightgreen.svg",
+          "scope": "external"
+        },
+        {
+          "target": "./README.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "./README.ja.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/retrieval-api-followup-verification.json",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/retrieval-api-followup-report.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-무엇인가요",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-travel-context-layer",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-데이터-출처",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-수집-현황",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-지식-계층",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-레포지토리-구조",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-데이터-흐름",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-서비스-연동-모델",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-배치-수집-모델",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-지식-저장소-경계",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-에이전트-전달",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-설명-모델",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-프로젝트-산출물-연결",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-빠른-시작",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-스펙-기반-워크플로우",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-mvp-범위",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-범위-밖",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-기여하기",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-라이선스",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "https://img.shields.io/badge/한국관광공사-TourAPI-0088cc.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/공공데이터포털-data.go.kr-1a4b8c.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/관광지-집중률예측-e07b39.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/관광지-연관정보-6f42c1.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/에어코리아-측정소목록-2e8b57.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/한국관광%20데이터랩-지역별%20방문자수-e07b39.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://www.data.go.kr/",
+          "scope": "external"
+        },
+        {
+          "target": "#예약-워크플로우",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/collection-stats.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-에이전트-전달",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/production-verification.json",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "decisions/bind-claims-to-source-versions.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/retrieval-experiment-report.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/context-selection-report.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "./README.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "./README.ja.md",
+          "scope": "local",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "repo": "travel-context-wiki",
+      "path": "README.md",
+      "localTargets": 32,
+      "externalTargets": 14,
+      "links": [
+        {
+          "target": "https://img.shields.io/badge/public%20data-KTO%20TourAPI-0088cc.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/source-data.go.kr-1a4b8c.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/license-Unlicensed-lightgrey.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/docs-SCHEMA.md-blue.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/workflow-Spec%20Kit-6f42c1.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/CI-smoke.sh-brightgreen.svg",
+          "scope": "external"
+        },
+        {
+          "target": "./README.ko.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "./README.ja.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/retrieval-api-followup-verification.json",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/retrieval-api-followup-report.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-what-is-this",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-the-travel-context-layer",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-data-sources",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-collection-status",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-knowledge-layers",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-repository-structure",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-data-flow",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-service-integration-model",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-batch-collection-model",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-knowledge-store-boundary",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-agent-delivery",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-explanation-model",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-project-artifact-links",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-quick-start",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-spec-driven-workflow",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-mvp-scope",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-out-of-scope",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-contributing",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-license",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "https://img.shields.io/badge/한국관광공사-TourAPI-0088cc.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/공공데이터포털-data.go.kr-1a4b8c.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/관광지-집중률예측-e07b39.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/관광지-연관정보-6f42c1.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/에어코리아-측정소목록-2e8b57.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://img.shields.io/badge/한국관광%20데이터랩-지역별%20방문자수-e07b39.svg",
+          "scope": "external"
+        },
+        {
+          "target": "https://www.data.go.kr/",
+          "scope": "external"
+        },
+        {
+          "target": "#scheduled-workflows",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/collection-stats.svg",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "#-agent-delivery",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/production-verification.json",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "decisions/bind-claims-to-source-versions.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "https://github.com/hyunolike/hanjeok-agent/blob/main/docs/source-cache-contract/plan.md",
+          "scope": "external"
+        },
+        {
+          "target": "docs/retrieval-experiment-report.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "docs/context-selection-report.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "./README.ko.md",
+          "scope": "local",
+          "ok": true
+        },
+        {
+          "target": "./README.ja.md",
+          "scope": "local",
+          "ok": true
+        }
+      ]
+    }
+  ],
+  "failures": []
+}

@@ -1,0 +1,275 @@
+{
+  "schemaVersion" : 1,
+  "backend" : "tfidf",
+  "identity" : {
+    "bundleSha256" : "ec60e6f912d16ec8d04b158504c99fc81b2c9edb6179c5da3cc0671a45b619c9",
+    "metadataSha256" : "62d758526e28fff443d21a9c4beb7d7f474031d5cd5698341bb1126a0af671eb",
+    "indexVersion" : "914dcc6488890edaa2c9d8743013d2ef6c1edd9e655994fef50a84d74d4d0b17",
+    "modelRevision" : "tfidf-v1"
+  },
+  "actualHttpAndSearch" : true,
+  "actualKotlinCitations" : true,
+  "llmJudgeRun" : false,
+  "graphApiRun" : true,
+  "mode" : "HYBRID_GRAPH",
+  "factsExplain" : {
+    "fixture" : "harness/fixtures/course-explanation-request.json",
+    "query" : "경복궁 북촌 한옥마을 서촌 골목길 혼잡도 방문 순서 설명",
+    "decision" : "SELECTED",
+    "actualSelectorAndFactsNormalizer" : true,
+    "actualHttpAndCitationGate" : true,
+    "providerCalls" : 1
+  },
+  "fixtureCount" : 35,
+  "routeChecks" : 105,
+  "deterministicChecks" : 35,
+  "staleIndexFullFallback" : true,
+  "authFailureFullFallback" : true,
+  "graphUnavailableFullFallback" : false,
+  "rows" : [ {
+    "id" : "congestion-policy",
+    "decision" : "SELECTED",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "alternative-policy",
+    "decision" : "SELECTED",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "visit-order-policy",
+    "decision" : "SELECTED",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "no-data",
+    "decision" : "FULL_FALLBACK",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "seed-explicit",
+    "decision" : "SELECTED",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "seed-english",
+    "decision" : "SELECTED",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "other-place",
+    "decision" : "FULL_FALLBACK",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "reference-seed",
+    "decision" : "FULL_FALLBACK",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "reference-chain",
+    "decision" : "FULL_FALLBACK",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "reference-other-poisoned-answer",
+    "decision" : "FULL_FALLBACK",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "poisoned-answer-generic",
+    "decision" : "SELECTED",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "positional-seed",
+    "decision" : "FULL_FALLBACK",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "weather-unsupported",
+    "decision" : "ABSTAIN",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 0,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "hours-unsupported",
+    "decision" : "ABSTAIN",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 0,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "reference-missing",
+    "decision" : "FULL_FALLBACK",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "reference-ambiguous",
+    "decision" : "FULL_FALLBACK",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "unknown-intent",
+    "decision" : "FULL_FALLBACK",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "empty-question",
+    "decision" : "SELECTED",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "rule-override",
+    "decision" : "ABSTAIN",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 0,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "unrelated-valid-citation",
+    "decision" : "SELECTED",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "omitted-seed-citation",
+    "decision" : "SELECTED",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "tool-success",
+    "decision" : "FULL_FALLBACK",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "tool-failed",
+    "decision" : "FULL_FALLBACK",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "tool-rejected",
+    "decision" : "FULL_FALLBACK",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "alternative-tool-success",
+    "decision" : "FULL_FALLBACK",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "stream-omitted-seed",
+    "decision" : "SELECTED",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "provider-failed",
+    "decision" : "SELECTED",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "provider-refused",
+    "decision" : "SELECTED",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "explain-baseline",
+    "decision" : "SELECTED",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "graph-declared-region",
+    "decision" : "SELECTED",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "graph-shared-source",
+    "decision" : "SELECTED",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "graph-transport-unsupported",
+    "decision" : "ABSTAIN",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 0,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "graph-weather-unsupported",
+    "decision" : "ABSTAIN",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 0,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "graph-unknown-entity",
+    "decision" : "FULL_FALLBACK",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  }, {
+    "id" : "graph-poisoned-history",
+    "decision" : "SELECTED",
+    "policyCount" : 8,
+    "requiredEvidenceCovered" : true,
+    "providerCalls" : 3,
+    "threeRoutesVerified" : true
+  } ]
+}

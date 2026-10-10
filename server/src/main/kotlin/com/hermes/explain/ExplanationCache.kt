@@ -10,7 +10,7 @@ import java.time.Instant
 internal fun sha256(text: String): String = MessageDigest.getInstance("SHA-256")
     .digest(text.toByteArray(Charsets.UTF_8)).joinToString("") { "%02x".format(it) }
 
-data class ExplanationKey(val courseUuid: String, val factsSha256: String)
+data class ExplanationKey(val courseUuid: String, val factsSha256: String, val contextIdentity: String = "")
 data class CachedExplanation(val explanation: Explanation, val generatedAt: Instant)
 
 /** Process-local model/bundle are fixed. Cache and single-flight share the facts-bound key. */

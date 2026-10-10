@@ -1,0 +1,45 @@
+# Review-only template. Do not apply before infrastructure/cost/IAM approval.
+# Private ingress + existing caller invoker IAM are prerequisites; this YAML alone is insufficient.
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: retrieval-review-only
+  annotations:
+    run.googleapis.com/ingress: internal
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/maxScale: "1"
+    spec:
+      serviceAccountName: REPLACE_WITH_EXISTING_APPROVED_SERVICE_ACCOUNT
+      containerConcurrency: 1
+      timeoutSeconds: 5
+      containers:
+        - image: REPLACE_WITH_REVIEWED_IMAGE_DIGEST
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              cpu: "2"
+              memory: 2Gi
+          env:
+            - name: RETRIEVAL_AUTH_MODE
+              value: cloud-run-iam
+            - name: RETRIEVAL_INDEX_VERSION
+              value: REPLACE_WITH_VALIDATED_MANIFEST_HASH
+            - name: RETRIEVAL_GRAPH_MODE
+              value: disabled
+          startupProbe:
+            httpGet:
+              path: /health/live
+              port: 8080
+            periodSeconds: 5
+            failureThreshold: 24
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 8080
+            periodSeconds: 10
+  # Actual traffic publication remains a separate, approved action.

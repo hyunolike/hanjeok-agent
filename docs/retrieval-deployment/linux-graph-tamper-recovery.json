@@ -1,0 +1,10 @@
+{
+  "actualHttp" : true,
+  "decision" : "FULL_FALLBACK",
+  "exactOriginalFull" : true,
+  "threeRoutesRecovered" : true,
+  "selectionMillis" : 114,
+  "unknownCitationRejected" : true,
+  "providerCalls" : 3,
+  "llmCalls" : 0
+}

@@ -3,6 +3,7 @@ package com.hermes.explain
 import com.hermes.facts.FactsSource
 import com.hermes.facts.HanjeokUnavailableException
 import com.hermes.llm.Explanation
+import com.hermes.context.RequestContext
 import org.slf4j.LoggerFactory
 import java.time.Clock
 import java.time.Instant
@@ -45,9 +46,11 @@ class CourseExplainer(
         }
 
         val retrievedAt = clock.instant()
-        val key = ExplanationKey(courseUuid, sha256(facts.json))
+        val request = service.context(facts)
+        if (request.abstain) throw ExplanationUnavailableException("unsupported retrieval scope")
+        val key = ExplanationKey(courseUuid, sha256(facts.json), request.identity)
         val cached = cache.get(key)
-        val (entry, reusedCache) = cached?.let { it to true } ?: explanationFor(key, facts)
+        val (entry, reusedCache) = cached?.let { it to true } ?: explanationFor(key, facts, request)
         return CourseExplanation(
             explanation = entry.explanation,
             factsJson = facts.json,
@@ -59,7 +62,7 @@ class CourseExplainer(
         )
     }
 
-    private fun explanationFor(key: ExplanationKey, facts: BackendFacts): Pair<CachedExplanation, Boolean> {
+    private fun explanationFor(key: ExplanationKey, facts: BackendFacts, request: RequestContext): Pair<CachedExplanation, Boolean> {
         var leader = false
         val pending = inFlight.computeIfAbsent(key) {
             leader = true
@@ -82,7 +85,7 @@ class CourseExplainer(
                 pending.complete(it)
                 return it to true
             }
-            when (val outcome = service.explain(facts)) {
+            when (val outcome = service.explain(facts, request)) {
                 is Explained -> {
                     // 실패는 캐시하지 않는다 — 일시적 장애가 그 코스에 영구히 눌어붙는다.
                     val entry = CachedExplanation(outcome.explanation, clock.instant())

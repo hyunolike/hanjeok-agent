@@ -85,6 +85,11 @@ class AgentLoop(
     // 기본값은 무동작이다. 운영 배선은 이 인자를 주지 않는다.
     private val observer: LoopObserver = LoopObserver { },
 ) {
+    private var selectedEvidence = false
+
+    /** Each request owns its validator, including repair attempts; shared loop state is untouched. */
+    fun withValidator(requestValidator: CitationValidator): AgentLoop =
+        AgentLoop(provider, requestValidator, toolRunner, clock, maxToolRounds, deadlineMs, observer).also { it.selectedEvidence = true }
 
     fun run(
         systemText: String,
@@ -317,7 +322,8 @@ class AgentLoop(
 
     private fun repairText(reason: String): String =
         "직전 답의 인용이 유효하지 않다: $reason\n" +
-            "system 블록의 `----- FILE: 경로 -----` 마커에 실제로 있는 경로만 citations 에 넣어 다시 답하라."
+            if (selectedEvidence) "이 요청의 system 정책 마커와 user 검색 근거 JSON에 실제로 제공된 ID만 citations 에 넣어 다시 답하라."
+            else "system 블록의 `----- FILE: 경로 -----` 마커에 실제로 있는 경로만 citations 에 넣어 다시 답하라."
 
     private fun quote(text: String): String = MAPPER.writeValueAsString(text)
 
