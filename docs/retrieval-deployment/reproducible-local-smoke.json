@@ -1,0 +1,14 @@
+{
+  "actualHttp": true,
+  "llmCalls": 0,
+  "identity": {
+    "bundleSha256": "ec60e6f912d16ec8d04b158504c99fc81b2c9edb6179c5da3cc0671a45b619c9",
+    "metadataSha256": "62d758526e28fff443d21a9c4beb7d7f474031d5cd5698341bb1126a0af671eb",
+    "indexVersion": "914dcc6488890edaa2c9d8743013d2ef6c1edd9e655994fef50a84d74d4d0b17",
+    "modelRevision": "tfidf-v1"
+  },
+  "healthProvenanceSchemaAuthBoundsAndAbstention": true,
+  "slowBodyDeadlineSeconds": 2.009,
+  "realGraphTamperRejected": true,
+  "graphRestored": true
+}

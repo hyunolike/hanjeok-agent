@@ -65,7 +65,7 @@ class IndexTests(unittest.TestCase):
   engine=Engine(load_index(self.dest,self.version))
   with self.assertRaises(ValueError):engine.retrieve(engine.request('경복궁 혼잡도 기준은?',mode='HYBRID_GRAPH'))
 
-async def call(app,path='/v1/retrieve',body=None,auth='local-test',method='POST'):
+async def call(app,path='/v1/retrieve',body=None,auth='local-test',method='POST',peer='127.0.0.1'):
  sent=[];raw=json.dumps(body,ensure_ascii=False).encode() if body is not None else b'';received=False
  async def receive():
   nonlocal received
@@ -73,7 +73,7 @@ async def call(app,path='/v1/retrieve',body=None,auth='local-test',method='POST'
   received=True;return {'type':'http.request','body':raw,'more_body':False}
  async def send(x):sent.append(x)
  headers=[(b'authorization',('Bearer '+auth).encode()),(b'content-type',b'application/json'),(b'content-length',str(len(raw)).encode())]
- await app({'type':'http','method':method,'path':path,'headers':headers,'client':('127.0.0.1',1234)},receive,send)
+ await app({'type':'http','method':method,'path':path,'headers':headers,'client':(peer,1234)},receive,send)
  return sent[0]['status'],json.loads(sent[-1]['body'])
 
 class ApiTests(unittest.IsolatedAsyncioTestCase):
@@ -84,6 +84,19 @@ class ApiTests(unittest.IsolatedAsyncioTestCase):
  async def asyncTearDown(self):
   if hasattr(self,'app'):await self.app.close()
   if hasattr(self,'tmp'):self.tmp.cleanup()
+ async def test_container_test_auth_is_explicit_and_bounded_to_private_subnet(self):
+  app=create_app(self.engine,auth_mode='isolated-container-test',local_token='local-test',test_network='172.30.83.0/24')
+  try:
+   self.assertEqual(200,(await call(app,body=self.engine.request('경복궁 기준'),peer='172.30.83.1'))[0])
+   self.assertEqual(401,(await call(app,body=self.engine.request('경복궁 기준'),peer='172.30.84.1'))[0])
+   self.assertEqual(401,(await call(app,body=self.engine.request('경복궁 기준'),peer='172.30.83.1',auth='bad'))[0])
+  finally:await app.close()
+  for network in ('0.0.0.0/0','198.51.100.0/24','172.30.83.0/8'):
+   with self.assertRaises(ValueError):create_app(self.engine,auth_mode='isolated-container-test',local_token='local-test',test_network=network)
+ async def test_readiness_revalidates_actual_graph_inventory_not_only_connectivity(self):
+  from types import SimpleNamespace
+  self.engine.graph=SimpleNamespace(driver=SimpleNamespace(verify_connectivity=lambda:None),expand=lambda seeds,limit:())
+  self.assertEqual(503,(await call(self.app,'/health/ready',method='GET'))[0])
  async def test_real_search_metadata_and_health_provenance(self):
   status,r=await call(self.app,body=self.engine.request('경복궁 혼잡도 기준은 무엇인가요?'))
   self.assertEqual(200,status);self.assertEqual(self.v,r['identity']['indexVersion']);self.assertTrue(r['documents']);self.assertNotIn('content',r['documents'][0])
@@ -139,3 +152,11 @@ class RuntimeTests(unittest.TestCase):
   for edition,roles in [('community',['reader']),('enterprise',['admin']),('enterprise',['reader','publisher'])]:
    with self.assertRaises(ValueError):reader_privileges(Driver(edition,roles))
   self.assertFalse(reader_privileges(Driver('enterprise',['reader']))['runtimeWritesAllowed'])
+
+class ContainerBindingTests(unittest.TestCase):
+ def test_container_test_mode_never_works_on_cloud_or_without_explicit_marker(self):
+  from retrieval_service.runtime import configured_engine
+  for env in ({'RETRIEVAL_AUTH_MODE':'isolated-container-test','K_SERVICE':'cloud'},
+              {'RETRIEVAL_AUTH_MODE':'isolated-container-test'},
+              {'RETRIEVAL_AUTH_MODE':'isolated-container-test','RETRIEVAL_LOCAL_CONTAINER_TEST':'1','RETRIEVAL_TEST_NETWORK':'0.0.0.0/0'}):
+   with self.assertRaises(ValueError):configured_engine(env)

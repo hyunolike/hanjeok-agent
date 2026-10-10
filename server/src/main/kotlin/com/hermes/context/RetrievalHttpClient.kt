@@ -35,7 +35,7 @@ class RetrievalHttpClient(origin: URI, private val token: RetrievalToken, localT
     private val mapper=ObjectMapper()
     private val endpoint: URI
     private val admission=Semaphore(4)
-    private val client=HttpClient.newBuilder().connectTimeout(Duration.ofMillis(500)).followRedirects(HttpClient.Redirect.NEVER).build()
+    private val client=HttpClient.newBuilder().version(HttpClient.Version.HTTP_1_1).connectTimeout(Duration.ofMillis(500)).followRedirects(HttpClient.Redirect.NEVER).build()
     init {
         require(origin.host!=null && origin.userInfo==null && origin.query==null && origin.fragment==null && origin.path in listOf("","/"))
         require(if(localTest) origin.scheme=="http" && origin.host=="127.0.0.1" else origin.scheme=="https")

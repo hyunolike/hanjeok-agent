@@ -157,4 +157,56 @@ class RetrievalContextTest {
         } finally {executor.shutdownNow()}
     }
 
+    @Test fun `overlapping selected and FULL recovery never share cache or single flight`() {
+        val entered=java.util.concurrent.CountDownLatch(2);val release=java.util.concurrent.CountDownLatch(1)
+        val calls=java.util.concurrent.atomic.AtomicInteger()
+        val selector=RetrievalContextSelector(bundle,RetrievalMode.VECTOR,pin,RetrievalPort{_,_,_->
+            if(Thread.currentThread().name.startsWith("selected-request")) response(listOf(seed)) else error("offline")})
+        val provider=object:ExplanationProvider {
+            override val name="scripted-overlap"
+            override fun explain(systemText:String,userText:String):ProviderResult {
+                calls.incrementAndGet();entered.countDown();check(release.await(3,java.util.concurrent.TimeUnit.SECONDS))
+                val text=if(systemText.contains("----- FILE: $seed -----")) "FULL response" else "selected response"
+                return Answered(Explanation(text,RetrievalContextSelector.POLICIES.toList()),ProviderUsage(0,0,0,0))
+            }
+        }
+        val client=object:com.hermes.facts.HanjeokClient {
+            override fun course(courseUuid:String)=mapper.readTree("""{"targetDate":"2026-08-15","title":"동일 facts","congestionReductionRate":34,"summary":"요약","recommendedDate":null,"items":[{"attractionId":1001,"name":"경복궁","visitOrder":1,"timeLabel":"오전","grade":"VERY_CROWDED","reason":"첫 방문지","travelMinutesFromPrev":null}]}""")
+            override fun congestion(attractionId:Long,date:String)=mapper.readTree("""{"diagnosis":{"concentration":87.3,"percentile":92,"grade":"VERY_CROWDED","message":"fixture"},"betterDates":[]}""")
+            override fun alternatives(attractionId:Long,date:String,radiusKm:Int)=mapper.readTree("[]")
+        }
+        val backend=Executors.newFixedThreadPool(2);val requests=Executors.newFixedThreadPool(2)
+        val service=ExplanationService(PromptAssembler(bundle),CitationValidator(bundle),provider,selector)
+        val explainer=CourseExplainer(com.hermes.facts.FactsSource(client,15,backend),service,ExplanationCache())
+        try {
+            val a=requests.submit<CourseExplanation>{Thread.currentThread().name="selected-request";explainer.explain("same-course")}
+            val b=requests.submit<CourseExplanation>{Thread.currentThread().name="fallback-request";explainer.explain("same-course")}
+            assertThat(entered.await(2,java.util.concurrent.TimeUnit.SECONDS)).describedAs("both context identities must independently reach provider").isTrue()
+            release.countDown()
+            assertThat(a.get(2,java.util.concurrent.TimeUnit.SECONDS).explanation.explanation).isEqualTo("selected response")
+            assertThat(b.get(2,java.util.concurrent.TimeUnit.SECONDS).explanation.explanation).isEqualTo("FULL response")
+            assertThat(calls.get()).isEqualTo(2)
+            val selected=requests.submit<CourseExplanation>{Thread.currentThread().name="selected-request";explainer.explain("same-course")}.get(2,java.util.concurrent.TimeUnit.SECONDS)
+            val fallback=requests.submit<CourseExplanation>{Thread.currentThread().name="fallback-request";explainer.explain("same-course")}.get(2,java.util.concurrent.TimeUnit.SECONDS)
+            assertThat(selected.cached && fallback.cached).isTrue()
+            assertThat(selected.explanation.explanation).isEqualTo("selected response");assertThat(fallback.explanation.explanation).isEqualTo("FULL response")
+            assertThat(calls.get()).isEqualTo(2)
+        } finally {release.countDown();requests.shutdownNow();backend.shutdownNow()}
+    }
+
+    @Test fun `retrieval HTTP client uses ASGI HTTP1 without upgrade negotiation`() {
+        val server=HttpServer.create(InetSocketAddress("127.0.0.1",0),0)
+        val upgrade=java.util.concurrent.atomic.AtomicReference<String>()
+        server.createContext("/v1/retrieve") { exchange ->
+            upgrade.set(exchange.requestHeaders.getFirst("Upgrade"))
+            exchange.responseHeaders.set("Content-Type","application/json")
+            val body=response(listOf(seed)).toByteArray();exchange.sendResponseHeaders(200,body.size.toLong());exchange.responseBody.use{it.write(body)}
+        };server.start()
+        try {
+            val client=RetrievalHttpClient(URI("http://127.0.0.1:${server.address.port}"),RetrievalToken{"test"},localTest=true)
+            assertThat(client.retrieve("경복궁 기준",RetrievalMode.VECTOR,pin)).contains("selected")
+            assertThat(upgrade.get()).isNull()
+        } finally {server.stop(0)}
+    }
+
 }

@@ -6,16 +6,16 @@
   "runtimeSemanticActuallyExecuted": true,
   "runtimeTfidfActuallyExecuted": true,
   "pythonApiTests": {
-    "tests": 18,
+    "tests": 15,
     "failures": 0,
     "errors": 0
   },
   "jvmTests": {
-    "tests": 339,
+    "suites": 56,
+    "tests": 337,
     "failures": 0,
     "errors": 0,
-    "skipped": 0,
-    "suites": 56
+    "skipped": 0
   },
   "offlineOriginalFixtures": 29,
   "offlineRows": 58,
@@ -47,14 +47,12 @@
     "tfidfContextStaged": true,
     "semanticIndexAndModelVerified": true,
     "syntax": true,
-    "linuxImageBuilt": true,
-    "wheelhouseSupplied": true,
-    "baseImageDigestPinned": true,
-    "linuxArchitecture": "arm64",
-    "semanticLinuxImageBuilt": false
+    "linuxImageBuilt": false,
+    "wheelhouseSupplied": false,
+    "baseImageDigestPinned": false
   },
   "graph": {
-    "newApiNeo4jIntegrationExecuted": true,
+    "newApiNeo4jIntegrationExecuted": false,
     "candidateHybridValidation": "in_process_contract",
     "priorActualIntegrationEvidence": "experiments/retrieval/results/neo4j-validation.json",
     "productionReaderPrivilege": "mock contract only; actual Enterprise role unexecuted",
@@ -67,11 +65,11 @@
     "credential creation/configuration",
     "cloud IAM/invoker policy changes or verification",
     "production Neo4j reader-role integration",
+    "Linux Docker build",
     "deployment/traffic switching",
     "paid LLM/embedding/judge calls",
     "external corpus upload",
-    "separate Hanjeok DB/SMTP rollout",
-    "full Linux semantic image: CPU wheel 2.14.1+cpu differs from preserved exact 2.14.1 index pin; fresh Linux CPU candidate required"
+    "separate Hanjeok DB/SMTP rollout"
   ],
   "protectedFiles": {
     "server/src/main/resources/prompts/hanjeok-bundle.txt": "ec60e6f912d16ec8d04b158504c99fc81b2c9edb6179c5da3cc0671a45b619c9",
@@ -86,7 +84,8 @@
     "important": 0,
     "independentPythonTests": 15,
     "deferredMinors": [
-      "Previous two minor gaps closed by this follow-up; fresh delta review pending"
+      "Latch-controlled overlapping selected/FULL-fallback cache regression is not yet added; sequential identity recovery plus existing single-flight regressions pass.",
+      "Real-selector EXPLAIN E2E with representative facts is not yet added; current HTTP E2E selects first, then sends fixed selected context through all three actual Kotlin service/citation paths."
     ]
   },
   "existingPRs": {
@@ -113,66 +112,5 @@
     "wiki": "e92675aa8f3f75316c97c83a5518af62734320c7",
     "note": "Read-only state; merges occurred outside this follow-up; current cloud production not inspected."
   },
-  "ownedTemporaryApiServersStopped": false,
-  "gapClosure": {
-    "baseCommit": "915c91db4338280a2282e88a25c4b1c0472b158a",
-    "pythonApiTests": 18,
-    "jvmTests": {
-      "tests": 339,
-      "failures": 0,
-      "errors": 0,
-      "skipped": 0
-    },
-    "originalOfflineFixtures": 29,
-    "offlineRows": 58,
-    "cacheOverlap": "latch-controlled simultaneous selected/FULL fallback, independent model calls and cached responses; missing-context-key mutation assertion failed, original code restored and suite green",
-    "factsExplain": "actual FactsNormalizer/fixture -> production query construction -> real selector/HTTP -> actual CitationValidator; SELECTED, scripted provider; verified on all three E2Es",
-    "actualNeo4jApiE2E": [
-      "native TF-IDF",
-      "native pinned CPU semantic",
-      "Linux ARM64 TF-IDF image"
-    ],
-    "fixturesPerE2E": 35,
-    "requestRouteChecksPerE2E": 105,
-    "extraActualFactsExplainPerE2E": 1,
-    "actualLinuxImage": {
-      "actualLinuxImage": true,
-      "actualNeo4j": true,
-      "llmCalls": 0,
-      "healthAndPinnedProvenance": true,
-      "schemaAuthBoundsAndStalePinsRejected": true,
-      "actualSlowBodyDeadlineSeconds": 2.018,
-      "actualUid": 10001,
-      "immutableIndexWriteRejected": true,
-      "actualGraphTamperReadyDownRetrievalRejectedAndKotlinRecovered": true,
-      "readyRecoveredAfterGraphRestore": true,
-      "image": "sha256:b58fe4874bb86d664a3abbe2bd5ed56f8c5449735fa17f8644aaf9bc1f8a1c87",
-      "actualCorruptedIndexStartupRejected": true,
-      "negativeArtifactInjection": "own stopped container writable layer via docker cp; no host mount",
-      "linuxSemanticCpuWheel": {
-        "officialWheel": "torch-2.14.1+cpu-cp312-cp312-manylinux_2_28_aarch64.whl",
-        "declaredVersion": "2.14.1+cpu",
-        "preservedIndexTorchPin": "2.14.1",
-        "compatibleWithPreservedExactPin": false,
-        "fullSemanticLinuxImageRun": false
-      },
-      "hostBindMountAttempt": "Docker Desktop create timed out before object creation twice (15s/30s); no host mount made; avoided using docker cp"
-    },
-    "fixedDefects": [
-      "readiness only checked graph connectivity; now rechecks all eight source-backed document IDs/hash/source pins/namespace",
-      "JDK client attempted h2c upgrade against ASGI h11; now explicit HTTP1 with RED/GREEN contract"
-    ],
-    "cloudIamAndProductionReaderCredentialsConfigured": false,
-    "remotePushOrDeployment": false,
-    "freshReview": "pending",
-    "cleanup": "pending"
-  },
-  "mergeRelationship": {
-    "branchForkBase": "aaed27772a48e19c465cab6b37717b6909c807d7",
-    "remoteMainSquashMerge": "54f4bfc6b725167329418c08e15104f8685a49f1",
-    "squashMergeParent": "ea47917fd6e031b0f2c6ae387249dabd690d2aed",
-    "sameTreeAtForkAndMergedMain": "52bc832cec0baeae2e947004f5979e93204850a4",
-    "forkHeadIsDirectAncestorOfSquashMain": false,
-    "operation": "fetch/read only; no rebase, merge, reset, main overwrite or push"
-  }
+  "ownedTemporaryApiServersStopped": true
 }

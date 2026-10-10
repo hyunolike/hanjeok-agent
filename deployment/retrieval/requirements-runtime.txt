@@ -7,3 +7,5 @@ neo4j==5.26.0
 uvicorn==0.54.0
 click==8.5.0
 h11==0.16.0
+cloudpickle==3.1.2
+pytz==2026.5

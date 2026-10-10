@@ -183,3 +183,9 @@ tasks.register<JavaExec>("retrievalServiceE2e") {
     classpath = sourceSets["harness"].runtimeClasspath
     mainClass.set("com.hermes.harness.RetrievalServiceE2eMainKt")
 }
+
+tasks.register<JavaExec>("retrievalRecoverySmoke") {
+    group = "verification"
+    classpath = sourceSets["harness"].runtimeClasspath
+    mainClass.set("com.hermes.harness.RetrievalRecoverySmokeMainKt")
+}
