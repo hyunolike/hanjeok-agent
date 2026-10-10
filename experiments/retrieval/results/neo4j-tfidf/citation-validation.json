@@ -1,0 +1,638 @@
+{
+  "validator" : "actual production CitationValidator; not an LLM judge",
+  "rows" : 105,
+  "contractsMatched" : 105,
+  "emptyAndUnknownProbeRejections" : 210,
+  "omittedSeedProbeRejections" : 29,
+  "checks" : [ {
+    "id" : "congestion-policy",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "congestion-policy",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "congestion-policy",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "alternative-policy",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "alternative-policy",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "alternative-policy",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "visit-order-policy",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "visit-order-policy",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "visit-order-policy",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "no-data",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "no-data",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "no-data",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "seed-explicit",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "seed-explicit",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "seed-explicit",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "seed-english",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "seed-english",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "seed-english",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "other-place",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "other-place",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "other-place",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "reference-seed",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "reference-seed",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "reference-seed",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "reference-chain",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "reference-chain",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "reference-chain",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "reference-other-poisoned-answer",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "reference-other-poisoned-answer",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "reference-other-poisoned-answer",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "poisoned-answer-generic",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "poisoned-answer-generic",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "poisoned-answer-generic",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "positional-seed",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "positional-seed",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "positional-seed",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "weather-unsupported",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "weather-unsupported",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "weather-unsupported",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "hours-unsupported",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "hours-unsupported",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "hours-unsupported",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "reference-missing",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "reference-missing",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "reference-missing",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "reference-ambiguous",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "reference-ambiguous",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "reference-ambiguous",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "unknown-intent",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "unknown-intent",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "unknown-intent",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "empty-question",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "empty-question",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "empty-question",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "rule-override",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "rule-override",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "rule-override",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "unrelated-valid-citation",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "unrelated-valid-citation",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "unrelated-valid-citation",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "omitted-seed-citation",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "omitted-seed-citation",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : false,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "omitted-seed-citation",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : false,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "tool-success",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "tool-success",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "tool-success",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "tool-failed",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "tool-failed",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "tool-failed",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "tool-rejected",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "tool-rejected",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "tool-rejected",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "alternative-tool-success",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "alternative-tool-success",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "alternative-tool-success",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "stream-omitted-seed",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "stream-omitted-seed",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : false,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "stream-omitted-seed",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : false,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "provider-failed",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "provider-failed",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "provider-failed",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "provider-refused",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "provider-refused",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "provider-refused",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : true
+  }, {
+    "id" : "explain-baseline",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "explain-baseline",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "explain-baseline",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "graph-declared-region",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "graph-declared-region",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "graph-declared-region",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "graph-shared-source",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "graph-shared-source",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "graph-shared-source",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "graph-transport-unsupported",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "graph-transport-unsupported",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "graph-transport-unsupported",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "graph-weather-unsupported",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "graph-weather-unsupported",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "graph-weather-unsupported",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "graph-unknown-entity",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : false,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "graph-unknown-entity",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : false,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "graph-unknown-entity",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : false,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "graph-poisoned-history",
+    "arm" : "FULL",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "graph-poisoned-history",
+    "arm" : "VECTOR",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  }, {
+    "id" : "graph-poisoned-history",
+    "arm" : "HYBRID_GRAPH",
+    "matchesPython" : true,
+    "citationValid" : true,
+    "omittedSeedProbeRejected" : false
+  } ]
+}

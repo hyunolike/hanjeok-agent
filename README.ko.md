@@ -502,7 +502,7 @@ wiki 생성기와 agent 소비 코드는 통합됐습니다. agent가 sidecar를
 
 검색 허용 24건에서 의미 VECTOR / HYBRID 후보 precision은 0.250000 / 0.172619, recall은 0.645833 / 1.000000입니다(모두 24건 정의). 최종 fixture 근거가 완전한 행은 30/35 / 35/35이며 VECTOR의 seed 누락 5건을 숨기지 않고 기록합니다. 정책 8개 유지와 결정성은 105/105입니다. 어휘 baseline과 빈 precision 7건은 별도로 보존했습니다. [의미 결과](experiments/retrieval/results/semantic-in-process/results.json)·[데이터셋](experiments/retrieval/results/semantic-in-process/dataset.jsonl)·[추가 검증](experiments/retrieval/results/extension-validation.json)에 별도 프로세스 bytes 재현과 실제 Kotlin citation 계약 일치(실패한 scripted 인용 포함)를 기록했습니다. 답변 진실성·LLM faithfulness 지표가 아니며 기존 약 2.03% 문서 bytes 절감 상한을 유지합니다.
 
-별도 Neo4j Community 5.26.31 컨테이너는 내부망과 localhost Bolt만으로 시작했습니다. 실제 fixture 삽입·쿼리 통합은 자동 승인 검토가 최초 ‘통합 미실행’ 제한의 해제가 불명확하다고 판단해 차단했으며 명시적 확인을 기다립니다. 읽기 adapter·격리 loader/실제 검사 도구·실행/정리 명령과 34개 Python 테스트를 제공하지만 실제 Neo4j 검색 결과라고 주장하지 않습니다. 답변 생성·LLM judge·유료 호출·외부 corpus 업로드·새 push/PR/merge/배포는 없고 별도 한적 DB/SMTP 배포도 보류입니다. IMAGE SLOT은 미완료입니다.
+실제 격리 Neo4j Community 5.26.31 통합도 완료했습니다. 시작 노드 15개의 결과가 메모리 그래프와 일치하며, 2홉 지역 검색·합성 관계 격리·실제 문서/출처 해시 변조 거부를 통과했습니다. TF-IDF와 의미 모델 각각 105개 행/210개 RAGAS sample, 동일한 메모리 결과, 별도 프로세스 bytes 재현과 실제 Kotlin citation 검증을 기록했습니다. [통합 실행 명령](experiments/retrieval/README.md#actual-isolated-neo4j-integration-2026-10-10)·[실제 검증](experiments/retrieval/results/neo4j-validation.json)은 mock 계약 2개와 구분합니다. 전용 bridge의 masquerading을 끄고 localhost Bolt만 게시하며 HTTP/사용량 보고를 비활성화했습니다. 소유 자원은 정리했고 이전 승인 차단도 해소됐습니다. 답변 생성·LLM judge·유료 호출·외부 corpus 업로드·새 push/PR/merge/배포는 없고 별도 한적 DB/SMTP 배포도 보류입니다. IMAGE SLOT은 미완료입니다.
 
 ## 오프라인 문서 선택 실험
 

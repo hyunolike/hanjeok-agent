@@ -21,7 +21,7 @@ Python 3.12.9, scikit-learn 1.7.2, Neo4j driver 5.26.0 and RAGAS 0.3.9 were actu
 - Corpus checks pinned body/sidecar, nine-document order, document and claim hashes, current wiki bytes and each source's bytes at its declared Git revision. Five source identities are verified. This verifies integrity; unverified/needs-review claims retain their status. The unsourced prompt is retained as mandatory policy but excluded from separate retrieval evidence. Eight documents are search eligible.
 - VECTOR uses real sparse character TF-IDF vectors (char_wb, 2..4 character ngrams, L2 normalization, cosine dot product, top-k 3 and stable corpus-order ties). This is lexical retrieval, not a neural or multilingual semantic embedding. Many Korean questions do not match the English policy text; the empty candidates are reported.
 - HYBRID_GRAPH executes a bounded in-process graph traversal over 15 nodes and 22 declared edges. Document/source edges come only from verified sidecar identities. Document/place and place/region edges come only from the seed's id/name/regionId. The region node has its declared ID, no imported regional descriptions. The seed is fixture-derived, not verified live tourism data. Synthetic, unsupported and undeclared edges are excluded. No transport or weather relationships are created.
-- Neo4jGraph is a driver adapter with one fixed parameterized MATCH query, corpus namespace, node/edge whitelist, 2-hop bound, 9-document cap, 2-second managed transaction timeout and response document/source hash checks. Mock driver tests cover the request/response contract. READ_ACCESS is routing, not an ACL. An opt-in localhost-only loader and live-check helper are now delivered. Fixture loading/live Cypher validation are pending after an automatic approval rejection; the existing mock contract is not live integration evidence. The managed transaction uses unit_of_work(timeout=2), because the real 5.26 driver rejects a Query object passed to tx.run.
+- Neo4jGraph is a driver adapter with one fixed parameterized MATCH query, corpus namespace, node/edge whitelist, 2-hop bound, 9-document cap, 2-second managed transaction timeout and response document/source hash checks. Mock driver tests cover the request/response contract. READ_ACCESS is routing, not an ACL. The opt-in localhost-only loader and live-check helper executed against Community 5.26.31. Fifteen singleton traversals, two-hop region retrieval, synthetic isolation and real document/source hash tamper rejections passed. Mock contracts remain a separate category. The managed transaction uses unit_of_work(timeout=2), because the real 5.26 driver rejects a Query object passed to tx.run.
 - All eight policies stay in system input; optional retrieved content goes into a labelled untrusted user-evidence block. FULL and conservative fallbacks preserve the original bundle bytes. History assistant answers never enter retrieval. A deterministic capability gate abstains on unsupported weather/hours/transport or rule override; it does not demonstrate model adherence.
 - A harness-only Kotlin bridge applies the actual production CitationValidator to all 105 exported contexts, without changing production classes. Unknown/empty and omitted-seed probes are rejected. Its bounded topic checks establish citation boundaries, not semantic entailment.
 
@@ -73,24 +73,39 @@ JAVA_HOME=/Users/hyuno/Library/Java/JavaVirtualMachines/openjdk-21.0.2/Contents/
 
 For a fresh separately authorized setup: `python3.12 -m venv experiments/retrieval/.venv-semantic`, then that interpreter's `pip install --only-binary=:all: -r experiments/retrieval/requirements-semantic.lock`. Model preparation accepts `--snapshot PATH` and verifies the committed manifest; it never downloads. Model files and both venvs are Git-ignored. A second process reproduced results.json, dataset.jsonl, graph-snapshot.json and the embedding matrix hash byte for byte.
 
-## Neo4j integration prepared; execution blocked
+## Actual isolated Neo4j integration, 2026-10-10
 
-The cached Community image did start Neo4j 5.26.31 on a dedicated internal Docker network, publishing only loopback Bolt port 17687, using an isolated anonymous data volume and 2 GiB/2 CPU limits. No existing bench-neo4j or operational containers were changed. The cache image digest is `neo4j@sha256:5eb12ad77fa46ab73e23df9ea1f43f5c0f2a79523435577648e046be042b9b93`; no pull occurred. Starting a server is not validation of the adapter.
+The cached Community image runs Neo4j 5.26.31, verified through actual driver dbms.components(), with driver 5.26.0. Digest: `neo4j@sha256:5eb12ad77fa46ab73e23df9ea1f43f5c0f2a79523435577648e046be042b9b93`. No pull/download was needed. Only localhost Bolt 127.0.0.1:17687 is published; HTTP and usage reporting are disabled, with 2 GiB/2 CPU limits and own anonymous volumes. No existing bench-neo4j or operational containers/data are changed.
 
-Automatic approval review rejected the command that would load public fixtures and save actual driver results: it judged the initial instruction to leave container integration unexecuted as not clearly revoked by the later resume approval. Explicit confirmation is pending; the owned empty container, anonymous volumes and internal network have been removed. Consequently there is no live retrieval/Cypher result, and no mock result is labelled as integration. The opt-in helper enforces the single loopback URI and refuses a database with foreign nodes before mutation. It loads only the 15-node/22-edge verified snapshot. Prepared live checks compare all 15 single-node starts with the in-process graph, verify two-hop region retrieval, isolate a synthetic negative-test edge in a separate namespace, and reject temporary document/source hash tampering while restoring fields. Those checks have not run.
+On this Docker Desktop, an internal network retained the requested port binding but exposed no actual port (`NetworkSettings.Ports={}`); the internal cypher-shell query succeeded while the host driver got connection refused. The helper therefore uses a dedicated bridge with `com.docker.network.bridge.enable_ip_masquerade=false`, whose actual loopback port publication was verified. The runner permits only that loopback address, and the driver disables telemetry. Disabling masquerading is a network configuration, not a claim of a general firewall ACL. The start/stop helper was actually executed and removes only ownership-labelled experiment resources.
 
-Prepared commands, to run only after that execution blocker is cleared:
+The curated namespace has 15 nodes/22 edges. Actual fixed-read queries from every one of the 15 singleton starts match the in-process graph. A region start reaches exactly the seed document through two hops; longer source-neighbour paths do not enter that result. A synthetic transport edge to a fake document in a separate test namespace is ignored. Temporarily changing the actual Neo4j document SHA-256 or source signatures makes the adapter reject the response; both fields are restored. No synthetic relationship is promoted as a travel fact. All checks are in [actual integration report](results/neo4j-integration.json), separate from the two mock driver contract tests. Foreign-database loader refusal remains tested with a mock, not by touching an unrelated database. READ_ACCESS is routing, not an ACL.
+
+Actual Neo4j TF-IDF and semantic comparisons each ran all 35 fixtures/three arms (105 rows, 210 native RAGAS samples). Row selections, sample bytes and ID scores exactly match the corresponding preserved in-process runs. On the 24 retrieval-attempt rows:
+
+| Vector backend / arm | Candidate precision (defined) | Candidate recall (defined) | Complete final fixture coverage |
+| --- | --- | --- | --- |
+| TF-IDF / VECTOR | 0.431373 (17/24) | 0.395833 (24/24) | 35/35 |
+| TF-IDF / HYBRID_GRAPH, Neo4j | 0.227941 (17/24) | 0.708333 (24/24) | 35/35 |
+| Semantic / VECTOR | 0.250000 (24/24) | 0.645833 (24/24) | 30/35 |
+| Semantic / HYBRID_GRAPH, Neo4j | 0.172619 (24/24) | 1.000000 (24/24) | 35/35 |
+
+FULL candidate precision/recall is 0.166667/1.000000 (24 defined rows), complete final coverage 35/35. Six FULL fallbacks and five abstentions stay separate. All eight policies/determinism pass all 210 primary Neo4j arm rows. The five semantic VECTOR omissions are unchanged and are not repaired with oracle IDs. These are fixture ID metrics, not generated answer quality or Microsoft community summarization GraphRAG.
+
+The real production CitationValidator matched 105/105 contracts in each Neo4j run, rejecting 210 empty/unknown probes per run and 29/25 omitted-seed probes respectively. Invalid scripted citations stay present. Each mode was rerun in a separate process: results.json, dataset.jsonl and graph-snapshot.json are byte-identical, with the same semantic matrix hash. See [TF-IDF results](results/neo4j-tfidf/results.json), [semantic results](results/neo4j-semantic/results.json) and [Neo4j validation](results/neo4j-validation.json). The owned container, anonymous volumes and network are removed after validation.
+
+Reproduce from the repository root, using the already-cached image/model and environments:
 
 ```bash
 experiments/retrieval/scripts/neo4j-local.sh start
-# Check readiness with neo4j-local.sh status; no duplicate pulls or starts.
+# Wait for Started/Bolt ready in: experiments/retrieval/scripts/neo4j-local.sh status
 PYTHONPATH=experiments/retrieval PYTHONDONTWRITEBYTECODE=1 experiments/retrieval/.venv/bin/python -m retrieval_lab.live --load --output experiments/retrieval/results/neo4j-integration.json
 PYTHONPATH=experiments/retrieval PYTHONDONTWRITEBYTECODE=1 experiments/retrieval/.venv/bin/python -m retrieval_lab.run --graph-backend neo4j --output-dir experiments/retrieval/results/neo4j-tfidf
 PYTHONPATH=experiments/retrieval PYTHONDONTWRITEBYTECODE=1 experiments/retrieval/.venv-semantic/bin/python -m retrieval_lab.run --graph-backend neo4j --enable-semantic --semantic-model experiments/retrieval/models/distiluse-base-multilingual-cased-v1 --output-dir experiments/retrieval/results/neo4j-semantic
 experiments/retrieval/scripts/neo4j-local.sh stop
 ```
 
-The helper never pulls or mounts host/production data, requires its ownership label for cleanup, and removes only its own container/anonymous volumes/internal network. It disables server usage reporting; the already-started instance was network-isolated with no outbound route. The start branch is syntax-checked and unexecuted; the ownership-checked stop branch successfully removed the experiment resources. READ_ACCESS remains routing, not an ACL.
+For Kotlin citation verification, use the earlier Gradle command with `-PretrievalResults=experiments/retrieval/results/neo4j-semantic/results.json` and `-PretrievalCitationOutput=experiments/retrieval/results/neo4j-semantic/citation-validation.json` (or replace semantic with tfidf). For byte reproduction, choose another --output-dir. All root baseline and semantic-in-process files remain unchanged.
 
 ## Executed and unexecuted
 
@@ -98,7 +113,9 @@ Executed baseline: Python 29 tests, 35 x 3 TF-IDF comparisons, actual RAGAS ID m
 
 Executed extension: 34 Python tests in both isolated environments, 105 actual semantic arm runs and 210 RAGAS samples, repeated-process byte reproduction, actual Kotlin citation contracts. See [extension validation](results/extension-validation.json) and [semantic results](results/semantic-in-process/results.json), [dataset](results/semantic-in-process/dataset.jsonl), [model manifest](results/semantic-model-manifest.json).
 
-Still unexecuted: actual Neo4j fixture integration, answer generation, faithfulness/relevancy judging, paid APIs, external corpus upload, remote push/PR/merge/new deployment and the separate Hanjeok DB/SMTP rollout. Production remains FULL; diagram IMAGE SLOTs remain pending.
+Executed Neo4j extension: actual Community server/loader/driver traversals and negative checks, 210 primary arm rows/420 RAGAS samples, equal in-process selections, two byte-identical independent reruns, 210 real citation contracts. The earlier automatic review blocker was cleared by the explicit follow-up authorization; historical extension-validation.json retains that earlier status. Current status is results/neo4j-validation.json.
+
+Still unexecuted: answer generation, faithfulness/relevancy judging, paid APIs, external corpus upload, remote push/PR/merge/new deployment and the separate Hanjeok DB/SMTP rollout. Production remains FULL; diagram IMAGE SLOTs remain pending.
 
 judge_scores is opt-in and requires caller-supplied real RAGAS LLM/embedding adapters; it constructs no client and is never called by the runner. faithfulness and responseRelevancy stay null / not_executed. No mock or deterministic gate score is represented as LLM judging.
 
@@ -108,3 +125,5 @@ judge_scores is opt-in and requires caller-supplied real RAGAS LLM/embedding ada
 - [RAGAS ID precision](https://docs.ragas.io/en/v0.3.9/concepts/metrics/available_metrics/context_precision/) and [ID recall](https://docs.ragas.io/en/v0.3.9/concepts/metrics/available_metrics/context_recall/) (also inspected in the installed 0.3.9 package)
 - [Neo4j driver transactions](https://neo4j.com/docs/python-manual/current/transactions/)
 - [Results](results/results.json), [dataset](results/dataset.jsonl), [declared graph](results/graph-snapshot.json), [production citation checks](results/citation-validation.json), [validation](results/validation.json)
+
+Docker network reference: [bridge driver options](https://docs.docker.com/engine/network/drivers/bridge/) explain the masquerading option.

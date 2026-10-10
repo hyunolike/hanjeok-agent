@@ -2,7 +2,7 @@
 # Explicit opt-in helper. No pulls, credentials, host mounts or production services.
 set -eu
 name=hanjeok-retrieval-task8
-network=hanjeok-retrieval-task8-internal
+network=hanjeok-retrieval-task8-net
 purpose=hanjeok-retrieval-task8
 image=neo4j@sha256:5eb12ad77fa46ab73e23df9ea1f43f5c0f2a79523435577648e046be042b9b93
 owned_container() {
@@ -10,7 +10,7 @@ owned_container() {
 }
 owned_network() {
     test "$(docker network inspect --format '{{index .Labels "purpose"}}' "$network")" = "$purpose"
-    test "$(docker network inspect --format '{{.Internal}}' "$network")" = true
+    test "$(docker network inspect --format '{{index .Options "com.docker.network.bridge.enable_ip_masquerade"}}' "$network")" = false
 }
 case "${1:-status}" in
 start)
@@ -21,7 +21,7 @@ start)
     if docker network inspect "$network" >/dev/null 2>&1; then
         owned_network
     else
-        docker network create --internal --label "purpose=$purpose" "$network" >/dev/null
+        docker network create --opt com.docker.network.bridge.enable_ip_masquerade=false --label "purpose=$purpose" "$network" >/dev/null
     fi
     docker run --pull=never -d --name "$name" --label "purpose=$purpose" \
       --network "$network" --memory 2g --cpus 2 --restart=no \
@@ -41,7 +41,7 @@ stop)
         owned_network
         docker network rm "$network" >/dev/null
     fi
-    echo 'Only the labelled experiment container, anonymous volumes and internal network removed.'
+    echo 'Only the labelled experiment container, anonymous volumes and dedicated network removed.'
     ;;
 status)
     owned_container
