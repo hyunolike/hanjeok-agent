@@ -1,0 +1,52 @@
+{
+  "observedUTC": "2026-10-10T05:57:50.925185+00:00",
+  "project": "hanjeok-prod",
+  "agent": {
+    "runtimeServiceAccount": "508380543987-compute@developer.gserviceaccount.com",
+    "ingress": "all",
+    "readyRevision": "hermes-agent-ea47917-b64ed4cc2",
+    "traffic": [
+      {
+        "percent": 100,
+        "revisionName": "hermes-agent-ea47917-b64ed4cc2",
+        "tag": "source-cache-ea47917",
+        "url": "https://source-cache-ea47917---hermes-agent-k7q5bo6fqa-du.a.run.app"
+      }
+    ],
+    "resources": {
+      "limits": {
+        "cpu": "1000m",
+        "memory": "1Gi"
+      }
+    },
+    "vpcAnnotations": {}
+  },
+  "hasRetrievalRuntimeConfiguration": false,
+  "existingRetrievalServiceLocated": false,
+  "existingNeo4jReaderSecretLocated": false,
+  "secretValuesRead": false,
+  "readOnly": true,
+  "runtimeServiceAccountRoles": [
+    "roles/editor"
+  ],
+  "existingRegionalArtifactRepositories": [
+    {
+      "name": "projects/hanjeok-prod/locations/asia-northeast3/repositories/hanjeok",
+      "format": "DOCKER"
+    },
+    {
+      "name": "projects/hanjeok-prod/locations/asia-northeast3/repositories/hermes",
+      "format": "DOCKER"
+    }
+  ],
+  "existingNetworkNames": [
+    "hanjeok-vpc"
+  ],
+  "iamCredentialsResourcesOrTrafficChanged": false,
+  "existingSeoulSubnet": {
+    "network": "hanjeok-vpc",
+    "name": "hanjeok-subnet",
+    "cidr": "10.10.0.0/24",
+    "privateIpGoogleAccess": false
+  }
+}

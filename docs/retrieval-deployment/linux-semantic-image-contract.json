@@ -1,0 +1,18 @@
+{
+  "actualLinuxImage": true,
+  "actualNeo4j": true,
+  "llmCalls": 0,
+  "healthAndPinnedProvenance": true,
+  "schemaAuthBoundsAndStalePinsRejected": true,
+  "actualSlowBodyDeadlineSeconds": 2.011,
+  "actualUid": 10001,
+  "immutableIndexWriteRejected": true,
+  "actualGraphTamperReadyDownRetrievalRejectedAndKotlinRecovered": true,
+  "readyRecoveredAfterGraphRestore": true,
+  "image": "sha256:a9f48be025cc226d615dd328dcc342303d5e9d3fffbdf264fdb1b7d74f2bca64",
+  "actualCorruptedIndexStartupRejected": true,
+  "negativeInjection": "own stopped writable container layer; normal API root filesystem remains read-only",
+  "actualPipCheckPassed": true,
+  "actualImageArchitecture": "linux/arm64",
+  "actualImageBytes": 2676752170
+}

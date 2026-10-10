@@ -15,8 +15,6 @@
 ![Gradle](https://img.shields.io/badge/Gradle-Kotlin%20DSL-02303A?logo=gradle&logoColor=white)
 ![Spring AI](https://img.shields.io/badge/Spring%20AI-2.0.1-6DB33F?logo=springboot&logoColor=white)
 
-<img src="docs/images/stack/kotlin.svg" alt="Kotlin" width="46"> <img src="docs/images/stack/spring-boot.svg" alt="Spring Boot" width="46"> <img src="docs/images/stack/gradle.svg" alt="Gradle" width="46"> <img src="docs/images/stack/anthropic.svg" alt="Anthropic" width="46"> <img src="docs/images/stack/nextjs.svg" alt="Next.js" width="46"> <img src="docs/images/stack/docker.svg" alt="Docker" width="46">
-
 **English** · [한국어](./README.ko.md)
 
 </div>
@@ -57,30 +55,13 @@
 
 ## Hanjeok Wiki and Agent overview
 
-```mermaid
-flowchart LR
-    Source["Public sources"]
-    Wiki["Wiki policies and records"]
-    Bundle["Build: full bundle + sidecar"]
-    Agent["Kotlin Agent / Cloud Run"]
-    Backend["Hanjeok Backend"]
-    Client["Browser / Vercel"]
-    Model["LLM provider"]
-    Source -->|"preserve / review"| Wiki
-    Wiki -->|"explicit document list"| Bundle
-    Bundle -->|"pinned artifacts"| Agent
-    Backend -->|"current facts"| Agent
-    Client -->|"course / question"| Agent
-    Agent -->|"FULL system + facts user"| Model
-    Model -->|"answer + citations"| Agent
-    Agent -->|"validated output"| Client
-```
+![Hanjeok collection/build, production and separate local experiment architecture](docs/images/hanjeok-wiki-agent-overview.en.png)
 
-This diagram describes the current FULL production path. The retrieval preparation path is shown separately under “What changed”. The metadata sidecar is server-only, and ranking stays with the backend.
+This 3D diagram describes the current FULL production path. The retrieval preparation path is shown separately under “What changed”. The metadata sidecar is server-only, and ranking stays with the backend.
 
 ## What changed from the FULL-only baseline
 
-**Production remains FULL.** The last recorded production check is agent `ea47917` at 2026-10-09 09:13 UTC; it did not call an LLM. The retrieval API and request selection below are implemented and tested on a separate local branch, for an approved feature-branch Draft PR; cloud deployment remains held. Earlier agent #13/wiki #32 were observed merged outside this follow-up; their merge is not evidence of a retrieval deployment.
+**Production remains FULL.** A read-only Cloud Run configuration check on 2026-10-10 still shows agent `ea47917` Ready at 100% traffic, with no retrieval runtime configuration. Agent #14/wiki #33 were externally merged; this follow-up has not been pushed or published as another PR. The separate local API/request-selection implementation is tested; cloud deployment remains held.
 
 | Area | Previous FULL baseline | Current local implementation |
 | --- | --- | --- |
@@ -91,40 +72,24 @@ This diagram describes the current FULL production path. The retrieval preparati
 | Failure and cache | Bundle-wide citation allowlist; UUID + facts-hash EXPLAIN cache | Request-scoped citation allowlist and context identity in cache/single-flight keys isolate selected and FULL results, including overlapping requests. Remote/auth/timeout/stale-index/coverage failures restore verified FULL; a corrupt baseline fails closed. |
 | Evaluation | Scripted 29-fixture selection comparison and historical model evaluation | Actual RAGAS 0.3.9 document-ID precision/recall is separate from answer generation or LLM judging. Real HTTP + Neo4j + Kotlin citation E2E uses scripted providers; no paid LLM/judge calls. |
 
-**Local verification completed:** Python 19/19, JVM 339/339 (56 suites), and the original 29 fixtures/58 rows pass. Native TF-IDF, native pinned CPU semantic and the built Linux ARM64 TF-IDF image each pass 35 fixtures/105 explanation/ask/stream checks plus one actual-facts EXPLAIN query through real Neo4j Community 5.26.31. Actual graph/corpus tampering, stale pins, auth/body/time bounds and exact FULL recovery are recorded in [verification](docs/retrieval-deployment/verification.json). Generated local resources have been cleaned up.
+**Local verification completed:** Python API 19/19 and the new CPU builder 13/13 pass; JVM 339/339 (56 suites), lab 34/34 and the original 29 fixtures/58 rows remain verified. The full Linux ARM64 CPU semantic image now builds, regenerates an independent index and runs real Neo4j/HTTP/Kotlin. HYBRID and VECTOR each pass 35 fixtures/105 route checks plus actual-facts EXPLAIN: HYBRID is SELECTED; VECTOR records an exact required-seed miss and original FULL recovery. See [Linux execution and reproduction](docs/retrieval-deployment/linux-semantic-readiness.md). Earlier native/lexical and RAGAS reports remain labelled historical; no new LLM or Linux RAGAS score is claimed.
 
-**Before deployment:** private Cloud Run IAM/invoker/network enforcement and existing production Enterprise Neo4j reader privileges remain unverified. The full Linux semantic image was not run: official `torch 2.14.1+cpu` differs from the preserved candidate's exact `2.14.1` pin, so it needs a newly validated Linux CPU candidate. See [reproduction and release preparation](deployment/retrieval/README.md). No credentials, cloud resources, traffic changes or separate Hanjeok DB/SMTP rollout were made.
+**Before deployment:** a fresh linux/amd64 image/index is required for Cloud Run. Private IAM/network routing and actual production Enterprise Neo4j reader ACL remain unverified; read-only inspection found no configured retrieval service or reader endpoint/secret. [Exact targets, order and cost prerequisites](docs/retrieval-deployment/linux-semantic-readiness.md) record the remaining work. No cloud credentials, IAM/resources, traffic switch or separate Hanjeok DB/SMTP rollout was made.
 
 **Measured limits:** only the 501-byte Gyeongbokgung seed is optional, so corpus selection can remove at most 501/24,703 = 2.03%; guards and moving evidence to user input do not prove total token/cost savings. In the preserved semantic lab, VECTOR/HYBRID candidate precision is 0.250000/0.172619 and recall 0.645833/1.000000 on 24 supported attempts; complete final coverage is 30/35 versus 35/35, including five recorded VECTOR seed omissions. The deployment guard restores FULL on an explicit required-seed miss; it does not rewrite those results. This bounded relationship retrieval is not Microsoft's complete community GraphRAG implementation and proves no improvement in answer quality. No invented transport/weather or synthetic relation enters the curated graph.
 
-Publication scope and preserved source branches: [Draft PR preparation](docs/retrieval-deployment/publication-preparation.json). Verification JSON files are historical local snapshots from before publication approval.
+Agent #14/wiki #33 publication and exact-head CI are historical merged-PR evidence; this local follow-up is unpublished. The preserved [publication preparation](docs/retrieval-deployment/publication-preparation.json) and earlier verification JSON snapshots retain their original scope. [Current illustration correction](docs/context-selection/readme-illustration-correction.json) restores useful existing 3D figures and removes redundant diagrams; no new image was generated.
 
 ### Local retrieval structure, not deployed
 
-```mermaid
-flowchart LR
-    Index["Immutable validated index"]
-    API["Python ASGI retrieval API"]
-    Kotlin["Kotlin request context"]
-    Vector["Lexical or semantic vectors"]
-    Graph["Neo4j curated graph"]
-    Model["LLM provider"]
-    Client["Browser / Vercel"]
-    Index -->|"pinned artifacts"| API
-    Kotlin -->|"bounded query + version pins"| API
-    API -->|"VECTOR / HYBRID_GRAPH"| Vector
-    Vector -->|"candidates"| API
-    API -->|"HYBRID: up to 2 hops"| Graph
-    Graph -->|"up to 9 documents"| API
-    API -->|"document IDs + hashes"| Kotlin
-    Kotlin -->|"8 policies + seed or FULL"| Model
-    Model -->|"answer + citations"| Kotlin
-    Kotlin -->|"validated output"| Client
-```
 
-The diagram separates the new API from Kotlin's explanation/citation boundary. Runtime downloads are disabled; only verified source hashes/revisions enter the index. Hash integrity does not prove source truth or completed claim review.
+The text and comparison table separate the new API from Kotlin's explanation/citation boundary. Runtime downloads are disabled; only verified source hashes/revisions enter the index. Hash integrity does not prove source truth or completed claim review.
 
 ## 🏗 Two inputs, three request paths
+
+![Hanjeok build-time packaging and two runtime model inputs](docs/images/hanjeok-two-inputs.png)
+
+Current FULL production inputs: the full manual in system, backend facts in user; sidecar stays server-only. Opt-in retrieval preparation is described separately below.
 
 The model receives two inputs: the **static wiki manual** in `system`, and **current backend facts** in `user`. The wiki describes policies; the backend computes the course, ranking and visit order. Backend facts take priority. A fresh lookup records query completion, not forecast publication or source freshness.
 
@@ -141,28 +106,7 @@ The browser opens the Vercel frontend and calls the Cloud Run agent. The agent r
 
 EXPLAIN fetches all three backend responses even on a cache hit, which skips the model call. Changed facts use a new key. Failed facts or generation do not return an older cached answer. ASK history belongs to the client and is context, never new evidence. Streaming validates citations before body text; rejected/failed tools do not enter the evidence union.
 
-```mermaid
-flowchart LR
-    Client["Browser / Vercel"]
-    Agent["Kotlin Agent / Cloud Run"]
-    Backend["Hanjeok Backend"]
-    Cache["EXPLAIN cache"]
-    Model["LLM provider"]
-    Tools["Streaming tools"]
-    Gate["Citation gate"]
-    Client -->|"course / question"| Agent
-    Agent -->|"fetch facts"| Backend
-    Backend -->|"current facts"| Agent
-    Agent -->|"UUID + facts hash"| Cache
-    Cache -->|"hit: saved answer"| Client
-    Cache -->|"miss"| Model
-    Agent -->|"ASK / stream"| Model
-    Model -->|"stream only"| Tools
-    Tools -->|"validated facts"| Model
-    Model -->|"answer + citations"| Gate
-    Gate -->|"valid EXPLAIN only"| Cache
-    Gate -->|"validated output"| Client
-```
+![EXPLAIN, blocking ASK and streaming ASK request paths](docs/images/request-paths.png)
 
 
 [Deployment details](docs/deploy.md). [Timestamped production verification](docs/context-selection/production-verification.json): at 2026-10-09 09:13 UTC, agent `ea47917` was Ready at 100% traffic, health/readiness UP, and bundle/sidecar hashes matched. The frontend deployment is complete. This verification made **no actual LLM call**; older model measurements do not validate this revised deployment. The separate Hanjeok database/SMTP rollout remains held.
@@ -308,24 +252,17 @@ Each one is a claim the policy documents (`decisions/keep-llm-out-of-ranking.md`
 
 ## 🛠 Tech Stack
 
-<div align="center">
-
-<img src="docs/images/tech-stack.svg" alt="hanjeok-agent tech stack, drawn by hand" width="740">
-
-</div>
-
 | Area | Stack |
 | --- | --- |
-| <img src="docs/images/stack/kotlin.svg" width="24" alt=""> <img src="docs/images/stack/java.svg" width="24" alt=""> Language · Runtime | Kotlin 2.2.21, JVM Toolchain 21 |
-| <img src="docs/images/stack/spring-boot.svg" width="24" alt=""> Framework | Spring Boot 4.1.0, Spring Modulith 2.1.0 |
-| <img src="docs/images/stack/gradle.svg" width="24" alt=""> Build | Gradle (Kotlin DSL), single module with a separate `harness` source set |
-| <img src="docs/images/stack/anthropic.svg" width="24" alt=""> <img src="docs/images/stack/openai.svg" width="24" alt=""> LLM | Spring AI 2.0.1 (`spring-ai-anthropic`, `spring-ai-openai`) over Anthropic Java SDK 2.52.0 (`claude-opus-5`) · OpenAI Java SDK 4.49.0 (shared by openai and openrouter) |
+| Language · Runtime | Kotlin 2.2.21, JVM Toolchain 21 |
+| Framework | Spring Boot 4.1.0, Spring Modulith 2.1.0 |
+| Build | Gradle (Kotlin DSL), single module with a separate `harness` source set |
+| LLM | Spring AI 2.0.1 (`spring-ai-anthropic`, `spring-ai-openai`) over Anthropic Java SDK 2.52.0 (`claude-opus-5`) · OpenAI Java SDK 4.49.0 (shared by openai and openrouter) |
 | Serialization | Jackson (`jackson-module-kotlin`) |
-| <img src="docs/images/stack/junit.svg" width="24" alt=""> Testing | JUnit 5 (`spring-boot-starter-test`), Vitest + Testing Library on the frontend |
-| <img src="docs/images/stack/nextjs.svg" width="24" alt=""> <img src="docs/images/stack/react.svg" width="24" alt=""> <img src="docs/images/stack/typescript.svg" width="24" alt=""> <img src="docs/images/stack/tailwind.svg" width="24" alt=""> UI | Next.js 16, React 19, TypeScript 5, Tailwind CSS 4 |
-| <img src="docs/images/stack/docker.svg" width="24" alt=""> <img src="docs/images/stack/cloud-run.svg" width="24" alt=""> <img src="docs/images/stack/vercel.svg" width="24" alt=""> Deployment | The server ships as a Docker image on Cloud Run, the UI on Vercel ([`docs/deploy.md`](./docs/deploy.md)) |
+| Testing | JUnit 5 (`spring-boot-starter-test`), Vitest + Testing Library on the frontend |
+| UI | Next.js 16, React 19, TypeScript 5, Tailwind CSS 4 |
+| Deployment | The server ships as a Docker image on Cloud Run, the UI on Vercel ([`docs/deploy.md`](./docs/deploy.md)) |
 
-> Those logos are not fetched from anywhere — this repository draws them (`docs/images/`). A displacement filter wobbles the strokes into a hand-drawn look, and a paper-coloured card behind each one keeps them readable in GitHub's light and dark themes alike. The historical flow SVG (`flow.en.svg`) was drawn the same way. Run `generate.py`, `generate_flow.py` and `generate_deploy.py` under `docs/images/` to rebuild them.
 
 <br/>
 
@@ -589,20 +526,7 @@ The wiki generator and agent consumer are integrated. The agent requires the sid
 
 ## Local vector, graph and RAGAS experiment
 
-```mermaid
-flowchart LR
-    Fixture["29 fixtures + 6 graph cases"]
-    Index["Immutable validated index"]
-    Graph["Neo4j curated graph"]
-    Compare["FULL / VECTOR / HYBRID_GRAPH"]
-    Ragas["RAGAS ID precision / recall"]
-    Contract["Policy / coverage / citation checks"]
-    Fixture --> Compare
-    Index --> Compare
-    Graph -->|"verified source / seed graph"| Compare
-    Compare -->|"predicted / reference IDs"| Ragas
-    Compare -->|"scripted responses"| Contract
-```
+![Local retrieval lab comparing FULL, VECTOR and HYBRID_GRAPH outside production](docs/images/local-retrieval-lab.png)
 
 [The separate retrieval lab](experiments/retrieval/README.md) compares FULL / VECTOR / HYBRID_GRAPH over 29 preserved fixtures plus six graph-boundary cases. Production remains FULL. The preserved TF-IDF baseline is lexical sparse-vector retrieval; a second actual CPU run uses the pinned multilingual distiluse model (512 dimensions, 41 untruncated chunks, verified cached safetensors, no remote code). Both use actual RAGAS 0.3.9 document-ID metrics and an in-process graph of verified document/source and declared seed place/region edges. This is direct relationship retrieval, not Microsoft's complete community GraphRAG pipeline.
 
@@ -618,6 +542,6 @@ See [design](docs/context-selection/design.md), [versioned fixtures](harness/fix
 
 ### Local retrieval API follow-up (not deployed)
 
-The follow-up Draft PR adds an opt-in private retrieval API, immutable hash/runtime-pinned index preparation and manual publication/rollback, and Kotlin request-scoped policies/citations/cache/stream repair with verified FULL recovery. [Deployment preparation and reproducible commands](deployment/retrieval/README.md) distinguish actual local CPU lexical/semantic API-to-citation checks from unexecuted cloud IAM and production reader privileges, completed Linux lexical image smoke, and the held Linux semantic image. The deployment guard restores FULL when a required explicit Gyeongbokgung seed is missed; it does not rewrite the original lab's five semantic VECTOR omissions or increase the approximately 2.03% corpus-selection ceiling. Production/default FULL and previous PR heads are unchanged. This follow-up is approved for a new Draft PR; no cloud deployment is included.
+The implemented opt-in retrieval API, pinned immutable index and request-scoped Kotlin policies/citations/cache/stream recovery were merged through agent #14/wiki #33. The current local follow-up adds the actual Linux ARM64 CPU model/index/image verification and precise VECTOR seed recovery record. [Current execution and reproduction](docs/retrieval-deployment/linux-semantic-readiness.md) distinguish completed local tests from pending amd64/cloud IAM/production ACL checks. Original native RAGAS metrics, five VECTOR seed omissions and the 2.03% corpus-selection ceiling remain unchanged; production stays FULL.
 
 The local follow-up now closes cache overlap and real-facts EXPLAIN coverage. Actual API-to-Neo4j E2E passes on native lexical/semantic runtimes and a locally built Linux ARM64 lexical image; provenance, time/body limits, graph/corpus corruption rejection and verified FULL recovery are recorded in [verification](docs/retrieval-deployment/verification.json). Python 19/19 and JVM 339/339 pass. Full Linux semantic image, production IAM/reader privileges and cloud release remain held; cloud deployment remains held.

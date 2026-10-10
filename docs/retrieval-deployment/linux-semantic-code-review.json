@@ -1,0 +1,20 @@
+{
+  "scope": [
+    "offline Linux CPU candidate builder",
+    "guard tests",
+    "exact CPU requirements",
+    "harness explicit seed fallback"
+  ],
+  "criticalFindings": 0,
+  "importantFindingsResolved": [
+    "compare model-file pins to original candidate before encoding"
+  ],
+  "minorFindingsResolved": [
+    "preserve other writer output",
+    "assert actual fallback schema/mode/identity/array envelope"
+  ],
+  "guardTestsIndependentlyRerunByReviewer": 13,
+  "guardTestFailures": 0,
+  "actualFinalUtilityVersion": "8a2d47cf23a62d18ab97f85a72245376911f3a0fbe4c4d3e1e713f0f91461ef9",
+  "paidLLMCalls": 0
+}

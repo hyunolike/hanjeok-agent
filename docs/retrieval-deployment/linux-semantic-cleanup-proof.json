@@ -1,0 +1,22 @@
+{
+  "ownedPurpose": "hanjeok-semantic-task8",
+  "removedOwnedContainers": [
+    "hanjeok-semantic-api-task8",
+    "hanjeok-semantic-repro-task8",
+    "hanjeok-semantic-builder-task8"
+  ],
+  "ownedGraphContainerAndAnonymousVolumesAndNetworkRemoved": true,
+  "ownedImagesRemoved": true,
+  "portsClosed": {
+    "17687": true,
+    "17883": true
+  },
+  "remainingUnrelatedContainers": [
+    "ogu-b7-redis",
+    "ogu-b7-pg"
+  ],
+  "unrelatedResourcesPruned": false,
+  "sharedModelsAndCachesDeleted": false,
+  "retainedOperatorIndexModelWheelArtifacts": true,
+  "freeDiskGiB": 14.62
+}

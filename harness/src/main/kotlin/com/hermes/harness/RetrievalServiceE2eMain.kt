@@ -11,11 +11,13 @@ import java.time.LocalDate
 
 /** Real loopback HTTP/search + actual Kotlin citation gate; scripted provider, no LLM. */
 fun main(args: Array<String>) {
-    require(args.size in 3..4) { "usage: index-directory http://127.0.0.1:port report.json [VECTOR|HYBRID_GRAPH]" }
+    require(args.size in 3..5) { "usage: index-directory http://127.0.0.1:port report.json [VECTOR|HYBRID_GRAPH] [FALLBACK_REQUIRED_SEED]" }
     val m=ObjectMapper();val full=BundleLoader.load();val manifest=m.readTree(File(args[0],"manifest.json"))
     val pin=RetrievalIdentity(full.sha256,java.security.MessageDigest.getInstance("SHA-256").digest(full.metadataJson!!.toByteArray(Charsets.UTF_8)).joinToString("") { "%02x".format(it) },manifest["indexVersion"].asText(),manifest["vector"]["modelRevision"].asText())
     val port=RetrievalHttpClient(URI(args[1]),RetrievalToken { "local-test" },localTest=true)
-    val mode=if(args.size==4) RetrievalMode.valueOf(args[3]) else RetrievalMode.VECTOR
+    val mode=if(args.size>=4) RetrievalMode.valueOf(args[3]) else RetrievalMode.VECTOR
+    val expectedSeedFallback=args.size==5
+    require(!expectedSeedFallback || (mode==RetrievalMode.VECTOR && args[4]=="FALLBACK_REQUIRED_SEED"))
     val s=RetrievalContextSelector(full,mode,pin,port)
     val suite=m.readTree(File("harness/fixtures/context-selection/suite.json"))
     val cases=suite["cases"].toList()+m.readTree(File("experiments/retrieval/fixtures/graph-cases.json"))["cases"].toList()
@@ -47,6 +49,7 @@ fun main(args: Array<String>) {
         else {check(explanation is Explained) { c["id"].asText()+": explain" };check(ask is Explained) { c["id"].asText()+": ask" };check(events.last() is DoneEvent) { c["id"].asText()+": stream" };check(calls==3)}
         mapOf("id" to c["id"].asText(),"decision" to ctx.decision,"policyCount" to 8,"requiredEvidenceCovered" to true,"providerCalls" to calls,"threeRoutesVerified" to true)
     }
+    check(rows.any { it["decision"]=="SELECTED" }) { "fixture run must exercise selected retrieval" }
     val bad=RetrievalContextSelector(full,RetrievalMode.VECTOR,pin.copy(indexVersion="0".repeat(64)),port).select("경복궁 혼잡도 기준은?")
     check(bad.decision=="FULL_FALLBACK" && bad.systemText==full.raw)
     val denied=RetrievalContextSelector(full,RetrievalMode.VECTOR,pin,RetrievalHttpClient(URI(args[1]),RetrievalToken { "invalid-local-token" },localTest=true)).select("경복궁 기준")
@@ -57,9 +60,9 @@ fun main(args: Array<String>) {
     val fixture=m.readTree(File("harness/fixtures/course-explanation-request.json"))
     val factsNode=FactsNormalizer.normalize(fixture)
     val actualFacts=BackendFacts(fixture["courseUuid"].asText(),factsNode.toString())
-    val queries=mutableListOf<String>();val decisions=mutableListOf<String>();var providerCalls=0
+    val queries=mutableListOf<String>();val decisions=mutableListOf<String>();val responses=mutableListOf<String>();var providerCalls=0
     val observedPort=RetrievalPort { query, requestMode, identity ->
-        queries.add(query);port.retrieve(query,requestMode,identity)
+        queries.add(query);port.retrieve(query,requestMode,identity).also(responses::add)
     }
     val realSelector=RetrievalContextSelector(full,mode,pin,observedPort)
     val observing=object:com.hermes.context.ContextSelection {
@@ -70,6 +73,7 @@ fun main(args: Array<String>) {
         override val name="scripted-real-facts"
         override fun explain(systemText:String,userText:String):ProviderResult {
             providerCalls++;check(userText.startsWith(actualFacts.json))
+            if(expectedSeedFallback) check(systemText==full.raw)
             RetrievalContextSelector.POLICIES.forEach{check(systemText.contains("----- FILE: $it -----"))}
             return Answered(Explanation("정책 확인",RetrievalContextSelector.POLICIES.toList()),ProviderUsage(0,0,0,0))
         }
@@ -77,9 +81,15 @@ fun main(args: Array<String>) {
     check(ExplanationService(PromptAssembler(full),CitationValidator(full),actualProvider,observing).explain(actualFacts) is Explained)
     val expectedQuery=factsNode["items"].take(3).map{it["name"].asText().take(100)}.joinToString(" ")+" 혼잡도 방문 순서 설명"
     check(queries==listOf(expectedQuery) && providerCalls==1)
-    check(decisions.single()=="SELECTED") { "facts EXPLAIN must reach actual selected retrieval" }
+    val actualResponse=m.readTree(responses.single())
+    check(actualResponse["schemaVersion"].asInt()==1 && actualResponse["mode"].asText()==mode.name)
+    check(actualResponse["identity"]==m.readTree(m.writeValueAsString(pin)) && actualResponse["documents"].isArray)
+    if(expectedSeedFallback) {
+        check(actualResponse["status"].asText()=="fallback" && actualResponse["reason"].asText()=="FALLBACK_REQUIRED_SEED" && actualResponse["documents"].isEmpty)
+        check(decisions.single()=="FULL_FALLBACK") { "explicit missing seed must restore original FULL" }
+    } else check(decisions.single()=="SELECTED") { "facts EXPLAIN must reach actual selected retrieval" }
     check(queries.single().contains("경복궁") && !queries.single().contains(fixture["courseUuid"].asText()) && !queries.single().contains("latitude"))
-    val factsExplain=mapOf("fixture" to "harness/fixtures/course-explanation-request.json","query" to queries.single(),"decision" to decisions.single(),"actualSelectorAndFactsNormalizer" to true,"actualHttpAndCitationGate" to true,"providerCalls" to providerCalls)
+    val factsExplain=mapOf("fixture" to "harness/fixtures/course-explanation-request.json","query" to queries.single(),"decision" to decisions.single(),"actualSelectorAndFactsNormalizer" to true,"actualResponseReason" to actualResponse.path("reason").asText(),"expectedRequiredSeedFallback" to expectedSeedFallback,"actualHttpAndCitationGate" to true,"providerCalls" to providerCalls)
     val report=mapOf("schemaVersion" to 1,"backend" to manifest["vector"]["backend"].asText(),"identity" to pin,"actualHttpAndSearch" to true,"actualKotlinCitations" to true,"llmJudgeRun" to false,"graphApiRun" to (mode==RetrievalMode.HYBRID_GRAPH),"mode" to mode.name,"factsExplain" to factsExplain,"fixtureCount" to rows.size,"routeChecks" to rows.size*3,"deterministicChecks" to rows.size,"staleIndexFullFallback" to true,"authFailureFullFallback" to true,"graphUnavailableFullFallback" to (mode==RetrievalMode.VECTOR),"rows" to rows)
     File(args[2]).writeText(m.writerWithDefaultPrettyPrinter().writeValueAsString(report)+"\n")
     println("Real local API E2E: ${rows.size} fixtures, ${rows.size*3} request-route checks; no LLM calls")
