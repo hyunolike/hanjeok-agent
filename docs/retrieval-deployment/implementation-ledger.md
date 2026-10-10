@@ -5,3 +5,5 @@ Base: aaed27772a48e19c465cab6b37717b6909c807d7 (Draft #13 diagrams/experiments, 
 Ruling: use a small ASGI application plus Uvicorn rather than a new web framework — body/read deadlines and admission are explicit, while the existing retrieval adapters remain reusable.
 Ruling: production IAM validation belongs to private Cloud Run deployment; local test authentication is explicit loopback-only and does not prove IAM. Actual platform/IAM changes remain held.
 Pre-flight: index API produces verified ID/hash/source metadata; Kotlin consumes the same pinned bundle/sidecar/model/index identity. Each request owns its citation validator and cache identity. Runtime index changes are manual immutable publication only.
+
+Task 1: complete — 12 index/API tests failed as expected before implementation, then 14 tests pass including source/body/matrix tampering, deterministic build, 35-fixture/70-row manual validation, bounded admission/deadline, local-auth binding and mocked reader-role contract. Runtime query data is not logged, API returns IDs/hash/source signatures only. Production IAM and actual reader roles remain unexecuted; no ACL claim for Community.
