@@ -10,7 +10,7 @@ from neo4j import Query
 p=argparse.ArgumentParser();p.add_argument('--index',required=True);p.add_argument('--version',required=True);p.add_argument('--origin',default='http://127.0.0.1:17880');p.add_argument('--output',required=True);p.add_argument('--load-owned-graph',action='store_true');p.add_argument('--load-only',action='store_true');p.add_argument('--fault-owned-graph',action='store_true');a=p.parse_args()
 u=urlparse(a.origin)
 if u.scheme!='http' or u.hostname!='127.0.0.1' or u.username or u.password or u.path or u.query or u.fragment:raise ValueError('explicit loopback origin only')
-index=load_index(a.index,a.version);proof={'actualHttp':True,'llmCalls':0,'identity':index.identity}
+index=load_index(a.index,a.version);proof={'actualHttp':False,'llmCalls':0,'identity':index.identity}
 def call(path,body=None,token='local-test'):
  req=urllib.request.Request(a.origin+path,data=None if body is None else json.dumps(body).encode(),headers={'Authorization':'Bearer '+token,'Content-Type':'application/json'})
  try:
@@ -39,6 +39,7 @@ c=http.client.HTTPConnection(u.hostname,u.port,timeout=4);start=time.monotonic()
 try:
  c.putrequest('POST','/v1/retrieve');c.putheader('Authorization','Bearer local-test');c.putheader('Content-Type','application/json');c.putheader('Content-Length','2');c.endheaders();c.send(b'{');response=c.getresponse();assert response.status==408;response.read();elapsed=time.monotonic()-start;assert 1.5<=elapsed<3.2;proof['slowBodyDeadlineSeconds']=round(elapsed,3)
 finally:c.close()
+proof['actualHttp']=True
 if a.fault_owned_graph:
  key='document:records/places/gyeongbokgung.json';original=index.snapshot.nodes[key]['sha256']
  with driver_for('bolt://127.0.0.1:17687') as driver:
