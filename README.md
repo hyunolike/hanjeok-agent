@@ -41,7 +41,7 @@
 
 <a href="docs/media/hanjeok-agent.mp4"><img src="docs/media/hanjeok-agent.gif" alt="A question is typed, an answer begins to stream, and it stops — EXPLANATION_UNAVAILABLE. The cited path was not in the bundle, so the whole answer was withheld. Then: the nine documents that are the entire evidence set, a normal run where citations arrive before the body, the tool loop fetching a fact it was missing, and the closing line — no grounds, no answer." width="820"></a>
 
-<sub>21 seconds. The agent's main job is not answering — it is refusing to. **[Click for the version with sound →](docs/media/hanjeok-agent.mp4)**<br/>Every number in it is measured: 9 documents, 23,079 bytes, and a fabricated citation blocked 5 times out of 5 on the first real run.</sub>
+<sub>21 seconds. The agent's main job is not answering — it is refusing to. **[Click for the version with sound →](docs/media/hanjeok-agent.mp4)**<br/>Historical recording: 9 documents / 23,079 bytes and fabricated citations blocked 5/5 on an earlier model run. The current bundle is 24,703 bytes; the October 9 deployment verification did not call an LLM.</sub>
 
 </div>
 
@@ -55,27 +55,39 @@
 
 <br/>
 
-## 🏗 The system, twice
+## Hanjeok Wiki and Agent overview
 
-Two drawings answer two different questions. The first is what happens inside one request; the second is where that code actually runs. Both are drawn by this repository — see [Tech Stack](#-tech-stack) for how.
+![Hanjeok collection/build, production and separate local experiment architecture](docs/images/hanjeok-wiki-agent-overview.en.png)
 
-<div align="center">
+[Open full-size diagram](docs/images/hanjeok-wiki-agent-overview.en.png) · Public-reference snapshots become documented canonical context through review; package selection determines which documents are bundled. Review status is preserved: source hashes/revisions establish integrity, not truth or an all-reviewed admission gate. Production uses the full static manual and current backend facts; provenance stays server-side. The separate local lab evaluates retrieval IDs without LLM judging. Browser request arrows and cache details are omitted here; see the request-path diagram.
 
-**What one request does**
+## 🏗 Two inputs, three request paths
 
-<img src="docs/images/flow.en.svg" alt="Explanation request flow — three backend responses pass through FactsNormalizer into BackendFacts, while hanjeok-bundle.txt passes through BundleLoader and PromptAssembler into systemText; both meet in ExplanationService.explain(). A ProviderResult that is Refused or Failed becomes Unavailable, one that is Answered goes to CitationValidator, and valid citations make it Explained, which ForbiddenBehaviours.check() judges. Both branches end in ViolationTally. A second, separate lane below it covers POST /agent/ask/stream: CourseQuestionService.askStream() runs AgentLoop, which can call congestion and alternatives for up to 2 tool rounds with a 60-second deadline shared across them before AskStreamGate validates citations and either streams the answer, repairs it once, or ends unavailable or aborted — with zero delta events before any unavailable." width="900">
+The model receives two inputs: the **static wiki manual** in `system`, and **current backend facts** in `user`. The wiki describes policies; the backend computes the course, ranking and visit order. Backend facts take priority. A fresh lookup records query completion, not forecast publication or source freshness.
 
-<sub>The upper lane is the first explanation. The lower lane is a follow-up question, where the model may call two lookup tools inside a budget — and where no body text leaves until its citations validate.</sub>
+At build time, source checks produce `hanjeok-bundle.txt` and its metadata sidecar, and CI compares both before packaging them into the server image. At startup, `BundleLoader` verifies them once. The full nine-document manual (24,703 UTF-8 bytes) enters the prompt unchanged. The sidecar stays on the server for integrity checks and `/agent/provenance`; it never enters model input.
 
-<br/><br/>
+![Hanjeok build-time packaging and two runtime model inputs](docs/images/hanjeok-two-inputs.png)
 
-**Where it runs**
+[Open full-size diagram](docs/images/hanjeok-two-inputs.png) · Build-time packaging keeps the verified full manual in system input and current backend facts in user input. The sidecar stays on the server; the backend determines ranking and visit order. Production remains FULL (9 docs / 24,703 UTF-8 bytes).
 
-<img src="docs/images/deploy.en.svg" alt="Deployment diagram — the browser opens the Next.js UI on Vercel, which calls the server on Cloud Run (presentation · explain · context · llm). The server calls the hanjeok backend three times per request and the LLM provider once; keys arrive from Secret Manager as environment variables. GitHub Actions rebuilds the evidence bundle from the wiki, fails on drift, and bakes it into the image that gets deployed. The evaluation harness sits outside the deployment path." width="900">
+The browser opens the Vercel frontend and calls the Cloud Run agent. The agent retrieves facts from Hanjeok Backend and calls the provider when needed.
 
-<sub>The browser never calls the hanjeok backend or the LLM provider directly, so CORS has exactly one target. The evidence bundle is baked into the image at build time — CI fails if it has drifted from the wiki.</sub>
+| Request | Path | EXPLAIN cache | Tools |
+| --- | --- | --- | --- |
+| `POST /agent/explain` | Fetch facts → UUID/facts-hash cache → saved answer, or LLM → citation validation → save | 5 minutes from generation completion; same-key in-flight generation is shared | None |
+| `POST /agent/ask` | Fetch facts + question/history → LLM → citation validation → answer | None | None |
+| `POST /agent/ask/stream` | Fetch facts + question/history → agent loop → citation gate → SSE | None | Validated congestion/alternative lookups, at most 2 rounds / 60s |
 
-</div>
+EXPLAIN fetches all three backend responses even on a cache hit, which skips the model call. Changed facts use a new key. Failed facts or generation do not return an older cached answer. ASK history belongs to the client and is context, never new evidence. Streaming validates citations before body text; rejected/failed tools do not enter the evidence union.
+
+![EXPLAIN, blocking ASK and streaming ASK request paths](docs/images/request-paths.png)
+
+[Open full-size diagram](docs/images/request-paths.png) · EXPLAIN reads facts before the cache and skips the model on a hit; TTL starts at generation completion. Blocking ASK has no tools or EXPLAIN cache. Streaming ASK checks tool arguments on the server and gates body text on citations, with at most 2 tool rounds inside a 60-second agent loop.
+
+The installed soft-3D images follow [the code-based diagram specification](docs/context-selection/readme-diagram-spec.md). The earlier [request SVG](docs/images/flow.en.svg) and [deployment SVG](docs/images/deploy.en.svg) are historical drawings; they omit these cache and blocking-ASK distinctions. `ForbiddenBehaviours` and `ViolationTally` belong to the offline evaluation harness.
+
+[Deployment details](docs/deploy.md). [Timestamped production verification](docs/context-selection/production-verification.json): at 2026-10-09 09:13 UTC, agent `ea47917` was Ready at 100% traffic, health/readiness UP, and bundle/sidecar hashes matched. The frontend deployment is complete. This verification made **no actual LLM call**; older model measurements do not validate this revised deployment. The separate Hanjeok database/SMTP rollout remains held.
 
 <br/>
 
@@ -177,13 +189,13 @@ The `user` turn puts **the facts first and the question last**. A question is te
 
 ## 🔀 Request Flow
 
-> The diagram for this section is at the top — [**What one request does**](#-the-system-twice).
+> The current paths are summarized above in [**Two inputs, three request paths**](#-two-inputs-three-request-paths).
 
-`3 backend responses → FactsNormalizer → BackendFacts` and `hanjeok-bundle.txt → BundleLoader → PromptAssembler` meet in `ExplanationService.explain()`, pass through `ExplanationProvider → ProviderResult → CitationValidator`, split into `Explained` or `Unavailable`, and end up in `ForbiddenBehaviours.check()` · `ViolationTally`.
+At runtime, `FactsSource` uses `FactsProjection` to assemble three backend responses into `BackendFacts`. `CourseExplainer` fetches those facts before checking its cache. On a miss, the facts and the full bundle from `BundleLoader → PromptAssembler` meet in `ExplanationService.explain()`, then `ExplanationProvider → CitationValidator` returns `Explained` or `Unavailable`. The offline evaluation harness uses `FactsNormalizer` for fixtures and separately runs `ForbiddenBehaviours.check()` and `ViolationTally`; these are outside the production request path.
 
 `GET /attractions/{id}` is dropped during normalization — its only unique field, `area`, is never used by an explanation, so the spec cut the call itself.
 
-The lane below the divider is a separate entry point, not a continuation of the one above — `POST /agent/ask/stream` never runs through `ExplanationService`. `CourseQuestionService.askStream()` drives `AgentLoop` instead, which is where the tool loop described under "Key Features" above lives, and it ends at `AskStreamGate`, not at `ForbiddenBehaviours` — the eight forbidden behaviours are judged by the evaluation harness, not on this request path.
+Streaming ASK is a separate entry point — `POST /agent/ask/stream` never runs through `ExplanationService`. `CourseQuestionService.askStream()` drives `AgentLoop` instead, which is where the tool loop described under "Key Features" above lives, and it ends at `AskStreamGate`, not at `ForbiddenBehaviours` — the eight forbidden behaviours are judged by the evaluation harness, not on this request path.
 
 There is one adapter (`SpringAiExplanationProvider`). Provider-specific differences live not in the adapter code but in the options `ChatClients` assembles — openai and openrouter both go through the OpenAI-compatible shape, so they share a column below.
 
@@ -235,7 +247,7 @@ Each one is a claim the policy documents (`decisions/keep-llm-out-of-ranking.md`
 | <img src="docs/images/stack/nextjs.svg" width="24" alt=""> <img src="docs/images/stack/react.svg" width="24" alt=""> <img src="docs/images/stack/typescript.svg" width="24" alt=""> <img src="docs/images/stack/tailwind.svg" width="24" alt=""> UI | Next.js 16, React 19, TypeScript 5, Tailwind CSS 4 |
 | <img src="docs/images/stack/docker.svg" width="24" alt=""> <img src="docs/images/stack/cloud-run.svg" width="24" alt=""> <img src="docs/images/stack/vercel.svg" width="24" alt=""> Deployment | The server ships as a Docker image on Cloud Run, the UI on Vercel ([`docs/deploy.md`](./docs/deploy.md)) |
 
-> Those logos are not fetched from anywhere — this repository draws them (`docs/images/`). A displacement filter wobbles the strokes into a hand-drawn look, and a paper-coloured card behind each one keeps them readable in GitHub's light and dark themes alike. The flow diagram above (`flow.en.svg`) is drawn the same way. Run `generate.py`, `generate_flow.py` and `generate_deploy.py` under `docs/images/` to rebuild them.
+> Those logos are not fetched from anywhere — this repository draws them (`docs/images/`). A displacement filter wobbles the strokes into a hand-drawn look, and a paper-coloured card behind each one keeps them readable in GitHub's light and dark themes alike. The historical flow SVG (`flow.en.svg`) was drawn the same way. Run `generate.py`, `generate_flow.py` and `generate_deploy.py` under `docs/images/` to rebuild them.
 
 <br/>
 
@@ -454,7 +466,7 @@ The procedure and the values actually deployed (URLs · region · secret names �
 
 ## Explanation freshness and evidence versions
 
-These branch changes have been tested locally and have not been deployed.
+The source/cache contract is deployed in agent `ea47917` (wiki #31 and agent #12 merged). The [2026-10-09 verification](docs/context-selection/production-verification.json) confirms infrastructure health and artifact hashes, with no actual LLM call.
 At build time, wiki source hash/revision checks produce the full bundle text and
 its JSON sidecar, which the agent packages together. At runtime, the browser
 calls the agent, and the agent fetches backend facts and conditionally calls the
@@ -495,7 +507,22 @@ hashes, but paid evaluation is separate from local tests. See
 [the contract](docs/source-cache-contract/plan.md) and
 [local validation](docs/source-cache-contract/quickstart.md).
 
-Integrate the wiki generator and contract first, then the agent consumer. The new
-agent requires the sidecar, so bundle text and metadata must be synchronized
-together. CI pins wiki commit `f628c4cf25ae0e493a69cbf242a421ad2bfcd28e` to validate
-this draft without merging or deploying either repository.
+The wiki generator and agent consumer are integrated. The agent requires the sidecar, so future refreshes must synchronize bundle text and metadata together. CI pins merged wiki main `7fc19c0c4a034868866bcf5a920e3f82050830c7` and checks both artifacts; see the compatibility verification in [the offline report](docs/context-selection/report.md).
+
+## Local vector, graph and RAGAS experiment
+
+![Local retrieval lab comparing FULL, VECTOR and HYBRID_GRAPH outside production](docs/images/local-retrieval-lab.png)
+
+[Open full-size diagram](docs/images/local-retrieval-lab.png) · Experiment only: TF-IDF lexical vectors and pinned multilingual CPU semantic embeddings are distinct retrieval backends. Actual local Neo4j Community 5.26.31 supplies bounded source/seed relations; RAGAS 0.3.9 measures document-ID precision/recall, not answer quality. All eight policies remain mandatory. Responses are scripted; LLM answer generation and judging were not run. Production remains FULL.
+
+[The separate retrieval lab](experiments/retrieval/README.md) compares FULL / VECTOR / HYBRID_GRAPH over 29 preserved fixtures plus six graph-boundary cases. Production remains FULL. The preserved TF-IDF baseline is lexical sparse-vector retrieval; a second actual CPU run uses the pinned multilingual distiluse model (512 dimensions, 41 untruncated chunks, verified cached safetensors, no remote code). Both use actual RAGAS 0.3.9 document-ID metrics and an in-process graph of verified document/source and declared seed place/region edges. This is direct relationship retrieval, not Microsoft's complete community GraphRAG pipeline.
+
+On 24 supported attempts, semantic VECTOR / HYBRID candidate precision is 0.250000 / 0.172619 and recall is 0.645833 / 1.000000 (24 defined rows each). Complete final fixture coverage is 30/35 / 35/35; five VECTOR seed omissions are recorded rather than hidden. Policy retention and determinism are 105/105. The baseline metrics and seven undefined empty precisions remain preserved separately. [Semantic results](experiments/retrieval/results/semantic-in-process/results.json), [dataset](experiments/retrieval/results/semantic-in-process/dataset.jsonl) and [extension validation](experiments/retrieval/results/extension-validation.json) include byte-identical second-process reproduction and real Kotlin citation contract checks, including invalid scripted citations. These scores do not measure answer truth or LLM faithfulness; the approximately 2.03% source-byte reduction ceiling remains.
+
+Actual isolated Neo4j Community 5.26.31 integration now passes: 15 singleton traversals match the in-process graph; two-hop region retrieval, synthetic isolation and actual source/document hash tamper rejections pass. Both TF-IDF and semantic modes execute 105 rows/210 RAGAS samples each, with identical in-process selections, separate-process byte reproduction and actual Kotlin citation checks. [Actual integration and commands](experiments/retrieval/README.md#actual-isolated-neo4j-integration-2026-10-10) and [validation](experiments/retrieval/results/neo4j-validation.json) distinguish these from the two mock contracts. The helper uses a dedicated bridge with masquerading disabled, only loopback Bolt published, HTTP/usage reporting disabled; owned resources are cleaned up. The earlier approval blocker is resolved. No answer generation, LLM judge, paid call, corpus upload, merge/production deployment or separate Hanjeok DB/SMTP rollout occurred. The operational and English experiment diagrams are installed; English/Korean operational, experiment and overall architecture diagrams are installed and visually reviewed.
+
+## Offline document-selection experiment
+
+Production keeps **FULL**. `./gradlew offlineContextEval --args=docs/context-selection/results.json` runs a separate scripted comparison with all eight mandatory policies retained and only the 경복궁 seed optional. Ambiguous questions/references fall back to the verified full bundle; invalid body/sidecar hashes fail closed. Original order and raw slices are preserved, and citations are restricted to the request bundle. No singleton or production request path changes.
+
+See [design](docs/context-selection/design.md), [versioned fixtures](harness/fixtures/context-selection/suite.json), and [results with fallback separated](docs/context-selection/report.md). Maximum system-byte reduction is 501/24,703 = 2.03%; this is a byte measurement, not a measured token, cost, accuracy or latency improvement. Scripted provider/tool outputs verify wiring only.

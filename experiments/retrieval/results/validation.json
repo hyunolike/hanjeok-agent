@@ -1,0 +1,80 @@
+{
+  "scope": "local offline validation; no Docker or paid/model calls",
+  "pythonTests": 29,
+  "pythonFailures": 0,
+  "originalFixtureCases": 29,
+  "addedGraphCases": 6,
+  "armExecutions": 105,
+  "ragasSampleRows": 210,
+  "ragasMetricValues": 420,
+  "actualRagasIdMetrics": true,
+  "networkBlockedByRunner": true,
+  "mandatoryRetention": 105,
+  "fixtureContextCoverage": 105,
+  "deterministicAndHistoryIndependent": 105,
+  "neo4jMockContractTests": 2,
+  "neo4jLiveIntegration": false,
+  "graphBackend": "in-process curated snapshot",
+  "graphNodes": 15,
+  "graphEdges": 22,
+  "graphMaxHops": 2,
+  "graphMaxDocuments": 9,
+  "citationContractsMatched": 105,
+  "emptyUnknownProbeRejections": 210,
+  "omittedSeedProbeRejections": 29,
+  "serverTestSuites": 55,
+  "serverTests": {
+    "tests": 325,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "testReportCounting": "canonical TEST-<suite name>.xml only; historical duplicate filenames excluded",
+  "historicalDuplicateXmlExcluded": 55,
+  "existingOfflineFixtureArmRows": 58,
+  "existingBaselinePolicyRetention": 100.0,
+  "existingBaselineFixtureCoverage": 100.0,
+  "bootJar": "SUCCESS",
+  "newExperimentAndOfflineEntryPointsAbsentFromBootJar": true,
+  "packagedArtifactsUnchanged": {
+    "hanjeok-bundle.txt": true,
+    "hanjeok-bundle.meta.json": true
+  },
+  "protectedAgentPathsUnchanged": true,
+  "protectedWikiPathsUnchanged": true,
+  "diffWhitespaceCheck": "PASS: both worktrees",
+  "wikiSmoke": "PASS: 18 canonical pages",
+  "wikiProvenanceTests": 8,
+  "wikiIndexCheck": "PASS",
+  "reproducibility": {
+    "results.json": {
+      "bytes": 238725,
+      "sha256": "eeb8184c4cd3ac49572b4d24b57377a95495a64ec5f68530651b93597a12a47b",
+      "byteIdentical": true
+    },
+    "dataset.jsonl": {
+      "bytes": 4432645,
+      "sha256": "b6470b0533b3e1b392bba4dc9f85bd72b8b7ebd665ea03bb1c32e79aa18a8aa7",
+      "byteIdentical": true
+    },
+    "graph-snapshot.json": {
+      "bytes": 15004,
+      "sha256": "c96f8b9aafd2a0aa712c8666f5f8193f5e6b50530bcca0beb4a7628706cf722f",
+      "byteIdentical": true
+    }
+  },
+  "semanticInferenceExecuted": false,
+  "llmGenerationExecuted": false,
+  "llmJudgeExecuted": false,
+  "paidCalls": false,
+  "externalCorpusUpload": false,
+  "remotePushPrMergeDeployment": false,
+  "imageSlots": "pending",
+  "separateHanjeokDbSmtpRollout": "held",
+  "commands": [
+    "PYTHONPATH=experiments/retrieval PYTHONDONTWRITEBYTECODE=1 experiments/retrieval/.venv/bin/python -m unittest discover -s experiments/retrieval/tests -v",
+    "PYTHONPATH=experiments/retrieval PYTHONDONTWRITEBYTECODE=1 experiments/retrieval/.venv/bin/python -m retrieval_lab.run",
+    "./gradlew --offline --no-daemon -I experiments/retrieval/retrieval-citation.init.gradle test bootJar offlineContextEval --args=/tmp/hanjeok-retrieval-baseline.json retrievalCitationCheck",
+    "./harness/scripts/smoke.sh; scripts/build-index.sh --check"
+  ]
+}

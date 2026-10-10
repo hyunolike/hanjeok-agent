@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-10",
+  "images": [
+    {
+      "path": "docs/images/hanjeok-two-inputs.png",
+      "sha256": "96adc5b88f0498ddb3831a6d4eae77dfaec223547e072fbe9215233cc83dd00c",
+      "width": 1672,
+      "height": 941,
+      "visualReview": "passed",
+      "readmeLanguages": [
+        "en"
+      ]
+    },
+    {
+      "path": "docs/images/request-paths.png",
+      "sha256": "ff4737e906208ae316bb083e052016370161cc8db4ab504032c6ee75b66c92f0",
+      "width": 1672,
+      "height": 941,
+      "visualReview": "passed",
+      "readmeLanguages": [
+        "en"
+      ]
+    },
+    {
+      "path": "docs/images/local-retrieval-lab.png",
+      "sha256": "2571b6eada9086a36c729111173403f26c67693a9e2bbe99fef8acb9d3408830",
+      "width": 1672,
+      "height": 941,
+      "visualReview": "passed",
+      "readmeLanguages": [
+        "en"
+      ]
+    },
+    {
+      "path": "docs/images/request-paths-ko.png",
+      "sha256": "d945073104bf363092e29356b355a27c4fc906270468d156bbc098e75d2e2335",
+      "width": 1672,
+      "height": 941,
+      "visualReview": "passed",
+      "readmeLanguages": [
+        "ko"
+      ]
+    },
+    {
+      "path": "docs/images/local-retrieval-lab-ko.png",
+      "sha256": "cac28383f6e2d701fcbfce3410fe64e4a83e8746a9a2bfcea43c462fbbf621b4",
+      "width": 1672,
+      "height": 941,
+      "visualReview": "passed",
+      "readmeLanguages": [
+        "ko"
+      ]
+    },
+    {
+      "path": "docs/images/hanjeok-wiki-agent-overview.ko.png",
+      "sha256": "db43e8ff0822978709ef354e8c350838f7c0110672c80fecd2d676f215e17c66",
+      "width": 1672,
+      "height": 941,
+      "visualReview": "passed",
+      "readmeLanguages": [
+        "ko"
+      ]
+    },
+    {
+      "path": "docs/images/hanjeok-wiki-agent-overview.en.png",
+      "sha256": "3c74eec5737f4769705b8134a044dc1cdbbe83fd401b52bf7d4dd03e4ac47c8c",
+      "width": 1672,
+      "height": 941,
+      "visualReview": "passed",
+      "readmeLanguages": [
+        "en"
+      ]
+    },
+    {
+      "path": "docs/images/hanjeok-two-inputs-ko.png",
+      "sha256": "fcbe67723a4fa197d7beea315b455f23439e4277c2a1b98cc0b1aa5635f1205b",
+      "width": 1672,
+      "height": 941,
+      "visualReview": "passed",
+      "readmeLanguages": [
+        "ko"
+      ]
+    }
+  ],
+  "readmeLanguages": [
+    "en",
+    "ko"
+  ],
+  "altAndEnlargementLinksPresent": true,
+  "operationalImageSlotsReplaced": true,
+  "historicalSvgLinksPreserved": true,
+  "experimentDiagram": "English and Korean C installed and visually reviewed",
+  "productionDefault": "FULL",
+  "productionSourceAndCanonicalDataUnchanged": true,
+  "newLlmJudgeOrPaidCalls": false,
+  "localizedImageLabels": "English and Korean applicable A/B/C plus overview installed and visually reviewed",
+  "overallArchitectureDiagram": "English/Korean installed; Japanese caption uses English image",
+  "newProductionDeployment": false,
+  "automaticVercelPreview": true
+}
