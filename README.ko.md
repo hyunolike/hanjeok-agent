@@ -15,8 +15,6 @@
 ![Gradle](https://img.shields.io/badge/Gradle-Kotlin%20DSL-02303A?logo=gradle&logoColor=white)
 ![Spring AI](https://img.shields.io/badge/Spring%20AI-2.0.1-6DB33F?logo=springboot&logoColor=white)
 
-<img src="docs/images/stack/kotlin.svg" alt="Kotlin" width="46"> <img src="docs/images/stack/spring-boot.svg" alt="Spring Boot" width="46"> <img src="docs/images/stack/gradle.svg" alt="Gradle" width="46"> <img src="docs/images/stack/anthropic.svg" alt="Anthropic" width="46"> <img src="docs/images/stack/nextjs.svg" alt="Next.js" width="46"> <img src="docs/images/stack/docker.svg" alt="Docker" width="46">
-
 [English](./README.md) · **한국어**
 
 </div>
@@ -57,30 +55,13 @@
 
 ## 한적 위키·에이전트 전체 구조
 
-```mermaid
-flowchart LR
-    Source["공개 원천 자료"]
-    Wiki["위키 정책과 정규화 자료"]
-    Bundle["빌드: 전체 번들 + 출처 메타데이터"]
-    Agent["Kotlin 에이전트 / Cloud Run"]
-    Backend["한적 백엔드"]
-    Client["브라우저 / Vercel"]
-    Model["LLM 프로바이더"]
-    Source -->|"보존·검토"| Wiki
-    Wiki -->|"문서 목록 명시"| Bundle
-    Bundle -->|"고정한 산출물"| Agent
-    Backend -->|"현재 사실 데이터"| Agent
-    Client -->|"코스·질문"| Agent
-    Agent -->|"전체 정책 + 현재 사실"| Model
-    Model -->|"답변·인용"| Agent
-    Agent -->|"검증한 응답"| Client
-```
+![수집·빌드, 운영 서비스, 별도 로컬 실험의 전체 구조](docs/images/hanjeok-wiki-agent-overview.ko.png)
 
-이 그림은 현재 FULL 운영 경로입니다. 검색 배포 준비 구조는 아래 변경점에서 따로 설명합니다. 출처 메타데이터는 서버에서만 검사하고 순위는 백엔드가 정합니다.
+이 3D 그림은 현재 FULL 운영 경로입니다. 검색 배포 준비 구조는 아래 변경점에서 따로 설명합니다. 출처 메타데이터는 서버에서만 검사하고 순위는 백엔드가 정합니다.
 
 ## 기존 FULL 방식 대비 달라진 점
 
-**운영은 FULL을 유지합니다.** 마지막 운영 기록은 2026-10-09 09:13 UTC의 agent `ea47917`이며 LLM을 호출하지 않았습니다. 아래 검색 API와 요청별 선택은 별도 브랜치에서 구현·검증했고 새 Draft PR 게시가 승인됐습니다. 클라우드 배포는 보류합니다. 기존 agent #13/wiki #32의 merge는 이 작업 밖에서 확인한 상태이며 검색 기능 배포를 뜻하지 않습니다.
+**운영은 FULL을 유지합니다.** 2026-10-10 Cloud Run 설정을 읽기 전용으로 확인했으며 agent `ea47917`이 Ready·100% 트래픽이고 검색 런타임 설정은 없습니다. agent #14/wiki #33은 외부에서 merge됐고 이번 후속 변경은 별도 feature 브랜치에서 새 Draft PR로 검토합니다. 별도 API·요청별 선택은 구현·검증했으며 클라우드 배포는 보류합니다.
 
 | 구분 | 기존 FULL 방식 | 현재 로컬 구현 |
 | --- | --- | --- |
@@ -91,40 +72,26 @@ flowchart LR
 | 실패·캐시 | 전체 번들 인용 목록과 코스 ID·facts 해시 기반 EXPLAIN 캐시 | 요청별 인용 목록과 컨텍스트 ID를 캐시·진행 중 생성 공유 키에 포함해 동시 선택/FULL 결과도 분리합니다. 인증·시간 초과·잘못된 버전·근거 누락 등은 검증된 FULL로 복귀하고 FULL 원본 손상은 응답을 차단합니다. |
 | 평가 | 고정 응답 기반 fixture 29개 문서 선택 비교와 과거 모델 평가 | 실제 RAGAS 0.3.9 문서 ID 정밀도·재현율을 답변 생성·LLM 심사와 구분합니다. 실제 HTTP·Neo4j·Kotlin 인용 E2E도 프로바이더는 고정 응답이며 유료 LLM·심사 호출은 없습니다. |
 
-**로컬 검증 완료:** Python 19/19·JVM 339/339(56개 suite), 기존 fixture 29개/58개 행이 통과했습니다. native 어휘 API·고정 CPU 의미 API·실제 빌드한 Linux ARM64 어휘 이미지 각각 실제 Neo4j Community 5.26.31을 통해 fixture 35개/설명·질문·스트리밍 105건과 실제 facts 기반 EXPLAIN 1건을 통과했습니다. 실제 graph·본문 변조, 잘못된 버전, 인증·본문·시간 제한 및 정확한 FULL 복구는 [검증 기록](docs/retrieval-deployment/verification.json)에 있습니다. 생성한 로컬 자원은 정리했습니다.
+**로컬 검증 완료:** Python API 19/19·새 CPU builder 13/13이 통과했습니다. JVM 339/339(56 suite), lab 34/34와 기존 fixture 29개/58개 행도 검증됐습니다. 전체 Linux ARM64 CPU 의미 이미지를 실제 빌드하고 별도 인덱스를 재생성해 Neo4j·HTTP·Kotlin으로 실행했습니다. HYBRID·VECTOR 각각 fixture 35개/105개 경로와 실제 facts EXPLAIN을 검증했습니다. HYBRID는 SELECTED, VECTOR는 필수 seed 누락을 명시하고 원래 FULL로 복구합니다. [Linux 실행·재현 기록](docs/retrieval-deployment/linux-semantic-readiness.md)을 참고하세요. 기존 native·어휘·RAGAS 기록은 보존하며 새 LLM 또는 Linux RAGAS 점수라고 주장하지 않습니다.
 
-**배포 전 준비사항:** private Cloud Run IAM·호출자·네트워크 설정과 기존 운영 Neo4j Enterprise 읽기 전용 권한은 미검증입니다. 전체 Linux 의미 이미지는 미실행입니다. 공식 CPU wheel `torch 2.14.1+cpu`가 보존한 후보의 정확한 `2.14.1` 버전과 달라 새 Linux CPU 후보를 검증해야 합니다. [재현 명령·배포 준비](deployment/retrieval/README.md)를 참고하세요. credentials·클라우드 자원·트래픽 변경과 별도 한적 DB/SMTP 배포는 수행하지 않았습니다.
+**amd64 부분 검증:** 기존 builder 이미지 빌드와 x86_64 Python 실행, `pip check`, 실제 모델 가중치 로딩까지 확인했습니다. 새 amd64 인덱스와 health, 최종 fixture 결과는 미확인입니다. 이전 Mac 인덱스를 포함한 builder는 배포용으로 사용할 수 없습니다. [보존한 출력과 복구 기록](docs/retrieval-deployment/amd64-semantic-recovery.md)에서 단계를 구분합니다.
+
+**배포 전 준비사항:** Cloud Run에 맞는 새 linux/amd64 이미지·인덱스가 필요합니다. private IAM·네트워크 경로와 실제 운영 Neo4j Enterprise reader ACL은 미검증이며 조회 범위에서 검색 서비스·reader endpoint/secret을 찾지 못했습니다. [구체적 대상·순서·비용 전제](docs/retrieval-deployment/linux-semantic-readiness.md)를 기록했습니다. credentials·IAM·클라우드 자원·트래픽 변경과 별도 한적 DB/SMTP 배포는 수행하지 않았습니다.
 
 **측정 한계:** 선택 대상은 501-byte 경복궁 seed 하나뿐이므로 문서 선택 절감은 최대 501/24,703 = 2.03%입니다. guard 추가나 user 입력 이동이 총 토큰·비용 절감을 증명하지 않습니다. 보존한 의미 실험의 VECTOR/HYBRID 후보 precision은 검색 허용 24건에서 0.250000/0.172619, recall은 0.645833/1.000000입니다. 최종 근거 완전성은 30/35 대 35/35이며 VECTOR seed 누락 5건을 기록했습니다. 배포용 guard는 명시적인 필수 seed 누락 시 FULL로 복귀하고 과거 지표를 덮어쓰지 않습니다. 이 제한된 관계 검색은 Microsoft community GraphRAG 전체 구현이나 답변 품질 개선 입증이 아닙니다. 없는 교통·날씨 및 합성 관계는 검증 그래프에 넣지 않습니다.
 
-게시 범위·보존한 원본 브랜치는 [Draft PR 준비 기록](docs/retrieval-deployment/publication-preparation.json)에 있습니다. 검증 JSON은 게시 승인 전 로컬 실행 스냅샷입니다.
+agent #14/wiki #33 게시와 해당 head의 CI는 이미 merge된 PR의 과거 증거이며 이번 후속 작업은 별도 Draft PR로 검토합니다. [기존 게시 준비 기록](docs/retrieval-deployment/publication-preparation.json)과 이전 검증 JSON은 당시 범위를 보존합니다. [현재 그림 수정 기록](docs/context-selection/readme-illustration-correction.json)에 따라 필요한 기존 3D 그림을 복원하고 중복 도식을 제거했으며 새 이미지를 생성하지 않았습니다.
 
 ### 검색 구조 — 로컬 구현, 운영 미배포
 
-```mermaid
-flowchart LR
-    Index["고정·검증한 인덱스"]
-    API["Python ASGI 검색 API"]
-    Kotlin["Kotlin 요청 컨텍스트"]
-    Vector["어휘 또는 의미 벡터"]
-    Graph["Neo4j 검증 관계 그래프"]
-    Model["LLM 프로바이더"]
-    Client["브라우저 / Vercel"]
-    Index -->|"고정한 산출물"| API
-    Kotlin -->|"제한한 질의·고정 버전"| API
-    API -->|"벡터·하이브리드 검색"| Vector
-    Vector -->|"검색 후보"| API
-    API -->|"하이브리드: 최대 2홉"| Graph
-    Graph -->|"최대 9문서"| API
-    API -->|"문서 ID·해시"| Kotlin
-    Kotlin -->|"필수 정책 8개 + seed 또는 FULL"| Model
-    Model -->|"답변·인용"| Kotlin
-    Kotlin -->|"검증한 응답"| Client
-```
 
-새 API와 Kotlin 설명·인용 경계를 구분한 그림입니다. 런타임 모델 다운로드는 없고 검증된 source hash/revision만 인덱스에 포함합니다. 해시 검사가 내용의 진실성이나 주장의 검토 완료를 증명하지 않습니다.
+새 API와 Kotlin 설명·인용 경계는 본문과 비교 표에서 구분합니다. 런타임 모델 다운로드는 없고 검증된 source hash/revision만 인덱스에 포함합니다. 해시 검사가 내용의 진실성이나 주장의 검토 완료를 증명하지 않습니다.
 
 ## 🏗 두 입력과 세 요청 경로
+
+![한적 빌드 패키징과 모델의 두 런타임 입력](docs/images/hanjeok-two-inputs-ko.png)
+
+현재 FULL 운영 입력입니다. 전체 매뉴얼은 system, 백엔드 facts는 user에 넣고 출처 메타데이터는 서버에만 둡니다. 선택 검색 준비는 별도로 설명합니다.
 
 모델은 두 입력을 받습니다. `system`에는 **정적 위키 매뉴얼**, `user`에는 **현재 백엔드 facts**가 들어갑니다. 위키는 정책을 설명하고, 백엔드는 코스와 순위, 방문 순서를 계산합니다. 백엔드 facts가 우선입니다. 새 조회 시각은 조회 완료 시각이며 예보 발행 시각이나 원천 데이터의 최신성을 보장하지 않습니다.
 
@@ -141,28 +108,7 @@ flowchart LR
 
 EXPLAIN은 캐시 hit에서도 백엔드 응답 3종을 조회하고 모델 호출을 건너뜁니다. facts가 바뀌면 새 키를 사용하며 조회나 생성 실패를 옛 캐시로 숨기지 않습니다. ASK 이력은 클라이언트가 보유하는 맥락이며 새 근거가 아닙니다. 스트림은 본문 전에 인용을 검증하고 실패하거나 거부된 도구 조회는 근거 합집합에 넣지 않습니다.
 
-```mermaid
-flowchart LR
-    Client["브라우저 / Vercel"]
-    Agent["Kotlin 에이전트 / Cloud Run"]
-    Backend["한적 백엔드"]
-    Cache["EXPLAIN 설명 캐시"]
-    Model["LLM 프로바이더"]
-    Tools["스트리밍 조회 도구"]
-    Gate["인용 검증"]
-    Client -->|"코스·질문"| Agent
-    Agent -->|"사실 조회"| Backend
-    Backend -->|"현재 사실 데이터"| Agent
-    Agent -->|"코스 ID + 사실 해시"| Cache
-    Cache -->|"적중: 저장한 답변"| Client
-    Cache -->|"미적중"| Model
-    Agent -->|"질문·스트리밍"| Model
-    Model -->|"스트리밍만 사용"| Tools
-    Tools -->|"검증한 조회 사실"| Model
-    Model -->|"답변·인용"| Gate
-    Gate -->|"유효한 EXPLAIN만 저장"| Cache
-    Gate -->|"검증한 응답"| Client
-```
+![EXPLAIN·blocking ASK·streaming ASK 요청 경로](docs/images/request-paths-ko.png)
 
 
 [배포 상세](docs/deploy.md)와 [시각이 기록된 운영 검증](docs/context-selection/production-verification.json): 2026-10-09 09:13 UTC에 agent `ea47917`의 Ready와 트래픽 100%, health/readiness UP, 번들/sidecar hash 일치를 확인했습니다. 프론트 배포도 완료됐습니다. 이 검증에서는 **실제 LLM을 호출하지 않았습니다**. 과거 모델 평가를 이번 변경의 운영 품질 검증으로 읽으면 안 됩니다. 별도 한적 본체 DB/SMTP 배포 보류는 유지합니다.
@@ -308,24 +254,17 @@ streaming ASK는 별도 진입점입니다 — `POST /agent/ask/stream` 은 `Exp
 
 ## 🛠 기술 스택
 
-<div align="center">
-
-<img src="docs/images/tech-stack.svg" alt="hanjeok-agent 기술 스택 — 손으로 그린 로고 모음" width="740">
-
-</div>
-
 | 구분 | 사용 기술 |
 | --- | --- |
-| <img src="docs/images/stack/kotlin.svg" width="24" alt=""> <img src="docs/images/stack/java.svg" width="24" alt=""> 언어 · 런타임 | Kotlin 2.2.21, JVM Toolchain 21 |
-| <img src="docs/images/stack/spring-boot.svg" width="24" alt=""> 프레임워크 | Spring Boot 4.1.0, Spring Modulith 2.1.0 |
-| <img src="docs/images/stack/gradle.svg" width="24" alt=""> 빌드 | Gradle (Kotlin DSL), 단일 모듈 + 분리된 `harness` 소스셋 |
-| <img src="docs/images/stack/anthropic.svg" width="24" alt=""> <img src="docs/images/stack/openai.svg" width="24" alt=""> LLM | Spring AI 2.0.1 (`spring-ai-anthropic`, `spring-ai-openai`) 위에 Anthropic Java SDK 2.52.0 (`claude-opus-5`) · OpenAI Java SDK 4.49.0 (openai·openrouter 공용) |
+| 언어 · 런타임 | Kotlin 2.2.21, JVM Toolchain 21 |
+| 프레임워크 | Spring Boot 4.1.0, Spring Modulith 2.1.0 |
+| 빌드 | Gradle (Kotlin DSL), 단일 모듈 + 분리된 `harness` 소스셋 |
+| LLM | Spring AI 2.0.1 (`spring-ai-anthropic`, `spring-ai-openai`) 위에 Anthropic Java SDK 2.52.0 (`claude-opus-5`) · OpenAI Java SDK 4.49.0 (openai·openrouter 공용) |
 | 직렬화 | Jackson (`jackson-module-kotlin`) |
-| <img src="docs/images/stack/junit.svg" width="24" alt=""> 테스트 | JUnit 5 (`spring-boot-starter-test`), 프론트엔드는 Vitest + Testing Library |
-| <img src="docs/images/stack/nextjs.svg" width="24" alt=""> <img src="docs/images/stack/react.svg" width="24" alt=""> <img src="docs/images/stack/typescript.svg" width="24" alt=""> <img src="docs/images/stack/tailwind.svg" width="24" alt=""> 화면 | Next.js 16, React 19, TypeScript 5, Tailwind CSS 4 |
-| <img src="docs/images/stack/docker.svg" width="24" alt=""> <img src="docs/images/stack/cloud-run.svg" width="24" alt=""> <img src="docs/images/stack/vercel.svg" width="24" alt=""> 배포 | 서버는 Docker 이미지로 Cloud Run, 화면은 Vercel ([`docs/deploy.md`](./docs/deploy.md)) |
+| 테스트 | JUnit 5 (`spring-boot-starter-test`), 프론트엔드는 Vitest + Testing Library |
+| 화면 | Next.js 16, React 19, TypeScript 5, Tailwind CSS 4 |
+| 배포 | 서버는 Docker 이미지로 Cloud Run, 화면은 Vercel ([`docs/deploy.md`](./docs/deploy.md)) |
 
-> 위 로고는 외부에서 가져온 이미지가 아니라 이 저장소가 직접 그린 SVG 입니다(`docs/images/`). 선을 흔드는 필터를 얹어 손그림처럼 보이게 했고, 배경에 종이색 카드를 깔아 깃허브 라이트·다크 어느 테마에서도 읽힙니다. 과거 흐름도(`flow.svg`)도 같은 방식으로 그렸습니다. 고칠 일이 생기면 `generate.py` · `generate_flow.py` · `generate_deploy.py` 를 다시 돌립니다(`python3 docs/images/<이름>`).
 
 <br/>
 
@@ -586,20 +525,7 @@ wiki 생성기와 agent 소비 코드는 통합됐습니다. agent가 sidecar를
 
 ## 로컬 벡터·그래프·RAGAS 실험
 
-```mermaid
-flowchart LR
-    Fixture["기존 fixture 29개 + 관계 경계 6건"]
-    Index["고정·검증한 인덱스"]
-    Graph["Neo4j 검증 관계 그래프"]
-    Compare["전체·벡터·하이브리드 비교"]
-    Ragas["RAGAS 문서 ID 정밀도·재현율"]
-    Contract["정책·근거 범위·인용 검증"]
-    Fixture --> Compare
-    Index --> Compare
-    Graph -->|"검증한 출처·seed 관계"| Compare
-    Compare -->|"검색 ID·기대 ID"| Ragas
-    Compare -->|"고정 응답으로 확인"| Contract
-```
+![전체·벡터·하이브리드 관계 검색의 별도 로컬 실험](docs/images/local-retrieval-lab-ko.png)
 
 [별도 retrieval lab](experiments/retrieval/README.md)은 기존 29 fixture와 그래프 경계 6건으로 FULL / VECTOR / HYBRID_GRAPH를 비교합니다. 운영은 FULL입니다. TF-IDF 어휘 벡터 baseline을 보존하고, 고정된 다국어 distiluse 모델로 실제 CPU 의미 임베딩도 실행했습니다(512차원, 잘림 없는 41개 chunk, 캐시 safetensors 해시 검증, 외부 모델 코드 금지). 실제 RAGAS 0.3.9 문서 ID 지표와 검증된 문서/출처·seed 선언 장소/지역 관계의 메모리 그래프를 사용합니다. Microsoft community GraphRAG 전체 구현은 아닙니다.
 
@@ -615,6 +541,6 @@ flowchart LR
 
 ### 검색 API 로컬 후속 코드 — 운영 미배포
 
-후속 Draft PR에 opt-in private 검색 API, hash/런타임 버전을 고정한 인덱스 준비와 수동 공개·롤백, Kotlin 요청별 정책·인용·캐시·스트리밍 수리와 검증된 FULL 복구를 구현했습니다. [재현 명령과 배포 준비](deployment/retrieval/README.md)는 실제 로컬 CPU 어휘/의미 검색 API→인용 검증과 미실행 클라우드 IAM·운영 reader 권한, 완료한 Linux 어휘 이미지 검사와 보류한 Linux 의미 이미지를 구분합니다. 명시적인 경복궁 질문에서 seed가 누락되면 배포용 guard는 FULL로 복구합니다. 이전 의미 VECTOR 실험의 누락 5건과 약 2.03% corpus 선택 절감 상한은 그대로 기록합니다. 운영 기본값 FULL과 기존 PR HEAD는 유지했고, 이 후속 코드는 새 Draft PR 검토 대상이며 운영 배포는 포함하지 않습니다.
+opt-in 검색 API·고정 인덱스와 Kotlin 요청별 정책·인용·캐시·스트리밍 복구 코드는 agent #14/wiki #33으로 통합됐습니다. 이번 로컬 후속 작업은 실제 Linux ARM64 CPU 모델·인덱스·이미지 검증과 VECTOR seed 복구 결과를 추가합니다. [현재 실행·재현 기록](docs/retrieval-deployment/linux-semantic-readiness.md)은 완료한 로컬 검증과 미완료 amd64 검증과 클라우드 IAM·운영 ACL을 구분합니다. 기존 native RAGAS 지표·VECTOR seed 누락 5건·약 2.03% corpus 선택 상한은 그대로이며 운영은 FULL입니다.
 
-로컬 후속 검증에서 동시 선택/FULL 복구 캐시와 실제 facts EXPLAIN 공백을 해소했습니다. native 어휘·의미 API 및 실제 Linux ARM64 어휘 이미지의 API→Neo4j E2E가 통과했고, provenance·본문/시간 제한·graph/corpus 변조 거부·검증된 FULL 복구를 [검증 기록](docs/retrieval-deployment/verification.json)에 남겼습니다. Python 19/19·JVM 339/339 통과입니다. 전체 Linux 의미 이미지·운영 IAM/reader 권한·클라우드 출시는 보류하며 운영 배포는 보류합니다.
+로컬 후속 검증에서 동시 선택/FULL 복구 캐시와 실제 facts EXPLAIN 공백을 해소했습니다. native 어휘·의미 API 및 실제 Linux ARM64 어휘 이미지의 API→Neo4j E2E가 통과했고, provenance·본문/시간 제한·graph/corpus 변조 거부·검증된 FULL 복구를 [검증 기록](docs/retrieval-deployment/verification.json)에 남겼습니다. Python 19/19·JVM 339/339 통과입니다. 전체 Linux ARM64 의미 이미지는 검증됐습니다. amd64 인덱스/API 최종 검증과 운영 IAM/reader 권한 검증, 클라우드 출시는 보류합니다.

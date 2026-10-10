@@ -1,0 +1,12 @@
+{
+  "hanjeok-agent": {
+    "protectedFileCount": 52,
+    "protectedFilesUnchanged": true,
+    "againstBaseCommit": "6bfd3e64c8ac0f0367801ee02d3705cb2557d9b6"
+  },
+  "travel-context-wiki": {
+    "protectedFileCount": 54,
+    "protectedFilesUnchanged": true,
+    "againstBaseCommit": "7d6f3f602fd28730bddbaf9fbab070e13521508c"
+  }
+}

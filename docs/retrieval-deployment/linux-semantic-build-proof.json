@@ -1,0 +1,50 @@
+{
+  "actualLinuxCpuModelAndIndexBuild": true,
+  "oldNativeVersionPreserved": "80dd5ab3b1ac4d73f74742ee880f2c5fdc04b2083079f19d17f07c37b00c95a5",
+  "linuxCandidateVersion": "8a2d47cf23a62d18ab97f85a72245376911f3a0fbe4c4d3e1e713f0f91461ef9",
+  "oldExactRuntimePinRejected": true,
+  "runtimeVersions": {
+    "numpy": "2.2.6",
+    "scikit-learn": "1.7.2",
+    "neo4j": "5.26.0",
+    "sentence-transformers": "6.1.0",
+    "transformers": "5.19.0",
+    "torch": "2.14.1+cpu"
+  },
+  "modelRevision": "826fee3d516ebb14987355af373f5b69101c7006",
+  "dimension": 512,
+  "untruncatedChunks": 41,
+  "modelFileHashesVerified": true,
+  "realQueryResults": [
+    [
+      [
+        "records/congestion/grade-policy.json",
+        0.13402608036994934
+      ],
+      [
+        "concepts/travel-context-layer.md",
+        0.12349437922239304
+      ],
+      [
+        "concepts/alternative-scoring.md",
+        0.12297064810991287
+      ]
+    ],
+    [
+      [
+        "concepts/travel-context-layer.md",
+        0.21448427438735962
+      ],
+      [
+        "concepts/course-generation-policy.md",
+        0.20887766778469086
+      ],
+      [
+        "queries/why-this-place-today.md",
+        0.16273929178714752
+      ]
+    ]
+  ],
+  "llmCalls": 0,
+  "corpusSourcePreverifiedOnHost": true
+}

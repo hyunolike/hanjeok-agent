@@ -1,4 +1,4 @@
-> Historical image specification. On 2026-10-10 the README 3D embeds were replaced with Mermaid diagrams. The assets remain referenced by this record and the historical image validation manifest; their presence does not describe the current README or a retrieval deployment.
+> Historical specification. The Mermaid replacement recorded on 2026-10-10 was superseded by the user’s later correction: restore useful existing 3D overview/input/request/lab figures and remove redundant diagrams, hand-drawn statistics and decorative stack embeds. Current README structure is recorded in readme-illustration-correction.json; no new generated image was added.
 
 # README diagram specification (2026-10-09)
 

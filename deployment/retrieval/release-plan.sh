@@ -7,7 +7,9 @@ Before deployment: inspect the existing service account and private invoker poli
 Verify no allUsers/allAuthenticatedUsers invoker binding, internal ingress reachability,
 ID-token audience matching the configured service origin, and Enterprise reader-only graph role.
 Authenticated /health/ready and /v1/provenance must match the reviewed index/model pins.
-Linux image/base digest, wheels and resource sizing remain unverified locally.
+Linux ARM64 image/base digest, exact CPU wheels/model and local resource observations are verified.
+Cloud Run linux/amd64 candidate, actual private ingress/invoker and production reader ACL remain unverified.
+Read docs/retrieval-deployment/linux-semantic-readiness.md for existing targets and approval prerequisites.
 TEXT
  ;;
  rollback) cat <<'TEXT'

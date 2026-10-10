@@ -1,0 +1,41 @@
+{
+  "observedUTC": "2026-10-10T07:10:15.098565+00:00",
+  "scope": "Local checks after recovery; real ARM64 E2E remains separately preserved historical evidence; no repeated image build",
+  "jvm": {
+    "tests": 339,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suites": 56
+  },
+  "harnessCompilationPassed": true,
+  "apiTests": 19,
+  "cpuBuilderTests": 13,
+  "labTests": 34,
+  "wikiSmokeTests": 8,
+  "wikiCanonicalPages": 18,
+  "wikiStaticIndexDrift": false,
+  "readmeLocalTargets": 187,
+  "readmeLocalLinkFailures": 0,
+  "updatedMarkdownLocalFileLinksPassed": true,
+  "allFiveReadmeLocalesRetained": true,
+  "shared3dAssetHashesUnchanged": true,
+  "restored3dEmbedsPerAgentReadme": 4,
+  "restored3dEmbedsPerWikiReadme": 3,
+  "collectionStatisticsRetainedAsTables": true,
+  "operationalAgentSourceAndFrontendUnchangedFromMain": true,
+  "wikiCanonicalRawRecordsIndexesPackagesUnchangedFromMain": true,
+  "originalFollowupTreesPreserved": true,
+  "amd64IndexHealthFixtureResultsRemainUnconfirmed": true,
+  "newImageBuildOrContainerRestart": false,
+  "gitDiffCheckPassed": true,
+  "deploymentTriggerInspection": {
+    "cloudBuildGlobalTriggerCount": 0,
+    "cloudBuildSeoulTriggerCount": 0,
+    "repositoryActions": "PR build/test only; no deploy step",
+    "vercelProject": "hermes-agent",
+    "vercelProductionBranch": "main",
+    "featurePRMayCreateExistingPreview": true,
+    "productionAgentRevision": "hermes-agent-ea47917-b64ed4cc2"
+  }
+}

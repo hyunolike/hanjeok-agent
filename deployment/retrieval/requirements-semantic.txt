@@ -2,4 +2,4 @@
 sentence-transformers==6.1.0
 transformers==5.19.0
 torch==2.14.1
-# CPU wheel is 2.14.1+cpu; requires a new validated Linux CPU index pin. Full Linux semantic image unexecuted.
+# Native index pins torch 2.14.1. Separately verified Linux ARM64 CPU candidates use requirements-semantic-linux-cpu.txt and a newly generated index; never relabel this artifact.
