@@ -1,6 +1,6 @@
-# Private retrieval release preparation (local branch only)
+# Private retrieval release preparation (Draft PR follow-up)
 
-This opt-in API is separate from production FULL. It returns pinned IDs/hashes, never document text or query logs. Kotlin resolves those IDs against its packaged verified bundle, keeps all eight policies, supplies optional seed JSON as untrusted user data, and owns citations, repair, cache identity and verified FULL fallback. Source integrity does not prove semantic truth or completed review. Corpus selection still has only one optional 501-byte seed, about 2.03% of the 24,703-byte FULL bundle; moving evidence to user input and adding guards does not imply total token/cost savings.
+This opt-in API is a Draft PR follow-up separate from production FULL. It returns pinned IDs/hashes, never document text or query logs. Kotlin resolves those IDs against its packaged verified bundle, keeps all eight policies, supplies optional seed JSON as untrusted user data, and owns citations, repair, cache identity and verified FULL fallback. Source integrity does not prove semantic truth or completed review. Corpus selection still has only one optional 501-byte seed, about 2.03% of the 24,703-byte FULL bundle; moving evidence to user input and adding guards does not imply total token/cost savings.
 
 TF-IDF is lexical retrieval. The CPU multilingual semantic adapter uses a separately packaged, hash-checked local model at revision `826fee3d516ebb14987355af373f5b69101c7006`, with no runtime download or remote model code. RAGAS/judges are evaluation-only, excluded from service dependencies. This is bounded source/seed graph retrieval, not the full Microsoft community GraphRAG system.
 
@@ -41,7 +41,7 @@ The E2E uses real HTTP/vector retrieval plus actual Kotlin explanation/ask/strea
 
 HYBRID_GRAPH runtime requires a real TLS Neo4j graph with the exact pinned curated snapshot. Production additionally requires an existing Enterprise reader-only role, checked at startup; driver READ_ACCESS is not an ACL. The role contract is mocked locally. Earlier lab results used real isolated Neo4j Community queries and verified two-hop/nine-document/source-hash boundaries; that does not validate production reader privileges. Original 915c91d API E2E had graph disabled; subsequent actual API-to-Neo4j E2E runs are recorded below. Hybrid candidate validation still uses its explicitly labelled in-process contract. No transport/weather/synthetic relation is imported into runtime search.
 
-Existing production/default FULL, paid providers, existing deployment, main branches and previous PR heads are unchanged by this local follow-up. No follow-up push, cloud resource, credentials, IAM change, deployment or traffic publication has occurred. See `docs/retrieval-deployment/verification.json` for actual checks and remaining approval prerequisites.
+Existing production/default FULL, paid providers, existing deployment, main branches and previous PR heads are unchanged by this local follow-up. Feature-branch push and a new Draft PR are approved; cloud resources, credentials, IAM changes, deployment and traffic publication are excluded. See `docs/retrieval-deployment/verification.json` for actual checks and remaining approval prerequisites.
 
 ## Actual local gap closure (2026-10-10)
 

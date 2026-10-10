@@ -80,7 +80,7 @@ flowchart LR
 
 ## 기존 FULL 방식 대비 달라진 점
 
-**운영은 FULL을 유지합니다.** 마지막 운영 기록은 2026-10-09 09:13 UTC의 agent `ea47917`이며 LLM을 호출하지 않았습니다. 아래 검색 API와 요청별 선택은 별도 로컬 브랜치에서 구현·검증했고 후속 push나 클라우드 배포는 없습니다. 기존 agent #13/wiki #32의 merge는 이 작업 밖에서 확인한 상태이며 검색 기능 배포를 뜻하지 않습니다.
+**운영은 FULL을 유지합니다.** 마지막 운영 기록은 2026-10-09 09:13 UTC의 agent `ea47917`이며 LLM을 호출하지 않았습니다. 아래 검색 API와 요청별 선택은 별도 브랜치에서 구현·검증했고 새 Draft PR 게시가 승인됐습니다. 클라우드 배포는 보류합니다. 기존 agent #13/wiki #32의 merge는 이 작업 밖에서 확인한 상태이며 검색 기능 배포를 뜻하지 않습니다.
 
 | 구분 | 기존 FULL 방식 | 현재 로컬 구현 |
 | --- | --- | --- |
@@ -96,6 +96,8 @@ flowchart LR
 **배포 전 준비사항:** private Cloud Run IAM·호출자·네트워크 설정과 기존 운영 Neo4j Enterprise 읽기 전용 권한은 미검증입니다. 전체 Linux 의미 이미지는 미실행입니다. 공식 CPU wheel `torch 2.14.1+cpu`가 보존한 후보의 정확한 `2.14.1` 버전과 달라 새 Linux CPU 후보를 검증해야 합니다. [재현 명령·배포 준비](deployment/retrieval/README.md)를 참고하세요. credentials·클라우드 자원·트래픽 변경과 별도 한적 DB/SMTP 배포는 수행하지 않았습니다.
 
 **측정 한계:** 선택 대상은 501-byte 경복궁 seed 하나뿐이므로 문서 선택 절감은 최대 501/24,703 = 2.03%입니다. guard 추가나 user 입력 이동이 총 토큰·비용 절감을 증명하지 않습니다. 보존한 의미 실험의 VECTOR/HYBRID 후보 precision은 검색 허용 24건에서 0.250000/0.172619, recall은 0.645833/1.000000입니다. 최종 근거 완전성은 30/35 대 35/35이며 VECTOR seed 누락 5건을 기록했습니다. 배포용 guard는 명시적인 필수 seed 누락 시 FULL로 복귀하고 과거 지표를 덮어쓰지 않습니다. 이 제한된 관계 검색은 Microsoft community GraphRAG 전체 구현이나 답변 품질 개선 입증이 아닙니다. 없는 교통·날씨 및 합성 관계는 검증 그래프에 넣지 않습니다.
+
+게시 범위·보존한 원본 브랜치는 [Draft PR 준비 기록](docs/retrieval-deployment/publication-preparation.json)에 있습니다. 검증 JSON은 게시 승인 전 로컬 실행 스냅샷입니다.
 
 ### 검색 구조 — 로컬 구현, 운영 미배포
 
@@ -613,6 +615,6 @@ flowchart LR
 
 ### 검색 API 로컬 후속 코드 — 운영 미배포
 
-별도 로컬 브랜치에 opt-in private 검색 API, hash/런타임 버전을 고정한 인덱스 준비와 수동 공개·롤백, Kotlin 요청별 정책·인용·캐시·스트리밍 수리와 검증된 FULL 복구를 구현했습니다. [재현 명령과 배포 준비](deployment/retrieval/README.md)는 실제 로컬 CPU 어휘/의미 검색 API→인용 검증과 미실행 클라우드 IAM·운영 reader 권한, 완료한 Linux 어휘 이미지 검사와 보류한 Linux 의미 이미지를 구분합니다. 명시적인 경복궁 질문에서 seed가 누락되면 배포용 guard는 FULL로 복구합니다. 이전 의미 VECTOR 실험의 누락 5건과 약 2.03% corpus 선택 절감 상한은 그대로 기록합니다. 운영 기본값 FULL과 기존 PR HEAD는 유지했고, 이 후속 코드는 push·배포하지 않았습니다.
+후속 Draft PR에 opt-in private 검색 API, hash/런타임 버전을 고정한 인덱스 준비와 수동 공개·롤백, Kotlin 요청별 정책·인용·캐시·스트리밍 수리와 검증된 FULL 복구를 구현했습니다. [재현 명령과 배포 준비](deployment/retrieval/README.md)는 실제 로컬 CPU 어휘/의미 검색 API→인용 검증과 미실행 클라우드 IAM·운영 reader 권한, 완료한 Linux 어휘 이미지 검사와 보류한 Linux 의미 이미지를 구분합니다. 명시적인 경복궁 질문에서 seed가 누락되면 배포용 guard는 FULL로 복구합니다. 이전 의미 VECTOR 실험의 누락 5건과 약 2.03% corpus 선택 절감 상한은 그대로 기록합니다. 운영 기본값 FULL과 기존 PR HEAD는 유지했고, 이 후속 코드는 새 Draft PR 검토 대상이며 운영 배포는 포함하지 않습니다.
 
-로컬 후속 검증에서 동시 선택/FULL 복구 캐시와 실제 facts EXPLAIN 공백을 해소했습니다. native 어휘·의미 API 및 실제 Linux ARM64 어휘 이미지의 API→Neo4j E2E가 통과했고, provenance·본문/시간 제한·graph/corpus 변조 거부·검증된 FULL 복구를 [검증 기록](docs/retrieval-deployment/verification.json)에 남겼습니다. Python 19/19·JVM 339/339 통과입니다. 전체 Linux 의미 이미지·운영 IAM/reader 권한·클라우드 출시는 보류하며 후속 push/배포는 없습니다.
+로컬 후속 검증에서 동시 선택/FULL 복구 캐시와 실제 facts EXPLAIN 공백을 해소했습니다. native 어휘·의미 API 및 실제 Linux ARM64 어휘 이미지의 API→Neo4j E2E가 통과했고, provenance·본문/시간 제한·graph/corpus 변조 거부·검증된 FULL 복구를 [검증 기록](docs/retrieval-deployment/verification.json)에 남겼습니다. Python 19/19·JVM 339/339 통과입니다. 전체 Linux 의미 이미지·운영 IAM/reader 권한·클라우드 출시는 보류하며 운영 배포는 보류합니다.
