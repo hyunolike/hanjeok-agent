@@ -28,3 +28,6 @@ Official references (checked 2026-10-09):
 - https://microsoft.github.io/graphrag/index/default_dataflow/
 
 Implementation status: [README](README.md) and [validation](results/validation.json) distinguish actual TF-IDF/RAGAS/in-process graph runs, mock Neo4j contracts and unexecuted semantic models/LLM judges/Neo4j integration. No Docker command was run.
+
+
+2026-10-10 extension: a separate .venv-semantic and pinned existing multilingual model cache were actually executed with offline CPU chunking, artifact hashes and reported coverage failures. Original baseline results/freeze remain intact. The actual Neo4j driver API was inspected and managed tx.run now uses a string query with unit_of_work timeout. A localhost-only loader, dedicated Docker helper and real integration checks are delivered, but fixture loading was automatically rejected as conflicting with the initial deferred-integration restriction. Live Cypher/query validation awaits explicit confirmation; server startup is recorded separately. README and extension-validation.json are the current extension status.

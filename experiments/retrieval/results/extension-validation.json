@@ -1,0 +1,217 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-10",
+  "baselineCommits": {
+    "agent": "d05802bc0a1adf4bb782fe5eedb1f515cdeb2049",
+    "wiki": "591c6a9ad53e4176b2edc5bb0e7d36e32cbc21f7"
+  },
+  "baselineResultsUnchanged": true,
+  "baselineEnvironmentUnchanged": true,
+  "pythonTests": {
+    "baselineVenv": 34,
+    "semanticVenv": 34,
+    "failures": 0
+  },
+  "semanticArmExecutions": 105,
+  "semanticReproductionArmExecutions": 105,
+  "ragasVersion": "0.3.9",
+  "ragasNativeSamples": 210,
+  "ragasIdMetricValues": 420,
+  "model": {
+    "modelId": "sentence-transformers/distiluse-base-multilingual-cased-v1",
+    "revision": "826fee3d516ebb14987355af373f5b69101c7006",
+    "license": "Apache-2.0",
+    "artifactOrigin": "existing Hugging Face cache; copied locally, no model download",
+    "files": {
+      "1_Pooling/config.json": "a37f83ada23e7887be6b88f4998927dbeac0038af301553c7cd5461413bf1a56",
+      "2_Dense/config.json": "3f8cb931199629aac321339504a3258b5de76b568bf718d724cd921bcd22bd14",
+      "2_Dense/model.safetensors": "f8893703d8a6b640a8e4f90bbe2017fc0e7a792ad62daf6f723adf618f5d444f",
+      "README.md": "8422376ace4232543fd22f72c98db8b66b97e98b5c8436102f464e4c7efd6c6a",
+      "config.json": "3160640e4ce35901d951dc929e803c828d4b086fb309dd12369f4106d66ade4f",
+      "config_sentence_transformers.json": "b8c64b5cece00d8424b4896ea75b512b6008576088497609dfeb6bd63e6d36b8",
+      "model.safetensors": "a8c22f695296511ee5aa449753e6ac8f6e6b72b37323c7c59235dd74c7f74bd1",
+      "modules.json": "f83ea5d68ac85ec15f650b350f0dc37b03d63abd60442f518e14c06f479beee6",
+      "sentence_bert_config.json": "70f4448f31320443fe3557cacea5abf2dcc4915dda8c80646bec9f3bb0aa5a1f",
+      "special_tokens_map.json": "303df45a03609e4ead04bc3dc1536d0ab19b5358db685b6f3da123d05ec200e3",
+      "tokenizer.json": "5b4e1a8171c81dfd666ae40265b9530c6e0b3d53923fe8ac493dcc84229adf81",
+      "tokenizer_config.json": "80d83a2078632f19353e410c7d7d2582d6f44a9818effa5114cc1146dd71ac8b",
+      "vocab.txt": "fe0fda7c425b48c516fc8f160d594c8022a0808447475c1a7c6d6479763f310c"
+    },
+    "device": "cpu",
+    "dimension": 512,
+    "maxSequenceTokens": 128,
+    "payloadTokens": 126,
+    "nominalStrideTokens": 112,
+    "overlapTokens": 14,
+    "boundaryAdjustment": "shrink until retokenized length fits",
+    "documentChunkCounts": {
+      "concepts/travel-context-layer.md": 7,
+      "concepts/congestion-diagnosis.md": 7,
+      "concepts/alternative-scoring.md": 6,
+      "concepts/course-generation-policy.md": 7,
+      "decisions/keep-llm-out-of-ranking.md": 3,
+      "queries/why-this-place-today.md": 7,
+      "records/places/gyeongbokgung.json": 2,
+      "records/congestion/grade-policy.json": 2
+    },
+    "totalChunks": 41,
+    "pooling": "mean of normalized chunk embeddings, then L2 normalize",
+    "documentMatrixSha256": "a8aa97c999fbea541886d7209169aa28f2ff9344e46454aa4a96a217e85164d6",
+    "trustRemoteCode": false,
+    "localFilesOnly": true,
+    "weightsFormat": "safetensors",
+    "torchThreads": 1
+  },
+  "semanticPackages": {
+    "sentence-transformers": "6.1.0",
+    "transformers": "5.19.0",
+    "torch": "2.14.1",
+    "huggingface-hub": "1.33.0"
+  },
+  "semanticFrozenPackages": 114,
+  "policiesRetainedRows": 105,
+  "deterministicAndHistoryIndependentRows": 105,
+  "completeCoverageRows": {
+    "FULL": 35,
+    "VECTOR": 30,
+    "HYBRID_GRAPH": 35
+  },
+  "citationValidScriptedRows": {
+    "FULL": 34,
+    "VECTOR": 27,
+    "HYBRID_GRAPH": 32
+  },
+  "missingCoverage": [
+    {
+      "id": "seed-explicit",
+      "arm": "VECTOR",
+      "coverage": 0.5
+    },
+    {
+      "id": "reference-seed",
+      "arm": "VECTOR",
+      "coverage": 0.5
+    },
+    {
+      "id": "reference-chain",
+      "arm": "VECTOR",
+      "coverage": 0.5
+    },
+    {
+      "id": "positional-seed",
+      "arm": "VECTOR",
+      "coverage": 0.5
+    },
+    {
+      "id": "graph-poisoned-history",
+      "arm": "VECTOR",
+      "coverage": 0.0
+    }
+  ],
+  "candidateMetrics": {
+    "FULL": {
+      "rows": 24,
+      "precision": {
+        "mean": 0.16666666666666666,
+        "definedRows": 24
+      },
+      "recall": {
+        "mean": 1.0,
+        "definedRows": 24
+      }
+    },
+    "VECTOR": {
+      "rows": 24,
+      "precision": {
+        "mean": 0.25,
+        "definedRows": 24
+      },
+      "recall": {
+        "mean": 0.6458333333333334,
+        "definedRows": 24
+      }
+    },
+    "HYBRID_GRAPH": {
+      "rows": 24,
+      "precision": {
+        "mean": 0.17261904761904762,
+        "definedRows": 24
+      },
+      "recall": {
+        "mean": 1.0,
+        "definedRows": 24
+      }
+    }
+  },
+  "productionCitationValidator": {
+    "contractsMatched": 105,
+    "emptyUnknownProbeRejections": 210,
+    "omittedSeedProbeRejections": 25
+  },
+  "reproducibility": {
+    "results.json": {
+      "bytes": 257821,
+      "sha256": "717e102e952e9c01359724bdf9b47b4bf51f89ca1ef629a44e88c617b7967344",
+      "byteIdentical": true
+    },
+    "dataset.jsonl": {
+      "bytes": 4699665,
+      "sha256": "789e7543eead2f580317a1c322cc3a68f51631ba7944bc3987c113a55cc80c38",
+      "byteIdentical": true
+    },
+    "graph-snapshot.json": {
+      "bytes": 15004,
+      "sha256": "c96f8b9aafd2a0aa712c8666f5f8193f5e6b50530bcca0beb4a7628706cf722f",
+      "byteIdentical": true
+    }
+  },
+  "sourceByteReductionCeilingPercent": 2.0280937537950856,
+  "neo4j": {
+    "serverStartupExecuted": true,
+    "serverVersion": "5.26.31",
+    "edition": "community",
+    "versionEvidence": "isolated Docker startup logs",
+    "imageDigest": "neo4j@sha256:5eb12ad77fa46ab73e23df9ea1f43f5c0f2a79523435577648e046be042b9b93",
+    "imageId": "sha256:3c982724bd859f776ab33db4e7c720bef29be9c996b4872cbc8c70f774ff1397",
+    "loopbackPort": "127.0.0.1:17687",
+    "dockerInternalNetworkVerified": true,
+    "memoryLimitGiB": 2,
+    "cpuLimit": 2,
+    "dockerPullExecuted": false,
+    "fixtureLoadExecuted": false,
+    "actualDriverQueryIntegrationExecuted": false,
+    "liveChecksPrepared": true,
+    "mockContractTests": 2,
+    "driverManagedTransactionTimeoutSeconds": 2,
+    "maxHops": 2,
+    "maxDocuments": 9,
+    "blockedBy": "automatic approval review: original deferred integration restriction judged not clearly revoked; explicit confirmation pending",
+    "ownedContainerAnonymousVolumesNetworkRemoved": true,
+    "existingBenchNeo4jAndOperationalContainersUntouched": true,
+    "dockerHelperStartBranch": "syntax checked; not executed",
+    "dockerHelperStopBranch": "ownership verified; executed successfully"
+  },
+  "productionAgentPathsUnchanged": true,
+  "wikiCanonicalRawRecordsIndexUnchanged": true,
+  "wikiSmokeCanonicalPages": 18,
+  "wikiProvenanceTests": 8,
+  "wikiIndexCheck": "PASS",
+  "existing325ServerTestsAndBootJar": "historical first phase passed; not rerun for this Python/docs-only extension",
+  "noGeneration": true,
+  "noLlmJudge": true,
+  "noPaidCalls": true,
+  "noExternalCorpusUpload": true,
+  "noCredentialsConfigured": true,
+  "dependenciesDownloadedFromOfficialPyPI": true,
+  "modelDownloaded": false,
+  "trustRemoteCode": false,
+  "noRemotePushPrMergeDeployment": true,
+  "productionDefault": "FULL",
+  "separateHanjeokDbSmtpRollout": "held",
+  "imageSlots": "pending",
+  "commands": [
+    "PYTHONPATH=experiments/retrieval PYTHONDONTWRITEBYTECODE=1 experiments/retrieval/.venv-semantic/bin/python -m unittest discover -s experiments/retrieval/tests -v",
+    "PYTHONPATH=experiments/retrieval PYTHONDONTWRITEBYTECODE=1 experiments/retrieval/.venv-semantic/bin/python -m retrieval_lab.run --enable-semantic --semantic-model experiments/retrieval/models/distiluse-base-multilingual-cased-v1 --output-dir experiments/retrieval/results/semantic-in-process",
+    "./gradlew --offline --no-daemon -I experiments/retrieval/retrieval-citation.init.gradle -PretrievalResults=experiments/retrieval/results/semantic-in-process/results.json -PretrievalCitationOutput=experiments/retrieval/results/semantic-in-process/citation-validation.json retrievalCitationCheck"
+  ]
+}

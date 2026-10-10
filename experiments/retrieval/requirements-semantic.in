@@ -1,0 +1,8 @@
+# Separate .venv-semantic. Baseline .venv and 108-package lock stay preserved.
+ragas==0.3.9
+scikit-learn==1.7.2
+numpy==2.2.6
+neo4j==5.26.0
+sentence-transformers==6.1.0
+transformers==5.19.0
+torch==2.14.1

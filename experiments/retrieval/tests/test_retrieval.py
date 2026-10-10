@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import socket
 import subprocess
+import tempfile
 import unittest
 from unittest.mock import patch
 
@@ -14,6 +15,8 @@ from retrieval_lab.lab import RetrievalLab, ARMS, citation_valid
 from retrieval_lab.neo4j_adapter import Neo4jGraph, READ_CYPHER
 from retrieval_lab.ragas_eval import id_scores, judge_scores
 from retrieval_lab.vector import LexicalVector, LocalSemanticVector
+from retrieval_lab.live import driver_for, load_snapshot, URI
+from retrieval_lab.network import network_scope
 
 AGENT = Path(__file__).resolve().parents[3]
 WIKI = AGENT.parent / 'travel-context-wiki'
@@ -190,7 +193,7 @@ class GraphTests(unittest.TestCase):
         class Session:
             def __enter__(self): return self
             def __exit__(self,*args): pass
-            def execute_read(self,fn): return fn(Tx())
+            def execute_read(self,fn): state['transaction_timeout']=fn.timeout;return fn(Tx())
         class Driver:
             def session(self,**kwargs): state['session']=kwargs;return Session()
         return Driver(),state
@@ -200,7 +203,7 @@ class GraphTests(unittest.TestCase):
         driver,state=self.mock_driver([self.s.nodes['document:'+OPTIONAL]])
         self.assertEqual(Neo4jGraph(driver,self.s).expand(keys),(OPTIONAL,))
         self.assertEqual(str(state['query']),READ_CYPHER)
-        self.assertEqual(state['query'].timeout,2.0)
+        self.assertEqual(state['transaction_timeout'],2.0)
         self.assertEqual(state['session']['default_access_mode'],'READ')
         self.assertEqual(state['parameters']['limit'],9)
         self.assertIn('*0..2',READ_CYPHER)
@@ -236,6 +239,54 @@ class RagasTests(unittest.TestCase):
     def test_judge_disabled_without_clients_or_calls(self):
         with self.assertRaisesRegex(ValueError,'disabled'):
             asyncio.run(judge_scores({}))
+
+
+class ExecutionBoundaryTests(unittest.TestCase):
+    def test_remote_and_credentialed_uris_rejected_before_driver(self):
+        for uri in ('bolt://example.org:17687','bolt://127.0.0.1:7687',
+                    'bolt://user:password@127.0.0.1:17687','neo4j://127.0.0.1:17687',
+                    URI+'?database=other',URI+'#fragment'):
+            with self.assertRaises(ValueError), patch('retrieval_lab.live.GraphDatabase.driver') as factory:
+                driver_for(uri)
+            factory.assert_not_called()
+
+    def test_runner_blocks_all_remote_connections(self):
+        with network_scope(neo4j=True),socket.socket() as sock:
+            for addr in (('example.org',443),('127.0.0.1',7687),('127.0.0.1',7474)):
+                with self.assertRaisesRegex(RuntimeError,'prohibited'): sock.connect(addr)
+                with self.assertRaises(RuntimeError): sock.connect_ex(addr)
+        with network_scope(),socket.socket() as sock:
+            with self.assertRaises(RuntimeError): sock.connect(('127.0.0.1',17687))
+
+    def test_loader_refuses_foreign_database_before_mutation(self):
+        class Result:
+            def single(self): return {'foreign':1}
+        class Session:
+            def __enter__(self): return self
+            def __exit__(self,*args): pass
+            def run(self,*args,**kwargs): return Result()
+            def execute_write(self,*args): raise AssertionError('mutation attempted')
+        class Driver:
+            def session(self,**kwargs): return Session()
+        snapshot=GraphSnapshot(Corpus(AGENT,WIKI))
+        with self.assertRaisesRegex(ValueError,'non-experiment'): load_snapshot(Driver(),snapshot)
+
+    def test_semantic_rejects_unsafe_artifacts_before_import(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder);(root/'weights.bin').write_bytes(b'unsafe')
+            (root/'retrieval-model-manifest.json').write_text(json.dumps(dict(revision='a'*40,files={'weights.bin':digest(b'unsafe')})))
+            with self.assertRaisesRegex(ValueError,'unsafe model artifact'):
+                LocalSemanticVector(None,root,enabled=True)
+
+    def test_semantic_rejects_hash_drift_and_custom_modules_before_import(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root=Path(folder);(root/'modules.json').write_text('[]')
+            manifest=dict(revision='a'*40,files={'modules.json':'0'*64})
+            (root/'retrieval-model-manifest.json').write_text(json.dumps(manifest))
+            with self.assertRaisesRegex(ValueError,'hash drift'): LocalSemanticVector(None,root,enabled=True)
+            manifest['files']['modules.json']=digest(b'[]')
+            (root/'retrieval-model-manifest.json').write_text(json.dumps(manifest))
+            with self.assertRaisesRegex(ValueError,'unsupported model modules'): LocalSemanticVector(None,root,enabled=True)
 
 
 if __name__=='__main__': unittest.main()

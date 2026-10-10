@@ -498,9 +498,11 @@ wiki 생성기와 agent 소비 코드는 통합됐습니다. agent가 sidecar를
 
 ## 로컬 벡터·그래프·RAGAS 실험
 
-[별도 retrieval lab](experiments/retrieval/README.md)에 FULL / VECTOR / HYBRID_GRAPH 비교를 구현했습니다. 기존 29 fixture와 그래프 경계 6개를 사용하며 운영은 FULL입니다. TF-IDF는 어휘 기반 희소 벡터 검색이고 의미 임베딩은 실행하지 않았습니다. Hybrid 결과는 검증된 문서/출처 관계와 seed에 선언된 장소/지역 관계를 로컬 메모리 그래프로 탐색한 값입니다. Neo4j driver adapter는 고정 매개변수 읽기 쿼리·2홉·9문서·timeout·출처 검사와 mock 계약을 검증했으며 실제 서버/컨테이너 통합은 미실행입니다. Microsoft community GraphRAG 전체 구현은 아닙니다.
+[별도 retrieval lab](experiments/retrieval/README.md)은 기존 29 fixture와 그래프 경계 6건으로 FULL / VECTOR / HYBRID_GRAPH를 비교합니다. 운영은 FULL입니다. TF-IDF 어휘 벡터 baseline을 보존하고, 고정된 다국어 distiluse 모델로 실제 CPU 의미 임베딩도 실행했습니다(512차원, 잘림 없는 41개 chunk, 캐시 safetensors 해시 검증, 외부 모델 코드 금지). 실제 RAGAS 0.3.9 문서 ID 지표와 검증된 문서/출처·seed 선언 장소/지역 관계의 메모리 그래프를 사용합니다. Microsoft community GraphRAG 전체 구현은 아닙니다.
 
-실제 RAGAS 0.3.9 ID 지표를 105 arm 실행에 적용했습니다. 검색 허용 24건의 후보 recall은 VECTOR 0.395833, HYBRID_GRAPH 0.708333입니다. precision은 각각 0.431373, 0.227941로 정의된 17건의 평균이며, 빈 검색 7건은 undefined로 남깁니다. FULL fallback 6건과 capability abstain 5건은 별도로 집계했습니다. 필수 정책 유지·최종 fixture 근거 커버리지·결정성은 105/105입니다. 이 ID 점수는 답변 진실성이나 LLM faithfulness가 아닙니다. [결과](experiments/retrieval/results/results.json)·[데이터셋](experiments/retrieval/results/dataset.jsonl)·[검증 기록](experiments/retrieval/results/validation.json)에 실제/미실행 범위를 남겼고 기존 약 2.03% 문서 bytes 절감 상한을 유지합니다. 의미 모델·LLM judge·유료 호출·새 배포는 없으며 새 그림 슬롯도 미완료입니다.
+검색 허용 24건에서 의미 VECTOR / HYBRID 후보 precision은 0.250000 / 0.172619, recall은 0.645833 / 1.000000입니다(모두 24건 정의). 최종 fixture 근거가 완전한 행은 30/35 / 35/35이며 VECTOR의 seed 누락 5건을 숨기지 않고 기록합니다. 정책 8개 유지와 결정성은 105/105입니다. 어휘 baseline과 빈 precision 7건은 별도로 보존했습니다. [의미 결과](experiments/retrieval/results/semantic-in-process/results.json)·[데이터셋](experiments/retrieval/results/semantic-in-process/dataset.jsonl)·[추가 검증](experiments/retrieval/results/extension-validation.json)에 별도 프로세스 bytes 재현과 실제 Kotlin citation 계약 일치(실패한 scripted 인용 포함)를 기록했습니다. 답변 진실성·LLM faithfulness 지표가 아니며 기존 약 2.03% 문서 bytes 절감 상한을 유지합니다.
+
+별도 Neo4j Community 5.26.31 컨테이너는 내부망과 localhost Bolt만으로 시작했습니다. 실제 fixture 삽입·쿼리 통합은 자동 승인 검토가 최초 ‘통합 미실행’ 제한의 해제가 불명확하다고 판단해 차단했으며 명시적 확인을 기다립니다. 읽기 adapter·격리 loader/실제 검사 도구·실행/정리 명령과 34개 Python 테스트를 제공하지만 실제 Neo4j 검색 결과라고 주장하지 않습니다. 답변 생성·LLM judge·유료 호출·외부 corpus 업로드·새 push/PR/merge/배포는 없고 별도 한적 DB/SMTP 배포도 보류입니다. IMAGE SLOT은 미완료입니다.
 
 ## 오프라인 문서 선택 실험
 

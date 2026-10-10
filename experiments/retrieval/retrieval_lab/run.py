@@ -6,14 +6,15 @@ import json
 import logging
 from pathlib import Path
 import platform
-import socket
-from unittest.mock import patch
 from statistics import mean
 from .corpus import Corpus, POLICIES, OPTIONAL, digest, require
 from .guard import facts_for
 from .lab import RetrievalLab, ARMS, citation_valid
 from .ragas_eval import id_scores, native_dataset
 from .vector import LocalSemanticVector
+from .network import network_scope
+from .graph import GraphSnapshot
+from .neo4j_adapter import Neo4jGraph
 
 
 def dump(path, data):
@@ -35,10 +36,10 @@ def sample(corpus, case, selection, scope):
                 reference_contexts=[corpus.documents[p].content for p in references])
 
 
-async def compare(agent, wiki, output, top_k=3, semantic_model=None, enable_semantic=False):
+async def compare(agent, wiki, output, top_k=3, semantic_model=None, enable_semantic=False, graph=None, server=None):
     c = Corpus(agent, wiki)
     vector = LocalSemanticVector(c, semantic_model, enabled=enable_semantic) if semantic_model else None
-    lab = RetrievalLab(c, vector=vector, top_k=top_k)
+    lab = RetrievalLab(c, vector=vector, graph=graph, top_k=top_k)
     extra_path = Path(__file__).parents[1] / 'fixtures/graph-cases.json'
     extras = json.loads(extra_path.read_text())['cases']
     cases = c.suite['cases'] + extras
@@ -53,7 +54,8 @@ async def compare(agent, wiki, output, top_k=3, semantic_model=None, enable_sema
             require(selected == repeated == lab.select(arm, case['question'], poisoned, facts), 'nondeterministic/history leakage')
             require(POLICIES <= set(selected.context_ids), 'mandatory policies omitted')
             coverage = len(set(case['requiredEvidencePaths']) & set(selected.context_ids)) / len(case['requiredEvidencePaths'])
-            require(coverage == 1, f"fixture coverage omitted: {case['id']} {arm}")
+            if not semantic_model:
+                require(coverage == 1, f"lexical fixture coverage omitted: {case['id']} {arm}")
             if case.get('expectedAbstain'):
                 require(selected.abstain, 'unsupported graph fact not blocked')
             if case.get('expectedFallback'):
@@ -93,7 +95,10 @@ async def compare(agent, wiki, output, top_k=3, semantic_model=None, enable_sema
             metrics[scope] = {metric: dict(mean=mean(values) if values else None, definedRows=len(values), totalRows=len(scoped))
                              for metric in ('precision','recall')
                              for values in [[r[metric] for r in scoped if r[metric] is not None]]}
-        aggregates[arm] = dict(rows=len(arm_rows), metrics=metrics, mandatoryRetention=1.0, fixtureCoverage=1.0,
+        aggregates[arm] = dict(rows=len(arm_rows), metrics=metrics, mandatoryRetention=1.0,
+                               fixtureCoverage=mean(r["fixtureCoverage"] for r in arm_rows),
+                               completeCoverageRows=sum(r["fixtureCoverage"]==1 for r in arm_rows),
+                               citationValidRows=sum(r["citationValid"] for r in arm_rows),
                                deterministicRows=sum(r['deterministic'] for r in arm_rows),
                                abstainRows=sum(r['abstain'] for r in arm_rows), fallbackRows=sum(bool(r['fallback']) for r in arm_rows),
                                maxSourceContextReductionPercent=max(r['sourceContextReductionPercent'] for r in arm_rows),
@@ -125,9 +130,12 @@ async def compare(agent, wiki, output, top_k=3, semantic_model=None, enable_sema
                       verifiedSourceRevisions=len(c.verified_sources), verifiedSourceIdentities=c.verified_sources,
                       documents=9, requiredPolicies=8, evidenceEligible=8, unsourcedPolicyExcludedFromSearch='packages/hanjeok/prompt.md',
                       originalCases=29, graphCases=6, armExecutions=len(rows), ragasSampleRows=len(dataset),
+                      semanticCoverageFailuresReported=True,
                       vectorBackend=lab.vector.name, semanticEmbeddingsExecuted=bool(semantic_model), topK=top_k,
-                      graphExecution=lab.graph.status, neo4jIntegrationExecuted=False,
-                      judgeExecuted=False, modelGenerationExecuted=False, networkCallsRequired=False, networkBlockedByRunner=True,
+                      graphExecution=lab.graph.status, neo4jIntegrationExecuted=graph is not None, neo4jServer=server,
+                      semanticModel=getattr(lab.vector, "provenance", None),
+                      judgeExecuted=False, modelGenerationExecuted=False, networkCallsRequired=graph is not None,
+                      outboundNetworkBlocked=True, networkAllowed=["127.0.0.1:17687"] if graph else [],
                       metrics='Actual RAGAS 0.3.9 ID set precision/recall; undefined empty sets recorded as null',
                       limitation='9 documents / one optional seed; source integrity does not establish claim truth; fixture IDs are an oracle, not answer quality')
     output.mkdir(parents=True, exist_ok=True)
@@ -148,12 +156,24 @@ def main():
     parser.add_argument('--top-k',type=int,default=3)
     parser.add_argument('--semantic-model',type=Path)
     parser.add_argument('--enable-semantic',action='store_true')
+    parser.add_argument("--graph-backend",choices=("in-process","neo4j"),default="in-process")
+    parser.add_argument("--neo4j-load",action="store_true",help="load only the isolated experiment database")
     args=parser.parse_args()
     logging.getLogger('ragas.metrics._context_precision').setLevel(logging.ERROR)
     logging.getLogger('ragas.metrics._context_recall').setLevel(logging.ERROR)
-    with patch.object(socket.socket, 'connect', side_effect=RuntimeError('network prohibited in offline runner')):
-        asyncio.run(compare(args.agent_root,args.wiki_root or args.agent_root.parent/'travel-context-wiki',
-                            args.output_dir,args.top_k,args.semantic_model,args.enable_semantic))
+    require(not args.neo4j_load or args.graph_backend=='neo4j', 'Neo4j load requires explicit backend')
+    wiki=args.wiki_root or args.agent_root.parent/'travel-context-wiki'
+    with network_scope(neo4j=args.graph_backend=='neo4j'):
+        if args.graph_backend=='neo4j':
+            from .live import URI, driver_for, components, load_snapshot
+            snapshot=GraphSnapshot(Corpus(args.agent_root,wiki))
+            with driver_for(URI) as driver:
+                server=components(driver)
+                if args.neo4j_load: load_snapshot(driver,snapshot)
+                asyncio.run(compare(args.agent_root,wiki,args.output_dir,args.top_k,args.semantic_model,
+                                    args.enable_semantic,Neo4jGraph(driver,snapshot),server))
+        else:
+            asyncio.run(compare(args.agent_root,wiki,args.output_dir,args.top_k,args.semantic_model,args.enable_semantic))
 
 
 if __name__ == '__main__':

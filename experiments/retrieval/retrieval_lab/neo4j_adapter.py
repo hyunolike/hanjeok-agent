@@ -1,5 +1,5 @@
-"""Driver contract only in this run. Fixed read query; no Docker or graph mutations."""
-from neo4j import Query, READ_ACCESS
+"""Fixed bounded read-only Neo4j query; mock and actual execution tracked separately."""
+from neo4j import READ_ACCESS, unit_of_work
 from .corpus import require
 
 READ_CYPHER = '''
@@ -17,7 +17,7 @@ LIMIT $limit
 
 
 class Neo4jGraph:
-    status = 'adapter only; live integration not executed'
+    status = 'actual Neo4j driver; execution provenance recorded by caller'
 
     def __init__(self, driver, snapshot, database='neo4j'):
         self.driver, self.snapshot, self.database = driver, snapshot, database
@@ -26,8 +26,9 @@ class Neo4jGraph:
         self.snapshot.validate_request(keys, limit)
         parameters = dict(namespace=self.snapshot.namespace, seed_keys=list(keys),
                           allowed_keys=sorted(self.snapshot.nodes), allowed_edges=sorted(self.snapshot.allowed_edges), limit=limit)
+        @unit_of_work(timeout=2.0)
         def read(tx):
-            return [record.data() for record in tx.run(Query(READ_CYPHER, timeout=2.0), parameters)]
+            return [record.data() for record in tx.run(READ_CYPHER, parameters)]
         # READ_ACCESS is routing, not an ACL. Fixed query + verified rows enforce this contract.
         with self.driver.session(database=self.database, default_access_mode=READ_ACCESS) as session:
             rows = session.execute_read(read)
