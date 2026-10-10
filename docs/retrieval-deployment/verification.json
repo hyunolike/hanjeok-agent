@@ -30,7 +30,8 @@
       "indexVersion": "80dd5ab3b1ac4d73f74742ee880f2c5fdc04b2083079f19d17f07c37b00c95a5",
       "fixtureCount": 35,
       "validationRows": 70,
-      "actualSemanticBuild": true
+      "actualSemanticBuild": true,
+      "separateBuildSameImmutableVersion": true
     }
   },
   "actualApiE2e": {
@@ -76,19 +77,40 @@
     "harness/fixtures/context-selection/suite.json": "5fa1bf07aa42fde612ddcf8fa167eae3527c25094229d559468b4857f19cb401",
     "experiments/retrieval/fixtures/graph-cases.json": "2be1e545f4c98c64c21af8337f10ac2a2a883325404d2367ba370545e812e2cb"
   },
-  "draftPRs": {
+  "freshReview": {
+    "reviewer": "fresh read-only gpt-6-astra agent",
+    "reviewedRange": "aaed277..70f379b",
+    "critical": 0,
+    "important": 0,
+    "independentPythonTests": 15,
+    "deferredMinors": [
+      "Latch-controlled overlapping selected/FULL-fallback cache regression is not yet added; sequential identity recovery plus existing single-flight regressions pass.",
+      "Real-selector EXPLAIN E2E with representative facts is not yet added; current HTTP E2E selects first, then sends fixed selected context through all three actual Kotlin service/citation paths."
+    ]
+  },
+  "existingPRs": {
     "agent": {
       "url": "https://github.com/hyunolike/hanjeok-agent/pull/13",
       "head": "aaed27772a48e19c465cab6b37717b6909c807d7",
       "ci": "https://github.com/hyunolike/hanjeok-agent/actions/runs/38016421342",
-      "status": "success"
+      "status": "success",
+      "stateObserved": "MERGED",
+      "mergePerformedByThisFollowup": false
     },
     "wiki": {
       "url": "https://github.com/hyunolike/travel-context-wiki/pull/32",
       "head": "99b7d87723a0f7b64441404e85c20bdc9779bb59",
       "ci": "https://github.com/hyunolike/travel-context-wiki/actions/runs/38016429004",
-      "status": "success"
+      "status": "success",
+      "stateObserved": "MERGED",
+      "mergePerformedByThisFollowup": false
     }
   },
-  "freshReview": "pending"
+  "existingPRStateNote": "Read-only observation after implementation; prior same-head PRs merged outside this follow-up. No claim about current cloud production revision.",
+  "remoteMainObserved": {
+    "agent": "54f4bfc6b725167329418c08e15104f8685a49f1",
+    "wiki": "e92675aa8f3f75316c97c83a5518af62734320c7",
+    "note": "Read-only state; merges occurred outside this follow-up; current cloud production not inspected."
+  },
+  "ownedTemporaryApiServersStopped": true
 }

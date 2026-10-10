@@ -15,3 +15,11 @@ Ruling: restore explicit Gyeongbokgung seed omissions via FULL deployment guard 
 Ruling: runtime dependency versions join the immutable manifest — rejects incompatible query runtimes; cost if wrong: intentional startup failure requiring a newly validated candidate.
 Ruling: final E2E provider uses valid policy citations while preserved original offline fixtures separately cover bad/scripted/tool/failure outputs — avoids confusing expected-invalid oracle answers with API transport failure; cost if wrong: E2E does not independently exercise original provider scripts (covered by original offline/JVM suite).
 Fresh whole-branch review: pending. No follow-up push; keep separate branch/worktree as already instructed, without an extra integration menu.
+
+Read-only observation: previous agent #13 and wiki #32 are now MERGED with unchanged reviewed head hashes and successful CI. The merge happened outside this implementation; no merge/deployment/traffic action was executed by this follow-up. Current production revision is not inferred from historical evidence. Two own patch scripts moved back into task-8 scratch; none committed.
+
+Final review: fresh read-only gpt-6-astra reviewer of aaed277..70f379b; no Critical/Important findings. Independent Python rerun 15/15. Baseline/stream/body/publication/cache boundaries sound.
+Final: minor (deferred): explicit latch-controlled overlapping selected/FULL fallback cache test; sequential state recovery plus existing single-flight tests passed, but new-context overlap is not independently simulated.
+Final: minor (deferred): real-selector EXPLAIN E2E with representative facts; current real HTTP E2E selects before fixing the request context for the three real service/citation routes; production query construction is only unit-covered.
+Final: Ruling: unexecuted Linux/cloud IAM/private networking/Enterprise reader/new API Neo4j integration remains a release prerequisite — prior graph lab evidence is not a runtime IAM/ACL proof — cost if wrong: deployment can fail or be insecure; actual release must wait for those checks/approval.
+Final: semantic index independently rebuilt with identical immutable version 80dd5ab3b1ac4d73f74742ee880f2c5fdc04b2083079f19d17f07c37b00c95a5. Owned temporary loopback services stopped. Branch/worktree preserved; no follow-up push.
