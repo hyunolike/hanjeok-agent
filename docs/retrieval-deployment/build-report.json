@@ -1,0 +1,14 @@
+{
+  "tfidf": {
+    "indexVersion": "914dcc6488890edaa2c9d8743013d2ef6c1edd9e655994fef50a84d74d4d0b17",
+    "fixtureCount": 35,
+    "validationRows": 70,
+    "actualSemanticBuild": false
+  },
+  "semantic": {
+    "indexVersion": "80dd5ab3b1ac4d73f74742ee880f2c5fdc04b2083079f19d17f07c37b00c95a5",
+    "fixtureCount": 35,
+    "validationRows": 70,
+    "actualSemanticBuild": true
+  }
+}

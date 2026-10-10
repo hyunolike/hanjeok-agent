@@ -3,6 +3,8 @@ package com.hermes.explain
 import com.hermes.context.CitationValidator
 import com.hermes.context.Invalid
 import com.hermes.context.PromptAssembler
+import com.hermes.context.ContextSelection
+import com.hermes.context.FullContextSelection
 import com.hermes.context.Valid
 import com.hermes.llm.Answered
 import com.hermes.llm.ExplanationProvider
@@ -31,15 +33,18 @@ class CourseQuestionService(
     private val validator: CitationValidator,
     private val provider: ExplanationProvider,
     private val loop: AgentLoop,
+    private val selection: ContextSelection = FullContextSelection(assembler, validator),
 ) {
 
     fun ask(facts: BackendFacts, question: String, history: List<QuestionTurn>): ExplainOutcome {
-        val userText = buildUserText(facts, question, history)
+        val request = selection.select(question)
+        if (request.abstain) return Unavailable("unsupported retrieval scope")
+        val userText = request.userText(buildUserText(facts, question, history))
 
-        return when (val result = provider.explain(assembler.systemText, userText)) {
+        return when (val result = provider.explain(request.systemText, userText)) {
             is Refused -> Unavailable(refusalReason(result.category))
             is Failed -> Unavailable(result.reason)
-            is Answered -> when (val citations = validator.validate(
+            is Answered -> when (val citations = request.validator.validate(
                 result.explanation.citations,
                 result.explanation.explanation + "\n" + citationContext(question, history),
             )) {
@@ -69,9 +74,15 @@ class CourseQuestionService(
         emit: (AskStreamEvent) -> Unit,
     ): String {
         val union = ToolFacts(facts.json)
-        loop.run(
-            systemText = assembler.systemText,
-            baseUserText = buildUserText(facts, question, history) + TOOL_GUIDANCE,
+        val request = selection.select(question)
+        if (request.abstain) {
+            emit(UnavailableEvent("unsupported retrieval scope", FailureCause.REFUSED))
+            return union.unionJson()
+        }
+        val requestLoop = if (request.decision in setOf("FULL", "FULL_FALLBACK")) loop else loop.withValidator(request.validator)
+        requestLoop.run(
+            systemText = request.systemText,
+            baseUserText = request.userText(buildUserText(facts, question, history) + TOOL_GUIDANCE),
             bounds = bounds,
             facts = union,
             citationContext = citationContext(question, history),

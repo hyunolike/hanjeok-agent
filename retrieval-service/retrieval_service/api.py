@@ -36,15 +36,21 @@ class RetrievalApp:
    authorized=auth.startswith('Bearer ') and len(auth)>10
   if not authorized:return await self.reply(send,401,{'code':'UNAUTHORIZED'})
   if path in ('/health/ready','/v1/provenance') and method=='GET':
-   try:
-    load_index(self.engine.index.root,self.engine.index.version)
-    if self.engine.index.vector.backend=='semantic':require(self.engine.index.vector.model is not None,'model unavailable')
-    if self.engine.graph is not None and hasattr(self.engine.graph,'driver'):self.engine.graph.driver.verify_connectivity()
+   if not self.slot.acquire(blocking=False):return await self.reply(send,503,{'status':'BUSY'})
+   def check_ready():
+    try:
+     load_index(self.engine.index.root,self.engine.index.version)
+     if self.engine.index.vector.backend=='semantic':require(self.engine.index.vector.model is not None,'model unavailable')
+     if self.engine.graph is not None and hasattr(self.engine.graph,'driver'):self.engine.graph.driver.verify_connectivity()
+    finally:self.slot.release()
+   future=self.pool.submit(check_ready)
+   try:await asyncio.wait_for(asyncio.shield(asyncio.wrap_future(future)),timeout=self.deadline)
    except Exception:return await self.reply(send,503,{'status':'DOWN'})
-   return await self.reply(send,200,dict(status='UP',identity=self.engine.index.identity,graph='neo4j' if self.engine.graph is not None else 'disabled',authBoundary=self.auth_mode,reviewTruthVerified=False,counters=dict(self.counts)))
+   return await self.reply(send,200,dict(status='UP',identity=self.engine.index.identity,graph=('neo4j' if hasattr(self.engine.graph,'driver') else 'in_process_contract') if self.engine.graph is not None else 'disabled',authBoundary=self.auth_mode,reviewTruthVerified=False,counters=dict(self.counts)))
   if path!='/v1/retrieve':return await self.reply(send,404,{'code':'NOT_FOUND'})
   if method!='POST':return await self.reply(send,405,{'code':'METHOD_NOT_ALLOWED'})
   if headers.get(b'content-type',b'').split(b';')[0]!=b'application/json':return await self.reply(send,400,{'code':'INVALID_REQUEST'})
+  started=asyncio.get_running_loop().time()
   try:
    length=int(headers.get(b'content-length',b'0'));require(0<=length<=8192,'body cap');body=bytearray()
    async with asyncio.timeout(self.deadline):
@@ -62,7 +68,7 @@ class RetrievalApp:
    finally:self.slot.release()
   future=self.pool.submit(work)
   try:
-   result=await asyncio.wait_for(asyncio.shield(asyncio.wrap_future(future)),timeout=self.deadline)
+   result=await asyncio.wait_for(asyncio.shield(asyncio.wrap_future(future)),timeout=max(.001,self.deadline-(asyncio.get_running_loop().time()-started)))
    self.counts[result['status']]+=1;return await self.reply(send,200,result)
   except TimeoutError:self.counts['timeout']+=1;return await self.reply(send,504,{'code':'RETRIEVAL_TIMEOUT'})
   except Exception:self.counts['error']+=1;return await self.reply(send,503,{'code':'RETRIEVAL_UNAVAILABLE'})

@@ -523,3 +523,7 @@ wiki 생성기와 agent 소비 코드는 통합됐습니다. agent가 sidecar를
 운영 기본값은 **FULL**을 유지합니다. `./gradlew offlineContextEval --args=docs/context-selection/results.json`은 별도 scripted 비교를 실행합니다. 필수 정책 8개는 모두 유지하고 경복궁 seed만 선택적으로 넣습니다. 불명확한 질문이나 참조는 검증된 전체 번들로 fallback하고 본문/sidecar hash가 잘못되면 fail closed합니다. 문서 순서와 원문 구간을 보존하며 인용 허용 목록은 요청 번들로 제한합니다. singleton과 운영 요청 경로는 바꾸지 않습니다.
 
 [설계](docs/context-selection/design.md), [버전 관리 fixture](harness/fixtures/context-selection/suite.json), [fallback을 분리한 결과](docs/context-selection/report.md)를 참고하세요. 최대 system bytes 감소는 501/24,703 = 2.03%입니다. 토큰이나 비용, 정확도, 지연 개선은 측정하지 않았고 scripted provider/tool은 배선만 검증합니다.
+
+### 검색 API 로컬 후속 코드 — 운영 미배포
+
+별도 로컬 브랜치에 opt-in private 검색 API, hash/런타임 버전을 고정한 인덱스 준비와 수동 공개·롤백, Kotlin 요청별 정책·인용·캐시·스트리밍 수리와 검증된 FULL 복구를 구현했습니다. [재현 명령과 배포 준비](deployment/retrieval/README.md)는 실제 로컬 CPU 어휘/의미 검색 API→인용 검증과 미실행 클라우드 IAM·운영 reader 권한·Linux 이미지 빌드를 구분합니다. 명시적인 경복궁 질문에서 seed가 누락되면 배포용 guard는 FULL로 복구합니다. 이전 의미 VECTOR 실험의 누락 5건과 약 2.03% corpus 선택 절감 상한은 그대로 기록합니다. 운영 기본값 FULL과 Draft PR HEAD는 유지했고, 이 후속 코드는 push·배포하지 않았습니다.

@@ -1,11 +1,18 @@
 """Immutable, hash-pinned JSON/NPZ index. Git verification only runs at build time."""
 import json,re,shutil
+from importlib.metadata import version as package_version
 from pathlib import Path
 from types import SimpleNamespace
 import numpy as np
 from retrieval_lab.corpus import Corpus,Document,POLICIES,OPTIONAL,digest,require,safe_path
 from retrieval_lab.graph import GraphSnapshot
 from retrieval_lab.vector import LexicalVector,LocalSemanticVector
+
+RUNTIME_PACKAGES=('numpy','scikit-learn','neo4j')
+SEMANTIC_PACKAGES=('sentence-transformers','transformers','torch')
+
+def runtime_versions(backend):
+ return {p:package_version(p) for p in RUNTIME_PACKAGES+(SEMANTIC_PACKAGES if backend=='semantic' else ())}
 
 MODEL_REVISION='826fee3d516ebb14987355af373f5b69101c7006'
 
@@ -42,7 +49,7 @@ def build_index(agent,wiki,destination,backend='tfidf',model_path=None):
    (dest/'model.json').write_bytes(encoded(vector.provenance))
    info.update(algorithm='normalized-mean-chunks-cosine',dtype='float32')
   files={p.relative_to(dest).as_posix():digest(p.read_bytes()) for p in sorted(dest.rglob('*')) if p.is_file()}
-  manifest={'schemaVersion':1,'bundleSha256':digest(corpus.raw),'metadataSha256':digest((dest/'metadata.json').read_bytes()),'files':files,'vector':info}
+  manifest={'schemaVersion':1,'bundleSha256':digest(corpus.raw),'metadataSha256':digest((dest/'metadata.json').read_bytes()),'files':files,'vector':info,'runtimeVersions':runtime_versions(backend)}
   manifest['indexVersion']=digest(encoded(manifest));(dest/'manifest.json').write_bytes(encoded(manifest))
   load_index(dest,manifest['indexVersion'])
   return manifest['indexVersion']
@@ -95,6 +102,7 @@ class FrozenVector:
    if model_path:self.model=self._query_model(Path(model_path),strict_json((root/'model.json').read_bytes()))
   else:raise ValueError('unsupported backend')
  def _query_model(self,path,manifest):
+  require(path.is_dir() and not path.is_symlink() and all(not p.is_symlink() for p in path.rglob('*')),'unsafe model directory')
   require(manifest['revision']==MODEL_REVISION,'invalid model revision')
   local=strict_json((path/'retrieval-model-manifest.json').read_bytes());require(local['revision']==manifest['revision'] and local['files']==manifest['files'],'model manifest mismatch')
   actual={p.relative_to(path).as_posix() for p in path.rglob('*') if p.is_file() and p.name!='retrieval-model-manifest.json'}
@@ -126,16 +134,18 @@ class FrozenVector:
 
 def load_index(directory,expected_version,model_path=None):
  root=Path(directory);require(root.is_dir() and not root.is_symlink(),'invalid index directory')
+ require((root/'manifest.json').is_file() and not (root/'manifest.json').is_symlink() and (root/'manifest.json').stat().st_size<=65536,'invalid manifest file')
  manifest=strict_json((root/'manifest.json').read_bytes());version=manifest.pop('indexVersion',None)
  require(re.fullmatch('[0-9a-f]{64}',expected_version or '') and version==expected_version==digest(encoded(manifest)) and manifest['schemaVersion']==1,'index version mismatch')
  actual=set()
  for p in root.rglob('*'):
   require(not p.is_symlink(),'index symlink prohibited')
-  if p.is_file() and p.name not in ('manifest.json','validation.json'):actual.add(p.relative_to(root).as_posix())
+  if p.is_file() and p.relative_to(root).as_posix() not in ('manifest.json','validation.json'):actual.add(p.relative_to(root).as_posix())
  require(actual==set(manifest['files']),'index file inventory mismatch')
  for name,sha in manifest['files'].items():
   require((root/safe_path(name)).stat().st_size<=32*1024*1024,'oversize index artifact')
   require(digest((root/name).read_bytes())==sha,'index artifact hash drift')
+ require(manifest['runtimeVersions']==runtime_versions(manifest['vector']['backend']),'runtime package version drift')
  corpus=FrozenCorpus(root,manifest);snapshot=GraphSnapshot(corpus)
  require(encoded(snapshot.export())==(root/'graph.json').read_bytes(),'graph snapshot mismatch')
  vector=FrozenVector(root,manifest,corpus,model_path)

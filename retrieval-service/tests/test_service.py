@@ -37,14 +37,24 @@ class IndexTests(unittest.TestCase):
   with self.assertRaises(ValueError):load_index(self.dest,'0'*64)
   p=self.dest/'unknown';p.write_text('x')
   with self.assertRaises(ValueError):load_index(self.dest,self.version)
-  p.unlink();p.symlink_to('/tmp')
+  p.unlink();nested=self.dest/'sources/manifest.json';nested.write_text('{}')
   with self.assertRaises(ValueError):load_index(self.dest,self.version)
+  nested.unlink();p.symlink_to('/tmp')
+  with self.assertRaises(ValueError):load_index(self.dest,self.version)
+ def test_runtime_package_drift_is_rejected(self):
+  from unittest.mock import patch
+  with patch('retrieval_service.index.runtime_versions',return_value={'numpy':'invented'}):
+   with self.assertRaises(ValueError):load_index(self.dest,self.version)
  def test_publish_requires_validation_and_rollback_to_published_pair(self):
   registry=self.root/'registry.json'
   with self.assertRaises(ValueError):publish(self.dest,self.version,registry)
   report=validate_candidate(self.dest,self.version,AGENT)
   self.assertTrue(report['passed']);self.assertEqual(35,report['fixtureCount'])
   publish(self.dest,self.version,registry);before=registry.read_bytes()
+  original=(self.dest/'validation.json').read_bytes();bad=dict(report);bad['rows']=report['rows'][:1]*70
+  (self.dest/'validation.json').write_text(json.dumps(bad))
+  with self.assertRaises(ValueError):publish(self.dest,self.version,registry)
+  (self.dest/'validation.json').write_bytes(original)
   with self.assertRaises(ValueError):rollback(registry,'f'*64)
   self.assertEqual(before,registry.read_bytes());rollback(registry,self.version)
  def test_unsupported_scope_and_graph_relations_are_abstentions(self):

@@ -5,6 +5,16 @@ import com.hermes.context.Bundle
 import com.hermes.context.BundleLoader
 import com.hermes.context.CitationValidator
 import com.hermes.context.PromptAssembler
+import com.hermes.context.ContextSelection
+import com.hermes.context.FullContextSelection
+import com.hermes.context.RetrievalContextSelector
+import com.hermes.context.RetrievalMode
+import com.hermes.context.RetrievalIdentity
+import com.hermes.context.RetrievalHttpClient
+import com.hermes.context.RetrievalToken
+import com.hermes.context.MetadataRetrievalToken
+import java.net.URI
+import java.security.MessageDigest
 import com.hermes.explain.AgentLoop
 import com.hermes.explain.Alternatives
 import com.hermes.explain.Congestion
@@ -59,6 +69,29 @@ class HermesConfig {
     @Bean
     fun citationValidator(bundle: Bundle): CitationValidator = CitationValidator(bundle)
 
+    @Bean
+    fun contextSelection(
+        bundle: Bundle,
+        @Value("\${hermes.retrieval.mode:FULL}") modeName: String,
+        @Value("\${hermes.retrieval.url:}") url: String,
+        @Value("\${hermes.retrieval.index-version:}") indexVersion: String,
+        @Value("\${hermes.retrieval.model-revision:}") modelRevision: String,
+        @Value("\${hermes.retrieval.auth-mode:cloud-run-iam}") authMode: String,
+    ): ContextSelection {
+        val mode = RetrievalMode.valueOf(modeName)
+        if (mode == RetrievalMode.FULL) return RetrievalContextSelector(bundle)
+        val origin = URI(url)
+        require(authMode in setOf("cloud-run-iam", "loopback-test"))
+        val token = if (authMode == "loopback-test") {
+            require(System.getenv("K_SERVICE").isNullOrBlank()) { "local authentication forbidden on Cloud Run" }
+            val value = System.getenv("HERMES_RETRIEVAL_LOCAL_TOKEN") ?: error("local test token required")
+            RetrievalToken { value }
+        } else MetadataRetrievalToken(origin)
+        val metaHash = MessageDigest.getInstance("SHA-256").digest(bundle.metadataJson!!.toByteArray(Charsets.UTF_8)).joinToString("") { "%02x".format(it) }
+        return RetrievalContextSelector(bundle, mode, RetrievalIdentity(bundle.sha256, metaHash, indexVersion, modelRevision),
+            RetrievalHttpClient(origin, token, localTest = authMode == "loopback-test"))
+    }
+
     /**
      * 하네스가 잰 프로바이더를 그대로 띄울 수 있어야 한다 — `EvalMain` 과 같은
      * 세 이름(anthropic·openai·openrouter)을 쓴다. 고정돼 있던 동안은 측정한
@@ -106,7 +139,8 @@ class HermesConfig {
         promptAssembler: PromptAssembler,
         citationValidator: CitationValidator,
         explanationProvider: ExplanationProvider,
-    ): ExplanationService = ExplanationService(promptAssembler, citationValidator, explanationProvider)
+        contextSelection: ContextSelection = FullContextSelection(promptAssembler, citationValidator),
+    ): ExplanationService = ExplanationService(promptAssembler, citationValidator, explanationProvider, contextSelection)
 
     /**
      * 검증을 통과한 인자만 여기 온다 — [AgentLoop] 이 [Rejected] 를 먼저 갈라내고
@@ -136,8 +170,9 @@ class HermesConfig {
         citationValidator: CitationValidator,
         explanationProvider: ExplanationProvider,
         agentLoop: AgentLoop,
+        contextSelection: ContextSelection = FullContextSelection(promptAssembler, citationValidator),
     ): CourseQuestionService =
-        CourseQuestionService(promptAssembler, citationValidator, explanationProvider, agentLoop)
+        CourseQuestionService(promptAssembler, citationValidator, explanationProvider, agentLoop, contextSelection)
 
     @Bean
     fun courseExplainer(

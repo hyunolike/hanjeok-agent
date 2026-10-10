@@ -13,6 +13,12 @@ hermes:
     # 위해서다. 모르는 이름은 조용히 기본값으로 떨어지지 않고 기동을 멈춘다.
     provider: ${HERMES_LLM_PROVIDER:anthropic}
     model: ${HERMES_LLM_MODEL:claude-opus-5}
+  retrieval:
+    mode: ${HERMES_RETRIEVAL_MODE:FULL}
+    url: ${HERMES_RETRIEVAL_URL:}
+    index-version: ${HERMES_RETRIEVAL_INDEX_VERSION:}
+    model-revision: ${HERMES_RETRIEVAL_MODEL_REVISION:}
+    auth-mode: ${HERMES_RETRIEVAL_AUTH_MODE:cloud-run-iam}
   cors:
     allowed-origins: ${HERMES_CORS_ALLOWED_ORIGINS:http://localhost:3000}
   demo:

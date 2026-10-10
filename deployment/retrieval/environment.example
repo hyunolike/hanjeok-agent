@@ -1,0 +1,18 @@
+# Kotlin defaults: existing production FULL, no retrieval request/token lookup.
+HERMES_RETRIEVAL_MODE=FULL
+HERMES_RETRIEVAL_URL=
+HERMES_RETRIEVAL_INDEX_VERSION=
+HERMES_RETRIEVAL_MODEL_REVISION=
+HERMES_RETRIEVAL_AUTH_MODE=cloud-run-iam
+# Python private service; never use loopback-test on a cloud platform.
+RETRIEVAL_AUTH_MODE=cloud-run-iam
+RETRIEVAL_BIND=0.0.0.0
+RETRIEVAL_INDEX_DIR=/app/index
+RETRIEVAL_INDEX_VERSION=REPLACE_WITH_VALIDATED_MANIFEST_HASH
+RETRIEVAL_MODEL_DIR=/app/model
+RETRIEVAL_GRAPH_MODE=disabled
+# HYBRID_GRAPH requires an existing TLS Enterprise reader-only principal.
+RETRIEVAL_NEO4J_URI=
+RETRIEVAL_NEO4J_USER=
+RETRIEVAL_NEO4J_PASSWORD=
+# Do not commit real values. Provisioning/credentials/IAM changes need separate approval.

@@ -1,0 +1,5 @@
+-r requirements-runtime.txt
+sentence-transformers==6.1.0
+transformers==5.19.0
+torch==2.14.1
+# CPU-only Linux wheels must be approved/staged by the operator. Linux image build unexecuted.
