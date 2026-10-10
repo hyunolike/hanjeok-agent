@@ -71,6 +71,16 @@
       "readmeLanguages": [
         "en"
       ]
+    },
+    {
+      "path": "docs/images/hanjeok-two-inputs-ko.png",
+      "sha256": "fcbe67723a4fa197d7beea315b455f23439e4277c2a1b98cc0b1aa5635f1205b",
+      "width": 1672,
+      "height": 941,
+      "visualReview": "passed",
+      "readmeLanguages": [
+        "ko"
+      ]
     }
   ],
   "readmeLanguages": [
@@ -78,13 +88,14 @@
     "ko"
   ],
   "altAndEnlargementLinksPresent": true,
-  "operationalImageSlotsReplaced": false,
+  "operationalImageSlotsReplaced": true,
   "historicalSvgLinksPreserved": true,
   "experimentDiagram": "English and Korean C installed and visually reviewed",
   "productionDefault": "FULL",
   "productionSourceAndCanonicalDataUnchanged": true,
   "newLlmJudgeOrPaidCalls": false,
-  "newDeployment": false,
-  "localizedImageLabels": "Korean B/C and overview installed; Korean A local receipt blocked after bounded attempts",
-  "overallArchitectureDiagram": "English/Korean installed; Japanese caption uses English image"
+  "localizedImageLabels": "English and Korean applicable A/B/C plus overview installed and visually reviewed",
+  "overallArchitectureDiagram": "English/Korean installed; Japanese caption uses English image",
+  "newProductionDeployment": false,
+  "automaticVercelPreview": true
 }

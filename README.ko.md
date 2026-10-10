@@ -67,7 +67,9 @@
 
 빌드 단계에서 출처를 검사하고 `hanjeok-bundle.txt`와 metadata sidecar를 생성합니다. CI가 두 산출물을 비교한 뒤 서버 이미지에 함께 넣습니다. 기동 시 `BundleLoader`가 한 번 검증하고, 9문서 전체 매뉴얼(UTF-8 24,703 bytes)을 그대로 프롬프트에 넣습니다. sidecar는 서버의 무결성 검사와 `/agent/provenance`에만 쓰며 모델 입력에는 넣지 않습니다.
 
-한국어 두 입력 상세 그림은 로컬 파일 수신·검증 후 반영합니다. 위 전체도와 아래 계약 설명을 참고하세요.
+![한적 빌드 패키징과 모델의 두 런타임 입력](docs/images/hanjeok-two-inputs-ko.png)
+
+[그림 확대 보기](docs/images/hanjeok-two-inputs-ko.png) · 빌드 시 무결성을 검증한 전체 매뉴얼은 system에, 현재 백엔드 facts는 user에 넣습니다. sidecar는 서버에만 남고 백엔드가 순위와 방문 순서를 결정합니다. 운영은 FULL입니다(9문서 / UTF-8 24,703 bytes). 무결성 검사는 문서 내용의 진실성을 증명하지 않습니다.
 
 브라우저는 Vercel 프론트에서 Cloud Run agent를 호출합니다. agent가 한적 백엔드의 facts를 조회하고 필요할 때 프로바이더를 부릅니다.
 
@@ -514,7 +516,7 @@ wiki 생성기와 agent 소비 코드는 통합됐습니다. agent가 sidecar를
 
 검색 허용 24건에서 의미 VECTOR / HYBRID 후보 precision은 0.250000 / 0.172619, recall은 0.645833 / 1.000000입니다(모두 24건 정의). 최종 fixture 근거가 완전한 행은 30/35 / 35/35이며 VECTOR의 seed 누락 5건을 숨기지 않고 기록합니다. 정책 8개 유지와 결정성은 105/105입니다. 어휘 baseline과 빈 precision 7건은 별도로 보존했습니다. [의미 결과](experiments/retrieval/results/semantic-in-process/results.json)·[데이터셋](experiments/retrieval/results/semantic-in-process/dataset.jsonl)·[추가 검증](experiments/retrieval/results/extension-validation.json)에 별도 프로세스 bytes 재현과 실제 Kotlin citation 계약 일치(실패한 scripted 인용 포함)를 기록했습니다. 답변 진실성·LLM faithfulness 지표가 아니며 기존 약 2.03% 문서 bytes 절감 상한을 유지합니다.
 
-실제 격리 Neo4j Community 5.26.31 통합도 완료했습니다. 시작 노드 15개의 결과가 메모리 그래프와 일치하며, 2홉 지역 검색·합성 관계 격리·실제 문서/출처 해시 변조 거부를 통과했습니다. TF-IDF와 의미 모델 각각 105개 행/210개 RAGAS sample, 동일한 메모리 결과, 별도 프로세스 bytes 재현과 실제 Kotlin citation 검증을 기록했습니다. [통합 실행 명령](experiments/retrieval/README.md#actual-isolated-neo4j-integration-2026-10-10)·[실제 검증](experiments/retrieval/results/neo4j-validation.json)은 mock 계약 2개와 구분합니다. 전용 bridge의 masquerading을 끄고 localhost Bolt만 게시하며 HTTP/사용량 보고를 비활성화했습니다. 소유 자원은 정리했고 이전 승인 차단도 해소됐습니다. 답변 생성·LLM judge·유료 호출·외부 corpus 업로드·merge/운영 배포는 없고 별도 한적 DB/SMTP 배포도 보류입니다. 한국어 요청·실험 그림과 전체도는 반영했고 한국어 두 입력 상세 그림은 수신 대기입니다.
+실제 격리 Neo4j Community 5.26.31 통합도 완료했습니다. 시작 노드 15개의 결과가 메모리 그래프와 일치하며, 2홉 지역 검색·합성 관계 격리·실제 문서/출처 해시 변조 거부를 통과했습니다. TF-IDF와 의미 모델 각각 105개 행/210개 RAGAS sample, 동일한 메모리 결과, 별도 프로세스 bytes 재현과 실제 Kotlin citation 검증을 기록했습니다. [통합 실행 명령](experiments/retrieval/README.md#actual-isolated-neo4j-integration-2026-10-10)·[실제 검증](experiments/retrieval/results/neo4j-validation.json)은 mock 계약 2개와 구분합니다. 전용 bridge의 masquerading을 끄고 localhost Bolt만 게시하며 HTTP/사용량 보고를 비활성화했습니다. 소유 자원은 정리했고 이전 승인 차단도 해소됐습니다. 답변 생성·LLM judge·유료 호출·외부 corpus 업로드·merge/운영 배포는 없고 별도 한적 DB/SMTP 배포도 보류입니다. 한국어 요청·실험 그림과 전체도는 반영했고 한국어 두 입력 상세 그림도 반영했습니다.
 
 ## 오프라인 문서 선택 실험
 

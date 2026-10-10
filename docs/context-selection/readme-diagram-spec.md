@@ -1,6 +1,6 @@
 # README diagram specification (2026-10-09)
 
-Operational raster diagrams A/B were received and visually reviewed on 2026-10-10; the applicable images are installed below. English experiment diagram C is installed; Korean B/C and English/Korean overall architecture diagrams are installed. Korean A is awaiting local receipt after its bounded materialization attempts. Keep labels short, arrows explicit and the build/runtime boundary visible. Decorative icons may be cute; no decoration may imply the LLM chooses a route or sidecar enters a prompt.
+Operational raster diagrams A/B were received and visually reviewed on 2026-10-10; the applicable images are installed below. English experiment diagram C is installed; Korean B/C and English/Korean overall architecture diagrams are installed. Korean A is installed and visually reviewed. Keep labels short, arrows explicit and the build/runtime boundary visible. Decorative icons may be cute; no decoration may imply the LLM chooses a route or sidecar enters a prompt.
 
 ## Review of existing pictures and prose
 
@@ -73,4 +73,7 @@ Collection is a restricted public-reference/raw evidence path. Raw snapshots do 
 - docs/images/hanjeok-wiki-agent-overview.ko.png — 1672×941, SHA-256 db43e8ff0822978709ef354e8c350838f7c0110672c80fecd2d676f215e17c66.
 - docs/images/hanjeok-wiki-agent-overview.en.png — 1672×941, SHA-256 3c74eec5737f4769705b8134a044dc1cdbbe83fd401b52bf7d4dd03e4ac47c8c.
 
-Pixel review confirms the three request lanes, experiment-only ID evaluation, full production context and server-only provenance. Overall diagrams show public raw snapshots, PR review/canonical documentation and explicit package selection; captions clarify that the generator preserves review status rather than admitting only reviewed claims. Browser request lines/cache detail are deliberately omitted from the overview. English originals and historical SVGs are preserved. Korean READMEs use Korean-labelled PNGs; the Korean A detail image is the remaining receipt blocker.
+Pixel review confirms the three request lanes, experiment-only ID evaluation, full production context and server-only provenance. Overall diagrams show public raw snapshots, PR review/canonical documentation and explicit package selection; captions clarify that the generator preserves review status rather than admitting only reviewed claims. Browser request lines/cache detail are deliberately omitted from the overview. English originals and historical SVGs are preserved. Korean READMEs use Korean-labelled PNGs; Korean A is installed and all applicable language-specific diagrams are complete.
+
+
+Korean A: docs/images/hanjeok-two-inputs-ko.png, 1672×941, SHA-256 fcbe67723a4fa197d7beea315b455f23439e4277c2a1b98cc0b1aa5635f1205b. Pixel review confirms the two model inputs, server-only source metadata, backend ranking and full production wiki. Korean READMEs now use the Korean A image and enlargement link.
