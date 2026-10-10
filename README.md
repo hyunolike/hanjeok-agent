@@ -61,7 +61,9 @@ The model receives two inputs: the **static wiki manual** in `system`, and **cur
 
 At build time, source checks produce `hanjeok-bundle.txt` and its metadata sidecar, and CI compares both before packaging them into the server image. At startup, `BundleLoader` verifies them once. The full nine-document manual (24,703 UTF-8 bytes) enters the prompt unchanged. The sidecar stays on the server for integrity checks and `/agent/provenance`; it never enters model input.
 
-<!-- IMAGE SLOT: docs/images/hanjeok-two-inputs.png; see readme-diagram-spec.md Image A -->
+![Hanjeok build-time packaging and two runtime model inputs](docs/images/hanjeok-two-inputs.png)
+
+[Open full-size diagram](docs/images/hanjeok-two-inputs.png) · Build-time packaging keeps the verified full manual in system input and current backend facts in user input. The sidecar stays on the server; the backend determines ranking and visit order. Production remains FULL (9 docs / 24,703 UTF-8 bytes).
 
 The browser opens the Vercel frontend and calls the Cloud Run agent. The agent retrieves facts from Hanjeok Backend and calls the provider when needed.
 
@@ -73,9 +75,11 @@ The browser opens the Vercel frontend and calls the Cloud Run agent. The agent r
 
 EXPLAIN fetches all three backend responses even on a cache hit, which skips the model call. Changed facts use a new key. Failed facts or generation do not return an older cached answer. ASK history belongs to the client and is context, never new evidence. Streaming validates citations before body text; rejected/failed tools do not enter the evidence union.
 
-<!-- IMAGE SLOT: docs/images/request-paths.png; see readme-diagram-spec.md Image B -->
+![EXPLAIN, blocking ASK and streaming ASK request paths](docs/images/request-paths.png)
 
-The replacement soft-3D images are being prepared from [the code-based diagram specification](docs/context-selection/readme-diagram-spec.md). The earlier [request SVG](docs/images/flow.en.svg) and [deployment SVG](docs/images/deploy.en.svg) are historical drawings; they omit these cache and blocking-ASK distinctions. `ForbiddenBehaviours` and `ViolationTally` belong to the offline evaluation harness.
+[Open full-size diagram](docs/images/request-paths.png) · EXPLAIN reads facts before the cache and skips the model on a hit; TTL starts at generation completion. Blocking ASK has no tools or EXPLAIN cache. Streaming ASK checks tool arguments on the server and gates body text on citations, with at most 2 tool rounds inside a 60-second agent loop.
+
+The installed soft-3D images follow [the code-based diagram specification](docs/context-selection/readme-diagram-spec.md). The earlier [request SVG](docs/images/flow.en.svg) and [deployment SVG](docs/images/deploy.en.svg) are historical drawings; they omit these cache and blocking-ASK distinctions. `ForbiddenBehaviours` and `ViolationTally` belong to the offline evaluation harness.
 
 [Deployment details](docs/deploy.md). [Timestamped production verification](docs/context-selection/production-verification.json): at 2026-10-09 09:13 UTC, agent `ea47917` was Ready at 100% traffic, health/readiness UP, and bundle/sidecar hashes matched. The frontend deployment is complete. This verification made **no actual LLM call**; older model measurements do not validate this revised deployment. The separate Hanjeok database/SMTP rollout remains held.
 
@@ -505,7 +509,7 @@ The wiki generator and agent consumer are integrated. The agent requires the sid
 
 On 24 supported attempts, semantic VECTOR / HYBRID candidate precision is 0.250000 / 0.172619 and recall is 0.645833 / 1.000000 (24 defined rows each). Complete final fixture coverage is 30/35 / 35/35; five VECTOR seed omissions are recorded rather than hidden. Policy retention and determinism are 105/105. The baseline metrics and seven undefined empty precisions remain preserved separately. [Semantic results](experiments/retrieval/results/semantic-in-process/results.json), [dataset](experiments/retrieval/results/semantic-in-process/dataset.jsonl) and [extension validation](experiments/retrieval/results/extension-validation.json) include byte-identical second-process reproduction and real Kotlin citation contract checks, including invalid scripted citations. These scores do not measure answer truth or LLM faithfulness; the approximately 2.03% source-byte reduction ceiling remains.
 
-Actual isolated Neo4j Community 5.26.31 integration now passes: 15 singleton traversals match the in-process graph; two-hop region retrieval, synthetic isolation and actual source/document hash tamper rejections pass. Both TF-IDF and semantic modes execute 105 rows/210 RAGAS samples each, with identical in-process selections, separate-process byte reproduction and actual Kotlin citation checks. [Actual integration and commands](experiments/retrieval/README.md#actual-isolated-neo4j-integration-2026-10-10) and [validation](experiments/retrieval/results/neo4j-validation.json) distinguish these from the two mock contracts. The helper uses a dedicated bridge with masquerading disabled, only loopback Bolt published, HTTP/usage reporting disabled; owned resources are cleaned up. The earlier approval blocker is resolved. No answer generation, LLM judge, paid call, corpus upload, new push/PR/merge/deployment or separate Hanjeok DB/SMTP rollout occurred. README IMAGE SLOTs remain pending.
+Actual isolated Neo4j Community 5.26.31 integration now passes: 15 singleton traversals match the in-process graph; two-hop region retrieval, synthetic isolation and actual source/document hash tamper rejections pass. Both TF-IDF and semantic modes execute 105 rows/210 RAGAS samples each, with identical in-process selections, separate-process byte reproduction and actual Kotlin citation checks. [Actual integration and commands](experiments/retrieval/README.md#actual-isolated-neo4j-integration-2026-10-10) and [validation](experiments/retrieval/results/neo4j-validation.json) distinguish these from the two mock contracts. The helper uses a dedicated bridge with masquerading disabled, only loopback Bolt published, HTTP/usage reporting disabled; owned resources are cleaned up. The earlier approval blocker is resolved. No answer generation, LLM judge, paid call, corpus upload, merge/production deployment or separate Hanjeok DB/SMTP rollout occurred. The operational diagrams are installed; the separate experiment diagram is pending.
 
 ## Offline document-selection experiment
 

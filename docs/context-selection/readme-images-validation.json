@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-10",
+  "images": [
+    {
+      "path": "docs/images/hanjeok-two-inputs.png",
+      "sha256": "96adc5b88f0498ddb3831a6d4eae77dfaec223547e072fbe9215233cc83dd00c",
+      "width": 1672,
+      "height": 941,
+      "visualReview": "passed"
+    },
+    {
+      "path": "docs/images/request-paths.png",
+      "sha256": "ff4737e906208ae316bb083e052016370161cc8db4ab504032c6ee75b66c92f0",
+      "width": 1672,
+      "height": 941,
+      "visualReview": "passed"
+    }
+  ],
+  "readmeLanguages": [
+    "en",
+    "ko"
+  ],
+  "altAndEnlargementLinksPresent": true,
+  "operationalImageSlotsReplaced": true,
+  "historicalSvgLinksPreserved": true,
+  "experimentDiagram": "pending receipt and pixel review; no broken image link",
+  "productionDefault": "FULL",
+  "productionSourceAndCanonicalDataUnchanged": true,
+  "newLlmJudgeOrPaidCalls": false,
+  "newDeployment": false
+}

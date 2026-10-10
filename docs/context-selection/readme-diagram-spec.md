@@ -1,6 +1,6 @@
 # README diagram specification (2026-10-09)
 
-No new raster image has been generated or installed. Parent will create the approved soft-3D images. Keep labels short, arrows explicit and the build/runtime boundary visible. Decorative icons may be cute; no decoration may imply the LLM chooses a route or sidecar enters a prompt.
+Operational raster diagrams A/B were received and visually reviewed on 2026-10-10; the applicable images are installed below. Parent will supply the separate experiment diagram C. Keep labels short, arrows explicit and the build/runtime boundary visible. Decorative icons may be cute; no decoration may imply the LLM chooses a route or sidecar enters a prompt.
 
 ## Review of existing pictures and prose
 
@@ -48,3 +48,14 @@ Insertion: replace agent current “What one request does” SVG block in both R
 ## Verified deployment caption
 
 As recorded at 2026-10-09 09:13 UTC, agent ea47917 runs in Cloud Run revision hermes-agent-ea47917-b64ed4cc2, Ready, traffic 100%, health/readiness UP. The full bundle and sidecar hashes match the packaged artifacts. agent.hanjeok.com frontend deployment is complete. This deployment check made no actual LLM call. Earlier paid measurements do not verify this revised prompt/policy/cache deployment. Separate hyunolike/hanjeok database/SMTP rollout remains held.
+
+
+## Installed operational images (2026-10-10)
+
+A: docs/images/hanjeok-two-inputs.png, 1672×941, SHA-256 96adc5b88f0498ddb3831a6d4eae77dfaec223547e072fbe9215233cc83dd00c. It separates build and runtime, sends static manual and backend facts into the model, and keeps provenance server-only with production FULL.
+
+B: agent docs/images/request-paths.png, 1672×941, SHA-256 ff4737e906208ae316bb083e052016370161cc8db4ab504032c6ee75b66c92f0. Pixel review distinguishes EXPLAIN cache hit/miss, blocking ASK without tools/cache, and streaming ASK whose tools are server-validated. Captions clarify TTL from generation completion, citation-gated body emission and 2 rounds/60 seconds. Earlier SVG links stay historical.
+
+## Image C: local retrieval experiment (pending image)
+
+Title: Local Retrieval Lab — Experiment Only. Verified pinned corpus (9 docs; 8 mandatory policies, 8 source-backed search docs) → FULL / VECTOR / HYBRID_GRAPH. FULL keeps all 9 docs. VECTOR ranks top 3 with TF-IDF lexical vectors or the pinned multilingual CPU semantic model. HYBRID adds actual Neo4j 5.26.31 relationship retrieval, max 2 hops/9 documents. Relation inset: Document→Source (HAS_SOURCE), Document→Place (DESCRIBES), Place→Region (IN_REGION). Output union always retains eight policies; optional source-integrity-checked evidence remains untrusted. Then citation boundary checks and actual RAGAS 0.3.9 ID precision/recall for candidate and final-context IDs. Badges: Actual local Neo4j + embeddings; scripted responses; LLM answer generation/judge NOT RUN; Production FULL / no runtime retrieval. Optional note: semantic VECTOR misses seed in 5/35 cases. No weather/transport/synthetic fact edges or Microsoft community clustering/summaries. No image link is added until pixels are received and inspected.
