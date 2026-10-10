@@ -499,6 +499,12 @@ hashes, but paid evaluation is separate from local tests. See
 
 The wiki generator and agent consumer are integrated. The agent requires the sidecar, so future refreshes must synchronize bundle text and metadata together. CI pins merged wiki main `7fc19c0c4a034868866bcf5a920e3f82050830c7` and checks both artifacts; see the compatibility verification in [the offline report](docs/context-selection/report.md).
 
+## Local vector, graph and RAGAS experiment
+
+[The separate retrieval lab](experiments/retrieval/README.md) implements FULL / VECTOR / HYBRID_GRAPH over the pinned corpus, with the original 29 fixtures plus six graph-boundary cases. Production still uses FULL. TF-IDF is lexical sparse-vector search; semantic embeddings were not executed. Hybrid results use an in-process graph of verified document/source edges and declared seed place/region edges. The Neo4j driver adapter has a fixed parameterized read query (2 hops, 9 documents, timeout and source checks) and mock contract tests; a real Neo4j server/container was not run. This is direct relationship retrieval, not Microsoft's complete community GraphRAG pipeline.
+
+Actual RAGAS 0.3.9 ID metrics were run for 105 arm executions. On the 24 supported retrieval-attempt cases, candidate recall is 0.395833 for VECTOR and 0.708333 for HYBRID_GRAPH; precision is 0.431373 and 0.227941 on 17 defined rows each (seven empty retrievals have undefined precision). Six conservative FULL fallbacks and five capability abstentions are reported separately. Policy retention, final fixture coverage and determinism are 105/105. These ID scores do not measure response truth or LLM faithfulness. The [results](experiments/retrieval/results/results.json), [dataset](experiments/retrieval/results/dataset.jsonl) and [validation](experiments/retrieval/results/validation.json) record execution and provenance; the original approximately 2.03% context-byte ceiling remains. No semantic model, LLM judge, paid call or new deployment was executed; image slots remain pending.
+
 ## Offline document-selection experiment
 
 Production keeps **FULL**. `./gradlew offlineContextEval --args=docs/context-selection/results.json` runs a separate scripted comparison with all eight mandatory policies retained and only the 경복궁 seed optional. Ambiguous questions/references fall back to the verified full bundle; invalid body/sidecar hashes fail closed. Original order and raw slices are preserved, and citations are restricted to the request bundle. No singleton or production request path changes.

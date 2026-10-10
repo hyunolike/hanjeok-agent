@@ -1,0 +1,30 @@
+# Local vector + graph retrieval evaluation
+
+Approved expansion (2026-10-09) supersedes the earlier no-GraphRAG scope only for this local experiment. Preserve agent e97ab229, wiki be6c059b, the original 29 fixtures/results and production FULL wiring/resources. No cloud infrastructure, credential setup, paid calls, uploads of corpus/questions, deployment or operational data mutation.
+
+Python 3.12 isolated venv. Exact direct pins: scikit-learn 1.7.2 (character TF-IDF/cosine, fully local real sparse vectors), Neo4j driver 5.26.0 adapter (real Community server/container integration deferred), RAGAS 0.3.9 ID-based precision/recall. A separate optional SentenceTransformers adapter requires an already-local model directory, revision/artifact hash manifest and local-only CPU inference; no model was installed or executed. TF-IDF is lexical vector retrieval, not a neural embedding or multilingual semantic model. Reference metrics run without a judge; judge adapter is disabled unless explicitly enabled with caller-supplied authorized real RAGAS LLM/embedding adapters; no client is constructed by the runner. Never label deterministic checks as completed faithfulness/relevance judging.
+
+Files: experiments/retrieval/{retrieval_lab,tests,fixtures,results}, requirements and complete resolved version freeze, README/DESIGN, plus a Kotlin harness CLI applying the production CitationValidator to exported rows. Production Kotlin code/beans/cache and packaged resources remain untouched. Wiki edits are README/docs only, no canonical/raw/record mutation. No LangGraph or whole-service Python rewrite.
+
+Corpus: exactly the nine pinned bundle documents with source/hash/revision identity from the existing sidecar. Whole original slices remain available. Mandatory policy set is the existing eight-document set. Vector search ranks all documents as retrieval evidence, while a separate policy union always retains all mandatory documents. FULL assembly equals the existing bundle bytes. In retrieval arms, mandatory policy sections form the system input and optional retrieved content is labelled untrusted evidence in user input, never inserted into approved policy. Required-context coverage, candidate retrieval recall and final context coverage are distinct metrics. All candidate IDs are verified against the pinned corpus, and invalid metadata/hash fails closed.
+
+Graph: Document→Source edges only from verified sidecar sources. Place→Document and Place→Region only from the seed's explicit id/name/regionId; the sample/fixture origin is labelled, isolated in the experiment namespace and never presented as verified live tourism data. No transport/accessibility/weather relationships inferred from names, co-occurrence or a model. Real relationships here are document provenance; declared seed relationships remain fixture-derived. Fixed parameterized SELECT Cypher has max 2 hops, max 9 returned documents, query timeout, corpus namespace and source/document hash checks. This run exports the curated graph snapshot but delivers/executes no loader or DB mutation. READ_ACCESS is routing, not an ACL; the tested contract comes from fixed read-only query code, bounded parameters and verified node/edge whitelists; server configuration/permissions remain untested.
+
+Modes: FULL / VECTOR / HYBRID_GRAPH. Hybrid executes in-process bounded provenance/entity expansion from vector seeds and explicit grounded names/path labels; the Neo4j driver uses the corresponding fixed bounded query and is mock-contract tested only. It is direct Neo4j relationship retrieval, not Microsoft's community detection/summarization GraphRAG pipeline. Unsupported facts (weather/hours/transport etc.) abstain through an offline capability gate in every arm; ambiguous reference/intent falls back to FULL. These are experiment guards, not claims about actual model adherence. Prior assistant answers never become retrieval evidence. Existing responses/tools are scripted; no generation call is made.
+
+RAGAS dataset: user_input, response, retrieved_contexts/ids, reference_contexts/ids and reference. Measure IDBasedContextPrecision/Recall with RAGAS itself; report mandatory-policy retention, selected citation validation, unsupported abstention and graph evidence separately. Judge faithfulness and ResponseRelevancy fields stay null/status disabled until a real explicitly enabled local judge is used. Retrieval scores do not establish response correctness. Persist per-row and aggregate schemas, package/model/corpus/graph provenance, real/mock integration status, fixture composition and missing executions. Existing 2.028% maximum byte reduction remains the baseline limitation; tiny 9-doc/1-optional corpus cannot demonstrate general retrieval economics.
+
+Official references (checked 2026-10-09):
+- https://scikit-learn.org/1.7/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html
+- https://sbert.net/docs/package_reference/sentence_transformer/model.html
+- https://huggingface.co/sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
+- https://neo4j.com/docs/operations-manual/current/docker/introduction/
+- https://neo4j.com/docs/python-manual/current/transactions/
+- https://docs.ragas.io/en/v0.3.9/concepts/metrics/available_metrics/context_precision/
+- https://docs.ragas.io/en/v0.3.9/concepts/metrics/available_metrics/context_recall/
+- https://docs.ragas.io/en/v0.3.9/howtos/customizations/customize_models/
+- https://docs.ragas.io/en/v0.3.9/concepts/metrics/available_metrics/faithfulness/
+- https://docs.ragas.io/en/v0.3.9/concepts/metrics/available_metrics/answer_relevance/
+- https://microsoft.github.io/graphrag/index/default_dataflow/
+
+Implementation status: [README](README.md) and [validation](results/validation.json) distinguish actual TF-IDF/RAGAS/in-process graph runs, mock Neo4j contracts and unexecuted semantic models/LLM judges/Neo4j integration. No Docker command was run.

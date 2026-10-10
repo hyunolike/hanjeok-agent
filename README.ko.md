@@ -496,6 +496,12 @@ facts와 대화 맥락 → agent 루프 → 인용 게이트 → 스트림의 �
 
 wiki 생성기와 agent 소비 코드는 통합됐습니다. agent가 sidecar를 요구하므로 이후 갱신도 본문과 메타데이터를 함께 동기화합니다. CI는 머지된 wiki main `7fc19c0c4a034868866bcf5a920e3f82050830c7`에 고정해 두 산출물을 검사합니다. [오프라인 보고서](docs/context-selection/report.md)에 두 저장소의 호환성 검증을 기록합니다.
 
+## 로컬 벡터·그래프·RAGAS 실험
+
+[별도 retrieval lab](experiments/retrieval/README.md)에 FULL / VECTOR / HYBRID_GRAPH 비교를 구현했습니다. 기존 29 fixture와 그래프 경계 6개를 사용하며 운영은 FULL입니다. TF-IDF는 어휘 기반 희소 벡터 검색이고 의미 임베딩은 실행하지 않았습니다. Hybrid 결과는 검증된 문서/출처 관계와 seed에 선언된 장소/지역 관계를 로컬 메모리 그래프로 탐색한 값입니다. Neo4j driver adapter는 고정 매개변수 읽기 쿼리·2홉·9문서·timeout·출처 검사와 mock 계약을 검증했으며 실제 서버/컨테이너 통합은 미실행입니다. Microsoft community GraphRAG 전체 구현은 아닙니다.
+
+실제 RAGAS 0.3.9 ID 지표를 105 arm 실행에 적용했습니다. 검색 허용 24건의 후보 recall은 VECTOR 0.395833, HYBRID_GRAPH 0.708333입니다. precision은 각각 0.431373, 0.227941로 정의된 17건의 평균이며, 빈 검색 7건은 undefined로 남깁니다. FULL fallback 6건과 capability abstain 5건은 별도로 집계했습니다. 필수 정책 유지·최종 fixture 근거 커버리지·결정성은 105/105입니다. 이 ID 점수는 답변 진실성이나 LLM faithfulness가 아닙니다. [결과](experiments/retrieval/results/results.json)·[데이터셋](experiments/retrieval/results/dataset.jsonl)·[검증 기록](experiments/retrieval/results/validation.json)에 실제/미실행 범위를 남겼고 기존 약 2.03% 문서 bytes 절감 상한을 유지합니다. 의미 모델·LLM judge·유료 호출·새 배포는 없으며 새 그림 슬롯도 미완료입니다.
+
 ## 오프라인 문서 선택 실험
 
 운영 기본값은 **FULL**을 유지합니다. `./gradlew offlineContextEval --args=docs/context-selection/results.json`은 별도 scripted 비교를 실행합니다. 필수 정책 8개는 모두 유지하고 경복궁 seed만 선택적으로 넣습니다. 불명확한 질문이나 참조는 검증된 전체 번들로 fallback하고 본문/sidecar hash가 잘못되면 fail closed합니다. 문서 순서와 원문 구간을 보존하며 인용 허용 목록은 요청 번들로 제한합니다. singleton과 운영 요청 경로는 바꾸지 않습니다.
