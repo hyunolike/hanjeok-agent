@@ -15,6 +15,16 @@
       "width": 1672,
       "height": 941,
       "visualReview": "passed"
+    },
+    {
+      "path": "docs/images/local-retrieval-lab.png",
+      "sha256": "2571b6eada9086a36c729111173403f26c67693a9e2bbe99fef8acb9d3408830",
+      "width": 1672,
+      "height": 941,
+      "visualReview": "passed",
+      "readmeLanguages": [
+        "en"
+      ]
     }
   ],
   "readmeLanguages": [
@@ -24,9 +34,10 @@
   "altAndEnlargementLinksPresent": true,
   "operationalImageSlotsReplaced": true,
   "historicalSvgLinksPreserved": true,
-  "experimentDiagram": "pending receipt and pixel review; no broken image link",
+  "experimentDiagram": "English C installed and visually reviewed; Korean-labelled A/B/C and overall architecture pending receipt",
   "productionDefault": "FULL",
   "productionSourceAndCanonicalDataUnchanged": true,
   "newLlmJudgeOrPaidCalls": false,
-  "newDeployment": false
+  "newDeployment": false,
+  "localizedImageLabels": "English installed; Korean replacements pending receipt"
 }
