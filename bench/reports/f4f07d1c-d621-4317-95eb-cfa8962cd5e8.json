@@ -1,0 +1,3026 @@
+{
+  "report_id": "f4f07d1c-d621-4317-95eb-cfa8962cd5e8",
+  "status": "completed",
+  "timestamp": "2026-10-11T15:16:57.242460+00:00",
+  "corpus": "wiki",
+  "corpus_revision": "e7f4b44",
+  "corpus_generation": "2026-10-11T13:01:49.204468+00:00",
+  "corpus_size": 14,
+  "question_set": "wiki-v1",
+  "question_set_revision": "sha256:9862e9241a9b6cc331d8b1eb3027c2b7f1e43ed997dc85526a471430427d8335",
+  "question_count": 30,
+  "answer_model": {
+    "name": "nvidia/nemotron-3-super-120b-a12b",
+    "provider": "nvidia",
+    "base_url": "https://integrate.api.nvidia.com/v1",
+    "enable_thinking": false,
+    "temperature": 0,
+    "max_tokens": 800
+  },
+  "judge_model": {
+    "name": "nvidia/nemotron-3-super-120b-a12b",
+    "provider": "nvidia",
+    "base_url": "https://integrate.api.nvidia.com/v1",
+    "enable_thinking": false,
+    "temperature": 0,
+    "max_tokens": 4096,
+    "ragas_version": "0.4.3",
+    "answer_relevancy_strictness": 3,
+    "response_cache": false,
+    "provider_retries": 0,
+    "structured_attempts": 1,
+    "request_timeout_seconds": 90,
+    "minimum_request_interval_seconds": 2,
+    "embedding": {
+      "name": "intfloat/multilingual-e5-large",
+      "revision": "3d7cfbdacd47fdda877c5cd8a79fbcc4f2a574f3",
+      "prefix": "query: "
+    }
+  },
+  "judge_usage": {
+    "model_calls": 569,
+    "prompt_tokens": 748265,
+    "completion_tokens": 57988,
+    "responses_with_usage": 569,
+    "calls_without_usage": 0
+  },
+  "scoring_policy": {
+    "faithfulness_context": "actually supplied passages from cited documents only, including attrs",
+    "retrieval_context": "all actually supplied passages, in supplied order",
+    "reference": "question must_contain factual clauses joined with newlines",
+    "declines": "no numeric answer scores; retrieval scores only when reference and contexts exist",
+    "eligible": "both arms normal, shared inputs equal, frozen corpus and answer model match",
+    "judge_concurrency": 4,
+    "metric_timeout_seconds": 600
+  },
+  "valid_pairs": 30,
+  "included_pairs": 30,
+  "excluded_pairs": 0,
+  "pairs": [
+    {
+      "pair_id": "f44cfd4c-9ae2-4992-9dc3-fe9588456389",
+      "question_id": "q01",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "f64d0822-2e7d-45ec-84dc-53835790bfbe",
+      "question_id": "q02",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "1c50ebaf-8efb-4d8c-bdd8-2494fa8be736",
+      "question_id": "q03",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "b89fea0f-cecf-41a1-97ac-1c1537955421",
+      "question_id": "q04",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "19673e2d-383d-45c0-9b66-ca98bd527ce4",
+      "question_id": "q05",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "640995d7-a051-4f43-8b23-cce834598ab9",
+      "question_id": "q06",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "ce80a949-1fe8-4978-8f68-c315a89cd8ad",
+      "question_id": "q07",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "35ab42bd-84e3-43db-a064-e3f152191c70",
+      "question_id": "q08",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "437c8161-2e95-4f7e-8133-1f66f2847a2a",
+      "question_id": "q09",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "f4f864d3-3cd0-41c7-abf2-a29e21b0c187",
+      "question_id": "q10",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "601c277d-aab2-4c83-bde7-d986c0565e80",
+      "question_id": "q11",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "3dabc076-9c6a-49cd-96ec-d310a0439fc0",
+      "question_id": "q12",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "5523b1fa-4ed9-47f9-beec-31032bbe9e08",
+      "question_id": "q13",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "df4e00a2-4c25-4aa7-b5d4-ba5db2e6d785",
+      "question_id": "q14",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "eff51b05-253a-41d4-8df4-c98f68671fa2",
+      "question_id": "q15",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "98786f54-0dda-44cd-95b5-66af868c1d81",
+      "question_id": "q16",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "00bc10dd-f000-4996-becb-d8ea13279210",
+      "question_id": "q17",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "91401ae3-0589-4e39-bc2f-f36eb1a75ae1",
+      "question_id": "q18",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "70a06244-66c5-41d8-bea5-96701029607e",
+      "question_id": "q19",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "8064bb56-90a0-4ec2-8b32-e3d0d796e2f8",
+      "question_id": "q20",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "4c8763ac-7f00-4290-9442-88596362fcda",
+      "question_id": "q21",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "1f07c966-9ba7-4a33-a66e-0e688eaeec91",
+      "question_id": "q22",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "ce048d8e-2cb3-4ed1-91f1-9ed2200ef462",
+      "question_id": "q23",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "8cfd814a-464f-440d-ba2d-05849dd253bf",
+      "question_id": "q24",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "9c454f6c-9329-4a2a-b091-eeecc4862444",
+      "question_id": "q25",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "deaaa44f-ca7f-4d2c-8f41-120c8303e2eb",
+      "question_id": "q26",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "42a86236-8359-44a6-a1d5-65964be09d12",
+      "question_id": "q27",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "87e8a0b9-9b35-4c81-8893-c876732979b6",
+      "question_id": "q28",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "476ce721-5b8d-4d3e-b1ec-a6ae14f8bd5d",
+      "question_id": "q29",
+      "included": true,
+      "cause": null
+    },
+    {
+      "pair_id": "c2ff618f-855b-49e6-a563-cccf9ad730f2",
+      "question_id": "q30",
+      "included": true,
+      "cause": null
+    }
+  ],
+  "strategies": {
+    "whole": {
+      "outcomes": {
+        "answered": 23,
+        "no_grounds": 7
+      },
+      "attempted": 30,
+      "metrics": {
+        "faithfulness": {
+          "value": 0.9593685300207039,
+          "n": 23,
+          "total": 30,
+          "failed": 0,
+          "skipped": 7,
+          "not_applicable": 0,
+          "status": "ok",
+          "reason": null
+        },
+        "answer_relevancy": {
+          "value": 0.9157083291718503,
+          "n": 23,
+          "total": 30,
+          "failed": 0,
+          "skipped": 7,
+          "not_applicable": 0,
+          "status": "ok",
+          "reason": null
+        },
+        "context_precision": {
+          "value": null,
+          "n": 0,
+          "total": 30,
+          "failed": 0,
+          "skipped": 0,
+          "not_applicable": 30,
+          "status": "not_applicable",
+          "reason": "whole supplies the complete corpus and performs no selective retrieval"
+        },
+        "context_recall": {
+          "value": null,
+          "n": 0,
+          "total": 30,
+          "failed": 0,
+          "skipped": 0,
+          "not_applicable": 30,
+          "status": "not_applicable",
+          "reason": "whole supplies the complete corpus and performs no selective retrieval"
+        }
+      },
+      "by_kind": {
+        "single_doc": {
+          "faithfulness": {
+            "value": 0.9494047619047619,
+            "n": 16,
+            "total": 18,
+            "failed": 0,
+            "skipped": 2,
+            "not_applicable": 0,
+            "status": "ok",
+            "reason": null
+          },
+          "answer_relevancy": {
+            "value": 0.9370964268203242,
+            "n": 16,
+            "total": 18,
+            "failed": 0,
+            "skipped": 2,
+            "not_applicable": 0,
+            "status": "ok",
+            "reason": null
+          },
+          "context_precision": {
+            "value": null,
+            "n": 0,
+            "total": 18,
+            "failed": 0,
+            "skipped": 0,
+            "not_applicable": 18,
+            "status": "not_applicable",
+            "reason": "whole supplies the complete corpus and performs no selective retrieval"
+          },
+          "context_recall": {
+            "value": null,
+            "n": 0,
+            "total": 18,
+            "failed": 0,
+            "skipped": 0,
+            "not_applicable": 18,
+            "status": "not_applicable",
+            "reason": "whole supplies the complete corpus and performs no selective retrieval"
+          }
+        },
+        "multi_doc": {
+          "faithfulness": {
+            "value": 0.9821428571428571,
+            "n": 7,
+            "total": 7,
+            "failed": 0,
+            "skipped": 0,
+            "not_applicable": 0,
+            "status": "ok",
+            "reason": null
+          },
+          "answer_relevancy": {
+            "value": 0.8668212488324812,
+            "n": 7,
+            "total": 7,
+            "failed": 0,
+            "skipped": 0,
+            "not_applicable": 0,
+            "status": "ok",
+            "reason": null
+          },
+          "context_precision": {
+            "value": null,
+            "n": 0,
+            "total": 7,
+            "failed": 0,
+            "skipped": 0,
+            "not_applicable": 7,
+            "status": "not_applicable",
+            "reason": "whole supplies the complete corpus and performs no selective retrieval"
+          },
+          "context_recall": {
+            "value": null,
+            "n": 0,
+            "total": 7,
+            "failed": 0,
+            "skipped": 0,
+            "not_applicable": 7,
+            "status": "not_applicable",
+            "reason": "whole supplies the complete corpus and performs no selective retrieval"
+          }
+        },
+        "unanswerable": {
+          "faithfulness": {
+            "value": null,
+            "n": 0,
+            "total": 5,
+            "failed": 0,
+            "skipped": 5,
+            "not_applicable": 0,
+            "status": "unavailable",
+            "reason": "no successfully scored samples; see observations for causes"
+          },
+          "answer_relevancy": {
+            "value": null,
+            "n": 0,
+            "total": 5,
+            "failed": 0,
+            "skipped": 5,
+            "not_applicable": 0,
+            "status": "unavailable",
+            "reason": "no successfully scored samples; see observations for causes"
+          },
+          "context_precision": {
+            "value": null,
+            "n": 0,
+            "total": 5,
+            "failed": 0,
+            "skipped": 0,
+            "not_applicable": 5,
+            "status": "not_applicable",
+            "reason": "whole supplies the complete corpus and performs no selective retrieval"
+          },
+          "context_recall": {
+            "value": null,
+            "n": 0,
+            "total": 5,
+            "failed": 0,
+            "skipped": 0,
+            "not_applicable": 5,
+            "status": "not_applicable",
+            "reason": "whole supplies the complete corpus and performs no selective retrieval"
+          }
+        }
+      },
+      "abstention": {
+        "unanswerable_correct": 5,
+        "unanswerable_total": 5,
+        "unanswerable_accuracy": 1.0
+      },
+      "answer_usage": {
+        "model_calls": 30,
+        "prompt_tokens": 309573,
+        "completion_tokens": 2210,
+        "elapsed_ms": 51429
+      }
+    },
+    "graph": {
+      "outcomes": {
+        "answered": 21,
+        "no_grounds": 9
+      },
+      "attempted": 30,
+      "metrics": {
+        "faithfulness": {
+          "value": 0.9230158730158731,
+          "n": 21,
+          "total": 30,
+          "failed": 0,
+          "skipped": 9,
+          "not_applicable": 0,
+          "status": "ok",
+          "reason": null
+        },
+        "answer_relevancy": {
+          "value": 0.9028907583567595,
+          "n": 21,
+          "total": 30,
+          "failed": 0,
+          "skipped": 9,
+          "not_applicable": 0,
+          "status": "ok",
+          "reason": null
+        },
+        "context_precision": {
+          "value": 0.6806984237660473,
+          "n": 25,
+          "total": 30,
+          "failed": 0,
+          "skipped": 0,
+          "not_applicable": 5,
+          "status": "ok",
+          "reason": null
+        },
+        "context_recall": {
+          "value": 0.94,
+          "n": 25,
+          "total": 30,
+          "failed": 0,
+          "skipped": 0,
+          "not_applicable": 5,
+          "status": "ok",
+          "reason": null
+        }
+      },
+      "by_kind": {
+        "single_doc": {
+          "faithfulness": {
+            "value": 0.9270833333333334,
+            "n": 16,
+            "total": 18,
+            "failed": 0,
+            "skipped": 2,
+            "not_applicable": 0,
+            "status": "ok",
+            "reason": null
+          },
+          "answer_relevancy": {
+            "value": 0.9154602764569852,
+            "n": 16,
+            "total": 18,
+            "failed": 0,
+            "skipped": 2,
+            "not_applicable": 0,
+            "status": "ok",
+            "reason": null
+          },
+          "context_precision": {
+            "value": 0.6853785874286483,
+            "n": 18,
+            "total": 18,
+            "failed": 0,
+            "skipped": 0,
+            "not_applicable": 0,
+            "status": "ok",
+            "reason": null
+          },
+          "context_recall": {
+            "value": 0.9166666666666666,
+            "n": 18,
+            "total": 18,
+            "failed": 0,
+            "skipped": 0,
+            "not_applicable": 0,
+            "status": "ok",
+            "reason": null
+          }
+        },
+        "multi_doc": {
+          "faithfulness": {
+            "value": 0.91,
+            "n": 5,
+            "total": 7,
+            "failed": 0,
+            "skipped": 2,
+            "not_applicable": 0,
+            "status": "ok",
+            "reason": null
+          },
+          "answer_relevancy": {
+            "value": 0.862668300436037,
+            "n": 5,
+            "total": 7,
+            "failed": 0,
+            "skipped": 2,
+            "not_applicable": 0,
+            "status": "ok",
+            "reason": null
+          },
+          "context_precision": {
+            "value": 0.668663717205073,
+            "n": 7,
+            "total": 7,
+            "failed": 0,
+            "skipped": 0,
+            "not_applicable": 0,
+            "status": "ok",
+            "reason": null
+          },
+          "context_recall": {
+            "value": 1.0,
+            "n": 7,
+            "total": 7,
+            "failed": 0,
+            "skipped": 0,
+            "not_applicable": 0,
+            "status": "ok",
+            "reason": null
+          }
+        },
+        "unanswerable": {
+          "faithfulness": {
+            "value": null,
+            "n": 0,
+            "total": 5,
+            "failed": 0,
+            "skipped": 5,
+            "not_applicable": 0,
+            "status": "unavailable",
+            "reason": "no successfully scored samples; see observations for causes"
+          },
+          "answer_relevancy": {
+            "value": null,
+            "n": 0,
+            "total": 5,
+            "failed": 0,
+            "skipped": 5,
+            "not_applicable": 0,
+            "status": "unavailable",
+            "reason": "no successfully scored samples; see observations for causes"
+          },
+          "context_precision": {
+            "value": null,
+            "n": 0,
+            "total": 5,
+            "failed": 0,
+            "skipped": 0,
+            "not_applicable": 5,
+            "status": "unavailable",
+            "reason": "no successfully scored samples; see observations for causes"
+          },
+          "context_recall": {
+            "value": null,
+            "n": 0,
+            "total": 5,
+            "failed": 0,
+            "skipped": 0,
+            "not_applicable": 5,
+            "status": "unavailable",
+            "reason": "no successfully scored samples; see observations for causes"
+          }
+        }
+      },
+      "abstention": {
+        "unanswerable_correct": 5,
+        "unanswerable_total": 5,
+        "unanswerable_accuracy": 1.0
+      },
+      "answer_usage": {
+        "model_calls": 30,
+        "prompt_tokens": 70648,
+        "completion_tokens": 2175,
+        "elapsed_ms": 111314
+      }
+    }
+  },
+  "scores": [
+    {
+      "run_id": "fcd4233e-062f-4f5e-90a8-4c3175f9084c",
+      "question_id": "q01",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "fcd4233e-062f-4f5e-90a8-4c3175f9084c",
+      "question_id": "q01",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": 0.9614999711610636,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "fcd4233e-062f-4f5e-90a8-4c3175f9084c",
+      "question_id": "q01",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "fcd4233e-062f-4f5e-90a8-4c3175f9084c",
+      "question_id": "q01",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "860bf40b-5b13-4754-b35e-dd4cda2fac4d",
+      "question_id": "q01",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": 0.5,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "860bf40b-5b13-4754-b35e-dd4cda2fac4d",
+      "question_id": "q01",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": 0.9459191601662003,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "860bf40b-5b13-4754-b35e-dd4cda2fac4d",
+      "question_id": "q01",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": 0.16666666665,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "860bf40b-5b13-4754-b35e-dd4cda2fac4d",
+      "question_id": "q01",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": 0.5,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "bbac9745-bcec-44e3-a2b7-8da86bd5c25c",
+      "question_id": "q02",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": 0.3333333333333333,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "bbac9745-bcec-44e3-a2b7-8da86bd5c25c",
+      "question_id": "q02",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": 0.9373135842621086,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "bbac9745-bcec-44e3-a2b7-8da86bd5c25c",
+      "question_id": "q02",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "bbac9745-bcec-44e3-a2b7-8da86bd5c25c",
+      "question_id": "q02",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "86ceff75-6e7f-4747-a411-2a96db8fbf72",
+      "question_id": "q02",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": 0.3333333333333333,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "86ceff75-6e7f-4747-a411-2a96db8fbf72",
+      "question_id": "q02",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": 0.9418495880245289,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "86ceff75-6e7f-4747-a411-2a96db8fbf72",
+      "question_id": "q02",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": 0.26666666665333333,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "86ceff75-6e7f-4747-a411-2a96db8fbf72",
+      "question_id": "q02",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "fd22ca3c-d3eb-4cdd-a325-0cae1c0a125c",
+      "question_id": "q03",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "fd22ca3c-d3eb-4cdd-a325-0cae1c0a125c",
+      "question_id": "q03",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": 0.9472083745224844,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "fd22ca3c-d3eb-4cdd-a325-0cae1c0a125c",
+      "question_id": "q03",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "fd22ca3c-d3eb-4cdd-a325-0cae1c0a125c",
+      "question_id": "q03",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "4b9b4311-781e-4413-92be-0ba3bf99d667",
+      "question_id": "q03",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "4b9b4311-781e-4413-92be-0ba3bf99d667",
+      "question_id": "q03",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": 0.9024084539781718,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "4b9b4311-781e-4413-92be-0ba3bf99d667",
+      "question_id": "q03",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": 0.9999999999,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "4b9b4311-781e-4413-92be-0ba3bf99d667",
+      "question_id": "q03",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "35d51577-0e0d-4446-8915-3b43758ed36d",
+      "question_id": "q04",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "35d51577-0e0d-4446-8915-3b43758ed36d",
+      "question_id": "q04",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": 0.9342417367824855,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "35d51577-0e0d-4446-8915-3b43758ed36d",
+      "question_id": "q04",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "35d51577-0e0d-4446-8915-3b43758ed36d",
+      "question_id": "q04",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "0ebf8779-6e97-40db-baae-4a30c70806a1",
+      "question_id": "q04",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "0ebf8779-6e97-40db-baae-4a30c70806a1",
+      "question_id": "q04",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": 0.9461739733126522,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "0ebf8779-6e97-40db-baae-4a30c70806a1",
+      "question_id": "q04",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": 0.7555555555303703,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "0ebf8779-6e97-40db-baae-4a30c70806a1",
+      "question_id": "q04",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "e99e3431-ecf2-4369-9a89-b6ea29ed4e1c",
+      "question_id": "q05",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "e99e3431-ecf2-4369-9a89-b6ea29ed4e1c",
+      "question_id": "q05",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": 0.8888347614349451,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "e99e3431-ecf2-4369-9a89-b6ea29ed4e1c",
+      "question_id": "q05",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "e99e3431-ecf2-4369-9a89-b6ea29ed4e1c",
+      "question_id": "q05",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "9bb66606-9ac8-4e3b-a542-39f4965d6633",
+      "question_id": "q05",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "9bb66606-9ac8-4e3b-a542-39f4965d6633",
+      "question_id": "q05",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": 0.8349267090207264,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "9bb66606-9ac8-4e3b-a542-39f4965d6633",
+      "question_id": "q05",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": 0.9999999999,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "9bb66606-9ac8-4e3b-a542-39f4965d6633",
+      "question_id": "q05",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "9959072e-cee4-464d-8bb2-407e5a2cfaa9",
+      "question_id": "q06",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "9959072e-cee4-464d-8bb2-407e5a2cfaa9",
+      "question_id": "q06",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": 0.9161590599342967,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "9959072e-cee4-464d-8bb2-407e5a2cfaa9",
+      "question_id": "q06",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "9959072e-cee4-464d-8bb2-407e5a2cfaa9",
+      "question_id": "q06",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "a4a16633-f8be-4b85-a7a1-0e5d7aabc18f",
+      "question_id": "q06",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "a4a16633-f8be-4b85-a7a1-0e5d7aabc18f",
+      "question_id": "q06",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "a4a16633-f8be-4b85-a7a1-0e5d7aabc18f",
+      "question_id": "q06",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": 0.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "a4a16633-f8be-4b85-a7a1-0e5d7aabc18f",
+      "question_id": "q06",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": 0.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "1938be7e-1687-45cd-9497-9c8b9c4490ec",
+      "question_id": "q07",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "1938be7e-1687-45cd-9497-9c8b9c4490ec",
+      "question_id": "q07",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "1938be7e-1687-45cd-9497-9c8b9c4490ec",
+      "question_id": "q07",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "1938be7e-1687-45cd-9497-9c8b9c4490ec",
+      "question_id": "q07",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "ee4aebe6-b345-4b3f-a9b8-4c576e093c5d",
+      "question_id": "q07",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "ee4aebe6-b345-4b3f-a9b8-4c576e093c5d",
+      "question_id": "q07",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "ee4aebe6-b345-4b3f-a9b8-4c576e093c5d",
+      "question_id": "q07",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": 0.8874999999778125,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "ee4aebe6-b345-4b3f-a9b8-4c576e093c5d",
+      "question_id": "q07",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "b5ce024f-4704-4029-bb2a-c70e6bbb2f19",
+      "question_id": "q08",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "b5ce024f-4704-4029-bb2a-c70e6bbb2f19",
+      "question_id": "q08",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": 0.9493345079768511,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "b5ce024f-4704-4029-bb2a-c70e6bbb2f19",
+      "question_id": "q08",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "b5ce024f-4704-4029-bb2a-c70e6bbb2f19",
+      "question_id": "q08",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "4dd1485b-cb92-4d65-8cf9-a73a80f6bada",
+      "question_id": "q08",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "4dd1485b-cb92-4d65-8cf9-a73a80f6bada",
+      "question_id": "q08",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": 0.9493345079768511,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "4dd1485b-cb92-4d65-8cf9-a73a80f6bada",
+      "question_id": "q08",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": 0.6159090908936933,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "4dd1485b-cb92-4d65-8cf9-a73a80f6bada",
+      "question_id": "q08",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "356c569d-d5ac-491a-aca5-dc5967ff6286",
+      "question_id": "q09",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "356c569d-d5ac-491a-aca5-dc5967ff6286",
+      "question_id": "q09",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": 0.8722881219654588,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "356c569d-d5ac-491a-aca5-dc5967ff6286",
+      "question_id": "q09",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "356c569d-d5ac-491a-aca5-dc5967ff6286",
+      "question_id": "q09",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "db6ec01f-34dc-4b75-a441-1885c6ca9e6d",
+      "question_id": "q09",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "db6ec01f-34dc-4b75-a441-1885c6ca9e6d",
+      "question_id": "q09",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": 0.9387885271610262,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "db6ec01f-34dc-4b75-a441-1885c6ca9e6d",
+      "question_id": "q09",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": 0.9999999999,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "db6ec01f-34dc-4b75-a441-1885c6ca9e6d",
+      "question_id": "q09",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "bd37fecf-fe37-4452-9d2f-dff48279c3f8",
+      "question_id": "q10",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "bd37fecf-fe37-4452-9d2f-dff48279c3f8",
+      "question_id": "q10",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "bd37fecf-fe37-4452-9d2f-dff48279c3f8",
+      "question_id": "q10",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "bd37fecf-fe37-4452-9d2f-dff48279c3f8",
+      "question_id": "q10",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "e5b294d9-fd4b-4958-b9ce-619d629e7430",
+      "question_id": "q10",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "e5b294d9-fd4b-4958-b9ce-619d629e7430",
+      "question_id": "q10",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": 0.9283040839535263,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "e5b294d9-fd4b-4958-b9ce-619d629e7430",
+      "question_id": "q10",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": 0.34090909089204546,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "e5b294d9-fd4b-4958-b9ce-619d629e7430",
+      "question_id": "q10",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "5a7c33ec-5b8b-4df9-b588-779ef8518f6f",
+      "question_id": "q11",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "5a7c33ec-5b8b-4df9-b588-779ef8518f6f",
+      "question_id": "q11",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": 0.957302503030515,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "5a7c33ec-5b8b-4df9-b588-779ef8518f6f",
+      "question_id": "q11",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "5a7c33ec-5b8b-4df9-b588-779ef8518f6f",
+      "question_id": "q11",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "5f46539f-7db8-4759-9ac6-fcf7dad80587",
+      "question_id": "q11",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "5f46539f-7db8-4759-9ac6-fcf7dad80587",
+      "question_id": "q11",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": 0.9811876666703722,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "5f46539f-7db8-4759-9ac6-fcf7dad80587",
+      "question_id": "q11",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": 0.5571428571289286,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "5f46539f-7db8-4759-9ac6-fcf7dad80587",
+      "question_id": "q11",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "b28e1344-d623-4488-a939-cca0e28aba10",
+      "question_id": "q12",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "b28e1344-d623-4488-a939-cca0e28aba10",
+      "question_id": "q12",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": 0.9773391005807089,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "b28e1344-d623-4488-a939-cca0e28aba10",
+      "question_id": "q12",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "b28e1344-d623-4488-a939-cca0e28aba10",
+      "question_id": "q12",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "11109606-325a-47db-9dd5-28fade9d683e",
+      "question_id": "q12",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "11109606-325a-47db-9dd5-28fade9d683e",
+      "question_id": "q12",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": 0.9771112841131132,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "11109606-325a-47db-9dd5-28fade9d683e",
+      "question_id": "q12",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": 0.9333333333177777,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "11109606-325a-47db-9dd5-28fade9d683e",
+      "question_id": "q12",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "a37fe29b-52ee-4437-a59a-59bf6e07cbdb",
+      "question_id": "q13",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "a37fe29b-52ee-4437-a59a-59bf6e07cbdb",
+      "question_id": "q13",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": 0.9861720370727651,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "a37fe29b-52ee-4437-a59a-59bf6e07cbdb",
+      "question_id": "q13",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "a37fe29b-52ee-4437-a59a-59bf6e07cbdb",
+      "question_id": "q13",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "cbb8a5cb-9574-41cb-9675-a522829ba1b5",
+      "question_id": "q13",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "cbb8a5cb-9574-41cb-9675-a522829ba1b5",
+      "question_id": "q13",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": 0.8971359954260536,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "cbb8a5cb-9574-41cb-9675-a522829ba1b5",
+      "question_id": "q13",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": 0.42424242422828284,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "cbb8a5cb-9574-41cb-9675-a522829ba1b5",
+      "question_id": "q13",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "3c9ea269-1430-457a-b6e4-0b1e19d9db09",
+      "question_id": "q14",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "3c9ea269-1430-457a-b6e4-0b1e19d9db09",
+      "question_id": "q14",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": 0.9272368950125088,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "3c9ea269-1430-457a-b6e4-0b1e19d9db09",
+      "question_id": "q14",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "3c9ea269-1430-457a-b6e4-0b1e19d9db09",
+      "question_id": "q14",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "15034f70-5925-424e-ab46-e615912dfee7",
+      "question_id": "q14",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "15034f70-5925-424e-ab46-e615912dfee7",
+      "question_id": "q14",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": 0.7718922237289463,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "15034f70-5925-424e-ab46-e615912dfee7",
+      "question_id": "q14",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": 0.6388888888675925,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "15034f70-5925-424e-ab46-e615912dfee7",
+      "question_id": "q14",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "aca21d78-4483-4baf-b817-6ef4d8820d4a",
+      "question_id": "q15",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "aca21d78-4483-4baf-b817-6ef4d8820d4a",
+      "question_id": "q15",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": 0.944056655350273,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "aca21d78-4483-4baf-b817-6ef4d8820d4a",
+      "question_id": "q15",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "aca21d78-4483-4baf-b817-6ef4d8820d4a",
+      "question_id": "q15",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "6b4b27c1-08cb-47f2-95ed-e6ee79ad43c1",
+      "question_id": "q15",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "6b4b27c1-08cb-47f2-95ed-e6ee79ad43c1",
+      "question_id": "q15",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": 0.944056655350273,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "6b4b27c1-08cb-47f2-95ed-e6ee79ad43c1",
+      "question_id": "q15",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": 0.9999999999666667,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "6b4b27c1-08cb-47f2-95ed-e6ee79ad43c1",
+      "question_id": "q15",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "d119cc8a-7884-4b46-9d08-2b5d15071a24",
+      "question_id": "q16",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": 0.8571428571428571,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "d119cc8a-7884-4b46-9d08-2b5d15071a24",
+      "question_id": "q16",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": 0.9243328856347085,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "d119cc8a-7884-4b46-9d08-2b5d15071a24",
+      "question_id": "q16",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "d119cc8a-7884-4b46-9d08-2b5d15071a24",
+      "question_id": "q16",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "cf87ee28-3ef1-4404-a89c-272c9909856e",
+      "question_id": "q16",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "cf87ee28-3ef1-4404-a89c-272c9909856e",
+      "question_id": "q16",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": 0.8875219962347245,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "cf87ee28-3ef1-4404-a89c-272c9909856e",
+      "question_id": "q16",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": 0.99999999998,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "cf87ee28-3ef1-4404-a89c-272c9909856e",
+      "question_id": "q16",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "a59622f5-4d39-4eb9-85d1-c9bf49210ae0",
+      "question_id": "q17",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "a59622f5-4d39-4eb9-85d1-c9bf49210ae0",
+      "question_id": "q17",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": 0.9119099108169849,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "a59622f5-4d39-4eb9-85d1-c9bf49210ae0",
+      "question_id": "q17",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "a59622f5-4d39-4eb9-85d1-c9bf49210ae0",
+      "question_id": "q17",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "39bdbc2b-418d-439e-8932-facab1e4bb97",
+      "question_id": "q17",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "39bdbc2b-418d-439e-8932-facab1e4bb97",
+      "question_id": "q17",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": 0.9608340513624731,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "39bdbc2b-418d-439e-8932-facab1e4bb97",
+      "question_id": "q17",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": 0.7499999999625,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "39bdbc2b-418d-439e-8932-facab1e4bb97",
+      "question_id": "q17",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "7a2b7240-9a44-4da1-8f03-48ac1f5e5fd3",
+      "question_id": "q18",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "7a2b7240-9a44-4da1-8f03-48ac1f5e5fd3",
+      "question_id": "q18",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": 0.9583127235870298,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "7a2b7240-9a44-4da1-8f03-48ac1f5e5fd3",
+      "question_id": "q18",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "7a2b7240-9a44-4da1-8f03-48ac1f5e5fd3",
+      "question_id": "q18",
+      "kind": "single_doc",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "ea5cc4cb-3bb1-4162-b5dd-4f7285cb1fef",
+      "question_id": "q18",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "ea5cc4cb-3bb1-4162-b5dd-4f7285cb1fef",
+      "question_id": "q18",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": 0.8399195468321249,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "ea5cc4cb-3bb1-4162-b5dd-4f7285cb1fef",
+      "question_id": "q18",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": 0.9999999999666667,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "ea5cc4cb-3bb1-4162-b5dd-4f7285cb1fef",
+      "question_id": "q18",
+      "kind": "single_doc",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "7e481139-0b74-4990-a26a-7f5e096facef",
+      "question_id": "q19",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "7e481139-0b74-4990-a26a-7f5e096facef",
+      "question_id": "q19",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": 0.8834617870046563,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "7e481139-0b74-4990-a26a-7f5e096facef",
+      "question_id": "q19",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "7e481139-0b74-4990-a26a-7f5e096facef",
+      "question_id": "q19",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "b3e92559-4c40-4f9b-996e-3ce63ab9d442",
+      "question_id": "q19",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": 0.75,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "b3e92559-4c40-4f9b-996e-3ce63ab9d442",
+      "question_id": "q19",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": 0.8189720915475359,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "b3e92559-4c40-4f9b-996e-3ce63ab9d442",
+      "question_id": "q19",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": 0.9999999999,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "b3e92559-4c40-4f9b-996e-3ce63ab9d442",
+      "question_id": "q19",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "d3157fba-e032-4a4f-be96-929eaccc31e7",
+      "question_id": "q20",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "d3157fba-e032-4a4f-be96-929eaccc31e7",
+      "question_id": "q20",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": 0.8220902258499129,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "d3157fba-e032-4a4f-be96-929eaccc31e7",
+      "question_id": "q20",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "d3157fba-e032-4a4f-be96-929eaccc31e7",
+      "question_id": "q20",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "807fbe0d-f773-4450-bd52-7cab3cb7c1cd",
+      "question_id": "q20",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "807fbe0d-f773-4450-bd52-7cab3cb7c1cd",
+      "question_id": "q20",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": 0.8651625209945207,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "807fbe0d-f773-4450-bd52-7cab3cb7c1cd",
+      "question_id": "q20",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": 0.7342424242277394,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "807fbe0d-f773-4450-bd52-7cab3cb7c1cd",
+      "question_id": "q20",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "831e9c87-a51e-40ad-b292-513f51efd634",
+      "question_id": "q21",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "831e9c87-a51e-40ad-b292-513f51efd634",
+      "question_id": "q21",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": 0.8902750382093124,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "831e9c87-a51e-40ad-b292-513f51efd634",
+      "question_id": "q21",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "831e9c87-a51e-40ad-b292-513f51efd634",
+      "question_id": "q21",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "d3f0b542-fa09-4cca-90aa-d62b5ef7e4fd",
+      "question_id": "q21",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "d3f0b542-fa09-4cca-90aa-d62b5ef7e4fd",
+      "question_id": "q21",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": 0.9066304885546534,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "d3f0b542-fa09-4cca-90aa-d62b5ef7e4fd",
+      "question_id": "q21",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": 0.6840659340488324,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "d3f0b542-fa09-4cca-90aa-d62b5ef7e4fd",
+      "question_id": "q21",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "a45af329-7147-4730-a26c-a131f47561ef",
+      "question_id": "q22",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": 0.875,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "a45af329-7147-4730-a26c-a131f47561ef",
+      "question_id": "q22",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": 0.8482287774468805,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "a45af329-7147-4730-a26c-a131f47561ef",
+      "question_id": "q22",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "a45af329-7147-4730-a26c-a131f47561ef",
+      "question_id": "q22",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "a709aff9-7a3a-4cbb-9eda-ceea21f3b030",
+      "question_id": "q22",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "a709aff9-7a3a-4cbb-9eda-ceea21f3b030",
+      "question_id": "q22",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "a709aff9-7a3a-4cbb-9eda-ceea21f3b030",
+      "question_id": "q22",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": 0.17142857142,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "a709aff9-7a3a-4cbb-9eda-ceea21f3b030",
+      "question_id": "q22",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "413318a4-5af4-4ff5-a03f-1c8558154fc2",
+      "question_id": "q23",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "413318a4-5af4-4ff5-a03f-1c8558154fc2",
+      "question_id": "q23",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": 0.8249731243870183,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "413318a4-5af4-4ff5-a03f-1c8558154fc2",
+      "question_id": "q23",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "413318a4-5af4-4ff5-a03f-1c8558154fc2",
+      "question_id": "q23",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "5d55e606-23bc-434f-9ab9-99c7ef349702",
+      "question_id": "q23",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "5d55e606-23bc-434f-9ab9-99c7ef349702",
+      "question_id": "q23",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": 0.8249731243870183,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "5d55e606-23bc-434f-9ab9-99c7ef349702",
+      "question_id": "q23",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": 0.499999999975,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "5d55e606-23bc-434f-9ab9-99c7ef349702",
+      "question_id": "q23",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "c06dd490-38d6-4828-98e1-e0c70d8d00f5",
+      "question_id": "q24",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "c06dd490-38d6-4828-98e1-e0c70d8d00f5",
+      "question_id": "q24",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": 0.882379366959705,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "c06dd490-38d6-4828-98e1-e0c70d8d00f5",
+      "question_id": "q24",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "c06dd490-38d6-4828-98e1-e0c70d8d00f5",
+      "question_id": "q24",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "bf00067e-cd6e-470d-805b-641b969ac8a0",
+      "question_id": "q24",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": 0.8,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "bf00067e-cd6e-470d-805b-641b969ac8a0",
+      "question_id": "q24",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": 0.8976032766964567,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "bf00067e-cd6e-470d-805b-641b969ac8a0",
+      "question_id": "q24",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": 0.5909090908972727,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "bf00067e-cd6e-470d-805b-641b969ac8a0",
+      "question_id": "q24",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "e32bfb45-a55b-40ff-8362-25f5b172839a",
+      "question_id": "q25",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "e32bfb45-a55b-40ff-8362-25f5b172839a",
+      "question_id": "q25",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": 0.9163404219698834,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "e32bfb45-a55b-40ff-8362-25f5b172839a",
+      "question_id": "q25",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "e32bfb45-a55b-40ff-8362-25f5b172839a",
+      "question_id": "q25",
+      "kind": "multi_doc",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "a4adab45-3898-42f0-abd5-7f591652911d",
+      "question_id": "q25",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "a4adab45-3898-42f0-abd5-7f591652911d",
+      "question_id": "q25",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "a4adab45-3898-42f0-abd5-7f591652911d",
+      "question_id": "q25",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": 0.9999999999666667,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "a4adab45-3898-42f0-abd5-7f591652911d",
+      "question_id": "q25",
+      "kind": "multi_doc",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+    },
+    {
+      "run_id": "f1912d68-7b82-45b3-b06e-c47cc836f5bc",
+      "question_id": "q26",
+      "kind": "unanswerable",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "f1912d68-7b82-45b3-b06e-c47cc836f5bc",
+      "question_id": "q26",
+      "kind": "unanswerable",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "f1912d68-7b82-45b3-b06e-c47cc836f5bc",
+      "question_id": "q26",
+      "kind": "unanswerable",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "f1912d68-7b82-45b3-b06e-c47cc836f5bc",
+      "question_id": "q26",
+      "kind": "unanswerable",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "fd78e156-2af5-47b1-97d9-9c3b537550df",
+      "question_id": "q26",
+      "kind": "unanswerable",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "fd78e156-2af5-47b1-97d9-9c3b537550df",
+      "question_id": "q26",
+      "kind": "unanswerable",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "fd78e156-2af5-47b1-97d9-9c3b537550df",
+      "question_id": "q26",
+      "kind": "unanswerable",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "unsupported question has no reference claims"
+    },
+    {
+      "run_id": "fd78e156-2af5-47b1-97d9-9c3b537550df",
+      "question_id": "q26",
+      "kind": "unanswerable",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "unsupported question has no reference claims"
+    },
+    {
+      "run_id": "0483c5b3-ad00-43c1-bbdd-33a914207e12",
+      "question_id": "q27",
+      "kind": "unanswerable",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "0483c5b3-ad00-43c1-bbdd-33a914207e12",
+      "question_id": "q27",
+      "kind": "unanswerable",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "0483c5b3-ad00-43c1-bbdd-33a914207e12",
+      "question_id": "q27",
+      "kind": "unanswerable",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "0483c5b3-ad00-43c1-bbdd-33a914207e12",
+      "question_id": "q27",
+      "kind": "unanswerable",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "a5e6f630-388f-4bcd-9669-3ee373e65347",
+      "question_id": "q27",
+      "kind": "unanswerable",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "a5e6f630-388f-4bcd-9669-3ee373e65347",
+      "question_id": "q27",
+      "kind": "unanswerable",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "a5e6f630-388f-4bcd-9669-3ee373e65347",
+      "question_id": "q27",
+      "kind": "unanswerable",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "unsupported question has no reference claims"
+    },
+    {
+      "run_id": "a5e6f630-388f-4bcd-9669-3ee373e65347",
+      "question_id": "q27",
+      "kind": "unanswerable",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "unsupported question has no reference claims"
+    },
+    {
+      "run_id": "0474308c-050c-4bbe-840b-ba73cc46310e",
+      "question_id": "q28",
+      "kind": "unanswerable",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "0474308c-050c-4bbe-840b-ba73cc46310e",
+      "question_id": "q28",
+      "kind": "unanswerable",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "0474308c-050c-4bbe-840b-ba73cc46310e",
+      "question_id": "q28",
+      "kind": "unanswerable",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "0474308c-050c-4bbe-840b-ba73cc46310e",
+      "question_id": "q28",
+      "kind": "unanswerable",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "6e19fdbf-ec0e-4a76-bb4e-726c11db7a65",
+      "question_id": "q28",
+      "kind": "unanswerable",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "6e19fdbf-ec0e-4a76-bb4e-726c11db7a65",
+      "question_id": "q28",
+      "kind": "unanswerable",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "6e19fdbf-ec0e-4a76-bb4e-726c11db7a65",
+      "question_id": "q28",
+      "kind": "unanswerable",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "unsupported question has no reference claims"
+    },
+    {
+      "run_id": "6e19fdbf-ec0e-4a76-bb4e-726c11db7a65",
+      "question_id": "q28",
+      "kind": "unanswerable",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "unsupported question has no reference claims"
+    },
+    {
+      "run_id": "2f6f3a0a-7f8a-4f81-ae01-0f3dca34791e",
+      "question_id": "q29",
+      "kind": "unanswerable",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "2f6f3a0a-7f8a-4f81-ae01-0f3dca34791e",
+      "question_id": "q29",
+      "kind": "unanswerable",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "2f6f3a0a-7f8a-4f81-ae01-0f3dca34791e",
+      "question_id": "q29",
+      "kind": "unanswerable",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "2f6f3a0a-7f8a-4f81-ae01-0f3dca34791e",
+      "question_id": "q29",
+      "kind": "unanswerable",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "c52bde18-dad5-45eb-97a7-f5f8e2e3b581",
+      "question_id": "q29",
+      "kind": "unanswerable",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "c52bde18-dad5-45eb-97a7-f5f8e2e3b581",
+      "question_id": "q29",
+      "kind": "unanswerable",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "c52bde18-dad5-45eb-97a7-f5f8e2e3b581",
+      "question_id": "q29",
+      "kind": "unanswerable",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "unsupported question has no reference claims"
+    },
+    {
+      "run_id": "c52bde18-dad5-45eb-97a7-f5f8e2e3b581",
+      "question_id": "q29",
+      "kind": "unanswerable",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "unsupported question has no reference claims"
+    },
+    {
+      "run_id": "1aa22c88-b881-4f04-9ff8-783e8ebbfaad",
+      "question_id": "q30",
+      "kind": "unanswerable",
+      "strategy": "whole",
+      "metric": "faithfulness",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "1aa22c88-b881-4f04-9ff8-783e8ebbfaad",
+      "question_id": "q30",
+      "kind": "unanswerable",
+      "strategy": "whole",
+      "metric": "answer_relevancy",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "1aa22c88-b881-4f04-9ff8-783e8ebbfaad",
+      "question_id": "q30",
+      "kind": "unanswerable",
+      "strategy": "whole",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "1aa22c88-b881-4f04-9ff8-783e8ebbfaad",
+      "question_id": "q30",
+      "kind": "unanswerable",
+      "strategy": "whole",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "whole supplies the complete corpus and performs no selective retrieval"
+    },
+    {
+      "run_id": "7109a48c-123a-4a0b-aa8b-5ce136d26c99",
+      "question_id": "q30",
+      "kind": "unanswerable",
+      "strategy": "graph",
+      "metric": "faithfulness",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "7109a48c-123a-4a0b-aa8b-5ce136d26c99",
+      "question_id": "q30",
+      "kind": "unanswerable",
+      "strategy": "graph",
+      "metric": "answer_relevancy",
+      "value": null,
+      "status": "skipped",
+      "reason": "answer declined; no response to judge"
+    },
+    {
+      "run_id": "7109a48c-123a-4a0b-aa8b-5ce136d26c99",
+      "question_id": "q30",
+      "kind": "unanswerable",
+      "strategy": "graph",
+      "metric": "context_precision",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "unsupported question has no reference claims"
+    },
+    {
+      "run_id": "7109a48c-123a-4a0b-aa8b-5ce136d26c99",
+      "question_id": "q30",
+      "kind": "unanswerable",
+      "strategy": "graph",
+      "metric": "context_recall",
+      "value": null,
+      "status": "not_applicable",
+      "reason": "unsupported question has no reference claims"
+    }
+  ],
+  "artifacts": {
+    "runs": "f4f07d1c-d621-4317-95eb-cfa8962cd5e8.jsonl",
+    "pairs": "f4f07d1c-d621-4317-95eb-cfa8962cd5e8.pairs.jsonl",
+    "scores": "f4f07d1c-d621-4317-95eb-cfa8962cd5e8.scores.jsonl"
+  }
+}

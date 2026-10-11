@@ -34,3 +34,7 @@ usage and the question where whole supplies evidence that graph misses.
 The stored [wiki-v1 questions](questions/wiki-v1.yaml) contain 18 single-document,
 7 multi-document and 5 unsupported questions. Phase 5 uses the full loaded
 corpus; size sampling and crossover measurements remain Phase 6.
+
+See the [Phase 5 NVIDIA evaluation](reports/phase5-evaluation.md) for both full
+executions. The second lost samples to provider failures, so the original
+repeatability target remains unverified; its partial means are not a pass.

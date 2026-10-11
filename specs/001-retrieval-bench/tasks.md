@@ -119,9 +119,9 @@ moves by less than 0.05 (SC-004).
 - [X] T040 [US3] Build the report of data-model.md in `bench/src/bench/eval/score.py`, stamped with corpus revision, question-set revision, judge model and timestamp, carrying `n` per score and a `by_kind` split
 - [X] T041 [US3] Implement `POST /bench/run` returning 202 and `GET /bench/reports/{id}` in `bench/src/bench/api.py` per contracts/http-api.md
 - [X] T042 [US3] Add `bench run` and `bench report` to `bench/src/bench/cli.py`
-- [ ] T043 [US3] Run the set twice unchanged and record whether SC-004's 0.05 tolerance holds; if it does not, amend the tolerance in `specs/001-retrieval-bench/spec.md` with the observed variance rather than quietly accepting the drift
+- [X] T043 [US3] Run the set twice unchanged and record whether SC-004's 0.05 tolerance holds; if it does not, amend the tolerance in `specs/001-retrieval-bench/spec.md` with the observed variance rather than quietly accepting the drift
 
-**Checkpoint**: quickstart check 6 passes; one report exists for the wiki.
+**Checkpoint**: quickstart check 6 is implemented and two full NVIDIA question-set reports exist. 118 offline / 27 real Neo4j integration tests pass. The first evaluation scored normally; the second has provider failures and changed samples. SC-004 is inconclusive, not a pass; the spec records observed partial drift and retains 0.05 because the full comparison is unavailable. See [Phase 5 evidence](../../bench/reports/phase5-evaluation.md). Clean NVIDIA calibration is still required before Phase 6 crossover claims.
 
 ---
 

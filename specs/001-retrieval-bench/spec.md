@@ -248,7 +248,15 @@ supplied-token count grows with corpus size while the retrieval arm's does not.
   retrieval strategy supplies both in at least 8 of 10 runs, and this is
   measured separately from single-document questions.
 - **SC-004**: Re-running an unchanged question set against an unchanged corpus
-  moves each reported score by less than 0.05.
+  moves each reported score by less than 0.05, when model/scoring profiles and
+  successfully scored question membership match and neither report contains
+  judge failures. Missing or unequal samples are inconclusive, never a pass.
+  The 2026-10-11 NVIDIA calibration completed both sets, but the second had
+  12 failed arm calls, nine excluded pairs and 44 failed judge observations.
+  Its matched partial single-document cohorts moved at most 0.0096484774;
+  no multi-document repeat scores survived. The full-set tolerance remains
+  unverified; this observation does not justify changing 0.05. See the
+  [execution evidence](../../bench/reports/phase5-evaluation.md).
 - **SC-005**: The report states, for each corpus size, the supplied-token count
   per strategy, so the crossing point is read from the data and not asserted.
 - **SC-006**: A person who has not seen the code can run one question through

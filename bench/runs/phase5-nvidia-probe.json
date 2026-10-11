@@ -1,0 +1,37 @@
+{
+  "source_run_id": "25063f3c-47d8-4d83-ac28-f4ba22ce6e41",
+  "source_artifact": "phase4-2026-10-11.jsonl",
+  "judge_model": {
+    "name": "nvidia/nemotron-3-super-120b-a12b",
+    "provider": "nvidia",
+    "base_url": "https://integrate.api.nvidia.com/v1",
+    "enable_thinking": false,
+    "temperature": 0,
+    "max_tokens": 4096,
+    "ragas_version": "0.4.3",
+    "answer_relevancy_strictness": 3,
+    "response_cache": false,
+    "provider_retries": 0,
+    "structured_attempts": 1,
+    "request_timeout_seconds": 90,
+    "embedding": {
+      "name": "intfloat/multilingual-e5-large",
+      "revision": "3d7cfbdacd47fdda877c5cd8a79fbcc4f2a574f3",
+      "prefix": "query: "
+    }
+  },
+  "scores": {
+    "faithfulness": 1.0,
+    "answer_relevancy": 0.998215222077913,
+    "context_precision": 0.19999999998,
+    "context_recall": 1.0
+  },
+  "judge_usage": {
+    "model_calls": 19,
+    "prompt_tokens": 26771,
+    "completion_tokens": 2124,
+    "responses_with_usage": 19,
+    "calls_without_usage": 0
+  },
+  "purpose": "transport probe, excluded from phase5 repeat comparison"
+}
