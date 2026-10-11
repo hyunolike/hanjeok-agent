@@ -8,11 +8,15 @@ from langchain_openai import ChatOpenAI
 from openai import LengthFinishReasonError
 
 from bench.answer.pipeline import ModelAnswer, ModelReply
+from bench.provider import BASE_URL, EXTRA_BODY, MODEL, api_key
 
 
 def _default_settings() -> dict:
     return {
-        "name": os.environ.get("BENCH_ANSWER_MODEL", "gpt-4o"),
+        "name": os.environ.get("BENCH_ANSWER_MODEL", MODEL),
+        "provider": "nvidia",
+        "base_url": BASE_URL,
+        "enable_thinking": False,
         "temperature": 0,
         "max_tokens": 800,
     }
@@ -26,6 +30,9 @@ class AnswerModel:
             if chat is not None
             else ChatOpenAI(
                 model=self._settings["name"],
+                api_key=api_key(),
+                base_url=BASE_URL,
+                extra_body=EXTRA_BODY,
                 temperature=self._settings["temperature"],
                 max_tokens=self._settings["max_tokens"],
                 max_retries=0,

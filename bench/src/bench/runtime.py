@@ -53,6 +53,28 @@ class BenchRuntime:
             except (DriverError, Neo4jError):
                 raise BenchError("load_failed", "graph unavailable") from None
 
+    def corpus_context(self, corpus: str) -> dict:
+        """Freeze evaluation identity and validate references before paid calls."""
+        with self._lock:
+            try:
+                snapshot = corpus_snapshot(self.driver, corpus)
+                if snapshot is None:
+                    raise BenchError("load_failed", "corpus is not loaded", 409)
+                paths = document_paths(self.driver, corpus)
+                if corpus_snapshot(self.driver, corpus) != snapshot:
+                    raise BenchError("load_failed", "corpus changed during preflight", 409)
+                return {
+                    "corpus": corpus,
+                    "corpus_revision": snapshot[0],
+                    "corpus_generation": snapshot[1],
+                    "corpus_size": len(paths),
+                    "known_paths": paths,
+                }
+            except BenchError:
+                raise
+            except Exception:
+                raise BenchError("load_failed", "graph unavailable") from None
+
     def rebuild(self, name: str) -> dict:
         loader = self.loaders.get(name)
         if loader is None:

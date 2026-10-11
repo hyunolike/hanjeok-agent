@@ -86,11 +86,13 @@ Run a stored question set through both strategies and produce one report
 **Request**
 
 ```json
-{"question_set": "wiki-v1", "corpus": "wiki", "sizes": [17]}
+{"question_set": "wiki-v1", "corpus": "wiki"}
 ```
 
-`sizes` selects the sampled corpus sizes to run; a single-element list is one
-point on the curve. Absent, it means the corpus at full size.
+Absent `sizes` means the full loaded corpus. Phase 5 also accepts a single
+element equal to its current document count. Other sizes, including multiple
+elements, return 409: sampling is Phase 6 and is never silently ignored.
+Question-set/reference validation and corpus preflight finish before acceptance.
 
 **202 Accepted**, returning `{"report_id": "…", "status_url": "/bench/reports/…"}`.
 Accepted rather than 200 because a 30-question set across two arms is minutes of
@@ -99,7 +101,19 @@ question-set size.
 
 ## `GET /bench/reports/{id}`
 
-The report of the data model, or `{"status": "running", "completed": 12, "total": 60}`.
+The completed report of the data model, or a running progress object:
+
+```json
+{"report_id":"…","status":"running","phase":"answering","completed":12,"total":60,"scores_completed":0,"scores_total":240}
+```
+
+`completed` counts recorded answer arms, updated after each complete pair.
+The scoring phase counts all metric observations, including skips and
+not-applicable rows; it does not mean 240 judge requests were made. Final
+reports and running markers are saved atomically. A job read from another
+process after restart returns `interrupted`; it is not resumed. Fatal artifact
+errors mark the job `failed`, retaining existing evidence. Unknown/unsafe IDs
+return 404. The local server queues jobs on one evaluation worker.
 
 ## `GET /bench/corpora`
 

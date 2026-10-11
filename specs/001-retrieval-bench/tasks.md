@@ -110,15 +110,15 @@ inputs; only `supplied` may differ.
 **Independent test**: Run the set twice against an unchanged corpus; every score
 moves by less than 0.05 (SC-004).
 
-- [ ] T034 [P] [US3] Implement question-set loading and schema validation in `bench/src/bench/eval/questions.py` for the YAML of data-model.md, rejecting a `single_doc` entry with empty `reference_docs`
-- [ ] T035 [US3] Write roughly 30 questions to `bench/questions/wiki-v1.yaml`, mixing `single_doc`, `multi_doc` and `unanswerable`, with `reference_docs` drawn from the real wiki
-- [ ] T036 [US3] Implement unattended execution of a set across both arms in `bench/src/bench/eval/runner.py`, continuing past a failed run
-- [ ] T037 [US3] Wire RAGAS in `bench/src/bench/eval/score.py`: faithfulness and answer relevancy for both arms, context precision and recall for `graph` only
-- [ ] T038 [US3] Implement the applicability rule in `bench/src/bench/eval/score.py` — `not_applicable` with a reason for the `whole` arm's retrieval metrics, never a zero (FR-011)
-- [ ] T039 [US3] Write `bench/tests/unit/test_score_applicability.py` asserting the `whole` arm never receives a numeric context-precision score
-- [ ] T040 [US3] Build the report of data-model.md in `bench/src/bench/eval/score.py`, stamped with corpus revision, question-set revision, judge model and timestamp, carrying `n` per score and a `by_kind` split
-- [ ] T041 [US3] Implement `POST /bench/run` returning 202 and `GET /bench/reports/{id}` in `bench/src/bench/api.py` per contracts/http-api.md
-- [ ] T042 [US3] Add `bench run` and `bench report` to `bench/src/bench/cli.py`
+- [X] T034 [P] [US3] Implement question-set loading and schema validation in `bench/src/bench/eval/questions.py` for the YAML of data-model.md, rejecting a `single_doc` entry with empty `reference_docs`
+- [X] T035 [US3] Write roughly 30 questions to `bench/questions/wiki-v1.yaml`, mixing `single_doc`, `multi_doc` and `unanswerable`, with `reference_docs` drawn from the real wiki
+- [X] T036 [US3] Implement unattended execution of a set across both arms in `bench/src/bench/eval/runner.py`, continuing past a failed run
+- [X] T037 [US3] Wire RAGAS in `bench/src/bench/eval/score.py`: faithfulness and answer relevancy for both arms, context precision and recall for `graph` only
+- [X] T038 [US3] Implement the applicability rule in `bench/src/bench/eval/score.py` — `not_applicable` with a reason for the `whole` arm's retrieval metrics, never a zero (FR-011)
+- [X] T039 [US3] Write `bench/tests/unit/test_evaluation.py` asserting the `whole` arm never receives a numeric context-precision score
+- [X] T040 [US3] Build the report of data-model.md in `bench/src/bench/eval/score.py`, stamped with corpus revision, question-set revision, judge model and timestamp, carrying `n` per score and a `by_kind` split
+- [X] T041 [US3] Implement `POST /bench/run` returning 202 and `GET /bench/reports/{id}` in `bench/src/bench/api.py` per contracts/http-api.md
+- [X] T042 [US3] Add `bench run` and `bench report` to `bench/src/bench/cli.py`
 - [ ] T043 [US3] Run the set twice unchanged and record whether SC-004's 0.05 tolerance holds; if it does not, amend the tolerance in `specs/001-retrieval-bench/spec.md` with the observed variance rather than quietly accepting the drift
 
 **Checkpoint**: quickstart check 6 passes; one report exists for the wiki.

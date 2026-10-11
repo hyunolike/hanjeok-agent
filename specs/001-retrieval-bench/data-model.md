@@ -137,6 +137,10 @@ cause and the input diff; each `.jsonl` run row remains one strategy execution.
 ## Question Set
 
 Stored as YAML under `bench/questions/`, versioned with the repository.
+The file is `{id: <set-name>, questions: [...]}` and its revision is the
+SHA-256 of the exact bytes read. Set IDs and question IDs are safe identifiers;
+question IDs must be unique. A set contains 1–100 questions. Unknown fields,
+blank text, duplicate/unsafe references and malformed kinds are rejected.
 
 | Field | Notes |
 |---|---|
@@ -152,6 +156,11 @@ difference the graph arm is supposed to show.
 
 `unanswerable` entries score as correct when the system declines. Without them a
 system that answers everything confidently would score well.
+`single_doc` requires exactly one canonical reference, `multi_doc` at least
+two, and both need nonempty factual claims. Unsupported questions have neither.
+Before any inference, every reference is checked against the loaded corpus and
+every question must name the requested corpus. `must_contain` is joined into
+RAGAS's reference answer; it is not an exact-text matching rule.
 
 ## Report
 
@@ -159,11 +168,34 @@ Produced from runs, one per scoring execution.
 
 | Field | Notes |
 |---|---|
-| `report_id`, `generated_at` | |
-| `corpus`, `corpus_revision`, `corpus_size` | |
-| `question_set_revision`, `judge_model` | FR-012 |
-| `scores` | Per strategy, per metric: value, `n` computed over, and `not_applicable` with a reason |
-| `by_kind` | The same scores split by question `kind` |
+| `report_id`, `status`, `timestamp` | UUID, completed status and UTC generation time |
+| `corpus`, `corpus_revision`, `corpus_generation`, `corpus_size` | Frozen loaded profile |
+| `question_set`, `question_set_revision`, `question_count` | Name, content hash and requested denominator |
+| `answer_model`, `judge_model`, `scoring_policy` | Provider/endpoint/settings, library/embedding revisions and applicability rules |
+| `strategies.<arm>.metrics` | Each metric's value, successful `n`, total, failed/skipped/not-applicable counts and reason |
+| `strategies.<arm>.by_kind` | The same aggregates split by question kind |
+| `strategies.<arm>.outcomes`, `attempted`, `abstention` | All requested outcomes and unsupported-question denominator/accuracy |
+| `strategies.<arm>.answer_usage`, `judge_usage` | Separate observed provider calls and tokens; no price estimate |
+| `scores` | Per-run observations with metric, question/run ID, kind, status, value and fixed cause |
+| `pairs`, `included_pairs`, `excluded_pairs` | Frozen comparison eligibility, including failed arms |
+| `artifacts` | Answer/pair/score JSONL basenames |
 
 `n` sits beside every score because metrics skip runs they cannot compute, and a
 mean over 4 of 30 questions is not the same claim as a mean over 30.
+Reports are atomic JSON files under `bench/reports/`, so the same representation
+is returned by HTTP and offline CLI reads. JSONL observations are append-only.
+Whole retrieval metrics always have null value and `not_applicable` status.
+Declines have null answer metrics, not zero. Unsupported-question correctness
+requires a normal, eligible decline and uses all requested unsupported questions
+as the denominator, so execution failures cannot improve that accuracy.
+
+Faithfulness uses actually supplied passages from cited documents, including
+opaque attributes. Graph retrieval metrics use all supplied passages in order.
+The reference clauses are used for precision/recall, not faithfulness/relevancy.
+Judge failures and nonfinite values stay null and count as failures. Answer
+relevancy is cosine based and can legitimately be negative.
+
+Repeated reports are compared only when frozen profiles and scored question
+membership match and there are no judge failures. The variance artifact records
+aggregate and per-kind mean deltas, counts, the maximum delta and the original
+0.05 threshold; empty or unequal samples are inconclusive, never a false pass.

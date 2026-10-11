@@ -194,10 +194,19 @@ supplied-token count grows with corpus size while the retrieval arm's does not.
 - **FR-010**: System MUST score answers for support by cited passages and for
   addressing the question, and score the retrieval strategy for whether it
   fetched the needed passages.
+  Support is judged using only actually supplied passages belonging to cited
+  documents, including their attributes. The same restriction applies to both
+  arms. Declines have no numeric answer score. Outcome counts retain every
+  request; unsupported-question correctness uses all requested unsupported
+  questions, including failures, as its denominator.
 - **FR-011**: System MUST mark a metric not applicable rather than scoring zero
   when a strategy cannot produce the input that metric needs.
 - **FR-012**: System MUST stamp every report with corpus revision, question set
   revision, model identity and timestamp.
+  Loaded generation, size, common inputs and model settings must match the
+  frozen evaluation profile. Incompatible or failed pairs remain recorded but
+  are excluded from scoring. Every metric reports successful sample count,
+  skipped samples and judge failures alongside its mean and split by kind.
 - **FR-013**: System MUST end a failed request with a named cause drawn from a
   fixed set, and never with an empty answer presented as an answer.
 - **FR-014**: System MUST rebuild its entire derived state from the corpus files

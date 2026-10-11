@@ -1,0 +1,229 @@
+id: wiki-v1
+questions:
+  - id: q01
+    corpus: wiki
+    kind: single_doc
+    question: 대안 장소 점수는 어떤 세 항목을 어떤 가중치로 계산하며, 이 가중치는 검증된 값인가요?
+    reference_docs: [concepts/alternative-scoring.md]
+    must_contain:
+      - 관련도 0.4, 혼잡도 역점수 0.4, 거리 역점수 0.2를 더한다.
+      - 가중치는 검증 데이터가 없는 임시 정책이다.
+  - id: q02
+    corpus: wiki
+    kind: single_doc
+    question: 대안 후보의 혼잡 등급과 혼잡 데이터 유무는 어떤 조건으로 필터링하나요?
+    reference_docs: [concepts/alternative-scoring.md]
+    must_contain:
+      - RELAXED 또는 NORMAL 등급만 후보로 허용한다.
+      - 혼잡 데이터가 없는 후보는 제외한다.
+  - id: q03
+    corpus: wiki
+    kind: single_doc
+    question: 대안 장소의 summary와 recommendReason은 각각 무엇을 설명해야 하나요?
+    reference_docs: [concepts/alternative-scoring.md]
+    must_contain:
+      - summary는 장소 자체를 설명한다.
+      - recommendReason은 해당 날짜에 그 장소를 추천하는 이유를 설명한다.
+  - id: q04
+    corpus: wiki
+    kind: single_doc
+    question: 연관 관광지 API에서 숫자 관련도 점수를 얻지 못하면 대안 점수의 관련도를 어떻게 처리하나요?
+    reference_docs: [concepts/alternative-scoring.md]
+    must_contain:
+      - 숫자 관련도가 없으면 연관 여부를 이진 값으로 정규화할 수 있다.
+  - id: q05
+    corpus: wiki
+    kind: single_doc
+    question: 혼잡 등급은 concentration과 percentile 중 무엇으로 정하며, 두 값은 같은 개념인가요?
+    reference_docs: [concepts/congestion-diagnosis.md]
+    must_contain:
+      - 혼잡 등급의 기준은 percentile이며 concentration과 구분한다.
+  - id: q06
+    corpus: wiki
+    kind: single_doc
+    question: 혼잡 데이터가 없는 장소의 진단 API는 HTTP 상태와 success를 어떻게 반환하고, 어떤 예측 필드를 빼야 하나요?
+    reference_docs: [concepts/congestion-diagnosis.md]
+    must_contain:
+      - HTTP 200과 success true를 반환하고 hasCongestionData는 false다.
+      - 혼잡 등급과 percentile 및 더 나은 날짜 목록을 만들지 않는다.
+  - id: q07
+    corpus: wiki
+    kind: single_doc
+    question: 현재 혼잡 공공 API의 시간 축으로 한적한 방문 시간대를 추천할 수 있나요?
+    reference_docs: [concepts/congestion-diagnosis.md]
+    must_contain:
+      - 공개 데이터의 날짜 축만 사용하고 시간대별 예측은 제공하지 않는다.
+      - 시간대를 추천하려면 별도 데이터가 필요하다.
+  - id: q08
+    corpus: wiki
+    kind: single_doc
+    question: 코스에서 원래 장소의 위치를 바꿀 수 있나요? 대안 세 곳까지의 순서는 어떻게 정하나요?
+    reference_docs: [concepts/course-generation-policy.md]
+    must_contain:
+      - 원래 장소를 첫 방문지로 고정한다.
+      - 최대 세 대안의 순열을 비교해 총 이동 시간을 최소화한다.
+  - id: q09
+    corpus: wiki
+    kind: single_doc
+    question: 코스 timeLabel은 어떤 시작 시각과 체류 시간, 이동 시간을 사용하나요?
+    reference_docs: [concepts/course-generation-policy.md]
+    must_contain:
+      - 10시 시작과 장소마다 90분 체류를 기준으로 실제 이동 시간을 더한다.
+      - timeLabel은 한적한 시간대 예측이 아니다.
+  - id: q10
+    corpus: wiki
+    kind: single_doc
+    question: 현재 코스 제목과 요약, 추천 이유 문구는 어떤 정책으로 만들며 LLM이 생성하나요?
+    reference_docs: [concepts/course-generation-policy.md]
+    must_contain:
+      - CourseRoutePolicy와 CourseTextPolicy의 규칙 기반 문구를 사용한다.
+      - 현재 코스 생성에는 LLM을 사용하지 않는다.
+  - id: q11
+    corpus: wiki
+    kind: single_doc
+    question: 공공 API 원본과 혼잡 등급 같은 파생 데이터는 왜 분리해서 보관하나요?
+    reference_docs: [concepts/raw-derived-data-separation.md]
+    must_contain:
+      - API 원본을 보존하고 등급이나 점수 등 해석 결과를 파생 데이터로 구분한다.
+      - 출처를 추적하고 정책 변경에 따른 해석을 구분하기 위해서다.
+  - id: q12
+    corpus: wiki
+    kind: single_doc
+    question: 여행 컨텍스트 레이어의 LLM은 백엔드 결정을 바꿀 수 있나요? 설명에서 지켜야 할 역할은 무엇인가요?
+    reference_docs: [concepts/travel-context-layer.md]
+    must_contain:
+      - LLM은 확정된 백엔드 사실과 정책을 바탕으로 이유를 설명한다.
+      - 장소를 새로 만들거나 원래 장소를 뒤로 옮기거나 순서를 재결정하지 않는다.
+  - id: q13
+    corpus: wiki
+    kind: single_doc
+    question: 장소 순위와 코스 결정에서 LLM을 제외한 이유는 무엇인가요?
+    reference_docs: [decisions/keep-llm-out-of-ranking.md]
+    must_contain:
+      - 같은 입력의 결정 결과를 재현하고 정책과 공공 데이터 근거를 추적하기 위해서다.
+      - 하네스로 검증할 수 있는 결정과 LLM의 설명을 분리한다.
+  - id: q14
+    corpus: wiki
+    kind: single_doc
+    question: travel-context-wiki를 서비스 저장소와 분리한 이유는 무엇인가요?
+    reference_docs: [decisions/separate-context-wiki-from-services.md]
+    must_contain:
+      - 서비스 코드 변경과 별개로 제품 맥락과 근거를 검토하고 버전 관리한다.
+  - id: q15
+    corpus: wiki
+    kind: single_doc
+    question: 프로젝트 산출물을 위키에서 연결할 때 어떤 식별 정보가 필요하고, API 키와 개인 이력은 어디에 둬야 하나요?
+    reference_docs: [concepts/project-artifact-linking.md]
+    must_contain:
+      - 안정된 식별자와 산출물 종류, 저장소, 불변 커밋이나 경로 및 URL 등 출처 정보를 연결한다.
+      - 개인 이력과 API 키, 실시간 API 응답은 위키 밖 런타임이나 백엔드에 둔다.
+  - id: q16
+    corpus: wiki
+    kind: single_doc
+    question: 설명 모델 실험에서 규칙 위반 결과만으로 gpt-4o와 gpt-4o-mini를 구분할 수 있었나요? 모델 선택 근거와 실험 한계는 무엇인가요?
+    reference_docs: [decisions/choose-explanation-model.md]
+    must_contain:
+      - 두 모델 모두 같은 fixture의 다섯 번 실행에서 규칙 위반이 없었다.
+      - gpt-4o를 설명 가독성 때문에 시연 기본값으로 선택했다.
+      - 작은 표본과 gpt-4o 평가자의 편향 때문에 일반적인 우위를 입증한 것은 아니다.
+  - id: q17
+    corpus: wiki
+    kind: single_doc
+    question: TourAPI KorService2의 장소 상세 화면에 공통 정보, 소개, 반복 정보와 이미지를 함께 쓰려면 어떻게 조회하나요?
+    reference_docs: [entities/tourapi-korservice2.md]
+    must_contain:
+      - 공통 정보와 소개 정보, 반복 정보, 이미지 조회를 조합한다.
+  - id: q18
+    corpus: wiki
+    kind: single_doc
+    question: 연관 관광지 API는 대안 후보 선정에서 어떤 역할이며 숫자 관련도 점수는 확인된 상태인가요?
+    reference_docs: [entities/related-attraction-api.md]
+    must_contain:
+      - 장소 간 연관 관계로 후보를 구성한 뒤 거리나 혼잡 같은 조건을 적용한다.
+      - 숫자 관련도 점수와 식별자 호환성 등은 실제 API 확인이 필요하다.
+  - id: q19
+    corpus: wiki
+    kind: multi_doc
+    question: 혼잡 등급이 낮은 대안을 골랐다는 사실과 코스 timeLabel이 한적한 방문 시간을 보장한다는 주장은 어떻게 다른가요?
+    reference_docs: [concepts/alternative-scoring.md, concepts/course-generation-policy.md]
+    must_contain:
+      - 대안 등급 필터는 장소를 고르는 기준이다.
+      - timeLabel은 10시 시작과 체류 시간 및 이동 시간으로 만든 일정이며 시간대별 혼잡 예측이 아니다.
+  - id: q20
+    corpus: wiki
+    kind: multi_doc
+    question: 순위 결정에서 LLM을 제외한 결정과 여행 컨텍스트 레이어는 서로 어떻게 이어지나요?
+    reference_docs: [decisions/keep-llm-out-of-ranking.md, concepts/travel-context-layer.md]
+    must_contain:
+      - 백엔드가 장소 순위와 코스를 재현 가능한 정책으로 결정한다.
+      - 컨텍스트 레이어는 그 결정의 사실과 정책 근거를 LLM 설명에 제공하며 결정을 다시 하지 않는다.
+  - id: q21
+    corpus: wiki
+    kind: multi_doc
+    question: 혼잡 데이터가 없는 장소를 오늘 방문하는 이유를 설명할 때, 진단 응답과 설명에 어떤 제한이 있나요?
+    reference_docs: [concepts/congestion-diagnosis.md, queries/why-this-place-today.md]
+    must_contain:
+      - 데이터 없음은 정상 진단 응답으로 표시하고 근처 진단 가능한 장소를 안내할 수 있다.
+      - 근거 없는 혼잡 등급과 percentile, 더 한적한 날짜를 만들어 설명하지 않는다.
+  - id: q22
+    corpus: wiki
+    kind: multi_doc
+    question: 혼잡 등급 임계값이 바뀌면 공공 API 원본을 고쳐야 하나요? 원본과 percentile 기반 등급의 관계를 설명해 주세요.
+    reference_docs: [concepts/raw-derived-data-separation.md, concepts/congestion-diagnosis.md]
+    must_contain:
+      - 공공 API 원본은 보존한다.
+      - percentile을 해석한 등급은 파생 정책이므로 임계값 변경을 원본 변경과 구분한다.
+  - id: q23
+    corpus: wiki
+    kind: multi_doc
+    question: why-this-place-today 설명은 어떤 다섯 백엔드 사실을 읽고, 그중 코스 일정 시각은 어떻게 계산되나요?
+    reference_docs: [queries/why-this-place-today.md, concepts/course-generation-policy.md]
+    must_contain:
+      - 목적지와 방문 날짜, 해당 날짜의 혼잡 진단, 대안 후보, 저장된 코스 항목을 읽는다.
+      - 일정 시각은 10시 시작과 장소마다 90분 체류 및 이동 시간을 더해 만든다.
+  - id: q24
+    corpus: wiki
+    kind: multi_doc
+    question: 저장된 코스의 설명을 다시 생성할 때 코스 순서도 바꾸나요? 결정 정책과 설명 레이어 관점에서 설명해 주세요.
+    reference_docs: [decisions/keep-llm-out-of-ranking.md, concepts/travel-context-layer.md]
+    must_contain:
+      - 저장된 코스 결정은 유지하면서 설명만 다시 생성할 수 있다.
+      - LLM은 백엔드의 장소 선택과 순서를 바꾸지 않는다.
+  - id: q25
+    corpus: wiki
+    kind: multi_doc
+    question: 원래 장소가 혼잡하면 코스에서 뒤로 옮겨도 되나요? 혼잡 감소율은 무엇과 비교해서 설명해야 하나요?
+    reference_docs: [concepts/course-generation-policy.md, concepts/travel-context-layer.md]
+    must_contain:
+      - 혼잡하더라도 원래 장소를 첫 방문지로 고정한다.
+      - 혼잡 감소율은 원래 장소만 방문하는 경우와 코스를 비교하는 값이다.
+  - id: q26
+    corpus: wiki
+    kind: unanswerable
+    question: 경복궁 성인 입장료는 지금 정확히 얼마인가요?
+    reference_docs: []
+    must_contain: []
+  - id: q27
+    corpus: wiki
+    kind: unanswerable
+    question: 오늘 서울의 실시간 기온과 강수량을 알려 주세요.
+    reference_docs: []
+    must_contain: []
+  - id: q28
+    corpus: wiki
+    kind: unanswerable
+    question: 2026년 12월 25일 경복궁의 예측 방문객 수는 정확히 몇 명인가요?
+    reference_docs: []
+    must_contain: []
+  - id: q29
+    corpus: wiki
+    kind: unanswerable
+    question: 서울 명동교자의 전화번호와 오늘 예약 가능한 시간을 알려 주세요.
+    reference_docs: []
+    must_contain: []
+  - id: q30
+    corpus: wiki
+    kind: unanswerable
+    question: 오늘 국립중앙박물관은 몇 시에 문을 닫으며 임시 휴관 중인가요?
+    reference_docs: []
+    must_contain: []

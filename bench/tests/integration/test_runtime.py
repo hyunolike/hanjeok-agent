@@ -246,3 +246,26 @@ def test_oversize_whole_http_returns_named_failure_without_paid_call(runtime):
     assert response.status_code == 503
     assert response.json()["outcome"] == "budget_exhausted"
     assert "answer" not in response.json() and model.calls == []
+
+
+def test_evaluation_context_freezes_actual_loaded_paths_and_generation(runtime):
+    from bench.graph.store import drop_corpus, ensure_schema, record_corpus
+    from bench.runtime import BenchError, BenchRuntime
+
+    driver = runtime[0].driver
+    ensure_schema(driver)
+    name = "phase5-context-test"
+    drop_corpus(driver, name)
+    with driver.session() as session:
+        session.run("CREATE (:Doc {corpus: $name, path: 'a.md'})", name=name).consume()
+    record_corpus(driver, name, "revision", 1, 0)
+    try:
+        runtime = BenchRuntime(driver, None, None)
+        profile = runtime.corpus_context(name)
+        assert profile["known_paths"] == {"a.md"}
+        assert profile["corpus_size"] == 1 and profile["corpus_revision"] == "revision"
+        assert profile["corpus_generation"]
+        with pytest.raises(BenchError):
+            runtime.corpus_context("missing-evaluation-corpus")
+    finally:
+        drop_corpus(driver, name)

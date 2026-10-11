@@ -58,8 +58,9 @@ quietly reports averages over runs that did not happen.
 - The graph store is disposable. Every node and edge is derived from files on
   disk, so the whole graph can be dropped and rebuilt from the corpus at any
   time. Nothing may live only in the database.
-- Evaluation calls a real model and costs money, so it never runs in CI. Unit
-  tests must pass with no network and no API key.
+- Evaluation calls a real hosted model and consumes account quota, so it never
+  runs in CI. Per the user's 2026-10-11 direction, hosted inference uses NVIDIA
+  only and has no paid-provider fallback. Unit tests pass with no network or key.
 - Corpus files are read-only to this subproject. It never writes to the wiki or
   to the work-log vault.
 - Measured numbers are committed as run artifacts with the corpus revision they
@@ -89,4 +90,4 @@ accidental violations look like improvements to one arm. Any change touching
 prompt text, model settings or the question set states in its commit message
 which arms it affects; if the answer is "one", it needs a reason.
 
-**Version**: 1.0.0 | **Ratified**: 2026-09-29 | **Last Amended**: 2026-09-29
+**Version**: 1.0.1 | **Ratified**: 2026-09-29 | **Last Amended**: 2026-10-11

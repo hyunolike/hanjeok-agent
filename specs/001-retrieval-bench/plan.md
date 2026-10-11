@@ -26,12 +26,12 @@ loaders are written here, see research §6), RAGAS (scoring), Neo4j Python drive
 
 **Storage**: Neo4j 5.x in Docker, holding both the graph and the passage vector
 index. Entirely derived: droppable and rebuildable from corpus files at any
-time. Run records and reports are JSONL and YAML files under `bench/runs/` and
+time. Run and metric records are JSONL; reports are atomic JSON files under `bench/runs/` and
 `bench/reports/`, which are **not** derived and are committed as evidence.
 
 **Testing**: pytest. Unit and contract tests run with no network, no API key and
 no Docker, using a deterministic fake embedder and a scripted model. Integration
-tests are marked and need Neo4j. Scoring runs call a paid model and never run in
+tests are marked and need Neo4j. Scoring runs call NVIDIA NIM and never run in
 CI.
 
 **Target Platform**: Local developer machine. Not deployed; nothing here goes to

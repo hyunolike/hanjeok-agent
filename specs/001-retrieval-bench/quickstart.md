@@ -1,14 +1,13 @@
 # Quickstart: Retrieval Bench
 
-Phases 3–4 provide both `graph` and `whole` answer paths, corpus discovery,
-clean rebuilds and recorded pairs. Stored question sets, scoring and size
-curves belong to Phases 5–6 and are not yet implemented.
+Phases 3–5 provide both answer paths, recorded pairs, stored question sets and
+scored reports. Corpus size curves belong to Phase 6.
 
 ## Prerequisites
 
 - Python 3.13+, `uv`, and Docker.
 - A local checkout of travel-context-wiki, read-only to this subproject.
-- `OPENAI_API_KEY` for answers. Loading and offline tests need no API key.
+- `NVIDIA_API_KEY` for answers and judging. Loading and offline tests need no API key.
 
 ## Bring it up
 
@@ -31,9 +30,13 @@ links/sources. An empty or mixed corpus is rejected before deleting existing
 state. `load` and `rebuild` both replace the old graph so deleted documents do
 not remain citable.
 
-Before asking, export `OPENAI_API_KEY` in the server's environment. The root
-`.env` is not loaded automatically. `BENCH_ANSWER_MODEL` defaults to `gpt-4o`.
-Answering calls a paid model; offline tests do not.
+Before asking, export `NVIDIA_API_KEY` in the server's environment. `.env` is
+not loaded automatically. `BENCH_ANSWER_MODEL` and `BENCH_JUDGE_MODEL` default
+to `nvidia/nemotron-3-super-120b-a12b`. Both clients use NVIDIA's hosted endpoint
+(`https://integrate.api.nvidia.com/v1`), temperature 0 and reasoning off. No
+OpenAI or other provider fallback is configured. Local embeddings remain the
+same pinned, cached multilingual model that created the graph. External model
+calls consume NVIDIA account quota; offline tests make none.
 
 Both strategies use the same conservative input budget. `BENCH_MAX_INPUT_BYTES`
 defaults to 100000: system/user UTF-8 bytes, JSON schema bytes, and a 2048-byte
@@ -106,14 +109,14 @@ and validity. `--show-diff` adds an audit of the captured first-request inputs:
 selections coincide). Model settings and citation/output schema are identical.
 Whole supplies all stored chunks without embeddings, ranking or truncation.
 
-`--question` is required until Phase 5 implements stored question-set lookup;
-the supplied ID identifies this exact question, rather than fetching text yet.
+`pair` takes explicit question text and ID. `run` below reads both from the
+stored question set, avoiding transcription between evaluation runs.
 Default artifacts are `runs/pairs-YYYY-MM-DD.jsonl` (UTC) and the companion
 `runs/pairs-YYYY-MM-DD.pairs.jsonl`. Use `--runs-file runs/my-pairs.jsonl` to
 choose another destination. Runs append and flush after each arm, including
 failures. The companion links the two run IDs and records pair validity.
 Both files must be empty or end at a newline boundary. An interrupted tail
-causes a named failure before any paid calls, leaving prior bytes untouched.
+causes a named failure before any model calls, leaving prior bytes untouched.
 The append boundary is also checked under the write lock.
 
 A revision, generation, size, question, model or common-input mismatch makes
@@ -141,6 +144,53 @@ supplies title plus a first-sentence excerpt (at most 240 characters), with
 attributes copied intact. Integration tests prove all three edge types and
 that a second-hop document does not leak into results.
 
+## Check 6 — unattended evaluation and applicable scores
+
+```bash
+uv run bench run --question-set wiki-v1 --corpus wiki
+uv run bench report --id <report-uuid>
+
+curl -s localhost:8100/bench/run -H 'content-type: application/json' \
+  -d '{"question_set":"wiki-v1","corpus":"wiki"}'
+curl -s localhost:8100/bench/reports/<report-uuid>
+
+uv run pytest tests/unit/test_evaluation.py tests/unit/test_evaluation_interfaces.py
+```
+
+CLI `run` waits for completion. HTTP returns 202 with a report ID/status URL;
+polling shows answering or scoring progress until the completed report is
+available. A single worker queues evaluations within a server process. Saved
+running markers read from another process become `interrupted`; jobs do not
+resume automatically. `report` reads JSON without constructing a runtime.
+
+Question files live in `bench/questions/`. Their exact YAML bytes determine a
+SHA-256 revision. References must name loaded canonical documents; invalid
+questions fail before model calls. `must_contain` contains factual reference
+clauses for RAGAS, not literal substring assertions.
+
+Reports are `reports/<uuid>.json`; answer, pair and score observations are
+`runs/<uuid>.jsonl`, `.pairs.jsonl` and `.scores.jsonl`. Each observation is
+flushed before progress advances. A failed answer continues to the next arm and
+question; a failed judge leaves a null score and fixed cause. Artifact failures
+stop the job. Corpus generation, size, model and common inputs must match the
+frozen profile to enter scoring.
+
+Both arms receive answer faithfulness and relevancy scores when they answer.
+Faithfulness judges only the actually supplied passages from cited documents,
+including attributes. Graph receives context precision and recall against
+reference clauses. Whole's retrieval metrics are `not_applicable` with a reason,
+`value: null`, `n: 0`. Declines have no numeric answer scores. Every aggregate
+carries its successful sample count, failures and skipped observations; outcomes
+and unsupported-question abstention accuracy keep all requested denominators.
+Results also split by question kind. Do not compare means without their counts.
+
+The judge uses RAGAS 0.4 collections, local query embeddings for answer
+relevancy, no response cache, one structured attempt, four concurrent metric
+jobs and a two-second minimum interval between provider requests. A metric has
+a ten-minute limit and each request a 90-second timeout. Full runs can take
+many minutes. Phase 5 accepts absent `sizes` or the one current full size;
+sampling and multiple sizes return 409 until Phase 6.
+
 ## Check 7 — rebuilding reproduces retrieval
 
 ```bash
@@ -166,7 +216,6 @@ uv run ruff check src tests
 uv run ruff format --check src tests
 ```
 
-Check 6 (RAGAS scores) is Phase 5; check 8 (the size curve and crossover) is
-Phase 6. Their CLI/API routes will be documented when implemented. A bounded
-pair smoke is not a scored comparison or evidence that either strategy wins
-across the corpus.
+Check 8 (the size curve and crossover) remains Phase 6. Earlier Phase 3–4 smoke
+artifacts used OpenAI models; they are historical evidence and are not mixed
+with the NVIDIA Phase 5 comparison.

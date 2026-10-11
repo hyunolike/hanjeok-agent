@@ -109,9 +109,13 @@ under you.
 context precision and context recall for the retrieval arm only, and mark them
 not applicable for whole-corpus prompting.
 
-**Rationale**: Faithfulness checks the answer's claims against whatever context
-was supplied, so it is defined for both arms and is the metric the comparison
-turns on. Context precision measures whether relevant passages were ranked above
+**Rationale**: Faithfulness checks the answer's claims against evidence, so it
+is defined for both arms and is the metric the comparison turns on. Phase 5
+restricts its evidence to actually supplied passages belonging to cited
+documents, including opaque attributes. This is a shared, stricter application
+of the [RAGAS faithfulness metric](https://docs.ragas.io/en/stable/concepts/metrics/available_metrics/faithfulness/):
+uncited supporting material elsewhere in the full corpus cannot rescue a claim.
+Context precision measures whether relevant passages were ranked above
 irrelevant ones in what was retrieved. The whole-corpus arm retrieves nothing —
 it supplies everything — so its context precision would be, by construction,
 roughly the fraction of the corpus that happens to be relevant. That number
@@ -126,6 +130,45 @@ rather than leaving it blank.
 **Alternatives rejected**:
 - *Score context precision for both and note the caveat in prose*: a number in a
   table outlives the prose beside it.
+- *Judge faithfulness with all supplied documents*: uncited support would pass,
+  contrary to the specification's cited-evidence criterion. Restricting evidence
+  can lower scores for otherwise supported answers with incomplete citations.
+
+### Phase 5 measured profile
+
+The user selected NVIDIA-only inference on 2026-10-11. Answering and judging
+default to `nvidia/nemotron-3-super-120b-a12b`, temperature 0, reasoning off, at
+`https://integrate.api.nvidia.com/v1`. Only `NVIDIA_API_KEY` is read; there is no
+provider fallback. The compatible SDK does not send requests to OpenAI. Model
+controls follow [NVIDIA's API documentation](https://docs.api.nvidia.com/nim/reference/nvidia-nemotron-3-super-120b-a12b).
+The vendor recommends different sampling defaults; temperature 0 is retained
+for this benchmark's common deterministic sampling profile, without claiming
+deterministic provider results or vendor-optimal quality. The shared default
+maximum output is 800 answer tokens and 4096 judge tokens.
+
+Metrics use `ragas.metrics.collections` from the locked 0.4.3 installation.
+[Answer relevancy](https://docs.ragas.io/en/latest/concepts/metrics/available_metrics/answer_relevance/)
+generates three questions and compares their embeddings to the input question.
+The embedding adapter uses the existing pinned local multilingual-e5 model
+with query prefixes for both, so judging makes no hosted embedding calls.
+[Context precision](https://docs.ragas.io/en/stable/concepts/metrics/available_metrics/context_precision/)
+judges the ordered supplied passages against joined reference clauses;
+[context recall](https://docs.ragas.io/en/stable/concepts/metrics/available_metrics/context_recall/)
+checks support for those clauses. Human reference errors affect both retrieval
+metrics; canonical reference paths and reviewable factual clauses are retained.
+
+No response cache is used when repeating evaluations. One structured attempt,
+zero SDK retries, four concurrent metric jobs and a two-second interval between
+judge requests bound hosted load. Each metric times out after ten minutes and
+each provider request after 90 seconds. Failures stay explicit; increasing
+throughput must not hide quota errors or retry costs. Observed judge tokens
+are recorded separately from answer tokens.
+
+Declines receive no answer scores, because no answer exists to judge. Graph
+retrieval scores can still be computed when reference claims and context exist.
+All outcomes and sample denominators are reported alongside means, including
+unsupported-question abstention accuracy. This avoids making missing answers
+look like faithful answers or zero-quality answers by convention.
 
 ## 5. Orchestration
 

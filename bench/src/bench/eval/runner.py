@@ -262,3 +262,12 @@ class PairRunner:
             },
         )
         return result
+
+    def run_set(self, question_set, *, corpus: str):
+        """Yield every pair, continuing past recorded arm failures.
+
+        Artifact failures still stop execution: another call must not be made
+        when the preceding evidence could not be saved.
+        """
+        for question in question_set.questions:
+            yield self.pair(question_id=question.id, question=question.question, corpus=corpus)

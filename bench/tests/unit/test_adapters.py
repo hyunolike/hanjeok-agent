@@ -191,3 +191,61 @@ def test_output_limit_exception_retains_available_usage_in_failure_record(tmp_pa
         assert (record.prompt_tokens, record.completion_tokens, record.model_calls) == (123, 800, 1)
         assert record.answer is None and record.cited_paths == []
     assert "discard partial" not in (tmp_path / "runs.jsonl").read_text()
+
+
+def test_default_answer_uses_only_nvidia_endpoint_and_key(monkeypatch):
+    from langchain_openai import ChatOpenAI
+
+    from bench.models import AnswerModel
+
+    monkeypatch.setenv("NVIDIA_API_KEY", "nvidia-fake")
+    monkeypatch.setenv("OPENAI_API_KEY", "never-use-this")
+    bodies = []
+
+    def respond(request):
+        assert str(request.url) == "https://integrate.api.nvidia.com/v1/chat/completions"
+        assert request.headers["authorization"] == "Bearer nvidia-fake"
+        bodies.append(json.loads(request.content))
+        return httpx.Response(
+            200,
+            json={
+                "id": "nvidia",
+                "object": "chat.completion",
+                "created": 0,
+                "model": "nvidia/nemotron-3-super-120b-a12b",
+                "choices": [
+                    {
+                        "index": 0,
+                        "finish_reason": "stop",
+                        "message": {
+                            "role": "assistant",
+                            "content": '{"outcome":"answered","answer":"fact",'
+                            '"citations":["a.md"]}',
+                        },
+                    }
+                ],
+                "usage": {"prompt_tokens": 10, "completion_tokens": 5, "total_tokens": 15},
+            },
+        )
+
+    def configured(**kwargs):
+        return ChatOpenAI(
+            **kwargs, http_client=httpx.Client(transport=httpx.MockTransport(respond))
+        )
+
+    monkeypatch.setattr("bench.models.ChatOpenAI", configured)
+    model = AnswerModel()
+    reply = model.complete("system", "user")
+    assert json.loads(reply.text)["answer"] == "fact"
+    assert model.settings["provider"] == "nvidia"
+    assert bodies[0]["model"] == "nvidia/nemotron-3-super-120b-a12b"
+    assert bodies[0]["chat_template_kwargs"]["enable_thinking"] is False
+    assert "nvidia-fake" not in json.dumps(model.settings)
+
+
+def test_openai_key_cannot_substitute_for_missing_nvidia_key(monkeypatch):
+    from bench.models import AnswerModel
+
+    monkeypatch.setenv("OPENAI_API_KEY", "must-not-fallback")
+    with pytest.raises(ValueError, match="NVIDIA_API_KEY"):
+        AnswerModel()
