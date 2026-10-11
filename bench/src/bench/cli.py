@@ -65,6 +65,13 @@ def main(argv=None, *, runtime=None, evaluation=None) -> int:
             runtime = runtime_from_env()
         if args.command == "report":
             body = ReportStore(args.reports_root).get(args.id)
+            if body["status"] == "running":
+                body = {
+                    **body,
+                    "status": "unknown",
+                    "saved_status": "running",
+                    "cause": "live job status unavailable offline; check the originating server",
+                }
             if body["status"] != "completed":
                 status = 1
         elif args.command == "run":

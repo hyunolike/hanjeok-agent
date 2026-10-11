@@ -64,3 +64,25 @@ def test_cli_run_and_report_read_the_same_durable_artifact_without_runtime(
     assert main(["report", "--id", report_id, "--reports-root", str(tmp_path / "reports")]) == 0
     assert json.loads(capsys.readouterr().out) == report
     svc.close()
+
+
+def test_offline_report_does_not_claim_orphan_marker_is_live(tmp_path, capsys, monkeypatch):
+    from uuid import uuid4
+
+    from bench.cli import main
+    from bench.eval.service import ReportStore
+
+    report_id = str(uuid4())
+    marker = {"report_id": report_id, "status": "running", "completed": 12, "total": 60}
+    ReportStore(tmp_path).put(marker)
+
+    def must_not_initialize():
+        raise AssertionError("offline inspection cannot reach runtime")
+
+    monkeypatch.setattr("bench.cli.runtime_from_env", must_not_initialize)
+    assert main(["report", "--id", report_id, "--reports-root", str(tmp_path)]) == 1
+    body = json.loads(capsys.readouterr().out)
+    assert body["status"] == "unknown"
+    assert body["saved_status"] == "running"
+    assert body["completed"] == 12 and body["cause"]
+    assert ReportStore(tmp_path).get(report_id) == marker

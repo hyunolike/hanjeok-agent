@@ -184,6 +184,10 @@ Produced from runs, one per scoring execution.
 mean over 4 of 30 questions is not the same claim as a mean over 30.
 Reports are atomic JSON files under `bench/reports/`, so the same representation
 is returned by HTTP and offline CLI reads. JSONL observations are append-only.
+Completed reports are identical in both interfaces. Offline reads of a saved
+running marker return `unknown` with its saved status and cause; only the
+originating HTTP process can establish live ownership. A fresh HTTP process
+reports an unowned running marker as interrupted. Neither path claims completion.
 Whole retrieval metrics always have null value and `not_applicable` status.
 Declines have null answer metrics, not zero. Unsupported-question correctness
 requires a normal, eligible decline and uses all requested unsupported questions

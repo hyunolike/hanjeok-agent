@@ -160,8 +160,11 @@ uv run pytest tests/unit/test_evaluation.py tests/unit/test_evaluation_interface
 CLI `run` waits for completion. HTTP returns 202 with a report ID/status URL;
 polling shows answering or scoring progress until the completed report is
 available. A single worker queues evaluations within a server process. Saved
-running markers read from another process become `interrupted`; jobs do not
-resume automatically. `report` reads JSON without constructing a runtime.
+running markers read by a fresh HTTP service become `interrupted`; jobs do not
+resume automatically. CLI `report` reads JSON without constructing a runtime.
+For a saved running marker it returns `status: unknown`, `saved_status: running`
+and exit 1, because an offline reader cannot establish whether the original
+server is still alive. Query that server's status URL for live progress.
 
 Question files live in `bench/questions/`. Their exact YAML bytes determine a
 SHA-256 revision. References must name loaded canonical documents; invalid
@@ -172,7 +175,8 @@ Reports are `reports/<uuid>.json`; answer, pair and score observations are
 `runs/<uuid>.jsonl`, `.pairs.jsonl` and `.scores.jsonl`. Each observation is
 flushed before progress advances. A failed answer continues to the next arm and
 question; a failed judge leaves a null score and fixed cause. Artifact failures
-stop the job. Corpus generation, size, model and common inputs must match the
+stop the job, immediately cancel sibling scoring tasks and await their cleanup
+before closing the provider client. Corpus generation, size, model and common inputs must match the
 frozen profile to enter scoring.
 
 Both arms receive answer faithfulness and relevancy scores when they answer.

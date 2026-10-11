@@ -33,6 +33,13 @@ def contexts(run, *, cited_only=False):
 
 async def score_pairs(pairs, questions, eligible, judge, *, on_score):
     semaphore = asyncio.Semaphore(POLICY["judge_concurrency"])
+    tasks = []
+
+    def cancel_siblings():
+        current = asyncio.current_task()
+        for task in tasks:
+            if task is not current:
+                task.cancel()
 
     async def observation(run, question, eligible, metric):
         row = {
@@ -83,17 +90,29 @@ async def score_pairs(pairs, questions, eligible, judge, *, on_score):
                     row.update(value=value, status="ok")
                 except Exception:
                     row.update(status="failed", reason="judge unavailable or invalid metric result")
-        on_score(row)
+        try:
+            on_score(row)
+        except BaseException:
+            # Cancel immediately inside the failing observation. Waiting until
+            # gather propagates allows other ready tasks to start more calls.
+            cancel_siblings()
+            raise
         return row
 
-    return await asyncio.gather(
-        *(
-            observation(run, question, eligible, metric)
-            for pair, question, eligible in zip(pairs, questions, eligible, strict=True)
-            for run in (pair.whole, pair.graph)
-            for metric in METRICS
-        )
-    )
+    tasks = [
+        asyncio.create_task(observation(run, question, ok, metric))
+        for pair, question, ok in zip(pairs, questions, eligible, strict=True)
+        for run in (pair.whole, pair.graph)
+        for metric in METRICS
+    ]
+    try:
+        return await asyncio.gather(*tasks)
+    except BaseException:
+        cancel_siblings()
+        # Let every in-flight request unwind before the service closes its
+        # client or reports failure; no detached judge work may survive.
+        await asyncio.gather(*tasks, return_exceptions=True)
+        raise
 
 
 def aggregate(rows, strategy, metric):

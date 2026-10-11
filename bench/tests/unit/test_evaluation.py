@@ -275,3 +275,63 @@ def test_repeatability_requires_same_profile_and_sample_ids():
     assert comparison["max_delta"] == pytest.approx(0.1)
     other["scores"] = [{**score, "question_id": "q2"}]
     assert compare_reports(basic, other)["comparable"] is False
+
+
+def test_score_persistence_failure_cancels_all_siblings_before_return(tmp_path):
+    import asyncio
+
+    from bench.eval.runner import PairRunner
+    from bench.eval.score import score_pairs
+
+    rows = [
+        dict(
+            id=f"q{i}",
+            question="supported",
+            kind="single_doc",
+            reference_docs=["a.md"],
+            must_contain=["Alpha fact"],
+            corpus="third",
+        )
+        for i in range(3)
+    ]
+    svc, _, _ = service(tmp_path, rows)
+    questions = svc.questions.load("sample")
+    pairs = list(
+        PairRunner(svc.runtime, tmp_path / "before.jsonl").run_set(questions, corpus="third")
+    )
+    failed = False
+    starts_after_failure = []
+    active = 0
+
+    class PendingJudge:
+        async def score(self, metric, **kwargs):
+            nonlocal active
+            if failed:
+                starts_after_failure.append(metric)
+            active += 1
+            try:
+                await asyncio.sleep(0.005)
+                return 0.8
+            finally:
+                active -= 1
+
+    def cannot_persist(row):
+        nonlocal failed
+        if not failed:
+            failed = True
+            raise OSError("disk unavailable")
+
+    async def evaluate():
+        with pytest.raises(OSError):
+            await score_pairs(
+                pairs, questions.questions, [True] * 3, PendingJudge(), on_score=cannot_persist
+            )
+        active_when_returned = active
+        await asyncio.sleep(0.03)
+        assert starts_after_failure == []
+        assert active_when_returned == 0
+
+    try:
+        asyncio.run(evaluate())
+    finally:
+        svc.close()
