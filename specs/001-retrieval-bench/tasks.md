@@ -69,19 +69,19 @@ story can start until this phase is done.
 **Independent test**: Load the wiki, ask ten questions whose answers are in it,
 confirm every cited path exists and every claim is in the passage that was cited.
 
-- [ ] T017 [P] [US1] Implement vector search over `Chunk` in `bench/src/bench/graph/query.py`, filtered by corpus
-- [ ] T018 [US1] Add one-hop expansion in `bench/src/bench/graph/query.py` — from seed chunks' documents, follow `LINKS_TO`, shared `CITES` and shared `TAGGED`, returning expansion as title plus a one-line summary rather than full text (research §graph expansion, to bound context)
-- [ ] T019 [US1] Write the single prompt path in `bench/src/bench/answer/prompt.py`: instructions, supplied passages, the citation rule, and the `attrs` block carrying conflicts and status verbatim. **Both arms will use this file and no other** (Principle II)
-- [ ] T020 [US1] Implement citation validation in `bench/src/bench/answer/citations.py`: every cited path checked against the loaded corpus, whole answer discarded on any miss
-- [ ] T021 [US1] Write `bench/tests/unit/test_citation_gate.py` including the `fabricated` case quickstart.md names — asserting the rejection carries no answer text (SC-002)
-- [ ] T022 [US1] Implement the LangGraph pipeline in `bench/src/bench/answer/pipeline.py`: nodes retrieve → answer → validate, `add_conditional_edges` routing validation failure to repair and back exactly once, budget in state, `InMemorySaver` checkpointer
-- [ ] T023 [US1] Implement the `graph` strategy in `bench/src/bench/answer/strategies.py` as passage selection only, returning passages to the shared pipeline
-- [ ] T024 [US1] Implement `POST /bench/ask` and `GET /bench/corpora` in `bench/src/bench/api.py` per contracts/http-api.md, with `question` length-bounded and no default for `corpus` or `strategy`
-- [ ] T025 [US1] Write `bench/tests/contract/test_ask_contract.py` covering answered, `no_grounds` with `answer: null`, 422 without answer text, 409 for an unloaded corpus
-- [ ] T026 [US1] Implement `POST /bench/corpora/{name}/rebuild` in `bench/src/bench/api.py`, returning counts and the dropped-reference list (FR-014)
-- [ ] T027 [US1] Add `bench ask` and `bench corpus load|rebuild` to `bench/src/bench/cli.py` with `--show-supplied`
+- [X] T017 [P] [US1] Implement vector search over `Chunk` in `bench/src/bench/graph/query.py`, filtered by corpus
+- [X] T018 [US1] Add one-hop expansion in `bench/src/bench/graph/query.py` — from seed chunks' documents, follow `LINKS_TO`, shared `CITES` and shared `TAGGED`, returning expansion as title plus a one-line summary rather than full text (research §graph expansion, to bound context)
+- [X] T019 [US1] Write the single prompt path in `bench/src/bench/answer/prompt.py`: instructions, supplied passages, the citation rule, and the `attrs` block carrying conflicts and status verbatim. **Both arms will use this file and no other** (Principle II)
+- [X] T020 [US1] Implement citation validation in `bench/src/bench/answer/citations.py`: every cited path checked against the loaded corpus, whole answer discarded on any miss
+- [X] T021 [US1] Write `bench/tests/unit/test_citation_gate.py` including the `fabricated` case quickstart.md names — asserting the rejection carries no answer text (SC-002)
+- [X] T022 [US1] Implement the LangGraph pipeline in `bench/src/bench/answer/pipeline.py`: nodes retrieve → answer → validate, `add_conditional_edges` routing validation failure to repair and back exactly once, budget in state, `InMemorySaver` checkpointer
+- [X] T023 [US1] Implement the `graph` strategy in `bench/src/bench/answer/strategies.py` as passage selection only, returning passages to the shared pipeline
+- [X] T024 [US1] Implement `POST /bench/ask` and `GET /bench/corpora` in `bench/src/bench/api.py` per contracts/http-api.md, with `question` length-bounded and no default for `corpus` or `strategy`
+- [X] T025 [US1] Write `bench/tests/contract/test_ask_contract.py` covering answered, `no_grounds` with `answer: null`, 422 without answer text, 409 for an unloaded corpus
+- [X] T026 [US1] Implement `POST /bench/corpora/{name}/rebuild` in `bench/src/bench/api.py`, returning counts and the dropped-reference list (FR-014)
+- [X] T027 [US1] Add `bench ask` and `bench corpus load|rebuild` to `bench/src/bench/cli.py` with `--show-supplied`
 
-**Checkpoint**: quickstart checks 1, 2, 3, 5 and 7 pass. This is a demonstrable MVP on its own.
+**Checkpoint**: Phase 3 implementation is complete. Verification: 61 offline tests and 19 actual Neo4j integration tests passed. A paid smoke answered 9 of 10 known questions and declined an unsupported question; one known question missed its evidence during retrieval. This is a demonstrable MVP with a recorded retrieval limitation, not a comparative quality result. See [execution evidence](../../bench/reports/phase3-smoke.md).
 
 ---
 
@@ -146,7 +146,7 @@ size while `graph` stays flat.
 
 ## Phase 7: Polish & Cross-Cutting
 
-- [ ] T051 [P] Write `bench/README.md` pointing at quickstart.md and stating plainly that this measures and does not migrate anything
+- [X] T051 [P] Write `bench/README.md` pointing at quickstart.md and stating plainly that this measures and does not migrate anything
 - [ ] T052 [P] Add structured per-run logging in `bench/src/bench/eval/runner.py` — retrieval size, expansion count, repair count, outcome — since the Kotlin service's gap was exactly this
 - [ ] T053 Walk `specs/001-retrieval-bench/quickstart.md` end to end on a clean checkout and fix every step that does not work as written
 - [ ] T054 Confirm `./gradlew build` and `pnpm build` are still unaware of `bench/`, and that CI is unchanged

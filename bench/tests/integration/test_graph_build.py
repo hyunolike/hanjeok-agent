@@ -116,26 +116,20 @@ def test_building_twice_does_not_duplicate(driver, docs, embedder):
     build(driver, docs, embedder)
 
     with session(driver) as s:
-        row = s.run(
-            "MATCH (d:Doc {corpus: $c}) RETURN count(d) AS n", c=CORPUS
-        ).single()
+        row = s.run("MATCH (d:Doc {corpus: $c}) RETURN count(d) AS n", c=CORPUS).single()
         assert row["n"] == 2
 
 
 def test_drop_removes_one_corpus_and_leaves_others(driver, docs, embedder):
     build(driver, docs, embedder)
-    other = [
-        LoadedDoc(path="x.md", corpus="itest-other", title="X", doc_type="t", body="# X\n\nx")
-    ]
+    other = [LoadedDoc(path="x.md", corpus="itest-other", title="X", doc_type="t", body="# X\n\nx")]
     build(driver, other, embedder)
 
     drop_corpus(driver, CORPUS)
 
     with session(driver) as s:
         gone = s.run("MATCH (d:Doc {corpus: $c}) RETURN count(d) AS n", c=CORPUS).single()
-        kept = s.run(
-            "MATCH (d:Doc {corpus: 'itest-other'}) RETURN count(d) AS n"
-        ).single()
+        kept = s.run("MATCH (d:Doc {corpus: 'itest-other'}) RETURN count(d) AS n").single()
         assert gone["n"] == 0
         assert kept["n"] == 1
 

@@ -24,6 +24,7 @@ dependencies = [
     # the stack stays on the 1.x line; only this one package is held back.
     # Revisit when ragas stops importing from the sunset package.
     "langchain-community<0.4",
+    "sentence-transformers>=6.1.0",
 ]
 
 [project.scripts]

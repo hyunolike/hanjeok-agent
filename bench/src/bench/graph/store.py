@@ -12,6 +12,7 @@ import os
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from uuid import uuid4
 
 from neo4j import Driver, GraphDatabase
 
@@ -29,6 +30,7 @@ class CorpusRecord:
     docs: int
     chunks: int
     loaded_at: str
+    generation: str | None = None
 
 
 def driver_from_env() -> Driver:
@@ -48,16 +50,13 @@ SCHEMA = [
     # `(corpus, path)` is a document's identity. Without the constraint, a
     # second load would quietly create duplicate nodes and every count in every
     # report would be wrong in a way nothing would flag.
-    "CREATE CONSTRAINT doc_identity IF NOT EXISTS "
-    "FOR (d:Doc) REQUIRE (d.corpus, d.path) IS UNIQUE",
+    "CREATE CONSTRAINT doc_identity IF NOT EXISTS FOR (d:Doc) REQUIRE (d.corpus, d.path) IS UNIQUE",
     "CREATE CONSTRAINT chunk_identity IF NOT EXISTS "
     "FOR (c:Chunk) REQUIRE (c.corpus, c.id) IS UNIQUE",
-    "CREATE CONSTRAINT tag_identity IF NOT EXISTS "
-    "FOR (t:Tag) REQUIRE (t.corpus, t.name) IS UNIQUE",
+    "CREATE CONSTRAINT tag_identity IF NOT EXISTS FOR (t:Tag) REQUIRE (t.corpus, t.name) IS UNIQUE",
     "CREATE CONSTRAINT source_identity IF NOT EXISTS "
     "FOR (s:Source) REQUIRE (s.corpus, s.path) IS UNIQUE",
-    "CREATE CONSTRAINT corpus_identity IF NOT EXISTS "
-    "FOR (c:Corpus) REQUIRE c.name IS UNIQUE",
+    "CREATE CONSTRAINT corpus_identity IF NOT EXISTS FOR (c:Corpus) REQUIRE c.name IS UNIQUE",
     # Citation validation hits this on every cited path of every answer.
     "CREATE INDEX doc_path IF NOT EXISTS FOR (d:Doc) ON (d.path)",
 ]
@@ -88,6 +87,9 @@ def drop_corpus(driver: Driver, corpus: str) -> None:
     of statement that works until the day it does not.
     """
     with session(driver) as s:
+        # The public validity marker disappears first. Other CLI/API processes
+        # must not see an apparently loaded corpus while its graph is partial.
+        s.run("MATCH (c:Corpus {name: $corpus}) DETACH DELETE c", corpus=corpus).consume()
         for label in ("Chunk", "Doc", "Tag", "Source"):
             while True:
                 summary = s.run(
@@ -97,30 +99,32 @@ def drop_corpus(driver: Driver, corpus: str) -> None:
                 ).single()
                 if not summary or summary["n"] == 0:
                     break
-        s.run("MATCH (c:Corpus {name: $corpus}) DETACH DELETE c", corpus=corpus)
 
 
 def record_corpus(driver: Driver, name: str, revision: str, docs: int, chunks: int) -> CorpusRecord:
     loaded_at = datetime.now(UTC).isoformat()
+    generation = str(uuid4())
     with session(driver) as s:
         s.run(
             "MERGE (c:Corpus {name: $name}) "
             "SET c.revision = $revision, c.docs = $docs, c.chunks = $chunks, "
-            "    c.loaded_at = $loaded_at",
+            "    c.loaded_at = $loaded_at, c.generation = $generation",
             name=name,
             revision=revision,
             docs=docs,
             chunks=chunks,
             loaded_at=loaded_at,
+            generation=generation,
         )
-    return CorpusRecord(name, revision, docs, chunks, loaded_at)
+    return CorpusRecord(name, revision, docs, chunks, loaded_at, generation)
 
 
 def corpora(driver: Driver) -> list[CorpusRecord]:
     with session(driver) as s:
         rows = s.run(
             "MATCH (c:Corpus) RETURN c.name AS name, c.revision AS revision, "
-            "c.docs AS docs, c.chunks AS chunks, c.loaded_at AS loaded_at "
+            "c.docs AS docs, c.chunks AS chunks, c.loaded_at AS loaded_at, "
+            "c.generation AS generation "
             "ORDER BY c.name"
         )
         return [CorpusRecord(**dict(row)) for row in rows]
@@ -135,3 +139,17 @@ def corpus_revision(driver: Driver, name: str) -> str | None:
             "MATCH (c:Corpus {name: $name}) RETURN c.revision AS revision", name=name
         ).single()
         return row["revision"] if row else None
+
+
+def corpus_snapshot(driver: Driver, name: str) -> tuple[str, str] | None:
+    """A same-revision rebuild still changes the generation.
+
+    Legacy loads use their loaded_at marker until rebuilt with a UUID.
+    """
+    with session(driver) as s:
+        row = s.run(
+            "MATCH (c:Corpus {name: $name}) RETURN c.revision AS revision, "
+            "coalesce(c.generation, c.loaded_at) AS generation",
+            name=name,
+        ).single()
+        return (row["revision"], row["generation"]) if row else None

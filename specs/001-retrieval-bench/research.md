@@ -41,6 +41,16 @@ links are dense and the corpus is tiny".
 **Decision**: Neo4j in Docker, using its native vector index for passage
 embeddings. One store holds both the graph and the vectors.
 
+**Phase 3 adjustment**: Neo4j 5's shared vector index cannot pre-filter by corpus.
+Post-filtering its global top-k can drop relevant results when another corpus
+fills those slots. Query `Chunk` vectors with corpus-scoped exact cosine ranking
+and stable path/chunk tie-breaking instead. The vector index remains derived
+schema, but this answer path does not query ANN. Use the native driver for this
+query and graph expansion rather than a LangChain Neo4jVector wrapper that adds
+no required behavior. This changes retrieval latency and must be identified in
+future run artifacts; it must not be described as an ANN performance result.
+See the [Neo4j 5 vector function documentation](https://neo4j.com/docs/cypher-manual/5/functions/vector/).
+
 **Rationale**: Native vector indexes have been part of Neo4j since 5.11, so the
 retrieval arm can do "nearest passages, then walk the graph from their
 documents" in one place. A separate vector store would mean two systems to keep
@@ -65,6 +75,16 @@ at 17 documents, "we used a database where a dictionary would do" is part of why
 **Decision**: A local multilingual sentence-embedding model, run on the machine,
 pinned by name and revision. Unit tests use a deterministic fake embedder and
 never load the real model.
+
+**Phase 3 implementation**: `intfloat/multilingual-e5-large`, revision
+`3d7cfbdacd47fdda877c5cd8a79fbcc4f2a574f3`, CPU, normalized 1024-dimensional
+vectors. Queries use `query: ` and documents use `passage: ` as required by the
+[model card](https://huggingface.co/intfloat/multilingual-e5-large).
+LangChain's `Embeddings` interface and a lazy Sentence Transformers adapter
+keep model loading outside imports and offline tests. Long heading sections
+are indexed using the model's 512-token window; their full text remains stored
+and is supplied when selected. This truncation is an embedding limitation,
+not silent truncation of the whole-corpus strategy.
 
 **Rationale**: The corpora are in two languages — the wiki is largely English,
 the work-log vault is Korean — so a monolingual model would score one corpus

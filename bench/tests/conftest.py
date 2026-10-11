@@ -32,6 +32,9 @@ class FakeEmbedder:
     def embed(self, texts: Sequence[str]) -> list[list[float]]:
         return [self._one(t) for t in texts]
 
+    def embed_query(self, text: str) -> list[float]:
+        return self._one(text)
+
     def _one(self, text: str) -> list[float]:
         vec = [0.0] * self.dim
         for token in text.lower().split():

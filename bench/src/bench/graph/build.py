@@ -29,6 +29,9 @@ class Embedder:
     def embed(self, texts: Sequence[str]) -> list[list[float]]:  # pragma: no cover
         raise NotImplementedError
 
+    def embed_query(self, text: str) -> list[float]:
+        return self.embed([text])[0]
+
 
 @dataclass(frozen=True, slots=True)
 class BuildCounts:
@@ -55,9 +58,7 @@ def build(driver: Driver, docs: Iterable[LoadedDoc], embedder: Embedder) -> Buil
     # model, and a loop here would turn a load into a few hundred round trips.
     vectors = embedder.embed([c.text for c in chunks]) if chunks else []
     if len(vectors) != len(chunks):
-        raise ValueError(
-            f"embedder returned {len(vectors)} vectors for {len(chunks)} chunks"
-        )
+        raise ValueError(f"embedder returned {len(vectors)} vectors for {len(chunks)} chunks")
 
     with session(driver) as s:
         s.run(

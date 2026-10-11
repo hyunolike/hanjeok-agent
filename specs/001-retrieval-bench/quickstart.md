@@ -1,130 +1,121 @@
 # Quickstart: Retrieval Bench
 
-How to bring it up and confirm it does what the specification says. Every step
-below is a check someone else can repeat; none of them require reading the code.
+Phase 3 provides the `graph` answer path, corpus discovery, and clean rebuilds.
+The `whole` comparison, stored question sets, scoring and size curves belong to
+Phases 4–6 and are not yet implemented. Asking for `whole` returns a named
+failure rather than silently using another strategy.
 
 ## Prerequisites
 
-- Python 3.13 and `uv`
-- Docker, for Neo4j
-- An API key for the answering and judging model, exported in the environment
-- Both corpora checked out locally, paths given to the loader by configuration
-
-Graph build and unit tests need no key. Answering and scoring do, because they
-call a model.
+- Python 3.13+, `uv`, and Docker.
+- A local checkout of travel-context-wiki, read-only to this subproject.
+- `OPENAI_API_KEY` for answers. Loading and offline tests need no API key.
 
 ## Bring it up
 
+From the repository root:
+
 ```bash
 cd bench
-docker compose up -d neo4j       # graph + vector index
-uv sync
-uv run bench corpus load wiki    # parse, chunk, embed, write graph
-uv run bench corpus load worklog
-uv run uvicorn bench.api:app --port 8100
+uv sync --locked
+docker compose up -d --wait neo4j
+export BENCH_WIKI_ROOT="/absolute/path/to/travel-context-wiki"
+uv run bench corpus load wiki
+uv run bench corpus list
+uv run uvicorn bench.api:app --host 127.0.0.1 --port 8100
 ```
 
-`corpus load` prints document, chunk and edge counts, and every link or source
-that did not resolve. Unresolved references are expected in a real corpus and do
-not fail the load — seeing the list is the point.
+The first load downloads the pinned multilingual model
+(`intfloat/multilingual-e5-large`, 1024 dimensions); later loads use its local
+cache. Keep the server local. Loading prints counts, revision, and unresolved
+links/sources. An empty or mixed corpus is rejected before deleting existing
+state. `load` and `rebuild` both replace the old graph so deleted documents do
+not remain citable.
 
-## Check 1 — an answer names its sources (User Story 1)
+Before asking, export `OPENAI_API_KEY` in the server's environment. The root
+`.env` is not loaded automatically. `BENCH_ANSWER_MODEL` defaults to `gpt-4o`.
+Answering calls a paid model; offline tests do not.
+
+Neo4j defaults: `bolt://localhost:7687`, user `neo4j`, local password
+`benchbench`. Override `BENCH_NEO4J_URI`, `BENCH_NEO4J_USER`, and
+`BENCH_NEO4J_PASSWORD` together when using another local store.
+
+## Check 1 — an answer names its sources
 
 ```bash
 curl -s localhost:8100/bench/ask -H 'content-type: application/json' \
-  -d '{"question":"대안 점수는 어떻게 계산되나?","corpus":"wiki","strategy":"graph"}'
+  -d '{"question":"대안 목록에는 어떤 혼잡도 등급만 들어가고, 예측 데이터가 없는 후보는 어떻게 되나?","corpus":"wiki","strategy":"graph"}'
+
+uv run bench ask --question "대안 목록에는 어떤 혼잡도 등급만 들어가고, 예측 데이터가 없는 후보는 어떻게 되나?" \
+  --corpus wiki --strategy graph --show-supplied
 ```
 
-Expect `outcome: answered`, `citations` naming real paths, and `supplied`
-listing the passages. Open a cited file and confirm the claim is in it.
+Expect `answered`, real document paths, supplied passages, actual token usage
+and `corpus_revision`. Open a cited file and check that its text supports the
+answer. `--show-supplied` includes the exact text and opaque attributes given to
+the model; HTTP lists document/chunk identities and sizes.
 
-## Check 2 — a fabricated citation destroys the answer (SC-002)
-
-Point the validator at an empty corpus and ask anything, or run the injected
-test that forces a made-up path.
+## Check 2 — a fabricated citation destroys the answer
 
 ```bash
-uv run pytest tests/test_citation_gate.py -k fabricated
+uv run pytest tests/unit/test_citation_gate.py -k fabricated
+uv run pytest tests/contract/test_ask_contract.py -k invalid_citations
 ```
 
-Expect `422` and `outcome: invalid_citations`, and expect the response body to
-contain **no answer text**. An answer that reached a reader with an invented
-citation is the one failure this subproject may not have.
+The injected model cites an invented path. After at most one repair, HTTP
+returns 422 with `invalid_citations` and **no answer field or rejected text**.
+An existing document that was not supplied is also rejected.
 
 ## Check 3 — the corpus decides what can be answered
 
 ```bash
-curl -s localhost:8100/bench/ask -H 'content-type: application/json' \
-  -d '{"question":"경복궁 입장료가 얼마인가?","corpus":"wiki","strategy":"graph"}'
+uv run bench ask --question "경복궁 입장료가 얼마인가?" \
+  --corpus wiki --strategy graph --show-supplied
 ```
 
-Expect `outcome: no_grounds` with `answer: null`. Nothing in the wiki covers
-ticket prices; a confident answer here means the model is answering from
-training data and the grounding is decorative.
+The wiki does not cover ticket prices: expect `no_grounds` and `answer: null`.
+No passage above the similarity threshold also ends with no grounds without a
+model call. There is no fallback to the entire corpus.
 
-## Check 4 — both arms differ only in supplied passages (Principle II)
+## Check 5 — linked evidence reaches the answering step
 
 ```bash
-uv run bench pair --question-id wiki-007 --corpus wiki --show-diff
+uv run bench ask --question "혼잡도 등급은 대안 추천 점수에 어떻게 반영되나?" \
+  --corpus wiki --strategy graph --show-supplied
+uv run pytest -m integration tests/integration/test_retrieval.py
 ```
 
-Prints both runs and diffs their inputs. Expect the diff to touch `supplied` and
-nothing else — not the question, not the instructions, not the model settings.
-**This is the check most worth re-running after any prompt change**, because a
-violation here invalidates every number the subproject has produced, and it will
-look like an improvement to one arm when it happens.
+Inspect seed passages and `expanded: true` entries. Expansion follows one hop
+of document links, shared sources or shared tags, deduplicates documents, and
+supplies title plus a first-sentence excerpt (at most 240 characters), with
+attributes copied intact. Integration tests prove all three edge types and
+that a second-hop document does not leak into results.
 
-## Check 5 — a multi-hop question pulls in the linked document (SC-003)
-
-```bash
-uv run bench ask --question-id wiki-012 --strategy graph --show-supplied
-```
-
-`wiki-012` is answerable only by joining two documents connected by a
-`[[wikilink]]`. Expect both in `supplied`. If only the seed document appears,
-graph expansion is not running and the retrieval arm is plain vector search
-wearing a graph's name.
-
-## Check 6 — score a set and read the report (User Story 3)
-
-```bash
-uv run bench run --question-set wiki-v1 --corpus wiki
-uv run bench report <report_id>
-```
-
-Expect faithfulness and answer relevancy for both arms, context precision and
-recall for `graph` only, `not_applicable` with a reason for `whole`, and `n`
-beside every score. A score without `n` beside it is not finished.
-
-## Check 7 — rebuild reproduces retrieval (SC-007)
+## Check 7 — rebuilding reproduces retrieval
 
 ```bash
 uv run bench corpus rebuild wiki
-uv run bench ask --question-id wiki-007 --strategy graph --show-supplied
+uv run pytest -m integration tests/integration/test_retrieval.py \
+  tests/integration/test_runtime.py
 ```
 
-Expect the same passages in the same order as before the rebuild. A difference
-means something survived that was not derived from files, and the graph is no
-longer disposable.
+Same files and model revision produce the same passage ordering, with ties
+ordered by document path and chunk ID. Deleted documents and their edges must
+disappear. Compare `supplied` lists, not model wording, which may vary.
 
-## Check 8 — the size curve (User Story 4)
+Neo4j 5 cannot pre-filter the shared ANN index by corpus. This implementation
+uses **exact cosine ranking within the selected corpus**, avoiding another
+corpus's hits starving this one's top-k. Its latency is not an ANN measurement.
+
+## Tests and later milestones
 
 ```bash
-uv run bench run --question-set worklog-v1 --corpus worklog --sizes 25,50,100,200,340
-uv run bench report <report_id> --by-size
+uv run pytest                         # offline unit and HTTP contract tests
+uv run pytest -m integration          # local Neo4j, fake models, no API key
+uv run ruff check src tests
+uv run ruff format --check src tests
 ```
 
-Expect the `whole` arm's `prompt_tokens` to grow with size while `graph` stays
-roughly flat. That divergence is the finding; where the quality lines cross it
-is the answer the subproject was built to give.
-
-## Running the tests
-
-```bash
-uv run pytest                 # unit + contract. No network, no key, no Docker
-uv run pytest -m integration  # needs Neo4j up
-```
-
-If `uv run pytest` ever requires a key or a network call, that is a defect: the
-constitution puts evaluation outside CI, and a unit suite that reaches the
-network drags it back in.
+Check 4 (same question both ways) is Phase 4; check 6 (RAGAS scores) is Phase 5;
+check 8 (the size curve and crossover) is Phase 6. Their CLI/API routes will be
+documented when implemented. Phase 3 makes no claim that retrieval wins.

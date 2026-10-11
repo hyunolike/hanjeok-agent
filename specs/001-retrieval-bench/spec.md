@@ -6,6 +6,12 @@
 
 **Status**: Draft
 
+**Execution profile (Phase 3)**: The retrieval implementation uses exact cosine
+ranking inside the requested corpus, followed by bounded one-hop expansion.
+Future measurements must identify this profile; its latency does not measure
+approximate nearest-neighbour index performance. Citation validation checks
+both corpus membership and membership in the passages actually supplied.
+
 **Input**: Answer, with measurements rather than assertion, whether retrieving
 passages from a linked corpus beats putting the whole corpus in the prompt — and
 say at what corpus size the answer changes.
