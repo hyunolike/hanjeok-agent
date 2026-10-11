@@ -160,3 +160,89 @@ def test_rebuild_diagnostics_do_not_echo_outside_corpus_paths(runtime):
     text = json.dumps(result)
     assert "/Users/private" not in text and "../outside" not in text
     assert result["dropped"][2]["target"] == "safe/missing.md"
+
+
+def test_real_pair_records_revision_generation_and_shared_model_inputs(runtime, tmp_path):
+    from bench.eval.runner import PairRunner
+
+    service, loader, model = runtime
+    service.rebuild(loader.name)
+    model._replies *= 2
+    pair = PairRunner(service, tmp_path / "runs.jsonl").pair(
+        question_id="alpha", question="alpha fact", corpus=loader.name
+    )
+    assert pair.valid and len(pair.scoring_runs) == 2
+    assert pair.whole.corpus_size == pair.graph.corpus_size == 2
+    assert pair.whole.corpus_generation == pair.graph.corpus_generation
+    assert pair.whole.corpus_generation is not None
+    assert pair.diff["shared_equal"]
+
+
+def test_rebuild_between_real_arms_invalidates_pair_even_at_same_revision(runtime, tmp_path):
+    from bench.eval.runner import PairRunner
+
+    service, loader, model = runtime
+    service.rebuild(loader.name)
+    model._replies *= 2
+    original = service.ask
+
+    def ask_then_rebuild(question, corpus, strategy):
+        result = original(question, corpus, strategy)
+        if strategy == "whole":
+            service.rebuild(loader.name)
+        return result
+
+    service.ask = ask_then_rebuild
+    pair = PairRunner(service, tmp_path / "runs.jsonl").pair(
+        question_id="alpha", question="alpha fact", corpus=loader.name
+    )
+    assert not pair.valid and pair.scoring_runs == ()
+    assert "corpus_generation" in pair.cause
+    assert len((tmp_path / "runs.jsonl").read_text().splitlines()) == 2
+
+
+def test_graph_failure_after_answer_retains_billed_usage_and_discards_text(runtime, monkeypatch):
+    from bench import runtime as module
+    from bench.answer.pipeline import ModelReply
+    from bench.runtime import BenchError
+
+    service, loader, _ = runtime
+    service.rebuild(loader.name)
+
+    class Model:
+        def complete(self, system, user, **kwargs):
+            return ModelReply(
+                '{"outcome":"answered","answer":"alpha fact","citations":["a.md"]}', 42, 8
+            )
+
+    service.model = Model()
+    original = module.corpus_snapshot
+    reads = []
+
+    def snapshot(driver, corpus):
+        reads.append(corpus)
+        if len(reads) == 2:
+            raise RuntimeError("private database error")
+        return original(driver, corpus)
+
+    monkeypatch.setattr(module, "corpus_snapshot", snapshot)
+    with pytest.raises(BenchError) as error:
+        service.ask("alpha fact", loader.name, "whole")
+    assert error.value.result is not None
+    assert error.value.result.answer is None and not error.value.result.citations
+    assert (error.value.result.prompt_tokens, error.value.result.completion_tokens) == (42, 8)
+    assert error.value.result.corpus_revision == "rev-1"
+
+
+def test_oversize_whole_http_returns_named_failure_without_paid_call(runtime):
+    from bench.api import create_app
+
+    service, loader, model = runtime
+    service.rebuild(loader.name)
+    service.max_input_bytes = 1
+    response = TestClient(create_app(service)).post(
+        "/bench/ask", json={"question": "alpha fact", "corpus": loader.name, "strategy": "whole"}
+    )
+    assert response.status_code == 503
+    assert response.json()["outcome"] == "budget_exhausted"
+    assert "answer" not in response.json() and model.calls == []

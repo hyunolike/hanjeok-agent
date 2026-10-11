@@ -1,9 +1,8 @@
 # Quickstart: Retrieval Bench
 
-Phase 3 provides the `graph` answer path, corpus discovery, and clean rebuilds.
-The `whole` comparison, stored question sets, scoring and size curves belong to
-Phases 4–6 and are not yet implemented. Asking for `whole` returns a named
-failure rather than silently using another strategy.
+Phases 3–4 provide both `graph` and `whole` answer paths, corpus discovery,
+clean rebuilds and recorded pairs. Stored question sets, scoring and size
+curves belong to Phases 5–6 and are not yet implemented.
 
 ## Prerequisites
 
@@ -35,6 +34,14 @@ not remain citable.
 Before asking, export `OPENAI_API_KEY` in the server's environment. The root
 `.env` is not loaded automatically. `BENCH_ANSWER_MODEL` defaults to `gpt-4o`.
 Answering calls a paid model; offline tests do not.
+
+Both strategies use the same conservative input budget. `BENCH_MAX_INPUT_BYTES`
+defaults to 100000: system/user UTF-8 bytes, JSON schema bytes, and a 2048-byte
+envelope reserve. This is a local input limit, not an estimate of billed tokens
+or a discovered provider context window. Configure it for the chosen model;
+output tokens also need room in that model's context window. Oversize inputs
+return `budget_exhausted` before calling the model, retaining the selected
+passages in the run record and never truncating them. Repairs are checked too.
 
 Neo4j defaults: `bolt://localhost:7687`, user `neo4j`, local password
 `benchbench`. Override `BENCH_NEO4J_URI`, `BENCH_NEO4J_USER`, and
@@ -77,6 +84,49 @@ The wiki does not cover ticket prices: expect `no_grounds` and `answer: null`.
 No passage above the similarity threshold also ends with no grounds without a
 model call. There is no fallback to the entire corpus.
 
+## Check 4 — the same question both ways
+
+From `bench/`, with the wiki loaded and key exported:
+
+```bash
+uv run bench pair --question-id scoring-weights \
+  --question "대안 추천 점수의 세 요소와 가중치는 무엇이며, 검증된 가중치인가?" \
+  --corpus wiki --show-diff
+
+uv run bench ask --question "혼잡도 등급은 어떤 값으로 결정되는가?" \
+  --corpus wiki --strategy whole --show-supplied
+
+uv run pytest tests/unit/test_arms_share_inputs.py \
+  tests/unit/test_pair_validity.py tests/unit/test_pair_cli.py
+```
+
+`pair` prints both answers, sources, supplied text, provider token counts, timing
+and validity. `--show-diff` adds an audit of the captured first-request inputs:
+`shared_equal: true`, with only `supplied` differing (or no differences if both
+selections coincide). Model settings and citation/output schema are identical.
+Whole supplies all stored chunks without embeddings, ranking or truncation.
+
+`--question` is required until Phase 5 implements stored question-set lookup;
+the supplied ID identifies this exact question, rather than fetching text yet.
+Default artifacts are `runs/pairs-YYYY-MM-DD.jsonl` (UTC) and the companion
+`runs/pairs-YYYY-MM-DD.pairs.jsonl`. Use `--runs-file runs/my-pairs.jsonl` to
+choose another destination. Runs append and flush after each arm, including
+failures. The companion links the two run IDs and records pair validity.
+Both files must be empty or end at a newline boundary. An interrupted tail
+causes a named failure before any paid calls, leaving prior bytes untouched.
+The append boundary is also checked under the write lock.
+
+A revision, generation, size, question, model or common-input mismatch makes
+the pair invalid, with a cause and a nonzero CLI exit. Missing snapshot/input
+metadata also excludes a pair. A same-revision rebuild therefore invalidates
+it conservatively. One arm's failure does not prevent recording the other;
+failed arms remain visible and the pair is ineligible for future scoring.
+`model_calls` distinguishes selected inputs never submitted (zero) from attempted
+requests. A zero token count after an exception means no usage was reported;
+it is not a claim that the provider did not bill the attempt.
+Output-limit failures preserve usage supplied by the SDK and discard partial
+answers as `budget_exhausted`.
+
 ## Check 5 — linked evidence reaches the answering step
 
 ```bash
@@ -116,6 +166,7 @@ uv run ruff check src tests
 uv run ruff format --check src tests
 ```
 
-Check 4 (same question both ways) is Phase 4; check 6 (RAGAS scores) is Phase 5;
-check 8 (the size curve and crossover) is Phase 6. Their CLI/API routes will be
-documented when implemented. Phase 3 makes no claim that retrieval wins.
+Check 6 (RAGAS scores) is Phase 5; check 8 (the size curve and crossover) is
+Phase 6. Their CLI/API routes will be documented when implemented. A bounded
+pair smoke is not a scored comparison or evidence that either strategy wins
+across the corpus.

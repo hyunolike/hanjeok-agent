@@ -12,6 +12,14 @@ Future measurements must identify this profile; its latency does not measure
 approximate nearest-neighbour index performance. Citation validation checks
 both corpus membership and membership in the passages actually supplied.
 
+**Execution profile (Phase 4)**: Both strategies share a configurable conservative
+input byte budget, checked before initial and repair calls. Oversize inputs fail
+without truncation. Run artifacts capture first-request inputs and provider call
+counts so selected-but-unsent context is distinguishable. Pair validity also
+checks load generation, size, question text, model settings and common inputs;
+unknown metadata or mismatch excludes the pair. A failed arm is recorded and
+prevents scoring eligibility without preventing execution of the other arm.
+
 **Input**: Answer, with measurements rather than assertion, whether retrieving
 passages from a linked corpus beats putting the whole corpus in the prompt — and
 say at what corpus size the answer changes.

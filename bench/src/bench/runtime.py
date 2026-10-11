@@ -3,14 +3,14 @@
 from __future__ import annotations
 
 import os
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from pathlib import Path, PurePosixPath
 from threading import RLock
 
 from neo4j.exceptions import DriverError, Neo4jError
 
 from bench.answer.pipeline import AnswerPipeline, AnswerResult
-from bench.answer.strategies import GraphStrategy
+from bench.answer.strategies import GraphStrategy, WholeStrategy
 from bench.corpus.loader import check_unique_paths
 from bench.corpus.wiki import WikiLoader
 from bench.graph.build import build
@@ -26,17 +26,25 @@ from bench.graph.store import (
 
 
 class BenchError(Exception):
-    def __init__(self, outcome: str, cause: str, status: int = 503):
+    def __init__(
+        self, outcome: str, cause: str, status: int = 503, *, result: AnswerResult | None = None
+    ):
         super().__init__(cause)
         self.outcome, self.cause, self.status = outcome, cause, status
+        self.result = result
 
 
 class BenchRuntime:
-    def __init__(self, driver, embedder, model, loaders=None):
+    def __init__(self, driver, embedder, model, loaders=None, *, max_input_bytes: int = 100_000):
         self.driver, self.embedder, self.model = driver, embedder, model
         self.loaders = loaders or {}
+        self.max_input_bytes = max_input_bytes
         # A rebuild must not interleave with a question seeing its old revision.
         self._lock = RLock()
+
+    @property
+    def model_settings(self) -> dict:
+        return dict(getattr(self.model, "settings", {"name": type(self.model).__name__}))
 
     def list_corpora(self) -> list[dict]:
         with self._lock:
@@ -81,26 +89,45 @@ class BenchRuntime:
                 ) from None
 
     def ask(self, question: str, corpus: str, strategy: str) -> AnswerResult:
-        if strategy != "graph":
-            # Phase 4 implements whole; quietly running graph here invalidates
-            # the comparison before there is even a runner to detect it.
-            raise BenchError("load_failed", "whole strategy is not implemented yet", 409)
+        if strategy not in ("graph", "whole"):
+            raise BenchError("load_failed", "unknown strategy", 409)
         with self._lock:
+            result = None
             try:
                 snapshot = corpus_snapshot(self.driver, corpus)
                 if snapshot is None:
                     raise BenchError("load_failed", "corpus is not loaded", 409)
                 revision = snapshot[0]
                 known = document_paths(self.driver, corpus)
-                pipeline = AnswerPipeline(GraphStrategy(self.driver, self.embedder), self.model)
+                select = (
+                    WholeStrategy(self.driver)
+                    if strategy == "whole"
+                    else GraphStrategy(self.driver, self.embedder)
+                )
+                pipeline = AnswerPipeline(select, self.model, max_input_bytes=self.max_input_bytes)
                 result = pipeline.ask(question, corpus, revision, known)
+                result = replace(result, corpus_size=len(known), corpus_generation=snapshot[1])
                 if corpus_snapshot(self.driver, corpus) != snapshot:
-                    raise BenchError("load_failed", "corpus changed during the request", 409)
+                    cause = "corpus changed during the request"
+                    raise BenchError(
+                        "load_failed",
+                        cause,
+                        409,
+                        result=replace(
+                            result, outcome="load_failed", cause=cause, answer=None, citations=()
+                        ),
+                    )
                 return result
             except BenchError:
                 raise
             except Exception:
-                raise BenchError("load_failed", "graph or retrieval unavailable") from None
+                cause = "graph or retrieval unavailable"
+                failed = (
+                    replace(result, outcome="load_failed", cause=cause, answer=None, citations=())
+                    if result is not None
+                    else None
+                )
+                raise BenchError("load_failed", cause, result=failed) from None
 
     def close(self) -> None:
         self.driver.close()
@@ -120,4 +147,13 @@ def runtime_from_env() -> BenchRuntime:
     loaders = {}
     if root := os.environ.get("BENCH_WIKI_ROOT"):
         loaders["wiki"] = WikiLoader(Path(root))
-    return BenchRuntime(driver_from_env(), LocalEmbedder(), LazyAnswerModel(), loaders)
+    max_input_bytes = int(os.environ.get("BENCH_MAX_INPUT_BYTES", "100000"))
+    if max_input_bytes < 1:
+        raise ValueError("invalid input budget")
+    return BenchRuntime(
+        driver_from_env(),
+        LocalEmbedder(),
+        LazyAnswerModel(),
+        loaders,
+        max_input_bytes=max_input_bytes,
+    )

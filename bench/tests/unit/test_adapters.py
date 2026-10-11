@@ -4,6 +4,19 @@ import httpx
 import pytest
 
 
+def test_lazy_model_pins_settings_before_pair_execution(monkeypatch):
+    from bench.models import LazyAnswerModel
+
+    monkeypatch.setenv("BENCH_ANSWER_MODEL", "original-model")
+    model = LazyAnswerModel()
+    monkeypatch.setenv("BENCH_ANSWER_MODEL", "changed-model")
+    assert model.settings["name"] == "original-model"
+    assert model.settings["temperature"] == 0
+    settings = model.settings
+    settings["name"] = "mutation"
+    assert model.settings["name"] == "original-model"
+
+
 def test_local_embedder_prefixes_queries_and_passages_without_loading_a_model():
     from bench.embeddings import LocalEmbedder
 
@@ -117,3 +130,64 @@ def test_malformed_and_refused_completions_retain_actual_billed_usage(refusal):
     )
     assert result.answer is None
     assert "private refusal" not in repr(result)
+
+
+def test_output_limit_exception_retains_available_usage_in_failure_record(tmp_path):
+    from dataclasses import replace
+
+    from langchain_openai import ChatOpenAI
+
+    from bench.answer.pipeline import AnswerPipeline
+    from bench.eval.runner import PairRunner
+    from bench.graph.query import Passage
+    from bench.models import AnswerModel
+
+    def respond(request):
+        return httpx.Response(
+            200,
+            json={
+                "id": "limited",
+                "object": "chat.completion",
+                "model": "gpt-4o",
+                "created": 0,
+                "choices": [
+                    {
+                        "index": 0,
+                        "finish_reason": "length",
+                        "message": {
+                            "role": "assistant",
+                            "content": '{"outcome":"answered","answer":"discard partial',
+                            "refusal": None,
+                        },
+                    }
+                ],
+                "usage": {"prompt_tokens": 123, "completion_tokens": 800, "total_tokens": 923},
+            },
+        )
+
+    chat = ChatOpenAI(
+        model="gpt-4o",
+        api_key="fake",
+        max_retries=0,
+        http_client=httpx.Client(transport=httpx.MockTransport(respond)),
+    )
+    model = AnswerModel(chat=chat)
+
+    class Runtime:
+        model_settings = model.settings
+
+        def ask(self, question, corpus, strategy):
+            result = AnswerPipeline(lambda c, q: [Passage("a.md", "a#0", "fact", "A")], model).ask(
+                question, corpus, "rev", {"a.md"}
+            )
+            return replace(result, corpus_size=1, corpus_generation="generation")
+
+    result = PairRunner(Runtime(), tmp_path / "runs.jsonl").pair(
+        question_id="limited", question="Q?", corpus="third"
+    )
+    assert not result.scoring_runs
+    for record in (result.whole, result.graph):
+        assert record.outcome == "budget_exhausted"
+        assert (record.prompt_tokens, record.completion_tokens, record.model_calls) == (123, 800, 1)
+        assert record.answer is None and record.cited_paths == []
+    assert "discard partial" not in (tmp_path / "runs.jsonl").read_text()

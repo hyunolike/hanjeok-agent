@@ -126,3 +126,16 @@ def document_paths(driver: Driver, corpus: str) -> set[str]:
                 corpus=corpus,
             )
         }
+
+
+def all_passages(driver: Driver, corpus: str) -> list[Passage]:
+    """Return the entire corpus in document/ordinal order, with no text limit."""
+    with session(driver) as s:
+        rows = s.run(
+            "MATCH (d:Doc {corpus: $corpus})-[:HAS_CHUNK]->(c:Chunk {corpus: $corpus}) "
+            "RETURN d.path AS doc, c.id AS chunk, c.text AS text, d.title AS title, "
+            "d.attrs_json AS attrs, c.heading_path AS heading_path "
+            "ORDER BY doc, c.ord, chunk",
+            corpus=corpus,
+        )
+        return [_passage(dict(row)) for row in rows]

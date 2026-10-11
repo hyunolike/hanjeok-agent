@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import time
 from collections.abc import Callable, Collection, Sequence
 from dataclasses import dataclass
@@ -22,7 +23,7 @@ class ModelReply:
     text: str
     prompt_tokens: int = 0
     completion_tokens: int = 0
-    failure: Literal["refused", "malformed"] | None = None
+    failure: Literal["refused", "malformed", "output_limit"] | None = None
 
 
 class ChatModel(Protocol):
@@ -63,6 +64,10 @@ class AnswerResult:
     elapsed_ms: int
     repair_count: int
     cause: str | None = None
+    inputs: dict | None = None
+    corpus_size: int | None = None
+    corpus_generation: str | None = None
+    model_calls: int = 0
 
     def to_dict(self, *, show_supplied: bool = False) -> dict:
         supplied = []
@@ -106,6 +111,7 @@ class State(TypedDict, total=False):
     citations: tuple[str, ...]
     outcome: str
     cause: str | None
+    inputs: dict
 
 
 class AnswerPipeline:
@@ -116,12 +122,14 @@ class AnswerPipeline:
         *,
         max_model_calls: int = 2,
         deadline_ms: int = 60_000,
+        max_input_bytes: int = 100_000,
         clock: Callable[[], float] = time.monotonic,
     ) -> None:
-        if max_model_calls < 1 or deadline_ms < 1:
+        if max_model_calls < 1 or deadline_ms < 1 or max_input_bytes < 1:
             raise ValueError("invalid answer budget")
         self.select, self.model = select, model
         self.max_model_calls, self.deadline_ms, self.clock = max_model_calls, deadline_ms, clock
+        self.max_input_bytes = max_input_bytes
         builder = StateGraph(State)
         builder.add_node("retrieve", self._retrieve)
         builder.add_node("answer", self._answer)
@@ -138,9 +146,42 @@ class AnswerPipeline:
 
     def _retrieve(self, state: State) -> dict:
         passages = list(self.select(state["corpus"], state["question"]))
-        return {"passages": passages, "outcome": "pending" if passages else "no_grounds"}
+        return {
+            "passages": passages,
+            "outcome": "pending" if passages else "no_grounds",
+            "inputs": {
+                "system": SYSTEM,
+                "user": assemble(state["question"], passages),
+                "schema": ModelAnswer.model_json_schema(),
+                "budget": {
+                    "max_model_calls": self.max_model_calls,
+                    "deadline_ms": self.deadline_ms,
+                    "max_input_bytes": self.max_input_bytes,
+                    "envelope_reserve_bytes": 2048,
+                },
+            },
+        }
 
     def _answer(self, state: State) -> dict:
+        user = (
+            assemble(state["question"], state["passages"], state["cause"])
+            if state["repair_count"]
+            else state["inputs"]["user"]
+        )
+        # UTF-8 bytes conservatively bound input tokens without downloading a
+        # tokenizer. Include schema and an envelope reserve, and never truncate.
+        input_bytes = 2048 + sum(
+            len(text.encode("utf-8"))
+            for text in (SYSTEM, user, json.dumps(state["inputs"]["schema"]))
+        )
+        if input_bytes > self.max_input_bytes:
+            return {
+                "outcome": "budget_exhausted",
+                "draft": None,
+                "answer": None,
+                "citations": (),
+                "cause": "input exceeds configured UTF-8 byte budget",
+            }
         if (
             state["calls"] >= self.max_model_calls
             or (self.clock() - state["started"]) * 1000 >= self.deadline_ms
@@ -155,15 +196,12 @@ class AnswerPipeline:
         try:
             reply = self.model.complete(
                 SYSTEM,
-                assemble(
-                    state["question"],
-                    state["passages"],
-                    state["cause"] if state["repair_count"] else None,
-                ),
+                user,
                 timeout=max(0.001, self.deadline_ms / 1000 - (self.clock() - state["started"])),
             )
         except Exception:
             return {
+                "calls": state["calls"] + 1,
                 "outcome": "model_failed",
                 "draft": None,
                 "answer": None,
@@ -187,15 +225,20 @@ class AnswerPipeline:
                 "cause": "answer deadline exhausted",
             }
         if reply.failure is not None:
+            causes = {
+                "refused": "answering model refused",
+                "malformed": "answering model returned malformed output",
+                "output_limit": "answering model output token limit exhausted",
+            }
             return {
                 **updates,
-                "outcome": "model_failed",
+                "outcome": "budget_exhausted"
+                if reply.failure == "output_limit"
+                else "model_failed",
                 "draft": None,
                 "answer": None,
                 "citations": (),
-                "cause": "answering model refused"
-                if reply.failure == "refused"
-                else "answering model returned malformed output",
+                "cause": causes[reply.failure],
             }
         try:
             draft = ModelAnswer.model_validate_json(reply.text)
@@ -278,4 +321,6 @@ class AnswerPipeline:
             max(0, int((self.clock() - started) * 1000)),
             state["repair_count"],
             state["cause"],
+            state["inputs"],
+            model_calls=state["calls"],
         )

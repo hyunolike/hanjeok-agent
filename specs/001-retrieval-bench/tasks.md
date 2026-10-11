@@ -92,14 +92,14 @@ confirm every cited path exists and every claim is in the passage that was cited
 **Independent test**: Run one question through both arms and diff their recorded
 inputs; only `supplied` may differ.
 
-- [ ] T028 [US2] Implement the `whole` strategy in `bench/src/bench/answer/strategies.py` — supply every chunk of the corpus, and fail with an explicit cause when the corpus exceeds what one prompt can carry rather than truncating (spec US4 scenario 2)
-- [ ] T029 [US2] Define the run record of data-model.md in `bench/src/bench/eval/runner.py` and append it as JSONL under `bench/runs/`, recording failures with their outcome rather than omitting them
-- [ ] T030 [US2] Implement pairing in `bench/src/bench/eval/runner.py`, including the validity rule: differing `corpus_revision` marks the pair invalid instead of comparing it
-- [ ] T031 [US2] Write `bench/tests/unit/test_pair_validity.py` asserting a mismatched-revision pair is excluded and reported, not scored
-- [ ] T032 [US2] Write `bench/tests/unit/test_arms_share_inputs.py` asserting both strategies produce identical prompt inputs except supplied passages — the automated form of quickstart check 4 (Principle II)
-- [ ] T033 [US2] Add `bench pair --question-id --corpus --show-diff` to `bench/src/bench/cli.py`
+- [X] T028 [US2] Implement the `whole` strategy in `bench/src/bench/answer/strategies.py` — supply every chunk of the corpus, and fail with an explicit cause when the corpus exceeds what one prompt can carry rather than truncating (spec US4 scenario 2)
+- [X] T029 [US2] Define the run record of data-model.md in `bench/src/bench/eval/runner.py` and append it as JSONL under `bench/runs/`, recording failures with their outcome rather than omitting them
+- [X] T030 [US2] Implement pairing in `bench/src/bench/eval/runner.py`, including the validity rule: differing `corpus_revision` marks the pair invalid instead of comparing it
+- [X] T031 [US2] Write `bench/tests/unit/test_pair_validity.py` asserting a mismatched-revision pair is excluded and reported, not scored
+- [X] T032 [US2] Write `bench/tests/unit/test_arms_share_inputs.py` asserting both strategies produce identical prompt inputs except supplied passages — the automated form of quickstart check 4 (Principle II)
+- [X] T033 [US2] Add `bench pair --question-id --corpus --show-diff` to `bench/src/bench/cli.py`
 
-**Checkpoint**: quickstart check 4 passes; both arms answer and are recorded.
+**Checkpoint**: Quickstart check 4 passes. Both strategies run independently and `bench pair` persists both arms plus validity. Final verification after review fixes: 88 offline tests / 26 real Neo4j integration tests passed; three actual wiki pairs have identical common inputs. See [Phase 4 evidence](../../bench/reports/phase4-smoke.md).
 
 ---
 

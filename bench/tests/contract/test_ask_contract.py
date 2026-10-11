@@ -24,13 +24,14 @@ class TestRuntime:
             raise BenchError("load_failed", "corpus is not loaded", 409)
         if corpus == "broken":
             raise BenchError("load_failed", "graph unavailable", 503)
-        if strategy != "graph":
-            raise BenchError("load_failed", "whole strategy is not implemented yet", 409)
+        rows = [Passage("a.md", "a.md#0", "supported text", "A")]
+        if strategy == "whole":
+            rows.append(Passage("b.md", "b.md#0", "additional text", "B"))
         pipeline = AnswerPipeline(
-            lambda c, q: [Passage("a.md", "a.md#0", "supported text", "A")],
+            lambda c, q: rows,
             self.model,
         )
-        return pipeline.ask(question, corpus, "test-revision", {"a.md"})
+        return pipeline.ask(question, corpus, "test-revision", {"a.md", "b.md"})
 
     def list_corpora(self):
         return [
@@ -137,9 +138,10 @@ def test_bad_input_is_rejected_before_runtime_and_never_echoed(scripted, body):
 
 
 def test_whole_is_not_silently_replaced_with_graph(scripted):
-    c, _ = client(scripted)
+    c, _ = client(scripted, '{"outcome":"answered","answer":"supported text","citations":["a.md"]}')
     response = post(c, strategy="whole")
-    assert response.status_code == 409
+    assert response.status_code == 200
+    assert {p["doc"] for p in response.json()["supplied"]} == {"a.md", "b.md"}
 
 
 def test_discovery_and_rebuild_report_dropped_refs(scripted):

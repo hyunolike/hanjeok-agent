@@ -5,31 +5,62 @@ import os
 
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
+from openai import LengthFinishReasonError
 
 from bench.answer.pipeline import ModelAnswer, ModelReply
 
 
+def _default_settings() -> dict:
+    return {
+        "name": os.environ.get("BENCH_ANSWER_MODEL", "gpt-4o"),
+        "temperature": 0,
+        "max_tokens": 800,
+    }
+
+
 class AnswerModel:
-    def __init__(self, *, chat=None):
+    def __init__(self, *, chat=None, settings=None):
+        self._settings = dict(settings or _default_settings())
         self.chat = (
             chat
             if chat is not None
             else ChatOpenAI(
-                model=os.environ.get("BENCH_ANSWER_MODEL", "gpt-4o"),
-                temperature=0,
-                max_tokens=800,
+                model=self._settings["name"],
+                temperature=self._settings["temperature"],
+                max_tokens=self._settings["max_tokens"],
                 max_retries=0,
                 timeout=60,
             )
         )
+        if chat is not None:
+            self._settings = {
+                "name": chat.model_name,
+                "temperature": chat.temperature,
+                "max_tokens": chat.max_tokens,
+            }
+
+    @property
+    def settings(self) -> dict:
+        return dict(self._settings)
 
     def complete(self, system: str, user: str, *, timeout: float = 60) -> ModelReply:
-        result = self.chat.with_structured_output(
-            ModelAnswer.model_json_schema(),
-            method="json_schema",
-            strict=True,
-            include_raw=True,
-        ).invoke([SystemMessage(system), HumanMessage(user)], timeout=timeout)
+        try:
+            result = self.chat.with_structured_output(
+                ModelAnswer.model_json_schema(),
+                method="json_schema",
+                strict=True,
+                include_raw=True,
+            ).invoke([SystemMessage(system), HumanMessage(user)], timeout=timeout)
+        except LengthFinishReasonError as error:
+            # Native SDK parsing aborts before LangChain returns the raw message,
+            # but the exception retains the completion's billed usage.
+            usage = error.completion.usage
+            return ModelReply(
+                "",
+                usage.prompt_tokens if usage else 0,
+                usage.completion_tokens if usage else 0,
+                "output_limit",
+            )
         parsed, raw = result["parsed"], result["raw"]
         usage = raw.usage_metadata or {}
         failure = None
@@ -50,8 +81,13 @@ class LazyAnswerModel:
 
     def __init__(self):
         self._model = None
+        self._settings = _default_settings()
+
+    @property
+    def settings(self) -> dict:
+        return dict(self._settings)
 
     def complete(self, system: str, user: str, **kwargs) -> ModelReply:
         if self._model is None:
-            self._model = AnswerModel()
+            self._model = AnswerModel(settings=self._settings)
         return self._model.complete(system, user, **kwargs)

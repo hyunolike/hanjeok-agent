@@ -3,7 +3,15 @@
 from neo4j import Driver
 
 from bench.graph.build import Embedder
-from bench.graph.query import Passage, expand, vector_search
+from bench.graph.query import Passage, all_passages, expand, vector_search
+
+
+class WholeStrategy:
+    def __init__(self, driver: Driver) -> None:
+        self.driver = driver
+
+    def __call__(self, corpus: str, question: str) -> list[Passage]:
+        return all_passages(self.driver, corpus)
 
 
 class GraphStrategy:

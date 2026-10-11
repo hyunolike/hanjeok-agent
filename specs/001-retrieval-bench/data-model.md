@@ -103,6 +103,16 @@ One row per (question, strategy, corpus revision). Written as JSONL under
 | `prompt_tokens`, `completion_tokens`, `elapsed_ms` | |
 | `model` | Identity and settings, so a pair is comparable |
 | `repair_count` | Times validation sent it back |
+| `cause` | Fixed, sanitized failure description; no discarded answer/error text |
+| `pair_id`, `corpus_generation` | Link arms; distinguish rebuilds at the same revision |
+| `inputs` | Captured first-request system/user, output schema and shared budgets; user carries full supplied text/attributes |
+| `retrieval` | Selection profile: all chunks or corpus-filtered exact cosine with expansion bounds |
+| `model_calls` | Attempted provider calls; zero means selected inputs were not submitted |
+
+Runs lacking a usable corpus snapshot record unknown revision/generation/size
+as null, never a guessed revision. Such runs remain evidence of failure but
+cannot form a valid pair. An exception with no reported usage records zero
+tokens and its attempted-call count; zero does not establish zero billing.
 
 A failed run is recorded with its outcome, never omitted — spec User Story 2,
 scenario 3. Omitting failures silently converts a failure rate into a smaller
@@ -116,6 +126,13 @@ Two runs, same `question_id` and same `corpus_revision`, one per strategy.
 marked invalid and excluded from scoring rather than compared. Stated as a spec
 edge case; enforced here because by scoring time the two runs look identical
 apart from one field nobody would think to check.
+
+Phase 4 also verifies generation, corpus size, question ID/text, model settings,
+and all captured common input fields. A same-revision rebuild changes generation
+and conservatively invalidates a pair. Missing snapshot/input metadata prevents
+comparison. A valid pair with a failed arm is retained but ineligible for scoring.
+Append-only companion `.pairs.jsonl` rows link the two run IDs and store validity,
+cause and the input diff; each `.jsonl` run row remains one strategy execution.
 
 ## Question Set
 
