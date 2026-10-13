@@ -39,6 +39,7 @@ class Active:
     exported_at: str
     export_sha256: str
     counts: dict[str, int]
+    source: str = ""
 
 
 @dataclass(frozen=True, slots=True)
@@ -86,12 +87,18 @@ def active(driver: Driver, corpus: str = CORPUS) -> Active | None:
         row = s.run(
             "MATCH (c:Corpus {name: $corpus}) WHERE c.active_generation IS NOT NULL "
             "RETURN c.active_generation AS generation, c.exported_at AS exported_at, "
-            "c.export_sha256 AS sha, c.counts_json AS counts",
+            "c.export_sha256 AS sha, c.counts_json AS counts, c.export_source AS source",
             corpus=corpus,
         ).single()
     if row is None:
         return None
-    return Active(row["generation"], row["exported_at"], row["sha"], json.loads(row["counts"]))
+    return Active(
+        row["generation"],
+        row["exported_at"],
+        row["sha"],
+        json.loads(row["counts"]),
+        row["source"] or "",
+    )
 
 
 def match_name(driver: Driver, generation: str, name: str) -> list[PlaceRow]:

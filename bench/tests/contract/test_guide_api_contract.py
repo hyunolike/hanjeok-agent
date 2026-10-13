@@ -295,3 +295,35 @@ def test_refresh_and_evaluation_are_not_reachable_over_http():
     for path in ("/guide/refresh", "/guide/eval/run", "/docs", "/openapi.json"):
         assert http.post(path).status_code in (404, 405)
         assert http.get(path).status_code in (404, 405)
+
+
+def test_the_evaluation_report_is_served_only_once_published(tmp_path):
+    from guide.eval.store import ReportStore
+
+    store = ReportStore(tmp_path)
+    http = TestClient(create_app(TestRuntime(), origins=[], reports=store))
+
+    assert http.get("/guide/eval/latest").status_code == 404
+    assert http.get("/guide/eval/latest").json() == {"cause": "no_report"}
+
+    store.put({"report_id": "r1", "question_count": 1}, {"q01": {"question_id": "q01"}})
+    assert http.get("/guide/eval/latest").status_code == 404, "stored is not published"
+    assert http.get("/guide/eval/r1").json()["report_id"] == "r1"
+
+    store.publish("r1")
+    assert http.get("/guide/eval/latest").json() == {"report_id": "r1", "question_count": 1}
+    assert http.get("/guide/eval/r1/samples/q01").json() == {"question_id": "q01"}
+    assert http.get("/guide/eval/r1/samples/q99").status_code == 404
+    assert http.get("/guide/eval/..%2Fr1").status_code == 404
+
+
+def test_the_report_is_readable_while_the_graph_is_down(tmp_path):
+    from guide.eval.store import ReportStore
+
+    store = ReportStore(tmp_path)
+    store.put({"report_id": "r1"}, {})
+    store.publish("r1")
+
+    http = TestClient(create_app(TestRuntime(ready=False), origins=[], reports=store))
+
+    assert http.get("/guide/eval/latest").status_code == 200

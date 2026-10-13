@@ -26,6 +26,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from guide.agent import Agent
+from guide.eval.store import ReportStore
 from guide.live import LiveClient, Recording
 from guide.model import Model
 from guide.scope import Turn
@@ -100,8 +101,14 @@ def allowed_origins() -> list[str]:
     return ["http://localhost:3000"]
 
 
-def create_app(runtime: Runtime | None = None, *, origins: list[str] | None = None) -> FastAPI:
+def create_app(
+    runtime: Runtime | None = None,
+    *,
+    origins: list[str] | None = None,
+    reports: ReportStore | None = None,
+) -> FastAPI:
     state: dict[str, Any] = {"runtime": runtime}
+    reports = reports or ReportStore()
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
@@ -294,6 +301,20 @@ def create_app(runtime: Runtime | None = None, *, origins: list[str] | None = No
             "generation": snapshot.generation,
             "limits": limits,
         }
+
+    # Reports are files written by `guide eval`. Reading them needs neither the
+    # graph nor a model, so the page works while the rest is starting or down.
+    @app.get("/guide/eval/latest")
+    def eval_latest():
+        return reports.latest() or _error(404, "no_report")
+
+    @app.get("/guide/eval/{report_id}")
+    def eval_report(report_id: str):
+        return reports.get(report_id) or _error(404, "no_report")
+
+    @app.get("/guide/eval/{report_id}/samples/{question_id}")
+    def eval_sample(report_id: str, question_id: str):
+        return reports.sample(report_id, question_id) or _error(404, "no_sample")
 
     return app
 

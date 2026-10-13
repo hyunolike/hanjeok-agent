@@ -13,6 +13,7 @@ import sys
 from dataclasses import asdict
 from pathlib import Path
 
+from guide.eval.questions import QuestionSetError
 from guide.export import ExportError, read_export
 from guide.graph.refresh import RefreshError
 
@@ -32,7 +33,106 @@ def parser() -> argparse.ArgumentParser:
     refresh.add_argument(
         "--check", action="store_true", help="verify the export and stop; touch nothing"
     )
+    evaluate = commands.add_parser(
+        "eval", help="run a question set under both strategies and store a report"
+    )
+    evaluate.add_argument("--question-set", required=True, type=Path)
+    live = evaluate.add_mutually_exclusive_group()
+    live.add_argument(
+        "--record-live",
+        action="store_true",
+        help="call Hanjeok and keep the responses with the run",
+    )
+    live.add_argument(
+        "--live-recording", type=Path, help="answer from this recording instead of calling Hanjeok"
+    )
+    evaluate.add_argument(
+        "--no-judge", action="store_true", help="skip the judged metrics; costs far fewer calls"
+    )
+    evaluate.add_argument(
+        "--allow-small", action="store_true", help="accept a set below the published size"
+    )
+    publish = commands.add_parser(
+        "publish", help="make a stored report the one the evaluation page shows"
+    )
+    publish.add_argument("--report", required=True)
     return root
+
+
+def _eval_from_env(args) -> dict:
+    """The real evaluation. Spends model quota; never run in CI."""
+    import os
+
+    from bench.embeddings import LocalEmbedder
+    from bench.graph.query import document_paths
+    from bench.graph.store import driver_from_env
+    from guide.eval.service import evaluate
+    from guide.eval.store import ReportStore
+    from guide.graph import read
+    from guide.live import LiveClient, Recording
+    from guide.model import GuideModel
+    from guide.sources import WIKI_CORPUS, GraphPlaces, GraphPolicy
+
+    driver = driver_from_env()
+    try:
+        active = read.active(driver)
+        if active is None:
+            raise RefreshError("not_ready", "no data is loaded; run `guide refresh` first")
+        embedder = LocalEmbedder()
+        if args.record_live:
+            stamp = Path("runs") / "guide-live" / active.generation[:8]
+            live = LiveClient(
+                mode="record",
+                base_url=os.environ.get("HANJEOK_BASE_URL", ""),
+                recording=Recording(stamp),
+            )
+        else:
+            directory = args.live_recording or Path("tests") / "fixtures" / "hanjeok-live"
+            live = LiveClient(mode="replay", recording=Recording(directory))
+        judge = None
+        if not args.no_judge:
+            from bench.eval.judge import RagasJudge
+
+            judge = RagasJudge(embedder)
+        return evaluate(
+            args.question_set,
+            # The patient wrapper does the waiting, outside the question's clock.
+            model=GuideModel(rate_limit_waits=()),
+            patient=True,
+            places=GraphPlaces(driver, active, embedder),
+            policy=GraphPolicy(driver, embedder),
+            live=live,
+            judge=judge,
+            store=ReportStore(),
+            runs_dir=Path("runs"),
+            generation=active.generation,
+            export_sha256=active.export_sha256,
+            export_as_of=active.exported_at,
+            export_source=active.source,
+            wiki_paths=document_paths(driver, WIKI_CORPUS) or None,
+            allow_small=args.allow_small,
+        )
+    finally:
+        driver.close()
+
+
+def _summary(report: dict) -> dict:
+    return {
+        "ok": True,
+        "report_id": report["report_id"],
+        "question_count": report["question_count"],
+        "strategies": {
+            name: {
+                "outcomes": arm["outcomes"],
+                "id_recall": arm["metrics"]["id_recall"]["value"],
+                "faithfulness": arm["metrics"]["faithfulness"]["value"],
+                "forbidden": {
+                    b: c["occurrences"] for b, c in arm["forbidden"].items() if c["occurrences"]
+                },
+            }
+            for name, arm in report["strategies"].items()
+        },
+    }
 
 
 def _refresh_from_env(export, cache: Path):
@@ -51,9 +151,23 @@ def _refresh_from_env(export, cache: Path):
         driver.close()
 
 
-def main(argv=None, *, run_refresh=_refresh_from_env) -> int:
+def main(argv=None, *, run_refresh=_refresh_from_env, run_eval=_eval_from_env, store=None) -> int:
     args = parser().parse_args(argv)
     try:
+        if args.command == "eval":
+            print(json.dumps(_summary(run_eval(args)), ensure_ascii=False))
+            return 0
+        if args.command == "publish":
+            from guide.eval.store import ReportStore
+
+            if not (store or ReportStore()).publish(args.report):
+                print(
+                    json.dumps({"ok": False, "cause": "no_report", "detail": args.report}),
+                    file=sys.stderr,
+                )
+                return 1
+            print(json.dumps({"ok": True, "published": args.report}))
+            return 0
         # The export is verified before anything that can reach a service is
         # constructed. A bad export costs no connection and no model load.
         export = read_export(args.export)
@@ -66,6 +180,15 @@ def main(argv=None, *, run_refresh=_refresh_from_env) -> int:
             )
             return 0
         result = run_refresh(export, args.cache)
+    except QuestionSetError as error:
+        print(
+            json.dumps(
+                {"ok": False, "cause": "question_set_invalid", "detail": str(error)},
+                ensure_ascii=False,
+            ),
+            file=sys.stderr,
+        )
+        return 1
     except (ExportError, RefreshError) as error:
         # The active copy is untouched in both cases; say so, since the next
         # thing the operator wonders is whether the demo is now broken.

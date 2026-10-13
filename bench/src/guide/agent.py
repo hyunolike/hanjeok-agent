@@ -22,6 +22,7 @@ in progress on the instance. The API builds one per request.
 
 from __future__ import annotations
 
+import re
 import time
 from collections.abc import Callable
 from dataclasses import asdict, dataclass, field
@@ -64,6 +65,7 @@ MESSAGES = {
 }
 
 Emit = Callable[[str, dict], None]
+_INTERNAL_ID = re.compile(r"\s*\(\s*place_id\s*\d+\s*\)|\s*,?\s*place_id\s*\d+")
 
 
 @dataclass(slots=True)
@@ -81,6 +83,13 @@ class Result:
     place_ids: tuple[int, ...] = ()
     dates: tuple[str, ...] = ()
     candidates: tuple[int, ...] = ()
+    model_failure: str | None = None
+    """The category of a model failure (`rate_limit`, `timeout`, …). For run
+    records; the visitor is told only that the model could not be used."""
+
+    rejections: list[str] = field(default_factory=list)
+    """Why the citation gate refused a draft, once per refusal."""
+
     model_calls: int = 0
     elapsed_ms: int = 0
     prompts: list[dict] = field(default_factory=list)
@@ -304,7 +313,8 @@ class Agent:
             return {"route": "answer", "partial": True}
         try:
             reply = self._call(state, (*self._lookups.offered, "answer"))
-        except ModelFailure:
+        except ModelFailure as failure:
+            self._result.model_failure = failure.kind
             return self._stop("failed", "model_failed")
         if reply["action"] == "answer":
             return {"draft": reply, "route": "verify"}
@@ -358,6 +368,7 @@ class Agent:
         try:
             reply = self._call(state, ("answer",))
         except ModelFailure as failure:
+            self._result.model_failure = failure.kind
             return self._stop(
                 "failed", "budget_exhausted" if failure.kind == "deadline" else "model_failed"
             )
@@ -370,12 +381,16 @@ class Agent:
             return self._stop("no_grounds", "no_grounds")
         verdict = cite.gate(draft.get("answer") or "", draft.get("citations") or [], fetched.labels)
         if not verdict.ok:
+            self._result.rejections.append(verdict.reason or "")
             if state["repaired"]:
                 # Two drafts, both unverifiable. Neither is shown.
                 return self._stop("failed", "invalid_citations")
             return {"repaired": True, "repair": verdict.reason, "draft": None, "route": "answer"}
 
-        text = draft["answer"].strip()
+        # The passages carry place ids so the model can name a lookup's argument.
+        # Told not to repeat them, it sometimes still does; they mean nothing to
+        # a visitor, so they are removed rather than shown.
+        text = _INTERNAL_ID.sub("", draft["answer"]).strip()
         self._result.answer, self._result.citations, self._result.partial = (
             text,
             verdict.citations,

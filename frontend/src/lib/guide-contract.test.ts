@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { isTerminal, parseGuideFrame } from './guide-schema'
+import { evalReportSchema, evalSampleSchema, isTerminal, parseGuideFrame } from './guide-schema'
 
 /**
  * 서버가 실제로 만든 스트림을 이 화면의 스키마로 읽는다.
@@ -43,5 +43,25 @@ describe('서버가 녹화한 스트림', () => {
 
     expect(answer.citations.length).toBeGreaterThan(0)
     for (const citation of answer.citations) expect(fetched.has(citation.id), citation.id).toBe(true)
+  })
+})
+
+describe('서버가 만든 평가 보고서', () => {
+  const reports = join(process.cwd(), '..', 'bench', 'tests', 'fixtures', 'guide-report')
+  const read = (name: string) => JSON.parse(readFileSync(join(reports, name), 'utf8'))
+
+  it('보고서를 이 화면의 스키마로 읽는다', () => {
+    const report = evalReportSchema.parse(read('report.json'))
+
+    expect(report.questions).toHaveLength(report.question_count)
+    // 판정이 실패한 지표는 0 이 아니라 값 없음으로 온다.
+    expect(report.strategies.graph.metrics.context_recall).toMatchObject({ value: null, status: 'unavailable' })
+    expect(report.strategies.graph.by_kind.unsupported.id_recall.status).toBe('not_applicable')
+  })
+
+  it('문항 하나를 이 화면의 스키마로 읽는다', () => {
+    const sample = evalSampleSchema.parse(read('sample.json'))
+
+    expect(sample.strategies.graph.passages.length).toBeGreaterThan(sample.strategies.vector.passages.length)
   })
 })

@@ -65,6 +65,7 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 "tests/unit/test_guide_*.py" = ["E501"]
 "tests/contract/test_guide_*.py" = ["E501"]
 "src/guide/forbidden.py" = ["E501"]
+"src/guide/eval/service.py" = ["E501"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

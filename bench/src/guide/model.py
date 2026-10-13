@@ -44,12 +44,18 @@ class Model(Protocol):
 
 
 class GuideModel:
-    def __init__(self, *, settings: dict | None = None) -> None:
+    def __init__(
+        self, *, settings: dict | None = None, rate_limit_waits=RATE_LIMIT_WAITS_S
+    ) -> None:
         from bench.models import _default_settings
 
         self.settings = dict(settings or _default_settings())
         self._chat = None
         self._sleep = time.sleep
+        self._waits = tuple(rate_limit_waits)
+        # What the provider reported, summed. An evaluation reads the difference
+        # before and after a question.
+        self.usage = {"model_calls": 0, "prompt_tokens": 0, "completion_tokens": 0}
 
     def _client(self):
         if self._chat is None:
@@ -80,7 +86,7 @@ class GuideModel:
         already bounds how long this may take.
         """
         started = time.monotonic()
-        for wait in (*RATE_LIMIT_WAITS_S, None):
+        for wait in (*self._waits, None):
             try:
                 return self._decide_once(
                     system, user, schema, timeout=timeout - (time.monotonic() - started)
@@ -114,6 +120,10 @@ class GuideModel:
             # Only the category is kept. Provider messages can carry request
             # contents, and nothing downstream needs them.
             raise ModelFailure(diagnostic(ProviderFailure(error))["kind"]) from None
+        reported = getattr(result.get("raw"), "usage_metadata", None) or {}
+        self.usage["model_calls"] += 1
+        self.usage["prompt_tokens"] += reported.get("input_tokens", 0)
+        self.usage["completion_tokens"] += reported.get("output_tokens", 0)
         parsed = result.get("parsed")
         if not isinstance(parsed, dict) or result.get("parsing_error") is not None:
             raise ModelFailure("malformed")

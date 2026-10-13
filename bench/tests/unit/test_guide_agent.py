@@ -367,3 +367,22 @@ def test_the_prompt_never_shows_the_model_a_raw_grade_token():
     shown = "\n".join(call["user"] for call in model.calls)
     assert "매우혼잡" in shown
     assert not any(token in shown for token in ("VERY_CROWDED", "RELAXED", "NORMAL", "CROWDED"))
+
+
+def test_internal_place_ids_are_removed_from_the_answer_text():
+    reply = answer(
+        "달맞이 숲길(place_id 131)으로 가세요. 솔내 한옥마을, place_id 118 도 있습니다.",
+        ALTERNATIVES,
+    )
+
+    _, events = run(ScriptedModel(action("alternatives", place_id=101, date="2026-10-17"), reply))
+
+    assert dict(events)["answer"]["text"] == "달맞이 숲길으로 가세요. 솔내 한옥마을 도 있습니다."
+
+
+def test_the_kind_of_model_failure_and_gate_refusals_are_kept_for_the_record():
+    failed, _ = run(ScriptedModel(model_down("rate_limit")))
+    refused, _ = run(ScriptedModel(answer("초안", "hanjeok:place/999"), answer("초안")))
+
+    assert failed.model_failure == "rate_limit"
+    assert len(refused.rejections) == 2 and "조회한 id 가 아닙니다" in refused.rejections[0]
