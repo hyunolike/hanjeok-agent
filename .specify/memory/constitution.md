@@ -83,6 +83,9 @@ composes a query of its own.
   member accounts, feedback, photos and view history never enter a corpus.
 - Date-bound facts, such as a congestion forecast, are fetched from the Hanjeok
   service when asked and are never served from a copy.
+- The `guide` package is deployed as a public demo and answers visitors. The
+  bench's own comparison stays a local experiment, and evaluation of either is
+  started by a person from the command line, never by a visitor.
 - Measured numbers are committed as run artifacts with the corpus revision they
   ran against. A number without its corpus revision cannot be reproduced and is
   therefore not evidence.
@@ -110,4 +113,4 @@ accidental violations look like improvements to one arm. Any change touching
 prompt text, model settings or the question set states in its commit message
 which arms it affects; if the answer is "one", it needs a reason.
 
-**Version**: 1.1.0 | **Ratified**: 2026-09-29 | **Last Amended**: 2026-10-13
+**Version**: 1.1.1 | **Ratified**: 2026-09-29 | **Last Amended**: 2026-10-13
