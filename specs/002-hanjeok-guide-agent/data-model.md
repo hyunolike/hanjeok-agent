@@ -131,7 +131,7 @@ fields of the bench run record plus `steps`, `fetched`, `outcome`, `cause`,
 | `questions[].id` | Unique |
 | `questions[].question` | Korean |
 | `questions[].kind` | `place_lookup`, `alternatives`, `date_comparison`, `policy`, `multi_place`, `unsupported` |
-| `questions[].anchor_date_offset` | Days from the evaluation date, so "this Saturday" resolves the same way in both arms |
+| `{+N}` inside `question` and `needs` | N days after the day the evaluation runs. In the question it becomes "10월 17일"; in a `needs` id it becomes `2026-10-17`. This replaced a separate `anchor_date_offset` field: a question comparing two dates needs two offsets, and the ids it needs must carry the same dates |
 | `questions[].needs` | Citation id patterns the answer must rest on, such as `hanjeok:place/1234` or `wiki:concepts/congestion-diagnosis.md`. Empty for `unsupported` |
 | `questions[].expect` | `answered`, `declined` or `ask_user` |
 

@@ -197,7 +197,7 @@ export const guideKo = {
     kindColumn: '종류',
     strategyColumn: '방식',
     kind: {
-      single_place: '장소 하나',
+      place_lookup: '장소 하나',
       alternatives: '대안 장소',
       date_comparison: '날짜 비교',
       policy: '정책 설명',
@@ -410,7 +410,7 @@ export const guideEn: GuideDict = {
     kindColumn: 'Kind',
     strategyColumn: 'Strategy',
     kind: {
-      single_place: 'One place',
+      place_lookup: 'One place',
       alternatives: 'Alternatives',
       date_comparison: 'Date comparison',
       policy: 'Policy explanation',

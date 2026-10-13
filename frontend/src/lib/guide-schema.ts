@@ -230,7 +230,7 @@ export const EVAL_METRICS = [
 export type EvalMetric = (typeof EVAL_METRICS)[number]
 
 export const EVAL_KINDS = [
-  'single_place',
+  'place_lookup',
   'alternatives',
   'date_comparison',
   'policy',

@@ -188,14 +188,14 @@ const PASSAGES: Record<string, string> = {
 const QUESTIONS: Recorded[] = [
   {
     id: 'q01',
-    kind: 'single_place',
+    kind: 'place_lookup',
     question: '가람궁은 10월 17일에 얼마나 붐벼?',
     vector: ['10월 17일 가람궁 예보는 매우혼잡입니다.', ['hanjeok:place/101', 'hanjeok:congestion/101@2026-10-17']],
     graph: ['10월 17일 가람궁 예보는 매우혼잡입니다.', ['hanjeok:place/101', 'hanjeok:congestion/101@2026-10-17']],
   },
   {
     id: 'q02',
-    kind: 'single_place',
+    kind: 'place_lookup',
     question: '새벽 등대는 이번 토요일에 한적해?',
     vector: ['새벽 등대는 혼잡 예보 대상이 아니어서 알 수 없습니다.', ['hanjeok:place/150']],
     graph: ['새벽 등대는 혼잡 예보 대상이 아니어서 알 수 없습니다.', ['hanjeok:place/150']],
@@ -291,14 +291,14 @@ const two = (...values: number[]): KindScores =>
 
 const BY_KIND: Record<EvalStrategy, Record<Exclude<EvalKind, 'unsupported'>, KindScores>> = {
   vector: {
-    single_place: two(0.96, 0.92, 0.8, 0.85, 0.78, 0.84),
+    place_lookup: two(0.96, 0.92, 0.8, 0.85, 0.78, 0.84),
     alternatives: two(0.94, 0.9, 0.74, 0.7, 0.72, 0.68),
     date_comparison: two(0.92, 0.86, 0.72, 0.66, 0.7, 0.64),
     policy: two(0.95, 0.91, 0.78, 0.8, 0.75, 0.8),
     multi_place: { ...two(0.88, 0.8, 0.52, 0.34, 0.5, 0.3), faithfulness: [0.88, 1] },
   },
   graph: {
-    single_place: two(0.95, 0.92, 0.74, 0.86, 0.72, 0.84),
+    place_lookup: two(0.95, 0.92, 0.74, 0.86, 0.72, 0.84),
     alternatives: two(0.93, 0.91, 0.7, 0.84, 0.68, 0.86),
     date_comparison: two(0.92, 0.87, 0.68, 0.78, 0.66, 0.76),
     policy: { ...two(0, 0.9, 0.76, 0.8, 0.74, 0.8), faithfulness: [null, 0] },

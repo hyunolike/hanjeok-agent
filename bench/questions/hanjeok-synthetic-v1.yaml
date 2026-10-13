@@ -1,0 +1,68 @@
+# Twelve questions over the synthetic export (tests/fixtures/hanjeok-export).
+# Two of each kind. Used by tests and the quickstart; it checks the machinery,
+# not the agent. The published evaluation uses a set written against real data.
+#
+# {+N} is N days after the day the evaluation runs. The recorded Hanjeok
+# responses in tests/fixtures/hanjeok-live were made on 2026-10-13, so {+4} is
+# the 17th, {+5} the 18th and {+7} the 20th.
+id: hanjeok-synthetic-v1
+version: 2
+questions:
+  - id: q01
+    kind: place_lookup
+    expect: answered
+    question: 가람궁은 {+4}에 얼마나 붐벼?
+    needs: ["hanjeok:congestion/101@{+4}"]
+  - id: q02
+    kind: place_lookup
+    expect: answered
+    question: 새벽 등대는 {+4}에 한적해?
+    needs: ["hanjeok:congestion/150@{+4}"]
+  - id: q03
+    kind: alternatives
+    expect: answered
+    question: "{+4}에 가람궁 대신 갈 만한 곳은?"
+    needs: ["hanjeok:alternatives/101@{+4}"]
+  - id: q04
+    kind: alternatives
+    expect: answered
+    question: "{+4}에 물빛 서원이 붐비면 어디로 가?"
+    needs: ["hanjeok:alternatives/124@{+4}"]
+  - id: q05
+    kind: date_comparison
+    expect: answered
+    question: 가람궁은 {+4}과 {+7} 중 언제 덜 붐벼?
+    needs: ["hanjeok:congestion/101@{+4}", "hanjeok:congestion/101@{+7}"]
+  - id: q06
+    kind: date_comparison
+    expect: answered
+    question: 솔내 한옥마을은 {+4}과 {+5} 중 언제가 나아?
+    needs: ["hanjeok:congestion/118@{+4}", "hanjeok:congestion/118@{+5}"]
+  - id: q07
+    kind: policy
+    expect: answered
+    question: 대안 장소는 어떤 기준으로 순서를 정해?
+    needs: ["wiki:concepts/alternative-scoring.md"]
+  - id: q08
+    kind: policy
+    expect: answered
+    question: 혼잡 등급은 어떻게 나눠?
+    needs: ["wiki:concepts/congestion-diagnosis.md"]
+  - id: q09
+    kind: multi_place
+    expect: answered
+    question: 가람궁과 이어진 장소 중 솔내구에 있는 곳은 어디야?
+    needs: ["hanjeok:related/101", "hanjeok:place/124", "hanjeok:place/131"]
+  - id: q10
+    kind: multi_place
+    expect: answered
+    question: 가람 시립미술관과 이어진 곳 중에 전시가 열리는 곳이 있어?
+    needs: ["hanjeok:related/160", "hanjeok:place/161", "hanjeok:events/161"]
+  - id: q11
+    kind: unsupported
+    expect: declined
+    question: 가람궁 입장료는 얼마야?
+  - id: q12
+    kind: unsupported
+    expect: declined
+    question: 솔내구 맛집 추천해 줘

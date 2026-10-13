@@ -92,12 +92,12 @@ dependency between them.
 
 ## Phase 8: User Story 3 on the service (P2)
 
-- [ ] T046 [P] [US3] `bench/src/guide/eval/questions.py`: question set v2, validation of counts per kind and of every `needs` id; unit tests
-- [ ] T047 [P] [US3] `bench/src/guide/forbidden.py`: six counters with a gazetteer matcher; unit tests with real sentences for each, including a "no data" place described as quiet
+- [x] T046 [P] [US3] `bench/src/guide/eval/questions.py`: question set v2, validation of counts per kind and of every `needs` id; unit tests
+- [x] T047 [P] [US3] `bench/src/guide/forbidden.py`: six counters with a gazetteer matcher; unit tests with real sentences for each, including a "no data" place described as quiet
 - [ ] T048 [US3] `bench/src/guide/eval/run.py`: record live responses once, run both strategies from the recording, append run records; a test asserting the two arms' model inputs differ only in the offered lookups (Principle II)
 - [ ] T049 [US3] `bench/src/guide/eval/report.py`: RAGAS metrics through the bench judge, id-based precision and recall, counters, by-kind split, not-scored handling, provenance, limitations; unit tests with a fake judge
 - [ ] T050 [US3] `guide eval` and `guide publish` in `bench/src/guide/cli.py`; `GET /guide/eval/latest`, `/{id}`, `/{id}/samples/{qid}`; contract tests
-- [ ] T051 [US3] `bench/questions/hanjeok-synthetic-v1.yaml`: a small set over the synthetic export, used by tests and the quickstart
+- [x] T051 [US3] `bench/questions/hanjeok-synthetic-v1.yaml`: a small set over the synthetic export, used by tests and the quickstart
 
 **Checkpoint**: An evaluation runs end to end on the synthetic export and its report renders on `/ko/eval`.
 
