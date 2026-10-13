@@ -67,7 +67,15 @@ object ForbiddenBehaviours {
     // 문장은 순서 주장이 아닌데, 등장 순서만 보면 그것까지 위반이 된다 — 실제
     // 운영 설명 하나가 방문 순서를 정확히 써 놓고도 첫 문단의 나열 때문에 걸렸다.
     private val SEQUENCE_MARKERS =
-        listOf("먼저", "그다음", "그 다음", "다음으로", "이어", "이후", "마지막", "순서", "순으로", "번째", "출발")
+        listOf("먼저", "그다음", "그 다음", "다음으로", "이어", "이후", "마지막", "순서", "순으로", "출발")
+
+    // "92번째 백분위/측정값"은 방문 순서가 아니다. 서수 뒤의 방문 행동/코스 장소나
+    // "경복궁은 첫 번째예요"처럼 장소에 직접 붙인 서술만 순서 표지로 쓴다.
+    // 문장 전체를 백분위라는 이유로 빼면
+    // 같은 문장에 함께 쓴 실제 순서 위반까지 놓치므로 서수별로 문맥을 본다.
+    private val ORDINAL = Regex("(?:[0-9]+|[가-힣]+)\\s*번째(?:로|는|에|가|인|의)?\\s*")
+    private val VISIT_ACTIONS = listOf("방문", "들르", "도착", "이동")
+    private val ORDINAL_END = Regex("^(?:예요|에요|입니다|이다|이고)?(?:[,.!?]|$)")
 
     private val CONGESTION_WORDS = listOf("혼잡", "붐비", "한산", "여유로운")
     private val PRECEDENCE_WORDS = listOf("먼저", "우선", "낮은 순", "순으로")
@@ -153,7 +161,18 @@ object ForbiddenBehaviours {
             .sortedBy { it.at("/visitOrder").asInt() }
             .map { it.at("/name").asText() }
         val sequenceText = sentences(text)
-            .filter { sentence -> SEQUENCE_MARKERS.any { sentence.contains(it) } }
+            .filter { sentence ->
+                SEQUENCE_MARKERS.any { sentence.contains(it) } ||
+                    ORDINAL.findAll(sentence).any { ordinal ->
+                        val following = sentence.substring(ordinal.range.last + 1)
+                        val preceding = sentence.substring(0, ordinal.range.first)
+                        (VISIT_ACTIONS + declaredOrder).any { following.startsWith(it) } ||
+                            (ORDINAL_END.containsMatchIn(following) && declaredOrder.any { name ->
+                                Regex("${Regex.escape(name)}(?:은|는|이|가|을|를)?\\s*$")
+                                    .containsMatchIn(preceding)
+                            })
+                    }
+            }
             .joinToString(" ")
         val mentionedOrder = declaredOrder
             .filter { sequenceText.contains(it) }

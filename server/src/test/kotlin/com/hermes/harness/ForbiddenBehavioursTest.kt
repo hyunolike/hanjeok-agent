@@ -4,6 +4,8 @@ import com.hermes.context.BundleLoader
 import com.hermes.llm.Explanation
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 
 class ForbiddenBehavioursTest {
 
@@ -68,6 +70,43 @@ class ForbiddenBehavioursTest {
         )
 
         assertThat(violations.map { it.behaviour }).contains(Behaviour.REORDERED_COURSE)
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = [
+        "서촌 골목길은 92번째 백분위, 경복궁은 95번째 백분위에 해당합니다.",
+        "서촌 골목길은 92 번째 백분위수, 경복궁은 95 번째 백분위수입니다.",
+        "서촌 골목길의 92번째 측정값은 33이고 경복궁의 측정값은 87입니다.",
+        "서촌 골목길은 92번째로 높은 수치이고 경복궁은 더 높습니다.",
+    ])
+    fun `수치의 서수는 방문 순서 주장이 아니다`(text: String) {
+        assertThat(ForbiddenBehaviours.check(explanation(text), factsJson, bundle))
+            .isEmpty()
+    }
+
+    @Test
+    fun `백분위 언급 뒤 올바른 방문 순서는 오탐하지 않는다`() {
+        val text = "서촌 골목길은 92번째 백분위, 경복궁은 95번째 백분위입니다. " +
+            "첫 번째로 경복궁에 갑니다. 두 번째로 북촌 한옥마을에 갑니다. " +
+            "세 번째로 서촌 골목길에 갑니다."
+
+        assertThat(ForbiddenBehaviours.check(explanation(text), factsJson, bundle)).isEmpty()
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = [
+        "첫 번째로 서촌 골목길에 갑니다. 두 번째로 경복궁에 갑니다.",
+        "1번째는 서촌 골목길, 2번째는 경복궁입니다.",
+        "서촌 골목길은 첫 번째 방문지이고 경복궁은 두 번째 방문지입니다.",
+        "서촌 골목길에 두 번째로 방문하고 경복궁에 세 번째로 방문합니다.",
+        "서촌 골목길은 첫 번째예요. 경복궁은 두 번째예요.",
+        "서촌 골목길을 첫 번째로, 경복궁을 두 번째로 갑니다.",
+        "서촌 골목길은 92번째 백분위지만 먼저 들르고, 그다음 경복궁으로 갑니다.",
+        "서촌 골목길은 92번째 백분위이며 첫 번째로 방문하고 경복궁은 두 번째로 방문합니다.",
+    ])
+    fun `방문 서수와 백분위가 섞여도 실제 순서 위반은 잡는다`(text: String) {
+        assertThat(ForbiddenBehaviours.check(explanation(text), factsJson, bundle).map { it.behaviour })
+            .contains(Behaviour.REORDERED_COURSE)
     }
 
     @Test
