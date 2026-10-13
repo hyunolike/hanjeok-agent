@@ -29,6 +29,11 @@ from bench.provider import (
 RATE_LIMIT_WAITS_S = (3.0, 6.0, 12.0)
 
 
+# Replies worth asking for once more. On a published run one question was lost
+# to a single reply that ran past the output limit.
+UNUSABLE_REPLIES = ("output_limit", "malformed")
+
+
 class ModelFailure(Exception):
     """No usable object came back. `kind` is a category, never provider text."""
 
@@ -78,7 +83,7 @@ class GuideModel:
         return self._chat
 
     def decide(self, system, user, schema, *, timeout):
-        """One structured object, retrying only when the provider says "too many".
+        """One structured object, retried for a rate limit or one unusable reply.
 
         The bench never retries, because a retried call would blur what one
         measured call costs. A visitor waiting on an answer is a different
@@ -86,17 +91,22 @@ class GuideModel:
         already bounds how long this may take.
         """
         started = time.monotonic()
-        for wait in (*self._waits, None):
+        left = lambda: timeout - (time.monotonic() - started)  # noqa: E731
+        waits = list(self._waits)
+        again = True
+        while True:
             try:
-                return self._decide_once(
-                    system, user, schema, timeout=timeout - (time.monotonic() - started)
-                )
+                return self._decide_once(system, user, schema, timeout=left())
             except ModelFailure as failure:
-                remaining = timeout - (time.monotonic() - started)
-                if failure.kind != "rate_limit" or wait is None or remaining <= wait + 5:
+                if failure.kind == "rate_limit" and waits and left() > waits[0] + 5:
+                    self._sleep(waits.pop(0))
+                elif failure.kind in UNUSABLE_REPLIES and again and left() > 5:
+                    # A reply that ran to the output limit or was not the
+                    # object asked for. The same request usually comes back
+                    # well-formed; asked once more, never in a loop.
+                    again = False
+                else:
                     raise
-                self._sleep(wait)
-        raise AssertionError("unreachable")
 
     def _decide_once(self, system, user, schema, *, timeout):
         from langchain_core.messages import HumanMessage, SystemMessage
