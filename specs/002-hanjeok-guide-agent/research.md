@@ -190,6 +190,15 @@ the wiki by text for questions that are about the rules themselves.
 reviewable and cannot miss, where vector search over 57 chunks already missed
 the scoring-formula chunk once (`bench/reports/phase3-smoke.md`).
 
+**Changed after the first real evaluation (2026-10-14)**: the `policy` lookup
+no longer relies on search alone. Asked "혼잡 등급은 어떻게 나눠?", similarity
+search over the English wiki returned three unrelated pages under both
+strategies, and the model then cited the page it expected rather than one it
+had been given, which the gate refused twice. The lookup now takes the pages a
+small keyword table names first and lets search fill the rest. The failing
+question was in the set that found it, so the next run's score on that question
+is not evidence the fix generalises.
+
 ## 13. The two evaluated strategies
 
 **Decision**: `vector` offers place search by text. `graph` offers the same

@@ -106,7 +106,7 @@ dependency between them.
 - [X] T052 Write the character brief and six pose prompts in `design/guide-character/v1/prompt.txt`, with the approved sun guide as the stated style reference
 - [X] T053 Generate the six poses through Codex image generation; store 512×512 transparent PNG sources in `design/guide-character/v1/`
 - [X] T054 Export 384×384 WebP to `frontend/public/brand/guide/`, replacing the placeholders; record tool, prompts, references, edit steps and SHA-256 in `design/guide-character/v1/provenance.json` with `status: draft` and `rightsReviewStatus: pending`
-- [ ] T055 [P] Move `frontend/src/lib/grades.ts` and the existing course, evidence and home components to the design values; existing tests pass unchanged
+- [x] T055 [P] Move `frontend/src/lib/grades.ts` and the existing course, evidence and home components to the design values; existing tests pass unchanged
 - [x] T056 Set the nav brand and metadata title consistently in `frontend/src/lib/i18n.ts` and `layout.tsx`
 - [ ] T057 Run SC-010 with five people on `/ko/design` and record the result in `specs/002-hanjeok-guide-agent/checklists/character-recognition.md`
 
@@ -120,7 +120,7 @@ dependency between them.
 - [ ] T061 Run and publish the evaluation; commit run records and the report
 - [ ] T062 Deployment spike: `bench/Dockerfile` running the service and Neo4j in one container on a Space; measure memory and import time; record the result and the fallback decision in `research.md`
 - [ ] T063 Deploy the service; set `GUIDE_CORS_ALLOWED_ORIGINS`; point the Vercel frontend at it; walk through `quickstart.md`
-- [ ] T064 [P] `docs/prd/hanjeok-guide-agent.md` from the spec, in Korean
+- [x] T064 [P] `docs/prd/hanjeok-guide-agent.md` from the spec, in Korean
 - [ ] T065 [P] Update `README.md` and `README.ko.md`: what the guide is, the four screens, the report the claims rest on; keep the heading anchors the home page links to
 - [ ] T066 SC-008 walk-through by a reviewer who has not seen the code; record the time taken
 

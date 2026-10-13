@@ -32,8 +32,8 @@ export default async function CoursePage({
   if (facts.kind === 'unavailable') {
     return (
       <div className="space-y-2">
-        <h1 className="text-xl font-semibold">{t.course.loadFailTitle}</h1>
-        <p className="text-sm opacity-70">{t.course.loadFailBody(facts.status)}</p>
+        <h1 className="text-title-2 font-semibold">{t.course.loadFailTitle}</h1>
+        <p className="text-body text-ink-muted">{t.course.loadFailBody(facts.status)}</p>
       </div>
     )
   }
@@ -43,7 +43,7 @@ export default async function CoursePage({
       {/* 코스와 설명은 한국어로 생성된다. 홈에서 이미 밝히지만, 링크를 받아 이 화면으로
           바로 들어온 사람은 그 문장을 본 적이 없다. */}
       {t.home.generatedLanguageNote && (
-        <p className="text-xs opacity-55">{t.home.generatedLanguageNote}</p>
+        <p className="text-caption text-ink-muted">{t.home.generatedLanguageNote}</p>
       )}
 
       {/* 경계 문구는 이 페이지가 아니라 각 블록 안에 있다. 여기 두면 설명이 실패해

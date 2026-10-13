@@ -33,6 +33,15 @@ DECLARES = {
     "alternatives": ("concepts/alternative-scoring.md", "decisions/keep-llm-out-of-ranking.md"),
 }
 
+# Which page a policy question is about, by the words it uses. Same reasoning
+# as DECLARES: for a wiki this small a table is reviewable and cannot miss.
+POLICY_TOPICS = (
+    (("혼잡", "붐비", "등급", "예보", "집중률"), "concepts/congestion-diagnosis.md"),
+    (("대안", "대신", "순서", "순위", "점수"), "concepts/alternative-scoring.md"),
+    (("순위", "순서", "모델", "AI", "고르", "골라"), "decisions/keep-llm-out-of-ranking.md"),
+    (("연관", "이어진", "비슷"), "entities/related-attraction-api.md"),
+)
+
 # What the model is told about each lookup. Kept beside the code that
 # validates the same arguments, so the two cannot drift apart unnoticed.
 DESCRIPTIONS = {
@@ -509,7 +518,16 @@ class Lookups:
         text, problem = self._text_arg(args, 200)
         if problem:
             return self._refuse({}, problem)
-        pages = self.policy.search(text, limit=3)
+        # Pages named by a word in the query come first; search fills what is
+        # left. The wiki is written in English and questions arrive in Korean:
+        # on the first real evaluation, similarity search alone answered "how
+        # are congestion grades decided?" with three unrelated pages.
+        paths = [path for words, path in POLICY_TOPICS if any(word in text for word in words)]
+        pages = [page for page in map(self.policy.page, paths) if page is not None][:3]
+        if len(pages) < 3:
+            have = {page.path for page in pages}
+            found = [page for page in self.policy.search(text, limit=3) if page.path not in have]
+            pages += found[: 3 - len(pages)]
         if not pages:
             return Outcome("no_data", {"text": text}, "맞는 정책 문서가 없습니다")
         produced = []

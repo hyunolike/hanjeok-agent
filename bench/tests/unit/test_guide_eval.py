@@ -351,7 +351,11 @@ def test_the_report_and_a_sample_are_the_files_the_frontend_parses(tmp_path):
     from pathlib import Path
 
     report, store = do(tmp_path, judge=FakeJudge(fail_on="context_recall"))
-    report = {**report, "timestamp": "2026-10-13T15:10:00Z", "live_recorded_at": "2026-10-13T14:20:05Z"}
+    report = {
+        **report,
+        "timestamp": "2026-10-13T15:10:00Z",
+        "live_recorded_at": "2026-10-13T14:20:05Z",
+    }
     for arm in report["strategies"].values():
         arm["answer_usage"]["elapsed_ms"] = 0
     produced = {"report": report, "sample": store.sample("r1", "q09")}

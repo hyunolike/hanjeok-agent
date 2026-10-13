@@ -21,8 +21,8 @@ export const GRADE_LABEL: Record<Grade, string> = {
 
 /** 네 단계가 서로 구분되는 것이 요구사항이다 — 등급이 색으로도 읽혀야 한다. */
 export const GRADE_STYLE: Record<Grade, string> = {
-  RELAXED: 'bg-emerald-50 text-emerald-800 ring-emerald-200',
-  NORMAL: 'bg-sky-50 text-sky-800 ring-sky-200',
-  CROWDED: 'bg-amber-50 text-amber-900 ring-amber-200',
-  VERY_CROWDED: 'bg-rose-50 text-rose-800 ring-rose-200',
+  RELAXED: 'bg-grade-relaxed-soft text-grade-relaxed-text ring-grade-relaxed-fill',
+  NORMAL: 'bg-grade-normal-soft text-grade-normal-text ring-grade-normal-fill',
+  CROWDED: 'bg-grade-crowded-soft text-grade-crowded-text ring-grade-crowded-fill',
+  VERY_CROWDED: 'bg-grade-very-crowded-soft text-grade-very-crowded-text ring-grade-very-crowded-fill',
 }

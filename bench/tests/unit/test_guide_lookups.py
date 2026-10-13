@@ -282,3 +282,24 @@ def test_a_lookup_still_works_when_the_wiki_is_not_loaded():
 def test_an_action_that_is_not_a_lookup_is_refused():
     assert lookups().run("drop_database", {}).status == "refused"
     assert lookups().run("_declare", {}).status == "refused"
+
+
+def test_a_policy_question_gets_the_page_its_words_name_before_anything_search_finds():
+    class Unhelpful(FakePolicy):
+        """Search returns nothing useful, as it did for a Korean question over
+        the English wiki."""
+
+        def search(self, text, *, limit):
+            return []
+
+    subject = lookups(known=(), policy=Unhelpful())
+
+    grades = subject.run("policy", {"text": "혼잡 등급은 어떻게 나눠?"})
+    order = subject.run("policy", {"text": "대안 장소는 어떤 기준으로 순서를 정해?"})
+
+    assert grades.produced == ("wiki:concepts/congestion-diagnosis.md",)
+    assert order.produced == (
+        "wiki:concepts/alternative-scoring.md",
+        "wiki:decisions/keep-llm-out-of-ranking.md",
+    )
+    assert subject.run("policy", {"text": "그 밖의 것"}).status == "no_data"

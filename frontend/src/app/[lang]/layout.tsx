@@ -42,21 +42,21 @@ export default async function RootLayout({
   return (
     <html lang={lang}>
       <body className="min-h-screen antialiased">
-        <header className="border-b border-black/10 dark:border-white/10">
-          <nav className="mx-auto flex max-w-3xl flex-wrap items-baseline gap-x-6 gap-y-2 px-6 py-4 text-sm">
+        <header className="border-b border-line-normal">
+          <nav className="mx-auto flex max-w-3xl flex-wrap items-baseline gap-x-6 gap-y-2 px-6 py-4 text-body">
             <Link href={`/${lang}`} className="font-semibold">
               {t.nav.brand}
             </Link>
-            <Link href={`/${lang}/ask`} className="opacity-70 hover:opacity-100">
+            <Link href={`/${lang}/ask`} className="text-ink-muted hover:text-ink-title">
               {t.guide.navLabel}
             </Link>
-            <Link href={`/${lang}/graph`} className="opacity-70 hover:opacity-100">
+            <Link href={`/${lang}/graph`} className="text-ink-muted hover:text-ink-title">
               {t.graph.navLabel}
             </Link>
-            <Link href={`/${lang}/eval`} className="opacity-70 hover:opacity-100">
+            <Link href={`/${lang}/eval`} className="text-ink-muted hover:text-ink-title">
               {t.evalPage.navLabel}
             </Link>
-            <Link href={`/${lang}/evidence`} className="opacity-70 hover:opacity-100">
+            <Link href={`/${lang}/evidence`} className="text-ink-muted hover:text-ink-title">
               {t.nav.evidence}
             </Link>
             <LangSwitch lang={lang} label={t.nav.switchTo} />

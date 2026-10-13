@@ -83,19 +83,19 @@ export function AskBox({ courseUuid, lang }: { courseUuid: string; lang: Lang })
 
   return (
     <section className="space-y-4">
-      <h2 className="text-sm font-semibold opacity-70">{t.heading}</h2>
+      <h2 className="text-body font-semibold text-ink-muted">{t.heading}</h2>
 
       {exchanges.map((exchange, index) => (
-        <div key={index} className="space-y-2 rounded-lg border border-black/10 p-4 dark:border-white/10">
-          <p className="text-sm font-medium">{exchange.question}</p>
+        <div key={index} className="space-y-2 rounded-card border border-line-normal p-4">
+          <p className="text-body font-medium">{exchange.question}</p>
           {exchange.status === 'failed' ? (
-            <p className="text-sm opacity-70">{t.failed}</p>
+            <p className="text-body text-ink-muted">{t.failed}</p>
           ) : (
             <>
               {exchange.status === 'streaming' && exchange.looking && (
-                <p className="text-sm opacity-70">{labelFor(t.looking, exchange.looking)}</p>
+                <p className="text-body text-ink-muted">{labelFor(t.looking, exchange.looking)}</p>
               )}
-              <p className="whitespace-pre-wrap text-sm leading-relaxed opacity-90">
+              <p className="whitespace-pre-wrap text-body leading-relaxed text-ink-body">
                 {exchange.status === 'answered' ? exchange.answer : exchange.text}
               </p>
               <div className="flex flex-wrap gap-2">
@@ -104,7 +104,7 @@ export function AskBox({ courseUuid, lang }: { courseUuid: string; lang: Lang })
                     key={path}
                     type="button"
                     onClick={() => setOpenPath(path)}
-                    className="rounded-full border border-black/15 px-2.5 py-0.5 text-xs hover:bg-black/5 dark:border-white/20 dark:hover:bg-white/10"
+                    className="rounded-chip border border-line-strong px-2.5 py-0.5 text-caption hover:bg-surface-subtle"
                   >
                     {path}
                   </button>
@@ -122,7 +122,7 @@ export function AskBox({ courseUuid, lang }: { courseUuid: string; lang: Lang })
               key={suggestion}
               type="button"
               onClick={() => ask(suggestion)}
-              className="rounded-full border border-black/15 px-3 py-1 text-xs hover:bg-black/5 dark:border-white/20 dark:hover:bg-white/10"
+              className="rounded-chip border border-line-strong px-3 py-1 text-caption hover:bg-surface-subtle"
             >
               {suggestion}
             </button>
@@ -145,12 +145,12 @@ export function AskBox({ courseUuid, lang }: { courseUuid: string; lang: Lang })
           value={question}
           onChange={(event) => setQuestion(event.target.value)}
           placeholder={t.placeholder}
-          className="min-w-0 flex-1 rounded border border-black/15 bg-transparent px-3 py-1.5 text-sm dark:border-white/20"
+          className="min-w-0 flex-1 rounded-control border border-line-strong bg-transparent px-3 py-1.5 text-body"
         />
         <button
           type="submit"
           disabled={asking || question.trim().length === 0}
-          className="rounded border border-black/15 px-3 py-1.5 text-sm disabled:opacity-40 dark:border-white/20"
+          className="rounded-control border border-line-strong px-3 py-1.5 text-body disabled:text-ink-disabled"
         >
           {asking ? t.submitting : t.submit}
         </button>

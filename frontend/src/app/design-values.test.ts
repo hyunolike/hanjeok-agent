@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { CONTRAST_PAIRS, contrastRatio, readDesignValues } from '@/lib/design-values'
@@ -39,6 +39,32 @@ describe('디자인 값', () => {
     const colours = [...theme.matchAll(/--color-[a-z0-9-]+:\s*([^;]+);/g)].map((m) => m[1].trim())
     expect(colours.length).toBeGreaterThan(40)
     for (const value of colours) expect(value).toMatch(/^var\(--(?!raw-)[a-z0-9-]+\)$/)
+  })
+})
+
+/** `src` 아래의 화면 파일 전부. 테스트 파일은 뺀다 — 화면이 아니다. */
+function screens(directory: string): string[] {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const path = join(directory, entry.name)
+    if (entry.isDirectory()) return screens(path)
+    return /\.tsx$/.test(entry.name) && !/\.test\.tsx$/.test(entry.name) ? [path] : []
+  })
+}
+
+describe('화면', () => {
+  // 용도 이름 밖의 색이나 글자 크기를 화면이 직접 적으면, 그 화면만 다크에서 어긋나고
+  // 값 하나를 바꿔도 따라오지 않는다. 한 번 옮겨 놓은 것이 다시 흩어지지 않게 지킨다.
+  const RAW = [
+    /\b(?:black|white)\/\d+/,
+    /\b(?:red|rose|amber|emerald|green|sky|blue|gray|slate|zinc|neutral|stone)-\d{2,3}\b/,
+    /(?<![:\w-])opacity-\d+/,
+    /\btext-(?:xs|sm|base|lg|xl|[2-9]xl)\b/,
+    /#[0-9a-fA-F]{6}\b/,
+  ]
+
+  it.each(screens(join(process.cwd(), 'src')))('%s 는 용도 이름만 쓴다', (path) => {
+    const source = readFileSync(path, 'utf8')
+    for (const pattern of RAW) expect(source.match(pattern)?.[0], String(pattern)).toBeUndefined()
   })
 })
 

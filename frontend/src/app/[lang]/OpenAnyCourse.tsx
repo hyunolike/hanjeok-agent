@@ -26,7 +26,7 @@ export function OpenAnyCourse({ lang }: { lang: Lang }) {
       }}
       className="flex flex-wrap items-center gap-2"
     >
-      <label htmlFor="course-uuid" className="text-sm opacity-70">
+      <label htmlFor="course-uuid" className="text-body text-ink-muted">
         {t.label}
       </label>
       <input
@@ -35,12 +35,12 @@ export function OpenAnyCourse({ lang }: { lang: Lang }) {
         onChange={(event) => setValue(event.target.value)}
         placeholder={t.placeholder}
         spellCheck={false}
-        className="min-w-0 flex-1 rounded border border-black/15 bg-transparent px-3 py-1.5 font-mono text-xs dark:border-white/20"
+        className="min-w-0 flex-1 rounded-control border border-line-strong bg-transparent px-3 py-1.5 font-mono text-caption"
       />
       <button
         type="submit"
         disabled={uuid.length === 0}
-        className="rounded border border-black/15 px-3 py-1.5 text-sm disabled:opacity-40 dark:border-white/20"
+        className="rounded-control border border-line-strong px-3 py-1.5 text-body disabled:text-ink-disabled"
       >
         {t.submit}
       </button>
