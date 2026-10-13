@@ -10,8 +10,9 @@ provider diagnostics and body-free per-run logging.
 
 Remaining work:
 
-1. Finish the two unchanged wiki NVIDIA calibration runs and report their
-   observed repeatability without weakening the original 0.05 criterion.
+1. Repeated NVIDIA evaluation is excluded by the user's latest instruction.
+   Preserve already-written artifacts, run no further hosted evaluation, and
+   make no claim that the original 0.05 repeatability criterion has passed.
 2. Verify the wiki quickstart from a clean checkout (T053).
 3. Keep the existing service, frontend, build and CI definitions unchanged.
    Gradle and frontend tests passed; Webpack build passed. The default Turbopack

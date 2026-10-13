@@ -44,3 +44,5 @@ question, answer and context bodies.
 See the [Phase 5 NVIDIA evaluation](reports/phase5-evaluation.md) for both full
 executions. The second lost samples to provider failures, so the original
 repeatability target remains unverified; its partial means are not a pass.
+Repeated hosted evaluation is excluded from the current completion scope by the
+user's 2026-10-13 instruction; no additional repeat is required or scheduled.

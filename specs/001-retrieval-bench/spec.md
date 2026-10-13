@@ -243,6 +243,8 @@ compare the two strategies on the existing full wiki and make no crossover claim
   no multi-document repeat scores survived. The full-set tolerance remains
   unverified; this observation does not justify changing 0.05. See the
   [execution evidence](../../bench/reports/phase5-evaluation.md).
+  Repeated hosted evaluation is excluded from the current completion scope by
+  the user's 2026-10-13 instruction. This criterion is not claimed as passed.
 - **SC-005**: Withdrawn with document-size sampling on 2026-10-13. Existing
   single-corpus runs still record provider token usage, elapsed time and outcomes;
   no crossover is asserted.

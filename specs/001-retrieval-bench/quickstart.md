@@ -19,6 +19,7 @@ cd bench
 uv sync --locked
 docker compose up -d --wait neo4j
 export BENCH_WIKI_ROOT="/absolute/path/to/travel-context-wiki"
+export NVIDIA_API_KEY="<your NVIDIA API key>"
 uv run bench corpus load wiki
 uv run bench corpus list
 uv run uvicorn bench.api:app --host 127.0.0.1 --port 8100
@@ -31,7 +32,8 @@ links/sources. An empty or mixed corpus is rejected before deleting existing
 state. `load` and `rebuild` both replace the old graph so deleted documents do
 not remain citable.
 
-Before asking, export `NVIDIA_API_KEY` in the server's environment. `.env` is
+Export `NVIDIA_API_KEY` before starting the server, as shown above. If it was
+started without the key, restart it after exporting. `.env` is
 not loaded automatically. `BENCH_ANSWER_MODEL` and `BENCH_JUDGE_MODEL` default
 to `nvidia/nemotron-3-super-120b-a12b`. Both clients use NVIDIA's hosted endpoint
 (`https://integrate.api.nvidia.com/v1`), temperature 0 and reasoning off. No
@@ -146,6 +148,10 @@ attributes copied intact. Integration tests prove all three edge types and
 that a second-hop document does not leak into results.
 
 ## Check 6 — unattended evaluation and applicable scores
+
+The full hosted commands below document an optional evaluation flow. Repeated
+hosted evaluation is excluded from the current completion scope by the user;
+the offline evaluation tests and saved-report reading still apply.
 
 ```bash
 uv run bench run --question-set wiki-v1 --corpus wiki
