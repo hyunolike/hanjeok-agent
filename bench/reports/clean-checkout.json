@@ -1,0 +1,18 @@
+{
+  "source_commit": "799333baff05216192c96a40833bfc19afcf7e4a",
+  "python": "Python 3.13.5",
+  "embedding_model": "intfloat/multilingual-e5-large",
+  "embedding_revision": "3d7cfbdacd47fdda877c5cd8a79fbcc4f2a574f3",
+  "docs": 14,
+  "chunks": 57,
+  "corpus_revision": "e7f4b44",
+  "selected_passages": 10,
+  "supplied_sha256": "b8a94670eb3a088fb5b25e3a157f3a81b5aa7c4d5df448058f6c59d71fe8a542",
+  "same_retrieval_after_rebuild": true,
+  "wiki_unchanged": true,
+  "http_corpora": 200,
+  "http_saved_report": 200,
+  "http_unsupported_sizes": 409,
+  "offline_saved_report_matches": true,
+  "hosted_calls": 0
+}

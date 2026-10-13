@@ -1,0 +1,2 @@
+# Run records land here as JSONL. They are evidence, not derived state: the
+# graph can be rebuilt from files, a run cannot be rebuilt from anything.

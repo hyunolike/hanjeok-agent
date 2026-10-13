@@ -8,4 +8,16 @@ build/
 __pycache__/
 brag-output
 
+# Spec Kit 이 `.claude/skills/` 를 추적 대상으로 만들었는데, 메인 체크아웃은 같은
+# 디렉터리 안에 워크트리를 둔다. 막지 않으면 `git add .claude` 한 번에 워크트리
+# 전체가 커밋되고, 그 전에도 status 가 영원히 시끄럽다.
+.claude/worktrees/
+
+# bench/ (Python). uv.lock IS committed — lower bounds live in pyproject and
+# exact versions live in the lock, and a benchmark whose dependencies float is
+# not reproducible.
+bench/.venv/
+bench/**/__pycache__/
+bench/.pytest_cache/
+bench/.ruff_cache/
 .kotlin/

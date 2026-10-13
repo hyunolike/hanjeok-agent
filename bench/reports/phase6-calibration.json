@@ -1,0 +1,12 @@
+{
+  "reports": [
+    "690798ba-0251-4336-b79a-c55539d85e53",
+    "5f0c9e39-1188-4625-918a-bbe435e2402c"
+  ],
+  "tolerance": 0.05,
+  "comparable": false,
+  "passes": null,
+  "max_delta": null,
+  "deltas": [],
+  "reason": "scored sample membership differs, is empty, or contains judge failures"
+}
