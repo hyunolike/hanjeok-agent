@@ -52,6 +52,10 @@ def parser() -> argparse.ArgumentParser:
     evaluate.add_argument(
         "--allow-small", action="store_true", help="accept a set below the published size"
     )
+    rescore = commands.add_parser(
+        "rescore", help="judge the answers of a stored run without asking again"
+    )
+    rescore.add_argument("--report", required=True)
     publish = commands.add_parser(
         "publish", help="make a stored report the one the evaluation page shows"
     )
@@ -91,9 +95,9 @@ def _eval_from_env(args) -> dict:
             live = LiveClient(mode="replay", recording=Recording(directory))
         judge = None
         if not args.no_judge:
-            from bench.eval.judge import RagasJudge
+            from guide.eval.judge import patient_judge
 
-            judge = RagasJudge(embedder)
+            judge, _ = patient_judge(embedder)
         return evaluate(
             args.question_set,
             # The patient wrapper does the waiting, outside the question's clock.
@@ -114,6 +118,23 @@ def _eval_from_env(args) -> dict:
         )
     finally:
         driver.close()
+
+
+def _rescore_from_env(args) -> dict:
+    """Judging only. Spends judge quota; the answers are read from disk."""
+    from bench.embeddings import LocalEmbedder
+    from guide.eval.judge import patient_judge
+    from guide.eval.service import rescore
+    from guide.eval.store import ReportStore
+
+    judge, transport = patient_judge(LocalEmbedder())
+    return rescore(
+        args.report,
+        judge=judge,
+        store=ReportStore(),
+        runs_dir=Path("runs"),
+        judge_waits=lambda: transport.waited,
+    )
 
 
 def _summary(report: dict) -> dict:
@@ -151,11 +172,22 @@ def _refresh_from_env(export, cache: Path):
         driver.close()
 
 
-def main(argv=None, *, run_refresh=_refresh_from_env, run_eval=_eval_from_env, store=None) -> int:
+def main(
+    argv=None,
+    *,
+    run_refresh=_refresh_from_env,
+    run_eval=_eval_from_env,
+    run_rescore=None,
+    store=None,
+) -> int:
     args = parser().parse_args(argv)
+    run_rescore = run_rescore or _rescore_from_env
     try:
         if args.command == "eval":
             print(json.dumps(_summary(run_eval(args)), ensure_ascii=False))
+            return 0
+        if args.command == "rescore":
+            print(json.dumps(_summary(run_rescore(args)), ensure_ascii=False))
             return 0
         if args.command == "publish":
             from guide.eval.store import ReportStore
@@ -180,6 +212,11 @@ def main(argv=None, *, run_refresh=_refresh_from_env, run_eval=_eval_from_env, s
             )
             return 0
         result = run_refresh(export, args.cache)
+    except FileNotFoundError as error:
+        print(
+            json.dumps({"ok": False, "cause": "no_report", "detail": str(error)}), file=sys.stderr
+        )
+        return 1
     except QuestionSetError as error:
         print(
             json.dumps(

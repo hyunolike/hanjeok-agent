@@ -134,3 +134,43 @@ def evaluate(
         raise RuntimeError("an evaluation must cover both strategies")
     store.put(report, samples)
     return report
+
+
+def rescore(
+    report_id: str, *, judge, store: ReportStore, runs_dir: Path | str, judge_waits=lambda: 0
+) -> dict:
+    """Judge the answers of a run that already happened.
+
+    The answers are not asked for again: they are read from the run records, so
+    the judged report and the unjudged one describe the same answers and the
+    quota already spent on them is not spent twice.
+    """
+    original = store.get(report_id)
+    path = Path(runs_dir) / f"{report_id}.jsonl"
+    if original is None or not path.is_file():
+        raise FileNotFoundError(report_id)
+    records = [json.loads(line) for line in path.read_text("utf-8").splitlines() if line.strip()]
+    scores = score_all(records, judge)
+
+    kept = [line for line in original["limitations"] if "판정 모델을 돌리지 않았습니다" not in line]
+    kept.append(f"답은 {report_id} 실행의 것을 그대로 쓰고, 판정만 나중에 따로 돌렸습니다.")
+    if waits := judge_waits():
+        kept.append(f"판정 중 모델 제공자의 요청 한도에 {waits}번 걸려 기다렸다가 다시 보냈습니다.")
+    question_set = question_sets.QuestionSet(
+        original["question_set"], original["question_set_revision"], ()
+    )
+    report, samples = build(
+        f"{report_id}-judged",
+        question_set,
+        records,
+        scores,
+        answer_model=original["answer_model"],
+        judge_model=str(judge.settings.get("name", "")),
+        generation=original["generation"],
+        export_sha256=original["export_sha256"],
+        export_as_of=original["export_as_of"],
+        live_recorded_at=original["live_recorded_at"],
+        limitations=kept,
+    )
+    store.put(report, samples)
+    return report

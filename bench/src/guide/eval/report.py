@@ -29,7 +29,8 @@ from guide.forbidden import BEHAVIOURS
 JUDGED = ("faithfulness", "answer_relevancy", "context_precision", "context_recall")
 COUNTED = ("id_precision", "id_recall")
 METRICS = (*JUDGED, *COUNTED)
-JUDGE_TIMEOUT_S = 600
+# One metric makes several requests and each may wait out a rate limit.
+JUDGE_TIMEOUT_S = 3600
 JUDGE_CONCURRENCY = 2
 
 NOT_ANSWERABLE = "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."

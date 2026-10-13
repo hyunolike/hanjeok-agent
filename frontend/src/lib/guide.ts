@@ -177,7 +177,8 @@ const found = <T>(data: T | null): Loaded<T> => (data === null ? { ok: false, ca
 async function read<T>(
   path: string,
   schema: { parse: (data: unknown) => T },
-  recorded: () => T | null,
+  // 녹화본은 어디서 왔든 스키마를 지나야 한다. 그래서 타입을 믿지 않고 받는다.
+  recorded: () => unknown,
   options: ReadOptions,
 ): Promise<Loaded<T>> {
   const baseUrl = options.baseUrl ?? GUIDE_BASE_URL

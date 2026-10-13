@@ -65,3 +65,18 @@ describe('서버가 만든 평가 보고서', () => {
     expect(sample.strategies.graph.passages.length).toBeGreaterThan(sample.strategies.vector.passages.length)
   })
 })
+
+describe('데모가 보여 주는 보고서의 복사본', () => {
+  // 원본은 `guide publish` 가 가리키는 보고서다. 복사본이 뒤처지면 데모가 옛 숫자를
+  // 최신인 것처럼 보여 준다.
+  const published = join(process.cwd(), '..', 'bench', 'reports', 'guide')
+  const copied = join(process.cwd(), 'src', 'lib', 'recorded-eval')
+  const json = (path: string) => JSON.parse(readFileSync(path, 'utf8'))
+
+  it('공개한 보고서와 그 문항 기록과 같다', () => {
+    const { report_id } = json(join(published, 'latest.json'))
+
+    expect(json(join(copied, 'report.json'))).toEqual(json(join(published, `${report_id}.json`)))
+    expect(json(join(copied, 'samples.json'))).toEqual(json(join(published, `${report_id}.samples.json`)))
+  })
+})

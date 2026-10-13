@@ -375,3 +375,72 @@ def test_the_command_line_path_wraps_the_model_patiently(tmp_path):
     report, _ = do(tmp_path, patient=True)
 
     assert report["question_count"] == 12
+
+
+def test_a_stored_run_can_be_judged_later_without_asking_again(tmp_path):
+    from guide.eval.service import rescore
+
+    model = Obliging()
+    unjudged, store = do(tmp_path, model=model)
+    asked = len(model.calls)
+    judge = FakeJudge()
+
+    judged = rescore(
+        "r1", judge=judge, store=store, runs_dir=tmp_path / "runs", judge_waits=lambda: 3
+    )
+
+    assert len(model.calls) == asked, "no answer was requested again"
+    assert judged["report_id"] == "r1-judged"
+    assert judged["strategies"]["graph"]["metrics"]["faithfulness"]["value"] == 0.5
+    # The numbers that need no judge are the same numbers.
+    for arm in ("vector", "graph"):
+        assert (
+            judged["strategies"][arm]["metrics"]["id_recall"]
+            == unjudged["strategies"][arm]["metrics"]["id_recall"]
+        )
+        assert judged["strategies"][arm]["outcomes"] == unjudged["strategies"][arm]["outcomes"]
+    assert judged["question_set_revision"] == unjudged["question_set_revision"]
+    text = "\n".join(judged["limitations"])
+    assert "판정만 나중에 따로" in text and "3번 걸려" in text
+    assert "판정 모델을 돌리지 않았습니다" not in text
+    assert store.get("r1") == unjudged, "the original report is left as it was"
+
+
+def test_rescoring_a_run_that_does_not_exist_is_an_error(tmp_path):
+    from guide.eval.service import rescore
+
+    with pytest.raises(FileNotFoundError):
+        rescore("nope", judge=FakeJudge(), store=ReportStore(tmp_path), runs_dir=tmp_path)
+
+
+def test_the_judges_transport_waits_out_rate_limits_and_only_those():
+    import asyncio
+
+    import httpx
+
+    from guide.eval.judge import PatientTransport
+
+    statuses = [429, 429, 200, 500, 429, 429, 429]
+    slept: list[float] = []
+
+    class Inner(httpx.AsyncBaseTransport):
+        async def handle_async_request(self, request):
+            return httpx.Response(statuses.pop(0), json={})
+
+    async def sleep(seconds):
+        slept.append(seconds)
+
+    transport = PatientTransport(Inner(), waits=(1.0, 2.0), sleep=sleep)
+    request = httpx.Request("POST", "https://x.test")
+
+    async def go():
+        first = await transport.handle_async_request(request)
+        second = await transport.handle_async_request(request)
+        third = await transport.handle_async_request(request)
+        return first.status_code, second.status_code, third.status_code
+
+    assert asyncio.run(go()) == (200, 500, 429), (
+        "a 500 is passed through; a third 429 is given up on"
+    )
+    assert slept == [1.0, 2.0, 1.0, 2.0]
+    assert transport.waited == 4

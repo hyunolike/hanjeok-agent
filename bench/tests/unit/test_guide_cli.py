@@ -60,3 +60,26 @@ def test_check_verifies_without_refreshing(capsys):
     assert status == 0
     assert started == []
     assert json.loads(capsys.readouterr().out)["counts"]["places"] == 40
+
+
+def test_rescore_is_a_command_and_reports_a_missing_run(capsys):
+    # The subcommand was once wired into `main` but never added to the parser,
+    # and the only test of it called the function underneath.
+    seen = []
+
+    def run(args):
+        seen.append(args.report)
+        raise FileNotFoundError(args.report)
+
+    status = main(["rescore", "--report", "r1"], run_rescore=run)
+
+    assert seen == ["r1"]
+    assert status == 1
+    assert json.loads(capsys.readouterr().err)["cause"] == "no_report"
+
+
+def test_every_command_the_parser_offers_is_handled():
+    from guide.cli import parser
+
+    choices = next(a for a in parser()._actions if a.dest == "command").choices
+    assert set(choices) == {"refresh", "eval", "rescore", "publish"}
