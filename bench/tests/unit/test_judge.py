@@ -129,3 +129,5 @@ def test_quota_failure_has_one_attempt_and_unknown_usage():
     assert judge.usage["calls_without_usage"] == 1
     assert judge.usage["responses_with_usage"] == 0
     assert "private provider" not in json.dumps(judge.usage)
+    assert judge.errors == [{"call": 1, "kind": "rate_limit", "http_status": 429}]
+    assert "private provider" not in json.dumps(judge.errors)

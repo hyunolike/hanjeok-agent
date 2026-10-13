@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import fcntl
 import json
+import logging
 import os
+import sys
 import time
 from copy import deepcopy
 from dataclasses import asdict, dataclass
@@ -15,6 +17,11 @@ from uuid import uuid4
 
 from bench.answer.pipeline import AnswerResult
 from bench.runtime import BenchError
+
+LOGGER = logging.getLogger("bench.runs")
+LOGGER.setLevel(logging.INFO)
+if not LOGGER.handlers:
+    LOGGER.addHandler(logging.StreamHandler(sys.stderr))
 
 
 @dataclass(frozen=True, slots=True)
@@ -237,6 +244,24 @@ class PairRunner:
             list(result.provider_errors),
         )
         _append(self.runs_file, record.to_dict())
+        LOGGER.info(
+            json.dumps(
+                {
+                    "event": "bench.run",
+                    "run_id": record.run_id,
+                    "pair_id": pair_id,
+                    "question_id": question_id,
+                    "corpus_size": record.corpus_size,
+                    "strategy": strategy,
+                    "supplied_passages": len(record.supplied),
+                    "expanded_passages": sum(bool(p.get("expanded")) for p in record.supplied),
+                    "repair_count": record.repair_count,
+                    "outcome": record.outcome,
+                    "model_calls": record.model_calls,
+                    "provider_errors": record.provider_errors,
+                }
+            )
+        )
         return record
 
     def pair(self, *, question_id: str, question: str, corpus: str) -> PairResult:

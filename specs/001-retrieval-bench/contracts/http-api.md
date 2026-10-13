@@ -89,10 +89,11 @@ Run a stored question set through both strategies and produce one report
 {"question_set": "wiki-v1", "corpus": "wiki"}
 ```
 
-Absent `sizes` means the full loaded corpus. Phase 5 also accepts a single
-element equal to its current document count. Other sizes, including multiple
-elements, return 409: sampling is Phase 6 and is never silently ignored.
-Question-set/reference validation and corpus preflight finish before acceptance.
+Absent `sizes` means the full loaded corpus. Non-sampling loaders accept only
+the current full document count. Worklog accepts strictly increasing unique
+positive sizes within its safe population, with all references in the smallest
+sample. All prepared snapshots/references validate before acceptance or rebuild.
+An invalid/unavailable sample returns 409, never an ignored sampling request.
 
 **202 Accepted**, returning `{"report_id": "…", "status_url": "/bench/reports/…"}`.
 Accepted rather than 200 because a 30-question set across two arms is minutes of
@@ -114,6 +115,14 @@ reports and running markers are saved atomically. A job read from another
 process after restart returns `interrupted`; it is not resumed. Fatal artifact
 errors mark the job `failed`, retaining existing evidence. Unknown/unsafe IDs
 return 404. The local server queues jobs on one evaluation worker.
+
+Multi-size jobs return a `report_type: size_curve` parent with `sizes`,
+`child_report_ids`, `active_report_id` and combined progress. Completed parents
+contain `sampling` manifests and `by_size` summaries; each child is a complete
+single-size report with revision/generation/size. A failed parent preserves its
+completed child IDs. The curve holds the local runtime lock across all sizes;
+concurrent local asks/rebuilds wait. Multi-process database coordination is not
+implemented. Provider status/category diagnostics contain no provider body.
 
 ## `GET /bench/corpora`
 

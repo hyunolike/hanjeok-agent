@@ -16,7 +16,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_valida
 from bench.answer.citations import validate
 from bench.answer.prompt import SYSTEM, assemble
 from bench.graph.query import Passage
-from bench.provider import diagnostic
+from bench.provider import PacingDeadline, diagnostic
 
 
 @dataclass(frozen=True, slots=True)
@@ -202,6 +202,14 @@ class AnswerPipeline:
                 user,
                 timeout=max(0.001, self.deadline_ms / 1000 - (self.clock() - state["started"])),
             )
+        except PacingDeadline:
+            return {
+                "outcome": "budget_exhausted",
+                "draft": None,
+                "answer": None,
+                "citations": (),
+                "cause": "answer deadline exhausted while waiting for provider slot",
+            }
         except Exception as error:
             return {
                 "calls": state["calls"] + 1,

@@ -2,13 +2,22 @@
 
 import json
 import os
+import time
 
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 from openai import APIError, LengthFinishReasonError
 
 from bench.answer.pipeline import ModelAnswer, ModelReply
-from bench.provider import BASE_URL, EXTRA_BODY, MODEL, ProviderFailure, api_key, request_pacer
+from bench.provider import (
+    BASE_URL,
+    EXTRA_BODY,
+    MODEL,
+    PacingDeadline,
+    ProviderFailure,
+    api_key,
+    request_pacer,
+)
 
 
 def _default_settings() -> dict:
@@ -56,14 +65,18 @@ class AnswerModel:
 
     def complete(self, system: str, user: str, *, timeout: float = 60) -> ModelReply:
         try:
+            started = time.monotonic()
             if self.pacer is not None:
-                self.pacer.wait()
+                self.pacer.wait(timeout=timeout)
+            remaining = timeout - (time.monotonic() - started)
+            if remaining <= 0:
+                raise PacingDeadline("answer budget exhausted before provider call")
             result = self.chat.with_structured_output(
                 ModelAnswer.model_json_schema(),
                 method="json_schema",
                 strict=True,
                 include_raw=True,
-            ).invoke([SystemMessage(system), HumanMessage(user)], timeout=timeout)
+            ).invoke([SystemMessage(system), HumanMessage(user)], timeout=remaining)
         except LengthFinishReasonError as error:
             # Native SDK parsing aborts before LangChain returns the raw message,
             # but the exception retains the completion's billed usage.

@@ -4,7 +4,7 @@ A local experiment asking when selecting passages from a linked corpus beats
 putting all of it in the prompt. It does not change the Kotlin explanation
 service or its deployment.
 
-Phases 3–5 implement corpus loading/rebuilding, corpus-scoped vector similarity
+Phases 3–6 implement corpus loading/rebuilding, corpus-scoped vector similarity
 search, one-hop graph expansion, and grounded question answering through HTTP
 and CLI. Answers cite only documents supplied to the model. Invalid citations
 get one repair attempt and then discard the entire answer.
@@ -33,7 +33,17 @@ usage and the question where whole supplies evidence that graph misses.
 
 The stored [wiki-v1 questions](questions/wiki-v1.yaml) contain 18 single-document,
 7 multi-document and 5 unsupported questions. Phase 5 uses the full loaded
-corpus; size sampling and crossover measurements remain Phase 6.
+corpus. [worklog-v1](questions/worklog-v1.yaml) supplies eight fixed questions
+for seeded, nested 25/50/100/200/340-document samples from a read-only vault.
+`bench run --sizes` saves independent child reports and a parent size curve;
+`bench report --by-size` reads the summary offline. Reference documents are
+anchored in the smallest sample; no document is duplicated.
+
+NVIDIA request starts share a three-second default process-wide interval.
+Failures retain sanitized status/categories; there are no hidden retries.
+Large whole inputs are rejected without truncation, with selected-context bytes
+and unknown provider usage shown separately. A failed pair cannot establish a
+graph quality win. See [size-curve findings](reports/README.md).
 
 See the [Phase 5 NVIDIA evaluation](reports/phase5-evaluation.md) for both full
 executions. The second lost samples to provider failures, so the original

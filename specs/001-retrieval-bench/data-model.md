@@ -88,6 +88,19 @@ a key inside it.
 
 ## Run Record (artifact, append-only)
 
+`provider_errors` carries whitelisted `{kind, http_status}` diagnostics for failed
+answer calls. Raw exceptions, provider bodies and headers are never persisted.
+Judge call diagnostics live in `judge_errors`, with a local call number. Usage
+without a response remains explicitly unmeasured.
+
+Multi-size reports have `report_type: size_curve`, `child_report_ids`, `sampling`
+and `by_size`. Every child retains the full single-size report, including its
+generation, revision, size, metrics and artifacts. Sampling manifests contain
+the seed, algorithm, safe population revision, required references and exact
+selected paths/content hashes. Prepared files are read once for the entire curve.
+`by_size` separates actual provider prompt-token usage from exact selected-context
+UTF-8 bytes, including selected but unsent context. Unknown usage is not zero cost.
+
 One row per (question, strategy, corpus revision). Written as JSONL under
 `bench/runs/`.
 

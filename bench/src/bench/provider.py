@@ -21,15 +21,17 @@ class RequestPacer:
         self._next = 0.0
         self._lock = Lock()
 
-    def reserve(self):
+    def reserve(self, *, timeout=None):
         with self._lock:
             now = self.clock()
             start = max(now, self._next)
+            if timeout is not None and start - now >= timeout:
+                raise PacingDeadline("provider pacing exceeds remaining answer budget")
             self._next = start + self.interval
             return start - now
 
-    def wait(self):
-        if delay := self.reserve():
+    def wait(self, *, timeout=None):
+        if delay := self.reserve(timeout=timeout):
             self.sleep(delay)
 
     async def await_slot(self):
@@ -75,6 +77,10 @@ class ProviderFailure(Exception):
     def __init__(self, error):
         self.diagnostic = diagnostic(error)
         super().__init__(self.diagnostic["kind"])
+
+
+class PacingDeadline(TimeoutError):
+    """No provider call was started; the local answer budget ran out waiting."""
 
 
 def api_key():

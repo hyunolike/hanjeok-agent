@@ -257,8 +257,12 @@ supplied-token count grows with corpus size while the retrieval arm's does not.
   no multi-document repeat scores survived. The full-set tolerance remains
   unverified; this observation does not justify changing 0.05. See the
   [execution evidence](../../bench/reports/phase5-evaluation.md).
-- **SC-005**: The report states, for each corpus size, the supplied-token count
-  per strategy, so the crossing point is read from the data and not asserted.
+- **SC-005**: The report states, for each corpus size, actual provider input-token
+  usage per strategy with measured `n` and unmeasured attempts, plus exact
+  selected-context UTF-8 bytes. Input tokens include the shared prompt/schema;
+  bytes are not presented as tokens. Unsent oversize contexts have no provider
+  token measurement. Any crossing point is read from comparable quality data,
+  not inferred from a whole-arm failure or unequal score cohorts.
 - **SC-006**: A person who has not seen the code can run one question through
   both strategies and read both answers with their sources, following only the
   written instructions.

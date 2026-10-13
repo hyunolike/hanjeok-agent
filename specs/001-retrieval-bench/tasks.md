@@ -132,12 +132,12 @@ moves by less than 0.05 (SC-004).
 **Independent test**: Run one set at two sizes; `whole` prompt tokens grow with
 size while `graph` stays flat.
 
-- [ ] T044 [P] [US4] Implement the work-log vault loader in `bench/src/bench/corpus/worklog.py` — `project`/`type`/`tech`/`status` frontmatter, sparse `[[links]]`, no `sources`
-- [ ] T045 [US4] Write `bench/tests/unit/test_worklog_loader.py` asserting `status: 폐기` survives into `attrs` and reaches the answer step
-- [ ] T046 [US4] Implement deterministic size sampling at 25/50/100/200/340 in `bench/src/bench/corpus/worklog.py`, seeded and recorded so a size is reproducible (research §1)
-- [ ] T047 [US4] Write `bench/questions/worklog-v1.yaml`, with every `reference_docs` entry present in the smallest sample so a question does not become unanswerable purely by sampling
-- [ ] T048 [US4] Extend the runner in `bench/src/bench/eval/runner.py` to accept `sizes` and record `corpus_size` per run
-- [ ] T049 [US4] Add `--by-size` to `bench report` in `bench/src/bench/cli.py`, reporting supplied-token count per strategy per size (SC-005)
+- [X] T044 [P] [US4] Implement the work-log vault loader in `bench/src/bench/corpus/worklog.py` — `project`/`type`/`tech`/`status` frontmatter, sparse `[[links]]`, no `sources`
+- [X] T045 [US4] Write `bench/tests/unit/test_worklog_loader.py` asserting `status: 폐기` survives into `attrs` and reaches the answer step
+- [X] T046 [US4] Implement deterministic size sampling at 25/50/100/200/340 in `bench/src/bench/corpus/worklog.py`, seeded and recorded so a size is reproducible (research §1)
+- [X] T047 [US4] Write `bench/questions/worklog-v1.yaml`, with every `reference_docs` entry present in the smallest sample so a question does not become unanswerable purely by sampling
+- [X] T048 [US4] Extend evaluation through `bench/src/bench/eval/curve.py` to accept `sizes`, rebuild content-pinned samples and retain the existing runner's `corpus_size` per run
+- [X] T049 [US4] Add `--by-size` to `bench report` in `bench/src/bench/cli.py`, reporting actual provider input-token usage with sample counts and exact supplied bytes per strategy per size (SC-005)
 - [ ] T050 [US4] Run the curve and write the finding — including the crossing point, or the honest statement that the curve did not cross within the sizes available — to `bench/reports/README.md`
 
 **Checkpoint**: quickstart check 8 passes; the subproject has answered its question.
@@ -147,9 +147,15 @@ size while `graph` stays flat.
 ## Phase 7: Polish & Cross-Cutting
 
 - [X] T051 [P] Write `bench/README.md` pointing at quickstart.md and stating plainly that this measures and does not migrate anything
-- [ ] T052 [P] Add structured per-run logging in `bench/src/bench/eval/runner.py` — retrieval size, expansion count, repair count, outcome — since the Kotlin service's gap was exactly this
+- [X] T052 [P] Add structured per-run logging in `bench/src/bench/eval/runner.py` — retrieval size, expansion count, repair count, outcome — since the Kotlin service's gap was exactly this
 - [ ] T053 Walk `specs/001-retrieval-bench/quickstart.md` end to end on a clean checkout and fix every step that does not work as written
-- [ ] T054 Confirm `./gradlew build` and `pnpm build` are still unaware of `bench/`, and that CI is unchanged
+- [X] T054 Confirm `./gradlew build` and `pnpm build` are still unaware of `bench/`, and that CI is unchanged
+
+T054 execution: Gradle build, frontend typecheck and 87 frontend tests pass.
+Default Turbopack build encounters an environment port-binding denial, including
+after escalation; `pnpm build --webpack` succeeds. Build definitions, application
+sources and CI are unchanged and neither build adds a Python/bench dependency.
+The default-build environment limitation is retained in the final report.
 
 ---
 

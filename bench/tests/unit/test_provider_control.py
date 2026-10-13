@@ -80,3 +80,33 @@ def test_invalid_provider_pacing_is_rejected(interval):
 
     with pytest.raises(ValueError):
         RequestPacer(interval)
+
+
+def test_pacing_cannot_start_a_provider_call_after_the_answer_deadline():
+    from langchain_openai import ChatOpenAI
+
+    from bench.answer.pipeline import AnswerPipeline
+    from bench.graph.query import Passage
+    from bench.models import AnswerModel
+    from bench.provider import RequestPacer
+
+    calls = []
+    sleeps = []
+    chat = ChatOpenAI(
+        model="test",
+        api_key="fake",
+        max_retries=0,
+        http_client=httpx.Client(
+            transport=httpx.MockTransport(lambda r: calls.append(r) or httpx.Response(503))
+        ),
+    )
+    model = AnswerModel(chat=chat)
+    model.pacer = RequestPacer(3, clock=lambda: 10.0, sleep=sleeps.append)
+    model.pacer.reserve()  # next slot is three seconds away, answer has one second
+    result = AnswerPipeline(
+        lambda c, q: [Passage("a.md", "a#0", "fact", "A")],
+        model,
+        deadline_ms=1000,
+    ).ask("Q?", "test", "rev", {"a.md"})
+    assert calls == [] and sleeps == []
+    assert result.outcome == "budget_exhausted" and result.model_calls == 0
