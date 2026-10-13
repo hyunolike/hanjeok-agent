@@ -57,9 +57,9 @@ the citation ids it produces and the wiki pages it declares.
 | `search_places` | `text` 1–100 chars; `region_code` optional | graph, vector index | `hanjeok:place/<id>` for up to 5 | none |
 | `place_detail` | `place_id` already fetched in this question | graph | `hanjeok:place/<id>` | none |
 | `related_places` | `place_id` already fetched; `limit` 1–10 | graph, `RELATED_TO` by rank | `hanjeok:related/<id>`, `hanjeok:place/<id>` each | `concepts/alternative-scoring.md` |
-| `congestion` | `place_id` already fetched; `date` today to today+30 | Hanjeok, live | `hanjeok:congestion/<id>@<date>` | `concepts/congestion-diagnosis.md`, `records/congestion/grade-policy.json` |
-| `alternatives` | `place_id` already fetched; `date` as above; `radius_km` 1–50 | Hanjeok, live | `hanjeok:alternatives/<id>@<date>`, `hanjeok:place/<id>` each | `concepts/alternative-scoring.md`, `decisions/keep-llm-out-of-ranking.md` |
-| `events` | `place_id` already fetched; `date` | graph | `hanjeok:events/<id>@<date>` | none |
+| `congestion` | `place_id` already fetched; `date` today to today+29 | Hanjeok, live | `hanjeok:congestion/<id>@<date>` | `concepts/congestion-diagnosis.md` |
+| `alternatives` | `place_id` already fetched; `date` as above | Hanjeok, live | `hanjeok:alternatives/<id>@<date>`, `hanjeok:place/<id>` each | `concepts/alternative-scoring.md`, `decisions/keep-llm-out-of-ranking.md` |
+| `events` | `place_id` already fetched; `date` optional | graph | `hanjeok:events/<id>@<date>`, or `hanjeok:events/<id>` without a date | none |
 | `policy` | `text` 1–200 chars | graph, wiki chunks | `wiki:<path>` for up to 3 | the pages returned |
 
 "Already fetched" means a place the question's scope step resolved or an
@@ -68,6 +68,14 @@ guessing its id.
 
 `related_places` is absent from the `vector` strategy. Nothing else differs
 between strategies.
+
+Three corrections made while building these, each from reading Hanjeok's own
+contract (`docs/api-contract.md` there): the forecast window is today and the
+29 days after it, not 30; the alternatives endpoint ignores `radius`, so the
+lookup does not offer an input that would do nothing; and
+`records/congestion/grade-policy.json` is not a wiki page the bench loads, so
+it is not declared. A lookup repeated with the same inputs is refused, which
+also means one question asks Hanjeok once for the same thing.
 
 An input outside its limits produces a refusal with a reason. The refusal is
 returned to the model and recorded as a step; it is not an error.

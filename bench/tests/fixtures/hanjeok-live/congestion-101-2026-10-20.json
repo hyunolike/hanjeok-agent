@@ -1,0 +1,31 @@
+{
+ "status": 200,
+ "fetched_at": "2026-10-13T14:20:05Z",
+ "body": {
+  "success": true,
+  "data": {
+   "hasCongestionData": true,
+   "attraction": {
+    "id": 101,
+    "name": "가람궁",
+    "imageUrl": "https://img.invalid/101.jpg"
+   },
+   "diagnosis": {
+    "date": "2026-10-20",
+    "concentration": 44.0,
+    "percentile": 54.0,
+    "grade": "NORMAL",
+    "message": "녹화한 응답"
+   },
+   "dailyForecasts": [],
+   "betterDates": [],
+   "nearbyFestivals": [],
+   "feltCongestion": {
+    "moreCrowded": 3,
+    "asForecast": 5,
+    "lessCrowded": 1
+   }
+  },
+  "error": null
+ }
+}

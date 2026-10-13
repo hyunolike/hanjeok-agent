@@ -59,7 +59,7 @@ dependency between them.
 ## Phase 5: Service foundation — export, loader, graph (blocks Phases 6–8)
 
 - [x] T027 [P] Synthetic export in `bench/tests/fixtures/hanjeok-export/` and a broken copy in `hanjeok-export-broken/`, per `contracts/hanjeok-export.md`
-- [ ] T028 [P] Recorded Hanjeok responses for the synthetic places in `bench/tests/fixtures/hanjeok-live/`: covered, uncovered, date out of range, alternatives
+- [x] T028 [P] Recorded Hanjeok responses for the synthetic places in `bench/tests/fixtures/hanjeok-live/`: covered, uncovered, date out of range, alternatives
 - [x] T029 `bench/src/guide/export.py`: read an export, verify hashes and counts, named causes on mismatch; unit tests
 - [x] T030 Extend the loader seam in `bench/src/bench/corpus/loader.py` with typed, ranked links; `WikiLoader` emits them as before; extend `tests/unit/test_loader_seam.py`; confirm the bench's 130 offline tests still pass
 - [x] T031 `bench/src/guide/loader.py` `HanjeokLoader` over an export; unit tests
@@ -72,21 +72,21 @@ dependency between them.
 
 ## Phase 6: User Story 1 on the service (P1)
 
-- [ ] T036 [P] [US1] `bench/src/guide/live.py`: the two endpoints, envelope handling, `hasCongestionData: false` as its own outcome, timeouts, per-question cache, record and replay modes; unit tests against the recordings
-- [ ] T037 [P] [US1] `bench/src/guide/scope.py`: unsupported topics, rule override, off-topic, date parsing relative to today, reference resolution from earlier questions only, name resolution with ambiguity; unit tests for every edge case in the spec
-- [ ] T038 [P] [US1] `bench/src/guide/citations.py`: id scheme, gate over the fetched set; unit tests
-- [ ] T039 [US1] `bench/src/guide/lookups.py`: the seven lookups, input limits, the "already fetched" rule, refusal reasons, declared wiki pages, produced ids; unit tests per lookup including each refusal
-- [ ] T040 [US1] `bench/src/guide/agent.py`: LangGraph with scope, resolve, act (structured next-action, enum of lookups), answer, verify, repair; three-round and 60-second budgets with lookups withdrawn on the last call; unit tests with a scripted model for answered, partial, refused-then-corrected, invalid citations repaired, invalid twice, budget spent, service unreachable
-- [ ] T041 [P] [US1] `bench/src/guide/visits.py`: visit ids, turns without answer text, expiry, per-visitor and daily limits; unit tests
-- [ ] T042 [US1] `POST /guide/ask` in `bench/src/guide/api.py`: SSE in the order of the contract, one terminal event on every path, 400/429/503 bodies, CORS from configuration; contract tests reading the same recorded stream the frontend fixtures use
-- [ ] T043 [US1] Regenerate `frontend/src/lib/guide-fixtures.ts` from the service's contract-test recordings so both sides test one shape; run the frontend against the local service
+- [x] T036 [P] [US1] `bench/src/guide/live.py`: the two endpoints, envelope handling, `hasCongestionData: false` as its own outcome, timeouts, per-question cache, record and replay modes; unit tests against the recordings
+- [x] T037 [P] [US1] `bench/src/guide/scope.py`: unsupported topics, rule override, off-topic, date parsing relative to today, reference resolution from earlier questions only, name resolution with ambiguity; unit tests for every edge case in the spec
+- [x] T038 [P] [US1] `bench/src/guide/citations.py`: id scheme, gate over the fetched set; unit tests
+- [x] T039 [US1] `bench/src/guide/lookups.py`: the seven lookups, input limits, the "already fetched" rule, refusal reasons, declared wiki pages, produced ids; unit tests per lookup including each refusal
+- [x] T040 [US1] `bench/src/guide/agent.py`: LangGraph with scope, resolve, act (structured next-action, enum of lookups), answer, verify, repair; three-round and 60-second budgets with lookups withdrawn on the last call; unit tests with a scripted model for answered, partial, refused-then-corrected, invalid citations repaired, invalid twice, budget spent, service unreachable
+- [x] T041 [P] [US1] `bench/src/guide/visits.py`: visit ids, turns without answer text, expiry, per-visitor and daily limits; unit tests
+- [x] T042 [US1] `POST /guide/ask` in `bench/src/guide/api.py`: SSE in the order of the contract, one terminal event on every path, 400/429/503 bodies, CORS from configuration; contract tests reading the same recorded stream the frontend fixtures use
+- [x] T043 [US1] Regenerate `frontend/src/lib/guide-fixtures.ts` from the service's contract-test recordings so both sides test one shape; run the frontend against the local service
 
 **Checkpoint**: Story 1 works in the browser against the local service on the synthetic export.
 
 ## Phase 7: User Story 2 on the service (P2)
 
-- [ ] T044 [P] [US2] `GET /guide/places`, `GET /guide/places/{id}`, `GET /guide/status` in `bench/src/guide/api.py`; contract tests
-- [ ] T045 [US2] Build the `path` event from the steps of a question in `bench/src/guide/agent.py`; test that it contains exactly what was fetched (FR-022)
+- [x] T044 [P] [US2] `GET /guide/places`, `GET /guide/places/{id}`, `GET /guide/status` in `bench/src/guide/api.py`; contract tests
+- [x] T045 [US2] Build the `path` event from the steps of a question in `bench/src/guide/agent.py`; test that it contains exactly what was fetched (FR-022)
 
 **Checkpoint**: The path view shows real paths.
 

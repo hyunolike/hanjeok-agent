@@ -97,10 +97,9 @@ def active(driver: Driver, corpus: str = CORPUS) -> Active | None:
 def match_name(driver: Driver, generation: str, name: str) -> list[PlaceRow]:
     """Places whose name is, starts with, or contains `name`, spaces ignored.
 
-    Exact matches come first, and when there are any, nothing looser is
-    returned: someone who typed a place's whole name did not mean the three
-    other places that merely contain it. Two exact matches are a real ambiguity
-    and both are returned for the visitor to choose between.
+    In that order, at most ten. Used for browsing by name; a question's own
+    place names are resolved against the whole gazetteer instead, where an
+    exact name must win outright.
     """
     key = "".join(name.split())
     if not key:
@@ -120,8 +119,6 @@ def match_name(driver: Driver, generation: str, name: str) -> list[PlaceRow]:
             key=key,
             limit=MAX_NAME_MATCHES,
         ).data()
-    if rows and rows[0]["tier"] == 0:
-        rows = [row for row in rows if row["tier"] == 0]
     return [_place(row) for row in rows]
 
 
@@ -219,3 +216,17 @@ def events(
             radius=EVENT_RADIUS_M,
         ).data()
     return [EventRow(**row) for row in rows]
+
+
+def gazetteer(driver: Driver, generation: str) -> list[tuple[int, str, str, str | None]]:
+    """Every place's id, name, name key and region. Names are matched against a
+    question before any model is called, so this is read once per generation
+    and held in memory by the caller."""
+    with session(driver) as s:
+        rows = s.run(
+            "MATCH (p:Place {generation: $generation}) "
+            "RETURN p.id AS id, p.name AS name, p.name_key AS key, p.region_label AS region "
+            "ORDER BY p.has_congestion_data DESC, p.id",
+            generation=generation,
+        ).values()
+    return [tuple(row) for row in rows]

@@ -619,5 +619,154 @@ def main() -> None:
     (broken / "related.jsonl").write_bytes(b"".join(related[:-1]))
 
 
+# ---- Recorded Hanjeok responses for the same invented places ----
+#
+# In Hanjeok's own shape, including fields the guide drops (image addresses,
+# visitor-feedback tallies), so the tests can show that they are dropped.
+
+RECORDED_TODAY = "2026-10-13"
+FETCHED_AT = "2026-10-13T14:20:05Z"
+NAMES = {row[0]: row[1] for row in PLACES}
+
+# (place, date) -> (grade, concentration, percentile, better dates)
+CONGESTION = {
+    (101, "2026-10-17"): (
+        "VERY_CROWDED",
+        88.0,
+        92.0,
+        [("2026-10-20", "NORMAL", 44.0), ("2026-10-21", "NORMAL", 47.0)],
+    ),
+    (101, "2026-10-20"): ("NORMAL", 44.0, 54.0, []),
+    (118, "2026-10-17"): ("NORMAL", 49.0, 52.0, []),
+    (118, "2026-10-18"): ("CROWDED", 75.0, 79.0, [("2026-10-20", "RELAXED", 31.0)]),
+    (124, "2026-10-17"): ("RELAXED", 28.0, 30.0, []),
+    (131, "2026-10-17"): ("RELAXED", 22.0, 24.0, []),
+}
+UNCOVERED = [(150, "2026-10-17"), (141, "2026-10-17")]
+# (place, date) -> [(alternative, grade, concentration, km, minutes, score)] in Hanjeok's order
+ALTERNATIVES = {
+    (101, "2026-10-17"): [
+        (118, "NORMAL", 49.0, 0.8, 12, 0.76),
+        (124, "RELAXED", 28.0, 4.1, 25, 0.77),
+        (131, "RELAXED", 22.0, 4.9, 30, 0.76),
+    ],
+    (124, "2026-10-17"): [
+        (131, "RELAXED", 22.0, 0.8, 12, 0.85),
+        (118, "NORMAL", 49.0, 3.6, 22, 0.68),
+    ],
+    (118, "2026-10-17"): [],
+}
+
+
+def envelope(data) -> dict:
+    return {
+        "status": 200,
+        "fetched_at": FETCHED_AT,
+        "body": {"success": True, "data": data, "error": None},
+    }
+
+
+def write_live(target: Path) -> None:
+    shutil.rmtree(target, ignore_errors=True)
+    target.mkdir(parents=True)
+    (target / "recording.json").write_text(
+        json.dumps({"today": RECORDED_TODAY, "recorded_at": FETCHED_AT}) + "\n", "utf-8"
+    )
+
+    def save(kind: str, place: int, day: str, payload: dict) -> None:
+        (target / f"{kind}-{place}-{day}.json").write_text(
+            json.dumps(payload, ensure_ascii=False, indent=1) + "\n", "utf-8"
+        )
+
+    for (place, day), (grade, concentration, percentile, better) in CONGESTION.items():
+        save(
+            "congestion",
+            place,
+            day,
+            envelope(
+                {
+                    "hasCongestionData": True,
+                    "attraction": {
+                        "id": place,
+                        "name": NAMES[place],
+                        "imageUrl": f"https://img.invalid/{place}.jpg",
+                    },
+                    "diagnosis": {
+                        "date": day,
+                        "concentration": concentration,
+                        "percentile": percentile,
+                        "grade": grade,
+                        "message": "녹화한 응답",
+                    },
+                    "dailyForecasts": [],
+                    "betterDates": [
+                        {"date": d, "concentration": c, "grade": g, "weather": None}
+                        for d, g, c in better
+                    ],
+                    "nearbyFestivals": [],
+                    "feltCongestion": {"moreCrowded": 3, "asForecast": 5, "lessCrowded": 1},
+                }
+            ),
+        )
+    for place, day in UNCOVERED:
+        save(
+            "congestion",
+            place,
+            day,
+            envelope(
+                {
+                    "hasCongestionData": False,
+                    "attraction": {"id": place, "name": NAMES[place], "imageUrl": None},
+                    "message": "이 장소는 집중률 예측 데이터가 제공되지 않아요",
+                    "nearbyDiagnosable": [],
+                }
+            ),
+        )
+    for (place, day), items in ALTERNATIVES.items():
+        save(
+            "alternatives",
+            place,
+            day,
+            envelope(
+                [
+                    {
+                        "attractionId": alt,
+                        "name": NAMES[alt],
+                        "imageUrl": None,
+                        "latitude": 0.0,
+                        "longitude": 0.0,
+                        "grade": grade,
+                        "concentration": concentration,
+                        "distanceKm": km,
+                        "relationScore": 0.8,
+                        "score": score,
+                        "summary": "",
+                        "recommendReason": "",
+                        "recommendReasons": [],
+                        "travelMinutes": minutes,
+                        "rating": None,
+                    }
+                    for alt, grade, concentration, km, minutes, score in items
+                ]
+            ),
+        )
+    # A place Hanjeok does not have.
+    save(
+        "congestion",
+        99999,
+        "2026-10-17",
+        {
+            "status": 404,
+            "fetched_at": FETCHED_AT,
+            "body": {
+                "success": False,
+                "data": None,
+                "error": {"code": "ATTRACTION_NOT_FOUND", "message": "관광지를 찾을 수 없습니다"},
+            },
+        },
+    )
+
+
 if __name__ == "__main__":
     main()
+    write_live(HERE / "hanjeok-live")

@@ -26,6 +26,7 @@ dependencies = [
     # Revisit when ragas stops importing from the sunset package.
     "langchain-community<0.4",
     "sentence-transformers>=6.1.0",
+    "httpx>=0.27",
 ]
 
 [project.scripts]
@@ -53,6 +54,15 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+# Korean sentences the visitor or the model reads. Ruff counts a Hangul
+# character as two columns, and breaking a sentence mid-phrase to satisfy that
+# makes the wording harder to review than a long line does.
+"src/guide/agent.py" = ["E501"]
+"src/guide/lookups.py" = ["E501"]
+"src/guide/scope.py" = ["E501"]
+"tests/unit/test_guide_*.py" = ["E501"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

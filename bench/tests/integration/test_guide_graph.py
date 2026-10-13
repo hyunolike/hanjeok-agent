@@ -151,18 +151,19 @@ def test_an_unranked_link_is_returned_and_sorts_last(driver, corpus, embedder):
     assert [(r.rank, r.place.id) for r in rows] == [(1, 173), (None, 178)]
 
 
-def test_a_name_is_matched_with_spaces_ignored_and_exact_matches_win(driver, corpus, embedder):
+def test_a_name_is_matched_with_spaces_ignored_exact_then_prefix_then_contained(
+    driver, corpus, embedder
+):
     generation = refresh(driver, EXPORT, embedder, corpus=corpus).generation
 
     assert [p.id for p in read.match_name(driver, generation, "솔내한옥마을")] == [118]
     # Two places really are called this; both come back, the covered one first.
     assert [p.id for p in read.match_name(driver, generation, "은행나무길")] == [140, 141]
-    # "가람궁" is a whole name, so places that merely contain it are not offered.
-    assert [p.id for p in read.match_name(driver, generation, "가람궁")] == [101]
-    assert {p.name for p in read.match_name(driver, generation, "가람")} >= {
-        "가람궁",
-        "가람 중앙시장",
-    }
+    by_prefix = [p.name for p in read.match_name(driver, generation, "가람")]
+    assert by_prefix[0] == "가람궁", "the shortest name that starts with it"
+    assert "가람 중앙시장" in by_prefix
+    # "서원" starts no name but is inside one.
+    assert [p.name for p in read.match_name(driver, generation, "서원")] == ["물빛 서원"]
     assert len(read.match_name(driver, generation, "솔내")) <= read.MAX_NAME_MATCHES
     assert read.match_name(driver, generation, "없는곳") == []
     assert read.match_name(driver, generation, "   ") == []

@@ -1,0 +1,170 @@
+[
+ {
+  "event": "visit",
+  "data": {
+   "visit_id": "recorded-visit",
+   "as_of": {
+    "export": "2026-10-13T02:00:00Z",
+    "wiki": "2026-10-10T09:00:00Z"
+   }
+  }
+ },
+ {
+  "event": "step",
+  "data": {
+   "index": 0,
+   "kind": "scope",
+   "inputs": {},
+   "status": "ok",
+   "reason": null,
+   "produced": [],
+   "summary": "장소 1곳, 날짜 2026-10-17(으)로 읽었습니다",
+   "as_of": null
+  }
+ },
+ {
+  "event": "step",
+  "data": {
+   "index": 1,
+   "kind": "resolve",
+   "inputs": {
+    "names": [
+     "가람궁"
+    ]
+   },
+   "status": "ok",
+   "reason": null,
+   "produced": [
+    "hanjeok:place/101"
+   ],
+   "summary": "가람궁 (한빛시 가람구)",
+   "as_of": "2026-10-13T02:00:00Z"
+  }
+ },
+ {
+  "event": "step",
+  "data": {
+   "index": 2,
+   "kind": "congestion",
+   "inputs": {
+    "place_id": 124,
+    "date": "2026-10-17"
+   },
+   "status": "running",
+   "reason": null,
+   "produced": [],
+   "summary": "",
+   "as_of": null
+  }
+ },
+ {
+  "event": "step",
+  "data": {
+   "index": 2,
+   "kind": "congestion",
+   "inputs": {},
+   "status": "refused",
+   "reason": "이 질문에서 아직 나오지 않은 장소입니다. 먼저 이름으로 찾거나 연관 장소로 받아야 합니다.",
+   "produced": [],
+   "summary": "조회하지 않았습니다",
+   "as_of": null
+  }
+ },
+ {
+  "event": "step",
+  "data": {
+   "index": 3,
+   "kind": "congestion",
+   "inputs": {
+    "place_id": 101,
+    "date": "2026-10-17"
+   },
+   "status": "running",
+   "reason": null,
+   "produced": [],
+   "summary": "",
+   "as_of": null
+  }
+ },
+ {
+  "event": "step",
+  "data": {
+   "index": 3,
+   "kind": "congestion",
+   "inputs": {
+    "place_id": 101,
+    "date": "2026-10-17"
+   },
+   "status": "ok",
+   "reason": null,
+   "produced": [
+    "hanjeok:congestion/101@2026-10-17",
+    "wiki:concepts/congestion-diagnosis.md"
+   ],
+   "summary": "10월 17일 예보: 매우혼잡 (상위 8%)",
+   "as_of": "2026-10-13T14:20:05Z"
+  }
+ },
+ {
+  "event": "answer",
+  "data": {
+   "text": "10월 17일 가람궁은 매우혼잡 예보입니다.",
+   "citations": [
+    {
+     "id": "hanjeok:congestion/101@2026-10-17",
+     "kind": "record",
+     "label": "가람궁 혼잡 예보 (10월 17일)"
+    }
+   ],
+   "partial": false
+  }
+ },
+ {
+  "event": "path",
+  "data": {
+   "nodes": [
+    {
+     "id": "hanjeok:place/101",
+     "kind": "place",
+     "label": "가람궁",
+     "region": "한빛시 가람구"
+    },
+    {
+     "id": "region:11110",
+     "kind": "region",
+     "label": "한빛시 가람구",
+     "region": null
+    },
+    {
+     "id": "wiki:concepts/congestion-diagnosis.md",
+     "kind": "document",
+     "label": "Congestion Diagnosis",
+     "region": null
+    }
+   ],
+   "edges": [
+    {
+     "from": "hanjeok:place/101",
+     "to": "region:11110",
+     "kind": "in_region",
+     "rank": null
+    },
+    {
+     "from": "wiki:concepts/congestion-diagnosis.md",
+     "to": "hanjeok:place/101",
+     "kind": "explains",
+     "rank": null
+    }
+   ]
+  }
+ },
+ {
+  "event": "done",
+  "data": {
+   "outcome": "answered",
+   "model": "scripted",
+   "elapsed_ms": 0,
+   "generated_at": "2026-10-13T14:20:30Z"
+  }
+ }
+]

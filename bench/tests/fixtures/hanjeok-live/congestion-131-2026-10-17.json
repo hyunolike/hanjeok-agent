@@ -1,0 +1,31 @@
+{
+ "status": 200,
+ "fetched_at": "2026-10-13T14:20:05Z",
+ "body": {
+  "success": true,
+  "data": {
+   "hasCongestionData": true,
+   "attraction": {
+    "id": 131,
+    "name": "달맞이 숲길",
+    "imageUrl": "https://img.invalid/131.jpg"
+   },
+   "diagnosis": {
+    "date": "2026-10-17",
+    "concentration": 22.0,
+    "percentile": 24.0,
+    "grade": "RELAXED",
+    "message": "녹화한 응답"
+   },
+   "dailyForecasts": [],
+   "betterDates": [],
+   "nearbyFestivals": [],
+   "feltCongestion": {
+    "moreCrowded": 3,
+    "asForecast": 5,
+    "lessCrowded": 1
+   }
+  },
+  "error": null
+ }
+}
