@@ -21,6 +21,24 @@ from typing import Any, Protocol
 
 
 @dataclass(frozen=True, slots=True)
+class Link:
+    """A link that says what it means and where it stands among its siblings.
+
+    `LoadedDoc.links` is enough for a wiki, where a link is a link. It is not
+    enough for a corpus whose links are ordered by someone else — a ranked list
+    of related places loses its meaning the moment it becomes a set of paths.
+
+    `kind` is the loader's vocabulary, like `doc_type`; downstream stages carry
+    it and do not interpret it. `attrs` follows the same rule as a document's.
+    """
+
+    target: str
+    kind: str
+    rank: int | None = None
+    attrs: Mapping[str, Any] = field(default_factory=dict)
+
+
+@dataclass(frozen=True, slots=True)
 class LoadedDoc:
     """One document, in the only shape that crosses the seam."""
 
@@ -40,6 +58,12 @@ class LoadedDoc:
     """Paths of other documents in the same corpus. Already resolved and already
     filtered to targets that exist — an unresolved link is reported by the
     loader, not passed on as a dangling edge."""
+
+    typed_links: tuple[Link, ...] = ()
+    """Links that carry a kind and an order. Same resolution rule as `links`:
+    every target exists. A loader may fill either field or both; the bench's
+    graph builder reads only `links`, so adding these changes nothing it
+    measures."""
 
     sources: tuple[str, ...] = ()
     """Raw evidence paths. Empty for corpora that have no evidence layer."""

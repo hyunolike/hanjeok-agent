@@ -82,3 +82,22 @@ jobs:
       # 백엔드 없이 빌드된다는 것 자체가 검사 대상이다 — 프론트 배포가 서버 기동에
       # 묶이면 안 되고, 첫 프로덕션 빌드가 실제로 그 이유로 죽은 적이 있다.
       - run: pnpm build
+
+  bench:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: bench
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: bench/uv.lock
+
+      - run: uv sync --frozen
+      - run: uv run ruff check .
+
+      # Neo4j 도, 모델도, API 키도 없이 돈다. `integration` 과 `costly` 표시는
+      # pyproject 에서 기본으로 빠져 있다 — 여기서 플래그로 빼면 누군가 잊는다.
+      - run: uv run pytest

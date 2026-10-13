@@ -16,7 +16,7 @@ import json
 
 import pytest
 
-from bench.corpus.loader import LoadedDoc, LoadResult, check_unique_paths
+from bench.corpus.loader import Link, LoadedDoc, LoadResult, check_unique_paths
 
 
 class SyntheticLoader:
@@ -93,3 +93,30 @@ def test_loaded_doc_is_immutable():
 
     with pytest.raises(AttributeError):
         doc.title = "changed"  # type: ignore[misc]
+
+
+def test_typed_links_keep_their_order_and_kind():
+    # A ranked list flattened into `links` is a set of paths; the order someone
+    # else decided is gone. The seam has to be able to carry it.
+    doc = LoadedDoc(
+        path="place/1",
+        corpus="x",
+        title="One",
+        doc_type="place",
+        body="",
+        typed_links=(
+            Link("place/3", "related", rank=1, attrs={"score": 0.9}),
+            Link("place/2", "related", rank=2),
+            Link("region/11110", "in_region"),
+        ),
+    )
+
+    ranked = [link for link in doc.typed_links if link.kind == "related"]
+
+    assert [(link.target, link.rank) for link in ranked] == [("place/3", 1), ("place/2", 2)]
+    assert doc.typed_links[2].rank is None
+    assert doc.links == (), "typed links do not leak into the untyped field"
+
+
+def test_a_wiki_style_document_needs_no_typed_links():
+    assert SyntheticLoader().load().docs[0].typed_links == ()

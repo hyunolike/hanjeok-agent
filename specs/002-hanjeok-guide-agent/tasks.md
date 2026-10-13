@@ -17,8 +17,8 @@ dependency between them.
 - [X] T001 Amend `.specify/memory/constitution.md` Constraints: the `guide` package is deployed; `bench` measurement stays local
 - [X] T002 [P] Run `pnpm install` in `frontend/` and read the Next.js 16 guides under `frontend/node_modules/next/dist/docs/` that cover routing, fonts and static assets, as `frontend/AGENTS.md` requires
 - [X] T003 [P] Add `pretendard` and `wanted-sans` to `frontend/package.json`; add `NEXT_PUBLIC_GUIDE_BASE_URL` to `frontend/.env.example`
-- [ ] T004 [P] Add the `guide` package to `bench/pyproject.toml` (wheel packages, `guide` script entry) and create `bench/src/guide/__init__.py`
-- [ ] T005 [P] Add bench steps to `.github/workflows/build.yml`: `uv sync`, `ruff check`, `pytest` (offline markers only)
+- [x] T004 [P] Add the `guide` package to `bench/pyproject.toml` (wheel packages, `guide` script entry) and create `bench/src/guide/__init__.py`
+- [x] T005 [P] Add bench steps to `.github/workflows/build.yml`: `uv sync`, `ruff check`, `pytest` (offline markers only)
 
 ## Phase 2: Design foundation (FR-033, FR-038)
 
@@ -58,15 +58,15 @@ dependency between them.
 
 ## Phase 5: Service foundation — export, loader, graph (blocks Phases 6–8)
 
-- [ ] T027 [P] Synthetic export in `bench/tests/fixtures/hanjeok-export/` and a broken copy in `hanjeok-export-broken/`, per `contracts/hanjeok-export.md`
+- [x] T027 [P] Synthetic export in `bench/tests/fixtures/hanjeok-export/` and a broken copy in `hanjeok-export-broken/`, per `contracts/hanjeok-export.md`
 - [ ] T028 [P] Recorded Hanjeok responses for the synthetic places in `bench/tests/fixtures/hanjeok-live/`: covered, uncovered, date out of range, alternatives
-- [ ] T029 `bench/src/guide/export.py`: read an export, verify hashes and counts, named causes on mismatch; unit tests
-- [ ] T030 Extend the loader seam in `bench/src/bench/corpus/loader.py` with typed, ranked links; `WikiLoader` emits them as before; extend `tests/unit/test_loader_seam.py`; confirm the bench's 130 offline tests still pass
-- [ ] T031 `bench/src/guide/loader.py` `HanjeokLoader` over an export; unit tests
-- [ ] T032 `bench/src/guide/graph/schema.py`: labels, constraints, `place_embedding` index; integration test
-- [ ] T033 `bench/src/guide/graph/refresh.py`: batched embedding with an on-disk cache keyed by content hash, write a generation, verify counts, move the pointer, delete the old; integration tests including a refresh that fails before the pointer moves (FR-020)
-- [ ] T034 [P] `bench/src/guide/graph/read.py`: search through the vector index filtered by active generation, name match, detail, related ordered by rank, events; integration tests including rank order and generation isolation
-- [ ] T035 [US4] `guide refresh --export <dir>` in `bench/src/guide/cli.py`: prints counts and generation, non-zero exit with cause on failure; tests
+- [x] T029 `bench/src/guide/export.py`: read an export, verify hashes and counts, named causes on mismatch; unit tests
+- [x] T030 Extend the loader seam in `bench/src/bench/corpus/loader.py` with typed, ranked links; `WikiLoader` emits them as before; extend `tests/unit/test_loader_seam.py`; confirm the bench's 130 offline tests still pass
+- [x] T031 `bench/src/guide/loader.py` `HanjeokLoader` over an export; unit tests
+- [x] T032 `bench/src/guide/graph/schema.py`: labels, constraints, `place_embedding` index; integration test
+- [x] T033 `bench/src/guide/graph/refresh.py`: batched embedding with an on-disk cache keyed by content hash, write a generation, verify counts, move the pointer, delete the old; integration tests including a refresh that fails before the pointer moves (FR-020)
+- [x] T034 [P] `bench/src/guide/graph/read.py`: search through the vector index filtered by active generation, name match, detail, related ordered by rank, events; integration tests including rank order and generation isolation
+- [x] T035 [US4] `guide refresh --export <dir>` in `bench/src/guide/cli.py`: prints counts and generation, non-zero exit with cause on failure; tests
 
 **Checkpoint**: Story 4 passes on the synthetic export. Discard and rebuild gives the same graph (SC-007).
 

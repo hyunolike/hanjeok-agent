@@ -24,8 +24,13 @@ and continue to hold the wiki. The labels below are added.
 | --- | --- | --- | --- |
 | `RELATED_TO` | `Place → Place` | `rank`, `score`, `distance_km`, `travel_minutes` | Directed. Always read ordered by `rank`, nulls last, then `score` descending. Never created by the agent |
 | `IN_REGION` | `Place → Region` | none | |
-| `HELD_IN` | `Event → Region` | none | From the event's region code where the export has one |
 | `HELD_AT` | `Event → Place` | none | Exhibitions that Hanjeok tied to a place |
+
+A festival has coordinates and no place or region in the export, so no
+relationship is stored for it. The `events` read returns events tied to the
+place by `HELD_AT`, plus untied events within 1 km of it. An earlier draft
+listed `HELD_IN (Event → Region)`; the export carries no region for events, so
+it was dropped rather than derived by guessing.
 
 ### Indexes
 
@@ -35,7 +40,8 @@ and continue to hold the wiki. The labels below are added.
 
 ### Generation rule
 
-Every node and relationship above carries `generation`. Reads take the
+Every node and relationship above carries `generation`, and every node carries
+`corpus`, so a test or a second export never touches another's copy. Reads take the
 `active_generation` from `Corpus` first and filter by it. A refresh writes a
 new generation, checks its counts against the export manifest, sets
 `active_generation`, then deletes other generations. A refresh that fails
