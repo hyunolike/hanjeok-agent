@@ -3,38 +3,13 @@
 Resolves the unknowns the specification deferred, and records the decisions that
 shape `plan.md`. Each entry states what was chosen, why, and what was rejected.
 
-## 1. How the corpus grows for the crossover
+## 1. Corpus scope
 
-**Decision**: Sample the work-log vault at increasing sizes — 25, 50, 100, 200,
-340 documents — and treat the curated wiki (17 canonical pages) as a separate,
-smaller point that is not on that curve. No duplication.
-
-**Rationale**: The specification left this open and warned that duplication
-threatens validity. It does: duplicated documents make retrieval look better
-than it is, because a near-duplicate of the right answer is always available,
-and they make whole-corpus prompting look worse than it is, because the prompt
-fills with redundancy that a real corpus would not contain. Sampling avoids both
-— every document at every size is a real document someone wrote.
-
-The wiki cannot join the curve because its documents differ in kind, not just
-count: typed, densely linked, with recorded evidence. Mixing it into the vault
-series would vary shape and size together, and Principle II's logic applies to
-corpus construction as much as to prompts — vary one thing.
-
-So the report carries a curve (vault, five sizes) and a point (wiki). The curve
-answers "where does the crossing happen"; the point answers "what happens when
-links are dense and the corpus is tiny".
-
-**Alternatives rejected**:
-- *Duplicate documents with marked provenance*: cheapest, and the spec allowed
-  it as a fallback. Rejected because it biases both arms in opposite directions,
-  which is the worst case — the crossing point would move for reasons that have
-  nothing to do with corpus size.
-- *Include the wiki's non-canonical material (`raw/`, `records/`)*: grows the
-  wiki to ~72 documents with real text. Rejected as the primary method because
-  `raw/` files are source snapshots, not citable pages; admitting them changes
-  what a citation means midway through the curve. Kept as a possible second
-  point if the vault curve proves too coarse.
+**Current decision (2026-10-13)**: Use the existing curated wiki only. The user
+explicitly excluded personal-worklog loading. The loader, question set and
+document-size evaluation added for that corpus have been removed. No replacement
+corpus or duplicated documents are introduced. Wiki reports compare quality and
+cost at the loaded size and cannot establish a crossover point.
 
 ## 2. Graph store and vector index
 
@@ -57,12 +32,9 @@ documents" in one place. A separate vector store would mean two systems to keep
 in sync, and Principle "the graph store is disposable" gets harder to honour the
 moment derived state lives in two places that can disagree.
 
-**Honest note on fit**: For 17 canonical pages, a graph database is
-disproportionate — an in-memory dict would answer the same queries. It is
-proportionate at 340 documents, and the subproject's stated purpose includes
-exercising this technology. The disproportion at the small end is recorded here
-rather than hidden, and it is itself part of the finding: if the graph arm loses
-at 17 documents, "we used a database where a dictionary would do" is part of why.
+**Honest note on fit**: For this small wiki, an in-memory graph would suffice.
+Neo4j is retained to exercise the graph-store path. Its operational overhead is
+part of the measured profile; no larger-corpus justification is claimed.
 
 **Alternatives rejected**:
 - *NetworkX in memory*: simpler, no container, fast enough at these sizes.
@@ -86,9 +58,8 @@ are indexed using the model's 512-token window; their full text remains stored
 and is supplied when selected. This truncation is an embedding limitation,
 not silent truncation of the whole-corpus strategy.
 
-**Rationale**: The corpora are in two languages — the wiki is largely English,
-the work-log vault is Korean — so a monolingual model would score one corpus
-unfairly and the crossover would be measuring language, not size. Running
+**Rationale**: The pinned multilingual model handles the wiki text and Korean
+questions without changing the existing embedding profile. Running
 locally keeps embedding cost out of the per-run cost comparison, which matters
 because that comparison is the point: if embeddings were billed per call, the
 retrieval arm's cost would depend on a vendor's price list rather than on the
@@ -158,8 +129,8 @@ checks support for those clauses. Human reference errors affect both retrieval
 metrics; canonical reference paths and reviewable factual clauses are retained.
 
 No response cache is used when repeating evaluations. One structured attempt,
-zero SDK retries, four concurrent metric jobs and a two-second interval between
-judge requests bound hosted load. Each metric times out after ten minutes and
+zero SDK retries, four concurrent metric jobs and a shared three-second default
+interval between NVIDIA request starts bound hosted load. Each metric times out after ten minutes and
 each provider request after 90 seconds. Failures stay explicit; increasing
 throughput must not hide quota errors or retry costs. Observed judge tokens
 are recorded separately from answer tokens.

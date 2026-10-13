@@ -7,9 +7,11 @@
 ## Summary
 
 Build the retrieval arm this repository never built, run it against the
-whole-corpus prompting it already argues for, and report where the two cross.
+whole-corpus prompting it already argues for, and report their measured quality
+and cost on the existing wiki. The 2026-10-13 scope correction excludes personal
+worklogs and document-size sampling.
 
-A Python subproject under `bench/` loads two corpora into a graph store, answers
+A Python subproject under `bench/` loads the wiki into a graph store, answers
 questions two ways — every passage supplied, or passages selected by similarity
 and widened along document links — and scores both with a model judge. The
 existing Kotlin service is not touched; whole-corpus prompting is reimplemented
@@ -48,9 +50,9 @@ for attention.
 pass over 30 questions × 2 arms is minutes and is expected to be; the HTTP
 contract returns 202 for it rather than holding a socket.
 
-**Scale/Scope**: Two corpora — 17 canonical wiki pages, and a work-log vault
-sampled at 25/50/100/200/340 documents. Roughly 30 questions in the initial set.
-Corpora total well under 10 MB of markdown.
+**Scale/Scope**: The curated wiki only; the measured snapshot has 14 documents
+and 57 chunks. The versioned question set contains 30 questions. Additional
+corpus loaders and document-size sampling are outside the current scope.
 
 ## Constitution Check
 
@@ -96,7 +98,6 @@ bench/
 │   ├── corpus/
 │   │   ├── loader.py           # LoadedDoc, the seam
 │   │   ├── wiki.py             # travel-context-wiki loader
-│   │   ├── worklog.py          # Obsidian work-log loader
 │   │   └── chunk.py            # heading split
 │   ├── graph/
 │   │   ├── store.py            # driver, schema, indexes
@@ -138,6 +139,6 @@ two of those boundaries is the signal that Principle III is slipping.
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |---|---|---|
-| A graph database for a 17-node graph | Exercising a graph store is part of why the subproject exists, and it is proportionate at the 340-document end of the curve | An in-memory graph answers the same queries at the small end and teaches nothing about operating a store. Recorded in research §2 rather than hidden; if the graph arm loses at 17 documents, this is part of the reason |
+| A graph database for a small wiki | Exercising a graph store is part of the experiment | An in-memory graph would suffice for this corpus; the database's operational overhead is part of the measured profile. Recorded in research §2 |
 | Whole-corpus prompting reimplemented here, duplicating what `server/` does | Principle II: both arms must share one prompt path. Comparing against `server/` would vary language, framework and prompt at once | Calling the existing service would be less code and a worse experiment — the measured difference would include everything that differs between Kotlin and Python |
 | A framework for a loop this repository already hand-wrote | The comparison between hand-written loop and framework becomes available for free, over the same rules, in one repository | A plain loop is honestly sufficient for the pipeline itself; research §5 says so plainly |

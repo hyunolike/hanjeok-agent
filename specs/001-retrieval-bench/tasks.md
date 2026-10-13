@@ -18,7 +18,7 @@ validity. Ordinary wiring is not test-first.
 ## Format: `[ID] [P?] [Story] Description`
 
 - **[P]**: parallelizable — different files, no dependency on an incomplete task
-- **[Story]**: US1–US4 from spec.md
+- **[Story]**: US1–US3 from spec.md; US4 is withdrawn
 
 ## Path Conventions
 
@@ -92,7 +92,7 @@ confirm every cited path exists and every claim is in the passage that was cited
 **Independent test**: Run one question through both arms and diff their recorded
 inputs; only `supplied` may differ.
 
-- [X] T028 [US2] Implement the `whole` strategy in `bench/src/bench/answer/strategies.py` — supply every chunk of the corpus, and fail with an explicit cause when the corpus exceeds what one prompt can carry rather than truncating (spec US4 scenario 2)
+- [X] T028 [US2] Implement the `whole` strategy in `bench/src/bench/answer/strategies.py` — supply every chunk of the corpus, and fail with an explicit cause when the corpus exceeds what one prompt can carry rather than truncating (explicit input-capacity failure)
 - [X] T029 [US2] Define the run record of data-model.md in `bench/src/bench/eval/runner.py` and append it as JSONL under `bench/runs/`, recording failures with their outcome rather than omitting them
 - [X] T030 [US2] Implement pairing in `bench/src/bench/eval/runner.py`, including the validity rule: differing `corpus_revision` marks the pair invalid instead of comparing it
 - [X] T031 [US2] Write `bench/tests/unit/test_pair_validity.py` asserting a mismatched-revision pair is excluded and reported, not scored
@@ -121,26 +121,16 @@ moves by less than 0.05 (SC-004).
 - [X] T042 [US3] Add `bench run` and `bench report` to `bench/src/bench/cli.py`
 - [X] T043 [US3] Run the set twice unchanged and record whether SC-004's 0.05 tolerance holds; if it does not, amend the tolerance in `specs/001-retrieval-bench/spec.md` with the observed variance rather than quietly accepting the drift
 
-**Checkpoint**: quickstart check 6 is implemented and two full NVIDIA question-set reports exist. 118 offline / 27 real Neo4j integration tests pass. The first evaluation scored normally; the second has provider failures and changed samples. SC-004 is inconclusive, not a pass; the spec records observed partial drift and retains 0.05 because the full comparison is unavailable. See [Phase 5 evidence](../../bench/reports/phase5-evaluation.md). Clean NVIDIA calibration is still required before Phase 6 crossover claims.
+**Checkpoint**: quickstart check 6 is implemented and two full NVIDIA question-set reports exist. 118 offline / 27 real Neo4j integration tests pass. The first evaluation scored normally; the second has provider failures and changed samples. SC-004 is inconclusive, not a pass; the spec records observed partial drift and retains 0.05 because the full comparison is unavailable. See [Phase 5 evidence](../../bench/reports/phase5-evaluation.md). Clean NVIDIA calibration remains in progress for the existing wiki.
 
 ---
 
-## Phase 6: User Story 4 — Grow the corpus until the answer flips (P3)
+## Phase 6 — Withdrawn from current scope
 
-**Goal**: The curve, and the crossing point read off it.
-
-**Independent test**: Run one set at two sizes; `whole` prompt tokens grow with
-size while `graph` stays flat.
-
-- [X] T044 [P] [US4] Implement the work-log vault loader in `bench/src/bench/corpus/worklog.py` — `project`/`type`/`tech`/`status` frontmatter, sparse `[[links]]`, no `sources`
-- [X] T045 [US4] Write `bench/tests/unit/test_worklog_loader.py` asserting `status: 폐기` survives into `attrs` and reaches the answer step
-- [X] T046 [US4] Implement deterministic size sampling at 25/50/100/200/340 in `bench/src/bench/corpus/worklog.py`, seeded and recorded so a size is reproducible (research §1)
-- [X] T047 [US4] Write `bench/questions/worklog-v1.yaml`, with every `reference_docs` entry present in the smallest sample so a question does not become unanswerable purely by sampling
-- [X] T048 [US4] Extend evaluation through `bench/src/bench/eval/curve.py` to accept `sizes`, rebuild content-pinned samples and retain the existing runner's `corpus_size` per run
-- [X] T049 [US4] Add `--by-size` to `bench report` in `bench/src/bench/cli.py`, reporting actual provider input-token usage with sample counts and exact supplied bytes per strategy per size (SC-005)
-- [ ] T050 [US4] Run the curve and write the finding — including the crossing point, or the honest statement that the curve did not cross within the sizes available — to `bench/reports/README.md`
-
-**Checkpoint**: quickstart check 8 passes; the subproject has answered its question.
+T044–T050 are withdrawn following the user's 2026-10-13 instruction to exclude
+personal-worklog loading. The related loader, question set, sampling runtime,
+size-report CLI and tests were removed. No document-size evaluation was run.
+This is a scope removal, not a claim that crossover measurement passed.
 
 ---
 
@@ -167,14 +157,12 @@ Setup (T001–T006)
         ├─> US1 (T017–T027)      ← MVP, independently demonstrable
         │     └─> US2 (T028–T033)   needs the pipeline and prompt path
         │           └─> US3 (T034–T043)  needs both arms recorded
-        │                 └─> US4 (T044–T050)  needs scoring to exist
         └─> Polish (T051–T054)
 ```
 
 US2 depends on US1 because Principle II is enforced by both arms sharing
 `prompt.py`, which US1 creates. US3 depends on US2 because scoring a comparison
-requires a comparison. US4 depends on US3 because a curve of unscored runs is a
-chart of nothing.
+requires a comparison. US4 and T044–T050 are withdrawn.
 
 ## Parallel Opportunities
 
@@ -182,7 +170,6 @@ chart of nothing.
 - Foundational: T008+T009 with T015 and T016; T010/T011 after T007
 - US1: T017 alongside T019 and T020 (different files); T018 needs T017
 - US3: T034 alongside T035
-- US4: T044 alongside T047
 - Polish: T051 with T052
 
 ## Implementation Strategy
@@ -192,11 +179,10 @@ citations — worth showing to someone, and it proves the citation rule before a
 measurement leans on it.
 
 Stop points that leave something coherent: after US1 (a grounded answerer),
-after US2 (two arms, no scores), after US3 (the wiki answered with numbers),
-after US4 (the finding).
+after US2 (two arms, no scores), after US3 (the wiki answered with numbers).
 
 Fit to a one-to-two week budget: Setup and Foundational are roughly two evenings,
-US1 two or three, US2 one, US3 two or three including question writing, US4 two.
+US1 two or three, US2 one, US3 two or three including question writing.
 US3's question set is the most likely overrun — thirty questions with real
 reference documents is slower than it sounds, and T035 is the task to start early
 if the schedule tightens.

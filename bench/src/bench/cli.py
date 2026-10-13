@@ -37,15 +37,11 @@ def parser() -> argparse.ArgumentParser:
     run = commands.add_parser("run", help="evaluate a stored question set across both strategies")
     run.add_argument("--question-set", required=True)
     run.add_argument("--corpus", required=True)
-    run.add_argument(
-        "--sizes", type=int, nargs="+", help="nested document sizes for a sampling loader"
-    )
     report = commands.add_parser(
         "report", help="read a durable report without database or API keys"
     )
     report.add_argument("--id", required=True)
     report.add_argument("--reports-root", type=Path, default=DEFAULT_ROOT / "reports")
-    report.add_argument("--by-size", action="store_true", help="show the saved size curve summary")
     return root
 
 
@@ -78,19 +74,11 @@ def main(argv=None, *, runtime=None, evaluation=None) -> int:
                 }
             if body["status"] != "completed":
                 status = 1
-            elif args.by_size:
-                if body.get("report_type") != "size_curve":
-                    raise BenchError("load_failed", "report is not a size curve", 409)
-                body = {
-                    "report_id": body["report_id"],
-                    "status": "completed",
-                    "by_size": body["by_size"],
-                }
         elif args.command == "run":
             if evaluation is None:
                 evaluation = EvaluationService(runtime)
                 owned_evaluation = True
-            body = evaluation.run(args.question_set, args.corpus, sizes=args.sizes)
+            body = evaluation.run(args.question_set, args.corpus)
         elif args.command == "ask":
             result = runtime.ask(args.question, args.corpus, args.strategy)
             if result.outcome in ("answered", "no_grounds"):

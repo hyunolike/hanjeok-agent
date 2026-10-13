@@ -13,7 +13,6 @@ from bench.answer.pipeline import AnswerPipeline, AnswerResult
 from bench.answer.strategies import GraphStrategy, WholeStrategy
 from bench.corpus.loader import check_unique_paths
 from bench.corpus.wiki import WikiLoader
-from bench.corpus.worklog import WorklogLoader
 from bench.graph.build import build
 from bench.graph.query import document_paths
 from bench.graph.store import (
@@ -80,30 +79,9 @@ class BenchRuntime:
         loader = self.loaders.get(name)
         if loader is None:
             raise BenchError("load_failed", "corpus loader is not configured", 409)
-        try:
-            loaded = loader.load()
-        except Exception:
-            raise BenchError(
-                "load_failed", "corpus rebuild failed; check local configuration"
-            ) from None
-        return self.rebuild_loaded(name, loaded)
-
-    def supports_sampling(self, name):
-        return callable(getattr(self.loaders.get(name), "plan_samples", None))
-
-    def prepare_samples(self, name, sizes, required_paths):
-        try:
-            return self.loaders[name].plan_samples(sizes, required_paths)
-        except Exception:
-            raise BenchError("load_failed", "sample plan unavailable or invalid", 409) from None
-
-    def evaluation_scope(self):
-        """Prevent local rebuild/ask jobs from interleaving a multi-size evaluation."""
-        return self._lock
-
-    def rebuild_loaded(self, name, loaded):
         with self._lock:
             try:
+                loaded = loader.load()
                 check_unique_paths(loaded.docs)
                 if not loaded.docs or any(d.corpus != name for d in loaded.docs):
                     raise ValueError("loader returned an empty or mixed corpus")
@@ -191,10 +169,6 @@ def runtime_from_env() -> BenchRuntime:
     loaders = {}
     if root := os.environ.get("BENCH_WIKI_ROOT"):
         loaders["wiki"] = WikiLoader(Path(root))
-    if root := os.environ.get("BENCH_WORKLOG_ROOT"):
-        loaders["worklog"] = WorklogLoader(
-            Path(root), seed=int(os.environ.get("BENCH_SAMPLE_SEED", "20261012"))
-        )
     max_input_bytes = int(os.environ.get("BENCH_MAX_INPUT_BYTES", "100000"))
     if max_input_bytes < 1:
         raise ValueError("invalid input budget")

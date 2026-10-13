@@ -70,16 +70,12 @@ class EvaluationService:
 
         return RagasJudge(self.runtime.embedder)
 
-    def _prepare(self, name, corpus, sizes, *, questions=None):
-        questions = questions or self.questions.load(name)
+    def _prepare(self, name, corpus, sizes):
+        questions = self.questions.load(name)
         profile = self.runtime.corpus_context(corpus)
         questions.validate_corpus(corpus, profile["known_paths"])
         if sizes is not None and sizes != [profile["corpus_size"]]:
-            raise BenchError(
-                "load_failed",
-                "corpus has no sampling loader; only its full loaded size is supported",
-                409,
-            )
+            raise BenchError("load_failed", "only the full loaded corpus size is supported", 409)
         answer_model = self.runtime.model_settings
         report_id = str(uuid4())
         self.runs_root.mkdir(parents=True, exist_ok=True)
@@ -163,25 +159,9 @@ class EvaluationService:
             ) from None
 
     def run(self, name, corpus, *, sizes=None):
-        if sizes is not None and getattr(self.runtime, "supports_sampling", lambda c: False)(
-            corpus
-        ):
-            from bench.eval.curve import CurveEvaluation
-
-            curve = CurveEvaluation(self)
-            return curve.execute(*curve.prepare(name, corpus, sizes))
         return self._execute(*self._prepare(name, corpus, sizes))
 
     def submit(self, name, corpus, *, sizes=None):
-        if sizes is not None and getattr(self.runtime, "supports_sampling", lambda c: False)(
-            corpus
-        ):
-            from bench.eval.curve import CurveEvaluation
-
-            curve = CurveEvaluation(self)
-            prepared = curve.prepare(name, corpus, sizes)
-            self._executor.submit(curve.execute, *prepared)
-            return {"report_id": prepared[0], "status_url": f"/bench/reports/{prepared[0]}"}
         prepared = self._prepare(name, corpus, sizes)
         self._executor.submit(self._execute, *prepared)
         return {"report_id": prepared[0], "status_url": f"/bench/reports/{prepared[0]}"}
@@ -189,20 +169,7 @@ class EvaluationService:
     def get(self, report_id):
         with self._lock:
             if report_id in self._jobs:
-                report = dict(self._jobs[report_id])
-                child = self._jobs.get(report.get("active_report_id"))
-                if report["status"] == "running" and child is not None:
-                    done = len(report["child_report_ids"])
-                    arms_per_size = report["total"] // len(report["sizes"])
-                    scores_per_size = report["scores_total"] // len(report["sizes"])
-                    report.update(
-                        phase=child.get("phase", "scoring"),
-                        completed=done * arms_per_size
-                        + child.get("completed", child.get("question_count", 0) * 2),
-                        scores_completed=done * scores_per_size
-                        + child.get("scores_completed", len(child.get("scores", []))),
-                    )
-                return report
+                return dict(self._jobs[report_id])
         report = self.store.get(report_id)
         if report["status"] == "running":
             return {

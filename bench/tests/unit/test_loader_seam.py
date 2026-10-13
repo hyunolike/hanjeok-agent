@@ -2,10 +2,10 @@
 
 The failure this guards against is quiet. Someone downstream writes
 `attrs["confidence"]` because the wiki has it, everything keeps working against
-the wiki, and the work-log corpus — which has no such key — starts producing
+the wiki, and a different corpus — which has no such key — starts producing
 subtly different behaviour or a KeyError far from the cause.
 
-So the test introduces a third corpus that resembles neither real one: different
+So the test introduces a synthetic corpus that differs from the wiki: different
 field names, different types, no evidence layer. Anything downstream that has
 learned a corpus-specific name fails here.
 """
@@ -20,7 +20,7 @@ from bench.corpus.loader import LoadedDoc, LoadResult, check_unique_paths
 
 
 class SyntheticLoader:
-    """A corpus whose `attrs` share no key with the wiki or the work-log."""
+    """A corpus whose `attrs` share no key with the wiki."""
 
     name = "synthetic"
 
@@ -57,7 +57,7 @@ def test_a_corpus_with_unfamiliar_attrs_loads():
 
 
 def test_a_corpus_without_an_evidence_layer_is_valid():
-    # The work-log has no `sources`, and so does this. A pipeline that assumes
+    # This synthetic loader has no `sources`. A pipeline that assumes
     # every corpus cites raw evidence would fail here rather than in production.
     result = SyntheticLoader().load()
 

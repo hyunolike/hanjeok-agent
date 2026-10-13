@@ -1,7 +1,8 @@
 # Quickstart: Retrieval Bench
 
-Both answer paths, recorded pairs, stored question sets, scored reports and
-content-pinned worklog size curves are implemented.
+Phases 3–5 provide both answer paths, recorded pairs, stored question sets and
+scored reports on the existing wiki. Personal worklogs and document-size
+sampling are excluded from the current scope.
 
 ## Prerequisites
 
@@ -37,14 +38,6 @@ to `nvidia/nemotron-3-super-120b-a12b`. Both clients use NVIDIA's hosted endpoin
 OpenAI or other provider fallback is configured. Local embeddings remain the
 same pinned, cached multilingual model that created the graph. External model
 calls consume NVIDIA account quota; offline tests make none.
-
-`BENCH_REQUEST_INTERVAL_SECONDS` defaults to 3. Answer and judge request starts
-share one process-wide pacer; no automatic retry is performed. Run one hosted
-evaluation process at a time because pacing is not shared across processes or
-other projects using the same key. Failures retain only a category and HTTP
-status, never provider bodies or headers. This spacing is an experiment setting,
-not a guarantee about account quota. Export the key **before** starting uvicorn;
-changing another shell's environment cannot update an already running server.
 
 Both strategies use the same conservative input budget. `BENCH_MAX_INPUT_BYTES`
 defaults to 100000: system/user UTF-8 bytes, JSON schema bytes, and a 2048-byte
@@ -198,10 +191,15 @@ Results also split by question kind. Do not compare means without their counts.
 
 The judge uses RAGAS 0.4 collections, local query embeddings for answer
 relevancy, no response cache, one structured attempt, four concurrent metric
-jobs and the shared three-second default provider interval. A metric has
-a ten-minute limit and each request a 90-second timeout. Full runs can take
-many minutes. Absent `sizes` evaluates the currently loaded full corpus. Wiki
-accepts only its current full size; worklog supports nested samples below.
+jobs and a shared three-second default interval between NVIDIA request starts.
+`BENCH_REQUEST_INTERVAL_SECONDS` changes that interval; it is process-wide,
+not a cross-process quota coordinator. Waiting consumes the answer deadline.
+A metric has a ten-minute limit and each request a 90-second timeout. Full runs
+can take many minutes. Absent `sizes` or the one current full size is accepted;
+sampling and multiple sizes return 409 and are outside the current scope.
+
+Failures retain sanitized error categories and HTTP status when available.
+Per-run JSON logs go to stderr and omit question, answer and context bodies.
 
 ## Check 7 — rebuilding reproduces retrieval
 
@@ -219,51 +217,7 @@ Neo4j 5 cannot pre-filter the shared ANN index by corpus. This implementation
 uses **exact cosine ranking within the selected corpus**, avoiding another
 corpus's hits starving this one's top-k. Its latency is not an ANN measurement.
 
-## Check 8 — the worklog size curve
-
-Use a vault whose canonical worklogs are below `projects/` and carry
-`project`, `type`, `tech`, and `status` frontmatter. The corpus is read-only.
-Indexes without frontmatter are skipped; malformed metadata, outside-root
-symlinks and credential-shaped text are reported/excluded before hosted calls.
-This filter is not a complete secret detector; use an appropriate corpus.
-
-```bash
-export BENCH_WORKLOG_ROOT="/absolute/path/to/Workspace"
-export BENCH_SAMPLE_SEED=20261012
-export BENCH_MAX_INPUT_BYTES=1000000
-uv run bench run --question-set worklog-v1 --corpus worklog --sizes 25 50 100 200 340
-uv run bench report --id <curve-report-id> --by-size
-```
-
-Every reference in `worklog-v1` must exist in your vault. Invalid references or
-unavailable sizes fail before corpus mutation/model calls; adapt the question
-file and sizes to your actual population. Do not duplicate documents. The
-prepared samples contain all reference documents plus a seeded nested ordering
-of other documents. This measures growth of distractors with fixed questions.
-Each sample records paths/content hashes, seed, population revision and exclusions.
-
-HTTP uses `POST /bench/run` with `question_set`, `corpus`, and `sizes`; configure
-the same environment **before restarting** the server. A curve job freezes all
-sample files once, rebuilds each size under the runtime lock, and stores one
-child evaluation per size plus the parent curve. Poll the parent status URL for
-active child/progress. Completed children remain available if a later size fails.
-Other local ask/rebuild calls wait during the curve. Multiple server processes
-sharing one database are not supported.
-
-Keep the same input budget/model/prompt for both arms and every size. The
-1,000,000-byte value above is a fixed example, not the provider context limit.
-Large whole prompts fail explicitly and are never truncated. The report shows
-actual provider prompt tokens (including the shared prompt/schema), their sample
-counts/unmeasured attempts, exact selected-context UTF-8 bytes including unsent
-contexts, outcomes and paired quality scores. Missing usage is not zero-cost
-success. Graph-only success after a whole failure does not establish a quality
-winner or crossover. Record an inconclusive/no-crossing finding if appropriate.
-
-Each persisted run emits a structured `bench.runs` JSON log to stderr containing
-IDs, size, selected/expanded counts, repairs, outcome and sanitized failures.
-CLI stdout remains the result JSON; logs contain no questions or answer bodies.
-
-## Tests
+## Tests and later milestones
 
 ```bash
 uv run pytest                         # offline unit and HTTP contract tests
@@ -272,6 +226,7 @@ uv run ruff check src tests
 uv run ruff format --check src tests
 ```
 
-Earlier Phase 3–4 smoke artifacts used OpenAI models; they are historical
-evidence and are not mixed with NVIDIA measurements. Corpus size findings are
-recorded in `bench/reports/README.md` with their complete artifacts.
+Document-size sampling and crossover measurement are out of scope.
+Earlier Phase 3–4 smoke
+artifacts used OpenAI models; they are historical evidence and are not mixed
+with the NVIDIA Phase 5 comparison.

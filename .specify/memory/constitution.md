@@ -61,8 +61,8 @@ quietly reports averages over runs that did not happen.
 - Evaluation calls a real hosted model and consumes account quota, so it never
   runs in CI. Per the user's 2026-10-11 direction, hosted inference uses NVIDIA
   only and has no paid-provider fallback. Unit tests pass with no network or key.
-- Corpus files are read-only to this subproject. It never writes to the wiki or
-  to the work-log vault.
+- Corpus files are read-only to this subproject. It never writes to the wiki.
+  Per the user's 2026-10-13 scope correction, personal worklogs are not loaded.
 - Measured numbers are committed as run artifacts with the corpus revision they
   ran against. A number without its corpus revision cannot be reproduced and is
   therefore not evidence.

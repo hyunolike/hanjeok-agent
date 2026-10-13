@@ -5,6 +5,12 @@ rebuilt from files at any time, and holds what retrieval walks. The **run
 record** is an append-only artifact of measurement, and is never rebuilt —
 losing it means losing the evidence.
 
+Provider diagnostics are body-free: run `provider_errors` and report
+`judge_errors` store fixed error categories and HTTP status when available;
+judge observations also record the call number. They never store provider
+response bodies, headers or credentials. An expired pacing deadline starts no
+provider call and is recorded as `budget_exhausted`.
+
 ## Graph (Neo4j, disposable)
 
 ### Nodes
@@ -14,19 +20,17 @@ losing it means losing the evidence.
 | Property | Type | Notes |
 |---|---|---|
 | `path` | string | Unique within a corpus. Repo-relative, as a citation writes it |
-| `corpus` | string | `wiki` or `worklog`. Every query filters on it |
+| `corpus` | string | `wiki` in the current scope. Every query filters on it |
 | `title` | string | |
-| `doc_type` | string | Wiki: `entity`/`concept`/`comparison`/`query`/`decision`. Work-log: `설계`/`구현`/`트러블슈팅`/`가이드`/`학습`/`현황` |
+| `doc_type` | string | Wiki: `entity`/`concept`/`comparison`/`query`/`decision` |
 | `updated` | date | |
 | `confidence` | string, nullable | Wiki only |
 | `contested` | bool, nullable | Wiki only |
 | `conflicts` | list of string, nullable | Prose, carried verbatim. **Not parsed into edges** — the text names documents in sentences, not references, so a parser would break on rewording |
-| `status` | string, nullable | Work-log only: `완료`/`구현예정`/`폐기`. A retrieved `폐기` document must reach the answer step with that mark intact |
 
 Constraint: `(corpus, path)` unique.
 
-**`Tag`** — `name`, `corpus`. Wiki tags are a registered set of 20; work-log
-`tech` values are open and number roughly 292.
+**`Tag`** — `name`, `corpus`. Wiki tags are a registered set of 20.
 
 **`Source`** — `path`, `corpus`. Raw evidence a wiki document cites. **Never
 citable in an answer**; it exists so two documents that drew on the same
@@ -39,7 +43,7 @@ material are one hop apart.
 | Edge | From → To | Derived from |
 |---|---|---|
 | `HAS_CHUNK` | Doc → Chunk | Heading split |
-| `TAGGED` | Doc → Tag | `tags:` / `tech:` frontmatter |
+| `TAGGED` | Doc → Tag | `tags:` frontmatter |
 | `LINKS_TO` | Doc → Doc | `[[wikilink]]` and markdown links resolving inside the corpus |
 | `CITES` | Doc → Source | `sources:` frontmatter |
 
@@ -77,7 +81,7 @@ LoadedDoc:
   tags: [str]
   links: [str]        # paths inside the same corpus
   sources: [str]      # raw evidence paths; empty for corpora without them
-  attrs: {str: any}   # confidence, contested, conflicts, status …
+  attrs: {str: any}   # confidence, contested, conflicts …
   body: str
 ```
 
@@ -87,19 +91,6 @@ node and supplies it alongside the document at answer time; it never branches on
 a key inside it.
 
 ## Run Record (artifact, append-only)
-
-`provider_errors` carries whitelisted `{kind, http_status}` diagnostics for failed
-answer calls. Raw exceptions, provider bodies and headers are never persisted.
-Judge call diagnostics live in `judge_errors`, with a local call number. Usage
-without a response remains explicitly unmeasured.
-
-Multi-size reports have `report_type: size_curve`, `child_report_ids`, `sampling`
-and `by_size`. Every child retains the full single-size report, including its
-generation, revision, size, metrics and artifacts. Sampling manifests contain
-the seed, algorithm, safe population revision, required references and exact
-selected paths/content hashes. Prepared files are read once for the entire curve.
-`by_size` separates actual provider prompt-token usage from exact selected-context
-UTF-8 bytes, including selected but unsent context. Unknown usage is not zero cost.
 
 One row per (question, strategy, corpus revision). Written as JSONL under
 `bench/runs/`.

@@ -30,9 +30,8 @@ class LoadedDoc:
     corpus: str
     title: str
     doc_type: str
-    """Free-form on purpose: the wiki's types and the work-log's are different
-    vocabularies, and mapping them onto one enum would invent a correspondence
-    that does not exist."""
+    """Free-form so a loader owns its vocabulary; downstream stages do not
+    interpret corpus-specific document types."""
 
     body: str
     updated: date | None = None

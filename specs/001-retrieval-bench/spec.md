@@ -22,7 +22,7 @@ prevents scoring eligibility without preventing execution of the other arm.
 
 **Input**: Answer, with measurements rather than assertion, whether retrieving
 passages from a linked corpus beats putting the whole corpus in the prompt — and
-say at what corpus size the answer changes.
+report the quality and cost observed on the existing wiki.
 
 ## Why This Exists
 
@@ -38,8 +38,8 @@ violation rates, blocked citations, bundle size — is attached to a run. This o
 is attached to an intuition.
 
 The work is to build the alternative, run both against the same questions, and
-publish the crossover: the corpus size past which whole-corpus prompting stops
-winning. The honest expectation is that retrieval loses on today's corpus. That
+publish their measured quality and cost on the wiki. Corpus growth and a
+crossover claim are outside the current scope. The honest expectation is that retrieval loses on today's corpus. That
 is a finding, not a failure, and it is only worth anything if the run that
 produced it exists.
 
@@ -131,27 +131,11 @@ the scores move less than a stated tolerance.
 
 ---
 
-### User Story 4 - Grow the corpus until the answer flips (Priority: P3)
+### User Story 4 — Withdrawn from current scope
 
-The corpus is enlarged in steps and the question set is re-run at each step, so
-the report shows how each strategy's cost and quality move with corpus size, and
-where the lines cross.
-
-**Why this priority**: This is the finding that makes the subproject worth
-describing to someone else. It is last because it needs everything above, and
-because a crossover reported from an unstable harness is a fabricated number.
-
-**Independent Test**: Run the same question set at two corpus sizes and confirm
-the report shows both, distinguishes them, and that the whole-corpus arm's
-supplied-token count grows with corpus size while the retrieval arm's does not.
-
-**Acceptance Scenarios**:
-
-1. **Given** corpora at several sizes, **When** the set runs at each, **Then**
-   one report carries all sizes with size recorded per run.
-2. **Given** a corpus that exceeds what can be supplied at once, **When** the
-   whole-corpus arm runs, **Then** it fails with an explicit cause rather than
-   silently truncating the corpus.
+The user excluded personal-worklog loading on 2026-10-13. Document-size sampling
+and crossover measurement are consequently outside the current scope. Reports
+compare the two strategies on the existing full wiki and make no crossover claim.
 
 ### Edge Cases
 
@@ -175,8 +159,9 @@ supplied-token count grows with corpus size while the retrieval arm's does not.
 - **FR-001**: System MUST load a corpus from files on disk into a form that
   records, for each document, its identity, its type, its tags, its links to
   other documents and its cited evidence files.
-- **FR-002**: System MUST support more than one corpus, selected per request,
-  where corpora differ in size and in how densely their documents link.
+- **FR-002**: System MUST select the wiki corpus per request and isolate its
+  graph state. The generic loader seam remains, but no additional production
+  corpus loader is in the current scope.
 - **FR-003**: System MUST answer a question using only passages supplied to it
   from the selected corpus.
 - **FR-004**: System MUST make every answer name the document paths it used.
@@ -219,7 +204,8 @@ supplied-token count grows with corpus size while the retrieval arm's does not.
 ### Key Entities
 
 - **Corpus**: a named, versioned set of documents on disk, with a size and a
-  link density. Two are in scope at the outset; the design admits more.
+  link density. The wiki is in scope; the generic interface permits future loaders
+  only when separately requested.
 - **Document**: one unit a citation can name. Has a path, a title, a type, tags,
   links to other documents, cited evidence files, and prose. May carry recorded
   conflicts with other material.
@@ -257,12 +243,9 @@ supplied-token count grows with corpus size while the retrieval arm's does not.
   no multi-document repeat scores survived. The full-set tolerance remains
   unverified; this observation does not justify changing 0.05. See the
   [execution evidence](../../bench/reports/phase5-evaluation.md).
-- **SC-005**: The report states, for each corpus size, actual provider input-token
-  usage per strategy with measured `n` and unmeasured attempts, plus exact
-  selected-context UTF-8 bytes. Input tokens include the shared prompt/schema;
-  bytes are not presented as tokens. Unsent oversize contexts have no provider
-  token measurement. Any crossing point is read from comparable quality data,
-  not inferred from a whole-arm failure or unequal score cohorts.
+- **SC-005**: Withdrawn with document-size sampling on 2026-10-13. Existing
+  single-corpus runs still record provider token usage, elapsed time and outcomes;
+  no crossover is asserted.
 - **SC-006**: A person who has not seen the code can run one question through
   both strategies and read both answers with their sources, following only the
   written instructions.
@@ -271,11 +254,9 @@ supplied-token count grows with corpus size while the retrieval arm's does not.
 
 ## Assumptions
 
-- Two corpora are in scope: the curated wiki this repository already consumes
-  (small, densely linked, typed documents with recorded evidence) and a larger
-  personal work-log collection (many documents, sparse links, dense tags).
-  Chosen because their size and shape differ sharply; with one corpus the only
-  available finding is "the corpus was small".
+- The curated wiki this repository already consumes is the only corpus in scope.
+  It has typed, linked documents with recorded evidence. Findings apply to that
+  corpus and do not establish behavior at larger document counts.
 - Recorded conflicts between documents are prose, not references, in at least
   one corpus. They are carried as document attributes and supplied alongside the
   document, not turned into links, because parsing prose into structure would
@@ -289,10 +270,8 @@ supplied-token count grows with corpus size while the retrieval arm's does not.
   reimplemented in this subproject so both arms share one prompt path, as the
   constitution requires; comparing against the existing service directly would
   vary language, framework and prompt at once.
-- Corpus growth for the crossover is achieved by including material the corpora
-  already hold but the curated set excludes, and failing that, by duplication
-  with marked provenance. Which, and its effect on validity, is settled in
-  planning.
+- No personal worklogs are loaded, and no additional corpus or synthetic growth
+  is introduced to replace them.
 
 ## Out of Scope
 
