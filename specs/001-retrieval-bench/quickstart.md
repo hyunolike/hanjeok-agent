@@ -16,7 +16,7 @@ From the repository root:
 
 ```bash
 cd bench
-uv sync --locked
+uv sync --locked --python 3.13
 docker compose up -d --wait neo4j
 export BENCH_WIKI_ROOT="/absolute/path/to/travel-context-wiki"
 export NVIDIA_API_KEY="<your NVIDIA API key>"

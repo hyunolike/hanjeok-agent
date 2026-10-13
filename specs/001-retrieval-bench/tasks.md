@@ -138,7 +138,7 @@ This is a scope removal, not a claim that crossover measurement passed.
 
 - [X] T051 [P] Write `bench/README.md` pointing at quickstart.md and stating plainly that this measures and does not migrate anything
 - [X] T052 [P] Add structured per-run logging in `bench/src/bench/eval/runner.py` — retrieval size, expansion count, repair count, outcome — since the Kotlin service's gap was exactly this
-- [ ] T053 Walk `specs/001-retrieval-bench/quickstart.md` end to end on a clean checkout and fix every step that does not work as written
+- [X] T053 Verify the in-scope quickstart from a clean checkout: locked Python 3.13 installation, Docker health, actual local embedding/load/rebuild, HTTP startup, offline saved reports and answer/evaluation contract tests. Additional hosted runs are excluded by the user's instruction. See [final verification](../../bench/reports/final-verification.md).
 - [X] T054 Confirm `./gradlew build` and `pnpm build` are still unaware of `bench/`, and that CI is unchanged
 
 T054 execution: Gradle build, frontend typecheck and 87 frontend tests pass.
