@@ -243,38 +243,58 @@ def test_nonfinite_judge_values_are_failed_not_json_nan(tmp_path):
     svc.close()
 
 
-def test_repeatability_requires_same_profile_and_sample_ids():
+def test_repeatability_requires_same_profile_and_sample_ids(tmp_path):
+    from copy import deepcopy
+
     from bench.eval.score import compare_reports
 
-    basic = {
-        "report_id": "one",
-        "corpus_revision": "rev",
-        "corpus_generation": "g",
-        "corpus_size": 2,
-        "question_set_revision": "qrev",
-        "judge_model": {},
-        "answer_model": {},
-        "scoring_policy": {},
-        "strategies": {},
-        "scores": [],
-    }
-    other = {**basic, "report_id": "two", "corpus_generation": "new"}
-    assert compare_reports(basic, other)["comparable"] is False
-    score = {
-        "strategy": "whole",
-        "metric": "faithfulness",
-        "kind": "single_doc",
-        "question_id": "q1",
-        "status": "ok",
-        "value": 0.8,
-    }
-    basic["scores"] = [score]
-    other = {**basic, "report_id": "two", "scores": [{**score, "value": 0.9}]}
-    comparison = compare_reports(basic, other)
-    assert comparison["comparable"] and comparison["passes"] is False
-    assert comparison["max_delta"] == pytest.approx(0.1)
-    other["scores"] = [{**score, "question_id": "q2"}]
-    assert compare_reports(basic, other)["comparable"] is False
+    svc, _, _ = service(tmp_path)
+    try:
+        basic = svc.run("sample", "third")
+        assert compare_reports(basic, deepcopy(basic))["passes"] is True
+        other = deepcopy(basic)
+        other["corpus_generation"] = "new"
+        assert compare_reports(basic, other)["comparable"] is False
+        other = deepcopy(basic)
+        score = next(s for s in other["scores"] if s["status"] == "ok")
+        score["value"] = 0.9
+        comparison = compare_reports(basic, other)
+        assert comparison["comparable"] and comparison["passes"] is False
+        assert comparison["max_delta"] == pytest.approx(0.1)
+        score["question_id"] = "q2"
+        assert compare_reports(basic, other)["comparable"] is False
+    finally:
+        svc.close()
+
+
+@pytest.mark.parametrize("missing", ["excluded_pair", "missing_pair", "missing_scores"])
+def test_matching_missing_execution_samples_cannot_pass_comparison(tmp_path, missing):
+    from copy import deepcopy
+
+    from bench.eval.score import compare_reports
+
+    svc, _, _ = service(tmp_path)
+    try:
+        first = svc.run("sample", "third")
+        second = deepcopy(first)
+        second["report_id"] = "second"
+        for report in (first, second):
+            if missing == "excluded_pair":
+                report["question_count"] = 2
+                report["excluded_pairs"] = 1
+                report["pairs"].append({"question_id": "q2", "included": False})
+                report["scores"].extend(
+                    {**row, "question_id": "q2", "status": "skipped", "value": None}
+                    for row in list(report["scores"])
+                )
+            elif missing == "missing_pair":
+                report["question_count"] = 2
+            else:
+                report["scores"].pop()
+        result = compare_reports(first, second)
+        assert result["comparable"] is False and result["passes"] is None
+    finally:
+        svc.close()
 
 
 def test_score_persistence_failure_cancels_all_siblings_before_return(tmp_path):

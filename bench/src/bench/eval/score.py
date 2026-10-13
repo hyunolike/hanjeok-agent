@@ -231,6 +231,34 @@ def compare_reports(left, right, *, tolerance=0.05):
         result["reason"] = "report profiles differ"
         return result
 
+    def complete_coverage(report):
+        count = report.get("question_count")
+        pairs = report.get("pairs", [])
+        if (
+            report.get("status") != "completed"
+            or type(count) is not int
+            or count < 1
+            or report.get("excluded_pairs") != 0
+            or report.get("included_pairs") != count
+            or len(pairs) != count
+            or any(pair.get("included") is not True for pair in pairs)
+        ):
+            return False
+        question_ids = {pair["question_id"] for pair in pairs}
+        expected = {
+            (strategy, metric, question_id)
+            for strategy in ("whole", "graph")
+            for metric in METRICS
+            for question_id in question_ids
+        }
+        scores = report["scores"]
+        actual = {(s["strategy"], s["metric"], s["question_id"]) for s in scores}
+        return len(question_ids) == count and len(scores) == len(expected) and actual == expected
+
+    if not complete_coverage(left) or not complete_coverage(right):
+        result["reason"] = "execution coverage is incomplete or contains excluded pairs"
+        return result
+
     def observations(report):
         return {
             (s["strategy"], s["metric"], s["kind"], s["question_id"]): s for s in report["scores"]

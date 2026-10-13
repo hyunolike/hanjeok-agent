@@ -16,7 +16,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_valida
 from bench.answer.citations import validate
 from bench.answer.prompt import SYSTEM, assemble
 from bench.graph.query import Passage
-from bench.provider import PacingDeadline, diagnostic
+from bench.provider import PacingDeadline, ProviderSetupFailure, diagnostic
 
 
 @dataclass(frozen=True, slots=True)
@@ -208,7 +208,16 @@ class AnswerPipeline:
                 "draft": None,
                 "answer": None,
                 "citations": (),
-                "cause": "answer deadline exhausted while waiting for provider slot",
+                "cause": "answer deadline exhausted before provider call",
+            }
+        except ProviderSetupFailure as error:
+            return {
+                "outcome": "model_failed",
+                "draft": None,
+                "answer": None,
+                "citations": (),
+                "cause": "answer model configuration unavailable before provider call",
+                "provider_errors": (*state.get("provider_errors", ()), diagnostic(error)),
             }
         except Exception as error:
             return {

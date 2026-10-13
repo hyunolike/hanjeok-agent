@@ -15,6 +15,7 @@ from bench.provider import (
     MODEL,
     PacingDeadline,
     ProviderFailure,
+    ProviderSetupFailure,
     api_key,
     request_pacer,
 )
@@ -116,6 +117,14 @@ class LazyAnswerModel:
         return dict(self._settings)
 
     def complete(self, system: str, user: str, **kwargs) -> ModelReply:
+        started = time.monotonic()
+        timeout = kwargs.pop("timeout", 60)
         if self._model is None:
-            self._model = AnswerModel(settings=self._settings)
-        return self._model.complete(system, user, **kwargs)
+            try:
+                self._model = AnswerModel(settings=self._settings)
+            except Exception:
+                raise ProviderSetupFailure("answer model configuration unavailable") from None
+        remaining = timeout - (time.monotonic() - started)
+        if remaining <= 0:
+            raise PacingDeadline("answer deadline exhausted during model initialization")
+        return self._model.complete(system, user, timeout=remaining, **kwargs)

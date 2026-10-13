@@ -91,7 +91,7 @@ Run a stored question set through both strategies and produce one report
 
 Absent `sizes` means the full loaded corpus. Phase 5 also accepts a single
 element equal to its current document count. Other sizes, including multiple
-elements, return 409: sampling is Phase 6 and is never silently ignored.
+elements, return 409: sampling is outside the current scope and is never silently ignored.
 Question-set/reference validation and corpus preflight finish before acceptance.
 
 **202 Accepted**, returning `{"report_id": "…", "status_url": "/bench/reports/…"}`.

@@ -55,7 +55,7 @@ def diagnostic(error):
     """Keep a small allowlist; never persist error text, response bodies or headers."""
     from openai import APIConnectionError, APITimeoutError
 
-    if isinstance(error, ProviderFailure):
+    if isinstance(error, (ProviderFailure, ProviderSetupFailure)):
         return dict(error.diagnostic)
     status = getattr(error, "status_code", None)
     status = status if type(status) is int and 100 <= status <= 599 else None
@@ -81,6 +81,12 @@ class ProviderFailure(Exception):
 
 class PacingDeadline(TimeoutError):
     """No provider call was started; the local answer budget ran out waiting."""
+
+
+class ProviderSetupFailure(Exception):
+    """Local initialization failed before any provider inference was attempted."""
+
+    diagnostic = {"kind": "configuration"}
 
 
 def api_key():

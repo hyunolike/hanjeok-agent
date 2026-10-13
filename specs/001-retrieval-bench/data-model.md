@@ -9,7 +9,9 @@ Provider diagnostics are body-free: run `provider_errors` and report
 `judge_errors` store fixed error categories and HTTP status when available;
 judge observations also record the call number. They never store provider
 response bodies, headers or credentials. An expired pacing deadline starts no
-provider call and is recorded as `budget_exhausted`.
+provider call and is recorded as `budget_exhausted`. Lazy model initialization
+also consumes the same deadline. Local initialization failures use the
+`configuration` diagnostic category and retain zero provider calls.
 
 ## Graph (Neo4j, disposable)
 

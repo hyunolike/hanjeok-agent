@@ -110,3 +110,56 @@ def test_pacing_cannot_start_a_provider_call_after_the_answer_deadline():
     ).ask("Q?", "test", "rev", {"a.md"})
     assert calls == [] and sleeps == []
     assert result.outcome == "budget_exhausted" and result.model_calls == 0
+
+
+def test_lazy_initialization_cannot_start_inference_after_the_answer_deadline(monkeypatch):
+    from langchain_openai import ChatOpenAI
+
+    from bench.answer.pipeline import AnswerPipeline
+    from bench.graph.query import Passage
+    from bench.models import AnswerModel, LazyAnswerModel
+
+    now = [0.0]
+    calls = []
+    adapter = AnswerModel(
+        chat=ChatOpenAI(
+            model="test",
+            api_key="fake",
+            max_retries=0,
+            http_client=httpx.Client(
+                transport=httpx.MockTransport(lambda r: calls.append(now[0]) or httpx.Response(503))
+            ),
+        )
+    )
+
+    def initialize(**kwargs):
+        now[0] += 2.0
+        return adapter
+
+    monkeypatch.setattr("bench.models.AnswerModel", initialize)
+    monkeypatch.setattr("bench.models.time.monotonic", lambda: now[0])
+    result = AnswerPipeline(
+        lambda c, q: [Passage("a.md", "a#0", "fact", "A")],
+        LazyAnswerModel(),
+        deadline_ms=1000,
+        clock=lambda: now[0],
+    ).ask("Q?", "test", "rev", {"a.md"})
+    assert calls == []
+    assert result.outcome == "budget_exhausted" and result.model_calls == 0
+
+
+def test_missing_key_is_a_configuration_failure_without_provider_attempts(monkeypatch):
+    from bench.answer.pipeline import AnswerPipeline
+    from bench.graph.query import Passage
+    from bench.models import LazyAnswerModel
+
+    monkeypatch.delenv("NVIDIA_API_KEY", raising=False)
+    monkeypatch.setattr(
+        "bench.models.ChatOpenAI", lambda **kwargs: pytest.fail("transport created")
+    )
+    result = AnswerPipeline(
+        lambda c, q: [Passage("a.md", "a#0", "fact", "A")],
+        LazyAnswerModel(),
+    ).ask("Q?", "test", "rev", {"a.md"})
+    assert result.outcome == "model_failed" and result.model_calls == 0
+    assert result.provider_errors == ({"kind": "configuration"},)

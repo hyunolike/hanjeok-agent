@@ -30,9 +30,10 @@ number people trust.
 
 A corpus enters through a loader that emits documents, tags, links and evidence
 edges. Everything downstream — graph build, retrieval, answering, scoring — sees
-only that shape and never reads a corpus-specific field. Two corpora of
-different size and link density are the experiment, not a nice-to-have: with one
-corpus the only finding available is "it was too small", which we already know.
+only that shape and never reads a corpus-specific field. The current experiment
+uses the wiki only, per the user's 2026-10-13 scope correction. A synthetic loader
+tests the generic seam without adding another production corpus. Findings apply
+to the loaded wiki; they do not establish a crossover at larger document counts.
 
 ### IV. A Citation Is Checked Before It Is Shown
 
