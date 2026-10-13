@@ -43,7 +43,7 @@
       "Reopened all outputs and computed actual dimensions, byte counts and SHA-256 hashes; verified transparent pixels and alpha channels. No crop, redraw or palette correction was applied."
     ],
     "visualReviewStatus": "unreviewed",
-    "rightsReviewStatus": "pending",
+    "rightsReviewStatus": "not-performed",
     "alphaVerification": {
       "original": {
         "mode": "RGBA",
@@ -147,7 +147,7 @@
       "Reopened all outputs and computed actual dimensions, byte counts and SHA-256 hashes; verified transparent pixels and alpha channels. No crop, redraw or palette correction was applied."
     ],
     "visualReviewStatus": "unreviewed",
-    "rightsReviewStatus": "pending",
+    "rightsReviewStatus": "not-performed",
     "alphaVerification": {
       "original": {
         "mode": "RGBA",
@@ -251,7 +251,7 @@
       "Reopened all outputs and computed actual dimensions, byte counts and SHA-256 hashes; verified transparent pixels and alpha channels. No crop, redraw or palette correction was applied."
     ],
     "visualReviewStatus": "unreviewed",
-    "rightsReviewStatus": "pending",
+    "rightsReviewStatus": "not-performed",
     "alphaVerification": {
       "original": {
         "mode": "RGBA",
@@ -355,7 +355,7 @@
       "Reopened all outputs and computed actual dimensions, byte counts and SHA-256 hashes; verified transparent pixels and alpha channels. No crop, redraw or palette correction was applied."
     ],
     "visualReviewStatus": "unreviewed",
-    "rightsReviewStatus": "pending",
+    "rightsReviewStatus": "not-performed",
     "alphaVerification": {
       "original": {
         "mode": "RGBA",
@@ -460,7 +460,7 @@
       "Reopened all outputs and computed actual dimensions, byte counts and SHA-256 hashes; verified transparent pixels and alpha channels. No crop, redraw or palette correction was applied."
     ],
     "visualReviewStatus": "unreviewed",
-    "rightsReviewStatus": "pending",
+    "rightsReviewStatus": "not-performed",
     "alphaVerification": {
       "original": {
         "mode": "RGBA",
@@ -565,7 +565,7 @@
       "Reopened all outputs and computed actual dimensions, byte counts and SHA-256 hashes; verified transparent pixels and alpha channels. No crop, redraw or palette correction was applied."
     ],
     "visualReviewStatus": "unreviewed",
-    "rightsReviewStatus": "pending",
+    "rightsReviewStatus": "not-performed",
     "alphaVerification": {
       "original": {
         "mode": "RGBA",

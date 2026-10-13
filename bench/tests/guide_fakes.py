@@ -165,7 +165,10 @@ class ScriptedModel:
 
 
 def action(name: str, **args) -> dict:
-    blank = dict.fromkeys(("place_id", "date", "text", "region_code", "limit", "answer"))
+    """A reply in the schema's own field names; `text=` is accepted for `query`."""
+    if "text" in args:
+        args["query"] = args.pop("text")
+    blank = dict.fromkeys(("place_id", "date", "query", "region_code", "limit", "answer"))
     return {**blank, "action": name, "citations": [], **args}
 
 

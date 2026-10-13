@@ -60,7 +60,7 @@ class Verdict:
 
 def gate(text: str, citations: Sequence[str], fetched: Mapping[str, str]) -> Verdict:
     if not text.strip():
-        return Verdict(False, reason="답이 비어 있습니다.")
+        return Verdict(False, reason="answer 필드가 비어 있습니다. 답을 answer 필드에 쓰세요.")
     if not citations:
         return Verdict(
             False, reason="답에 인용이 없습니다. 조회해서 받은 id 를 하나 이상 인용해야 합니다."

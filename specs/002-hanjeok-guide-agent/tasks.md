@@ -107,10 +107,10 @@ dependency between them.
 - [X] T053 Generate the six poses through Codex image generation; store 512×512 transparent PNG sources in `design/guide-character/v1/`
 - [X] T054 Export 384×384 WebP to `frontend/public/brand/guide/`, replacing the placeholders; record tool, prompts, references, edit steps and SHA-256 in `design/guide-character/v1/provenance.json` with `status: draft` and `rightsReviewStatus: pending`
 - [ ] T055 [P] Move `frontend/src/lib/grades.ts` and the existing course, evidence and home components to the design values; existing tests pass unchanged
-- [ ] T056 Set the nav brand and metadata title consistently in `frontend/src/lib/i18n.ts` and `layout.tsx`
+- [x] T056 Set the nav brand and metadata title consistently in `frontend/src/lib/i18n.ts` and `layout.tsx`
 - [ ] T057 Run SC-010 with five people on `/ko/design` and record the result in `specs/002-hanjeok-guide-agent/checklists/character-recognition.md`
 
-**Checkpoint**: The demo has one visual language and its character, marked draft.
+**Checkpoint**: The demo has one visual language and its character, released by the author on 2026-10-14 with the rights review not performed.
 
 ## Phase 10: Real data, deployment and documents
 

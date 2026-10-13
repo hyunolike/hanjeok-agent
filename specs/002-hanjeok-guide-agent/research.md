@@ -299,13 +299,15 @@ non-round, non-gold silhouette cannot be mistaken for the sun guide at small
 size. Codex image generation with the sun guide as reference is how Hanjeok's
 existing raster assets were made (`source/course-traveler-v1/generation-jobs.json`).
 
-**Blocker recorded, not resolved**: Hanjeok's own legal review marks its brand
-assets as blocked for public release, with trademark and AI-copyright review
-not done (`design/brand/review/legal-review.md:34`). A character made inside
-that brand by the same method inherits the same status. Assets are produced
-and used in development with `status: draft` and `rightsReviewStatus: pending`.
-Whether they appear on the public demo is the author's decision and is not
-taken here.
+**Released by the author's decision, with the review still not done**:
+Hanjeok's own legal review marks its brand assets as blocked for public
+release, with trademark and AI-copyright review not done
+(`design/brand/review/legal-review.md:34`). A character made inside that brand
+by the same method inherits the same status. On 2026-10-14 the author decided
+to show the six poses on the public demo and in the public repository anyway.
+That decision is recorded in `design/guide-character/v1/provenance.json` under
+`releaseDecision`, with `rightsReviewStatus: not-performed` and the open items
+listed. It does not change Hanjeok's review document.
 
 Hanjeok's manifest has a single `mascotMaster` object and review checklist
 item 3 is written for the sun guide's face geometry. How a second character is

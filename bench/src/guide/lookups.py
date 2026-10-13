@@ -36,13 +36,13 @@ DECLARES = {
 # What the model is told about each lookup. Kept beside the code that
 # validates the same arguments, so the two cannot drift apart unnoticed.
 DESCRIPTIONS = {
-    "search_places": "search_places(text[, region_code]) — 글로 장소를 찾는다. 최대 5곳.",
+    "search_places": "search_places(query[, region_code]) — 글로 장소를 찾는다. 최대 5곳.",
     "place_detail": "place_detail(place_id) — 이미 나온 장소의 소개.",
     "related_places": "related_places(place_id[, limit]) — 그 장소와 한적이 이어 둔 장소를 순위대로.",
     "congestion": "congestion(place_id, date) — 그 날짜의 혼잡 예보.",
     "alternatives": "alternatives(place_id, date) — 그 날짜에 대신 갈 만한 곳을 한적이 정한 순서대로.",
     "events": "events(place_id[, date]) — 그 장소나 바로 옆에서 열리는 행사.",
-    "policy": "policy(text) — 한적이 혼잡과 대안을 어떻게 정하는지 적은 문서를 찾는다.",
+    "policy": "policy(query) — 한적이 혼잡과 대안을 어떻게 정하는지 적은 문서를 찾는다.",
 }
 LOOKUPS = tuple(DESCRIPTIONS)
 LIVE = ("congestion", "alternatives")
@@ -210,7 +210,7 @@ class Lookups:
         text = args.get("text")
         text = text.strip() if isinstance(text, str) else ""
         if not 1 <= len(text) <= limit:
-            return None, f"text 는 1자 이상 {limit}자 이하여야 합니다."
+            return None, f"query 는 1자 이상 {limit}자 이하여야 합니다."
         return text, None
 
     # ---- dispatch ----

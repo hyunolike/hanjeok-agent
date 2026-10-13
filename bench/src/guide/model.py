@@ -24,6 +24,10 @@ from bench.provider import (
     request_pacer,
 )
 
+# Seconds to wait after the provider answers 429, in order, then give up. Against
+# the hosted model the limit came in bursts that two short waits did not outlast.
+RATE_LIMIT_WAITS_S = (3.0, 6.0, 12.0)
+
 
 class ModelFailure(Exception):
     """No usable object came back. `kind` is a category, never provider text."""
@@ -45,6 +49,7 @@ class GuideModel:
 
         self.settings = dict(settings or _default_settings())
         self._chat = None
+        self._sleep = time.sleep
 
     def _client(self):
         if self._chat is None:
@@ -67,6 +72,27 @@ class GuideModel:
         return self._chat
 
     def decide(self, system, user, schema, *, timeout):
+        """One structured object, retrying only when the provider says "too many".
+
+        The bench never retries, because a retried call would blur what one
+        measured call costs. A visitor waiting on an answer is a different
+        case: a rate limit clears in seconds and the question's own deadline
+        already bounds how long this may take.
+        """
+        started = time.monotonic()
+        for wait in (*RATE_LIMIT_WAITS_S, None):
+            try:
+                return self._decide_once(
+                    system, user, schema, timeout=timeout - (time.monotonic() - started)
+                )
+            except ModelFailure as failure:
+                remaining = timeout - (time.monotonic() - started)
+                if failure.kind != "rate_limit" or wait is None or remaining <= wait + 5:
+                    raise
+                self._sleep(wait)
+        raise AssertionError("unreachable")
+
+    def _decide_once(self, system, user, schema, *, timeout):
         from langchain_core.messages import HumanMessage, SystemMessage
         from openai import APIError, LengthFinishReasonError
 

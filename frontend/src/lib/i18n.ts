@@ -37,7 +37,7 @@ const REPO = 'https://github.com/hyunolike/hanjeok-agent'
  */
 const ko = {
   nav: {
-    brand: 'Hermes Agent',
+    brand: '한적 에이전트',
     evidence: '근거 문서',
     /** 반대편 언어 화면으로 가는 링크. 그 언어로 쓴다. */
     switchTo: 'English',
@@ -158,7 +158,7 @@ export type Dict = typeof ko
 
 const en: Dict = {
   nav: {
-    brand: 'Hermes Agent',
+    brand: 'Hanjeok Agent',
     evidence: 'Evidence',
     switchTo: '한국어',
   },
