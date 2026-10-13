@@ -1,8 +1,9 @@
 # Retrieval Bench Constitution
 
-This constitution governs `bench/`, the retrieval comparison subproject. It does
-not govern `server/`, `frontend/`, or `harness/`, which keep the practices they
-already have. Where this document and the repository README disagree about the
+This constitution governs `bench/`, the retrieval comparison subproject, and the
+guide agent that grows out of it under `specs/002-hanjeok-guide-agent`, including
+the screens that feature adds to `frontend/`. It does not govern `server/` or
+`harness/`, which keep the practices they already have. Where this document and the repository README disagree about the
 explanation service itself, the README wins.
 
 ## Core Principles
@@ -30,10 +31,12 @@ number people trust.
 
 A corpus enters through a loader that emits documents, tags, links and evidence
 edges. Everything downstream — graph build, retrieval, answering, scoring — sees
-only that shape and never reads a corpus-specific field. The current experiment
-uses the wiki only, per the user's 2026-10-13 scope correction. A synthetic loader
-tests the generic seam without adding another production corpus. Findings apply
-to the loaded wiki; they do not establish a crossover at larger document counts.
+only that shape and never reads a corpus-specific field. The wiki
+was the only corpus through feature 001. Feature 002 adds a second: public place
+data exported from the Hanjeok service, per the user's 2026-10-13 direction. It
+enters through the same seam as the wiki. A synthetic loader tests that seam
+without depending on either. Findings apply to the corpus they were measured on
+and are never carried from one corpus to another.
 
 ### IV. A Citation Is Checked Before It Is Shown
 
@@ -52,6 +55,16 @@ silent fallback to the other arm, no empty-string answer recorded as a run, no
 default corpus when the requested one is absent. A benchmark that degrades
 quietly reports averages over runs that did not happen.
 
+### VI. The Model Decides Nothing About Ranking
+
+Which places are good alternatives, and in what order, is decided by the Hanjeok
+backend. The agent may turn a question into lookups and explain what came back;
+it may not select, score, add, drop or reorder places. This is inherited from the
+explanation service, and widening what the agent can fetch does not widen what
+it can decide. A lookup the model can call takes validated inputs from a fixed
+set and returns a refusal reason when they are out of range; the model never
+composes a query of its own.
+
 ## Constraints
 
 - Python for this subproject. The explanation service stays Kotlin; nothing here
@@ -62,8 +75,14 @@ quietly reports averages over runs that did not happen.
 - Evaluation calls a real hosted model and consumes account quota, so it never
   runs in CI. Per the user's 2026-10-11 direction, hosted inference uses NVIDIA
   only and has no paid-provider fallback. Unit tests pass with no network or key.
-- Corpus files are read-only to this subproject. It never writes to the wiki.
-  Per the user's 2026-10-13 scope correction, personal worklogs are not loaded.
+- Corpus files are read-only to this subproject. It never writes to the wiki or
+  to the Hanjeok service. Per the user's 2026-10-13 scope correction, personal
+  worklogs are not loaded.
+- Hanjeok data arrives only as a file exported on the Hanjeok side. Nothing here
+  holds credentials to the Hanjeok database. Only public tourism data is taken;
+  member accounts, feedback, photos and view history never enter a corpus.
+- Date-bound facts, such as a congestion forecast, are fetched from the Hanjeok
+  service when asked and are never served from a copy.
 - Measured numbers are committed as run artifacts with the corpus revision they
   ran against. A number without its corpus revision cannot be reproduced and is
   therefore not evidence.
@@ -91,4 +110,4 @@ accidental violations look like improvements to one arm. Any change touching
 prompt text, model settings or the question set states in its commit message
 which arms it affects; if the answer is "one", it needs a reason.
 
-**Version**: 1.0.1 | **Ratified**: 2026-09-29 | **Last Amended**: 2026-10-11
+**Version**: 1.1.0 | **Ratified**: 2026-09-29 | **Last Amended**: 2026-10-13
