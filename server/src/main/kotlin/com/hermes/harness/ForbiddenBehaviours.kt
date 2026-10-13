@@ -74,7 +74,7 @@ object ForbiddenBehaviours {
     // 문장 전체를 백분위라는 이유로 빼면
     // 같은 문장에 함께 쓴 실제 순서 위반까지 놓치므로 서수별로 문맥을 본다.
     private val ORDINAL = Regex("(?:[0-9]+|[가-힣]+)\\s*번째(?:로|는|에|가|인|의)?\\s*")
-    private val VISIT_ACTIONS = listOf("방문", "들르", "도착", "이동")
+    private val VISIT_ACTIONS = listOf("방문", "들르", "도착", "이동", "갑니다", "가요", "간다")
     private val ORDINAL_END = Regex("^(?:예요|에요|입니다|이다|이고)?(?:[,.!?]|$)")
 
     private val CONGESTION_WORDS = listOf("혼잡", "붐비", "한산", "여유로운")

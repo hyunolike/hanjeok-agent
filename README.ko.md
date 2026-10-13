@@ -342,7 +342,7 @@ curl http://localhost:8080/actuator/health   # 인증값이 없으므로 HTTP 50
 
 ### 이번 보완에서 실제 실행한 검증
 
-macOS ARM64, JDK 21.0.2, Node 22.23.2, pnpm 10.17.0에서 `./gradlew build`의 JVM 352개 테스트(56개 suite)를 통과했습니다. 추가한 서수 회귀 사례는 13개입니다. `offlineContextEval`은 29 fixture/58 scripted 행을 유료 호출 0회로 통과했습니다. `pnpm typecheck`와 frontend 테스트 87개도 통과했습니다(기존 React `act(...)` 경고는 남아 있습니다). 키 없는 `bootRun`에서 9문서/24,703바이트, provenance와 개별 문서의 HTTP 200을 확인했고, health는 예상한 HTTP 503/DOWN이었습니다. 빌드한 jar에서 `SERVER_PORT=18080`도 확인했습니다. `pnpm dev`로 두 언어의 근거 페이지가 HTTP 200을 반환했습니다.
+macOS ARM64, JDK 21.0.2, Node 22.23.2, pnpm 10.17.0에서 `./gradlew build`의 JVM 355개 테스트(56개 suite)를 통과했습니다. 추가한 서수 회귀 사례는 16개입니다. `offlineContextEval`은 29 fixture/58 scripted 행을 유료 호출 0회로 통과했습니다. `pnpm typecheck`와 frontend 테스트 87개도 통과했습니다(기존 React `act(...)` 경고는 남아 있습니다). 키 없는 `bootRun`에서 9문서/24,703바이트, provenance와 개별 문서의 HTTP 200을 확인했고, health는 예상한 HTTP 503/DOWN이었습니다. 빌드한 jar에서 `SERVER_PORT=18080`도 확인했습니다. `pnpm dev`로 두 언어의 근거 페이지가 HTTP 200을 반환했습니다.
 
 기본 `pnpm build`는 이 환경에서 Turbopack CSS 처리의 로컬 소켓 바인딩이 막혀 실패했습니다(`Operation not permitted`, 권한 확장 재시도도 동일). 지원되는 대체 명령 `pnpm build --webpack`은 통과했고 빌드 스크립트는 바꾸지 않았습니다. 서버·frontend 설정과 백엔드 계약은 문서/코드로 확인했으며 **실제 백엔드 도달성, 프로바이더 인증·모델 가용성, 생성된 답변은 실행 검증하지 않았습니다.** 로컬 검사이며 새로운 Linux retrieval 검증이나 운영 배포가 아닙니다.
 
