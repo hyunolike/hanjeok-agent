@@ -95,6 +95,8 @@ jobs:
           enable-cache: true
           cache-dependency-glob: bench/uv.lock
 
+      # 파이썬 버전은 bench/.python-version 이 정한다. 고정하지 않으면 uv 가 가장 새
+      # 인터프리터를 받아 오는데, torch 는 새 버전용 휠이 늦게 나와 설치가 실패한다.
       - run: uv sync --frozen
       - run: uv run ruff check .
 
