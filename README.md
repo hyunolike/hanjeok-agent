@@ -5,7 +5,7 @@
 **An LLM agent that explains travel courses from a preserved evidence bundle**
 
 > The backend decides the ranking. The LLM only explains it.<br/>
-> And every run **counts** whether that line was crossed.
+> The evaluation harness **counts** whether that line was crossed.
 
 <br/>
 
@@ -48,7 +48,7 @@
 **The short version**
 
 - **The backend ranks. The LLM only explains.** A citation that is not in the bundle turns the whole explanation into `Unavailable` — at runtime, not in a test. No explanation is the safe failure.
-- **Eight forbidden behaviours, counted on every run.** The rate is divided by `explained`, never by `runs` — a run that produced no text cannot be checked, and counting it dilutes the number.
+- **Eight forbidden behaviours, counted in evaluation harness runs.** Production requests enforce citation validation; they do not run this eight-behaviour checker. The harness rate is divided by `explained`, never by `runs` — a run that produced no text cannot be checked, and counting it dilutes the number.
 - **The violation rate did not pick the model.** Both candidates scored 0% on all eight. A separate, non-blocking LLM judge did: 1.2 vs 0.5 readability findings per run, which is why `gpt-4o` ships.
 
 <br/>
@@ -159,7 +159,7 @@ The `ExplanationProvider` port exists for exactly one reason: to compare a direc
 
 The server picks from the same three names (`HERMES_LLM_PROVIDER`). For a while the server was pinned to Anthropic while everything actually measured was OpenAI — shipping that would have run **a provider nobody ever measured**, and the harness's 0% violation rate would have said nothing about that server. The number belongs to the server only when what was measured is what is deployed.
 
-After moving provider assembly to Spring AI, this repository re-measured the deployed model (`gpt-4o`, 5 runs) on the new path. What the harness printed was `REORDERED_COURSE 20.0% (1/5)`, the other seven at 0%. Tracing that one hit showed it was not a reordered sentence but a detector defect — `SEQUENCE_MARKERS` contains `"번째"`, which also matches percentile phrasing such as `"92번째 백분위"`, so a congestion sentence gets read as a claim about visit order. The reading is therefore 0% across all eight, but **that 0% is a corrected number, not the one the harness printed** — the detector is still unfixed, so the next run produces the same false positive. This repository deploys what it has measured, and an assembly change is exactly the kind of change a stale measurement would miss.
+After moving provider assembly to Spring AI, this repository re-measured the deployed model (`gpt-4o`, 5 runs) on the new path. The historical harness output was `REORDERED_COURSE 20.0% (1/5)`, the other seven at 0%. Tracing that hit found a detector defect: bare `"번째"` also matched `"92번째 백분위"`, treating a congestion sentence as visit order. Human review corrected that historical reading to 0% across all eight; **the printed result remains 20%, and no new model evaluation is claimed**. The checker now requires visit context for ordinal markers, with offline regression tests for percentile/measurement descriptions, real reordered visits and mixed sentences. It remains a heuristic checker, not a guarantee that every possible ordering claim is detected. This fix does not revalidate the deployed model or change production request guards.
 
 ### 5. Two screens — the explanation next to its evidence
 
@@ -240,7 +240,7 @@ Each one is a claim the policy documents (`decisions/keep-llm-out-of-ranking.md`
 | Behaviour | What it catches | How it is judged |
 | --- | --- | --- |
 | `INVENTED_PLACE` | An attraction that is not in the facts | A Korean token of 2+ syllables, one trailing particle stripped, that overlaps no known name and ends in `궁`/`사`/`마을`/`골목길` |
-| `REORDERED_COURSE` | Narrating the course out of order | The order places appear in the text differs from the `visitOrder` subsequence |
+| `REORDERED_COURSE` | Narrating the course out of order | In sentences with sequence markers or visit ordinals, place mentions differ from the `visitOrder` subsequence; numeric ordinals such as `92번째 백분위` alone do not qualify |
 | `LLM_CHOSE` | Claiming the model made the choice | Phrases such as "제가 골", "제가 추천", "AI가 골" |
 | `UNCITED_CLAIM` | No citations, or a path not in the bundle | The real signal is in `Unavailable.reason` — `ExplanationService` only returns `Explained` when citations are valid |
 | `DEFERRED_DESTINATION` | Claiming the crowded destination was moved later | Only when the destination's name and a deferral phrase sit in the **same sentence** |
@@ -270,19 +270,81 @@ Each one is a claim the policy documents (`decisions/keep-llm-out-of-ranking.md`
 
 ## 🚀 Getting Started
 
-### Requirements
+### Requirements and free local checks
 
-- JDK 21+ (the Gradle toolchain fetches it for you)
-- API keys — only for evaluation runs, never for building or testing
+- Install **JDK 21** and point `JAVA_HOME` at it. The committed wrapper uses **Gradle 9.1.0**; no global Gradle is needed. The project selects a JDK 21 toolchain (Foojay can download it if absent, which requires network access).
+- Use **Node.js 22.12+ in the 22.x line and pnpm 10**, matching the CI major versions. The locked Vite test dependency requires Node 20.19+ or 22.12+, so Next.js's own Node 20.9 minimum is insufficient for the whole frontend toolchain. Use the committed `frontend/pnpm-lock.yaml`.
+- Build/test commands need **no provider keys, Hanjeok backend, database, retrieval service or Neo4j**. Initial dependency/toolchain installation may use the network; tests use fakes and loopback HTTP, not external model APIs.
 
-### Build · Test
+From the repository root:
 
 ```bash
-./gradlew build   # compile + unit tests
-./gradlew test    # unit tests only
+./gradlew build                # compile + JVM tests + jar
+./gradlew test                 # JVM tests only; does not execute eval
+cd frontend
+pnpm install --frozen-lockfile
+pnpm typecheck
+pnpm test
+pnpm build                    # succeeds without a running backend
 ```
 
-Unit tests never touch the network. A fake stands in for `ExplanationProvider`, and the request-shape tests intercept the actual request bytes going out to a loopback endpoint instead of making a call (both the anthropic and the OpenAI-compatible path).
+### Local server and frontend quickstart
+
+This repository contains the agent and its UI, **not the Hanjeok backend**. For real course facts, run a compatible backend separately (for example on port 8081) or use an accessible one with an existing course UUID. `HANJEOK_BASE_URL` is its origin/base URL, without `/api/v1`. The agent reads `GET /api/v1/courses/{uuid}`, then the destination's `/api/v1/attractions/{id}/congestion?date=…` and `/alternatives?date=…&radius=15`, expecting the `success`/`data` envelope. See [`HanjeokClient.kt`](server/src/main/kotlin/com/hermes/facts/HanjeokClient.kt). Fixture JSON is for tests; `bootRun` does not serve a fixture backend. The agent has no database of its own. Keep retrieval at the default `FULL`; Python/Neo4j are only needed for the separate opt-in retrieval work.
+
+In terminal 1, at the repository root, set `OPENAI_API_KEY` securely in the shell environment before running the following **model-enabled** server. Never put keys in frontend files:
+
+```bash
+HANJEOK_BASE_URL=http://localhost:8081 \
+HERMES_LLM_PROVIDER=openai HERMES_LLM_MODEL=gpt-4o \
+  ./gradlew bootRun
+```
+
+Use your actual backend address. The server listens on `http://localhost:8080`; override with `SERVER_PORT` for `bootRun`. `PORT` is consumed by the Docker entrypoint, not by `bootRun`.
+
+| Local server variable | Requirement / default |
+| --- | --- |
+| `HANJEOK_BASE_URL` | Required; no default. Reachability is needed for facts, not checked at startup/health. |
+| `HERMES_LLM_PROVIDER` / `HERMES_LLM_MODEL` | Defaults: `anthropic` / `claude-opus-5`; the command explicitly selects `openai` / `gpt-4o`. These are configuration values, not a promise of provider/model availability. |
+| `OPENAI_API_KEY` / `OPENROUTER_API_KEY` | Required for the corresponding provider; missing/blank stops startup. For OpenRouter also set a compatible `HERMES_LLM_MODEL`. |
+| `ANTHROPIC_API_KEY` or `ANTHROPIC_AUTH_TOKEN` | Anthropic credentials; without either the server can start but health is DOWN. |
+| `HERMES_CORS_ALLOWED_ORIGINS` | Default `http://localhost:3000`; update for a different browser origin/port. |
+| `HERMES_RETRIEVAL_MODE` | Default `FULL`; no retrieval service required. |
+| `HERMES_DEMO_COURSES` | Optional `uuid\|label, uuid\|label`; does not create or seed courses. |
+
+`bootRun` does **not** load the repository-root `.env`. Export server variables in the shell. Only the Gradle `eval` and `demoReachability` tasks load that root file. Server `HERMES_LLM_MODEL` and harness `OPENAI_MODEL`/`ANTHROPIC_MODEL`/`OPENROUTER_MODEL` are different settings.
+
+In terminal 2, at the repository root:
+
+```bash
+cd frontend
+pnpm install --frozen-lockfile
+cp .env.example .env.local     # local ignored file; contains only the agent URL
+pnpm dev
+```
+
+Open `http://localhost:3000/ko/evidence` (or `/en/evidence`) to inspect the bundle. `.env.local` sets `NEXT_PUBLIC_AGENT_BASE_URL=http://localhost:8080`, also the code default. This URL is public and is embedded at frontend build time; set it before `pnpm build`, rebuild after changing it, and restart the dev server after env changes. For a local production build use `pnpm build` then `pnpm start`.
+
+**Cost boundary:** `GET /agent/context`, `/agent/context/{path}`, `/agent/provenance` and `/actuator/health` do not call an LLM. `GET /agent/facts/{uuid}` calls the Hanjeok backend but not a model. Health UP checks bundle integrity and credential presence, not whether the key works, a model exists or the backend is reachable. Opening a valid `/{lang}/course/{uuid}` page automatically calls `POST /agent/explain`; a cache miss can spend provider tokens. ASK/streaming ASK also call the model, and tool/repair rounds can add calls. OpenRouter free-tier names do not guarantee free access or availability. `eval` and an optional `JUDGE_MODEL` also make real external calls; they are not part of the free checks above.
+
+For **keyless evidence-only startup**, instead of the model-enabled command use this at the repository root. The loopback backend address may be unreachable for this limited check; do not open course pages or send EXPLAIN/ASK requests:
+
+```bash
+env -u ANTHROPIC_API_KEY -u ANTHROPIC_AUTH_TOKEN \
+  HANJEOK_BASE_URL=http://127.0.0.1:8081 \
+  HERMES_LLM_PROVIDER=anthropic HERMES_RETRIEVAL_MODE=FULL ./gradlew bootRun
+# In another terminal:
+curl http://localhost:8080/agent/context
+curl http://localhost:8080/actuator/health   # HTTP 503 / DOWN is expected without credentials
+```
+
+This proves startup and evidence loading only. It does not prove a real backend or model response. Cloud deployment remains a separate procedure in [`docs/deploy.md`](docs/deploy.md).
+
+### What was executed for this update
+
+On macOS ARM64 with JDK 21.0.2, Node 22.23.2 and pnpm 10.17.0: `./gradlew build` passed 355 JVM tests (56 suites), including 16 added ordinal regression cases; `offlineContextEval` passed 29 fixtures/58 scripted rows with zero paid calls. `pnpm typecheck` and all 87 frontend tests passed (an existing React `act(...)` warning remains). Keyless `bootRun` served 9 documents/24,703 bytes, provenance and a document with HTTP 200; health was the expected HTTP 503/DOWN. `SERVER_PORT=18080` was also checked on the built jar. `pnpm dev` served both evidence languages with HTTP 200.
+
+Default `pnpm build` failed here when Turbopack's CSS processing could not bind a local socket (`Operation not permitted`), including a retry with expanded permissions. The supported fallback `pnpm build --webpack` passed. No build script was changed. The server/frontend configuration and backend contract were inspected; **real backend reachability, provider credentials/model availability and generated answers were not exercised**. This is local verification, not new Linux retrieval validation or a production rollout.
 
 ### Run the evaluation
 
@@ -312,10 +374,11 @@ That last form matters. The fixture is one shape of one course, and measuring a 
 | `OPENROUTER_API_KEY` | the `openrouter` provider | — |
 | `OPENROUTER_MODEL` | the `openrouter` provider | none — **you must name one.** The old default, `nvidia/nemotron-nano-9b-v2:free`, was withdrawn upstream and now 404s |
 | `OPENAI_API_KEY` | the `openai` provider, and the quality judge | — |
-| `OPENAI_MODEL` | the `openai` provider | `gpt-4o-mini` |
+| `OPENAI_MODEL` | the evaluation `openai` provider | `gpt-4o-mini` |
+| `ANTHROPIC_MODEL` | the evaluation `anthropic` provider | `claude-opus-5` |
 | `JUDGE_MODEL` | the quality judge — **only runs when set** | none (no judging) |
 
-Put the keys in a `.env` at the repository root (git-ignored) or export them. If `.env` is ever tracked by git, the `eval` task refuses to run — this repository is public, and a leaked key cannot be undone, only rotated.
+For evaluation, put the keys in a `.env` at the repository root (git-ignored) or export them. If `.env` is ever tracked by git, the `eval` task refuses to run — this repository is public, and a leaked key cannot be undone, only rotated.
 
 > ⚠️ **The evaluation calls real APIs.** It costs money and its results are non-deterministic. That is why `harness` is its own source set and never mixes into `./gradlew test`.
 

@@ -48,7 +48,8 @@ class DeployDocumentationTest {
         val known = referenced + setOf(
             "ANTHROPIC_API_KEY", "ANTHROPIC_AUTH_TOKEN",
             "OPENAI_API_KEY", "OPENROUTER_API_KEY",
-            "PORT",
+            "PORT", // Docker entrypoint
+            "SERVER_PORT", // Spring Boot server.port 환경 바인딩 (로컬 bootRun)
         )
 
         assertThat(documented.toList()).isSubsetOf(known)

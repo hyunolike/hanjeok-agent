@@ -6,10 +6,26 @@
 승인이 필요한 행위다. 저장소에 있는 것은 그 승인이 떨어지면 그대로 도는 산출물이다 —
 `Dockerfile`, `.github/workflows/build.yml`, 그리고 이 문서.
 
+## 먼저 로컬에서 실행하기
+
+JDK 21·Node.js 22.12+ (22.x)·pnpm 10 준비, 무료 빌드/테스트, `bootRun`, frontend
+`.env.local`/`pnpm dev`와 두 서버의 연결은 [README 시작하기](../README.ko.md#-시작하기)에
+한곳에 정리했습니다([English](../README.md#-getting-started)). 아래 클라우드 명령은
+로컬 quickstart에 필요하지 않습니다.
+
+에이전트 자체 DB는 없지만 실제 코스에는 별도 한적 백엔드와 기존 UUID가 필요합니다.
+기본 FULL 실행에는 retrieval/Python/Neo4j가 필요 없습니다. 키 없는 근거 화면 확인은
+실제 facts·모델 연결 검증과 다릅니다. health UP도 키의 유효성이나 백엔드 도달성을
+확인하지 않습니다. 코스를 열면 EXPLAIN이 자동 호출될 수 있으므로 모델 비용 경계를
+먼저 확인하세요.
+
 ## 환경 변수
 
-서버가 실제로 읽는 전부다. 이 목록이 `application.yml`과 어긋나면 배포가 조용히
-기본값으로 돈다.
+기본 FULL 서버의 환경 변수다. opt-in retrieval 변수는 아래 별도 절에 있다.
+`bootRun`은 루트 `.env`를 읽지 않으므로 셸 환경에 export한다. 루트 `.env`를 읽는
+Gradle 태스크는 `eval`과 `demoReachability`뿐이며, frontend는 별도의
+`frontend/.env.local`을 사용한다. 서버 모델은 `HERMES_LLM_MODEL`이고 평가 모델의
+`OPENAI_MODEL`/`ANTHROPIC_MODEL`/`OPENROUTER_MODEL`과 구분한다.
 
 | 변수 | 필수 | 기본값 | 설명 |
 | --- | --- | --- | --- |
@@ -17,11 +33,13 @@
 | `HERMES_LLM_PROVIDER` | 아니오 | `anthropic` | `anthropic` · `openai` · `openrouter`. 하네스 `./gradlew eval <이름>`과 같은 이름이다 |
 | `HERMES_LLM_MODEL` | 아니오 | `claude-opus-5` | 프로바이더에 맞는 모델 이름. **세 프로바이더 모두 이 값을 따른다** — 이전에는 anthropic 만 이 값을 무시하고 코드에 박힌 모델로 돌았다 |
 | `ANTHROPIC_API_KEY` | 조건부 | 없음 | `provider=anthropic`일 때. 없으면 서버는 뜨지만 `/actuator/health`가 DOWN |
+| `ANTHROPIC_AUTH_TOKEN` | 조건부 | 없음 | Anthropic SDK가 지원하는 대체 인증값. 키와 토큰이 모두 없으면 health DOWN |
 | `OPENAI_API_KEY` | 조건부 | 없음 | `provider=openai`일 때. 없으면 **기동이 멈춘다** |
 | `OPENROUTER_API_KEY` | 조건부 | 없음 | `provider=openrouter`일 때. 없으면 기동이 멈춘다 |
 | `HERMES_CORS_ALLOWED_ORIGINS` | **예(운영)** | `http://localhost:3000` | Vercel 도메인. 빠뜨리면 화면은 열리는데 모든 요청이 막힌다 |
 | `HERMES_DEMO_COURSES` | 아니오 | 비어 있음 | `uuid\|라벨, uuid\|라벨`. `demoReachability` 태스크가 쓴다 |
-| `PORT` | 아니오 | `8080` | Cloud Run이 준다 |
+| `PORT` | 아니오 | `8080` | Cloud Run/Docker entrypoint가 `-Dserver.port`로 전달. `bootRun`에서는 읽지 않음 |
+| `SERVER_PORT` | 아니오 | `8080` | 로컬 `bootRun` 포트 변경용 Spring Boot 설정. Docker는 entrypoint의 `PORT`가 우선 |
 
 > **키를 이미지에 굽지 않는다.** `.dockerignore`가 `.env`를 막지만, 그건 마지막 방어선이지
 > 첫 번째가 아니다. 키는 Secret Manager에서 환경 변수로 주입한다.
@@ -37,8 +55,13 @@
 근거와 한계는 위키 `decisions/choose-explanation-model.md`.
 
 ```bash
-./gradlew eval --args="openai 5"   # 띄우려는 조합을 먼저 잰다
+OPENAI_MODEL=gpt-4o ./gradlew eval --args="openai 5"   # 실제 API 호출/비용, 로컬 무료 검사에 포함되지 않음
 ```
+
+루트 `.env`가 있으면 그 파일의 값이 평가 환경을 덮어쓰므로 `OPENAI_MODEL`도 확인한다.
+위 명령은 서버의 `HERMES_LLM_MODEL`을 사용하지 않는다. `JUDGE_MODEL`을 설정하면
+추가 LLM 판정 호출도 발생한다. OpenRouter 무료 티어도 모델 가용성·요금·할당량에
+따르며 무료 실행을 보증하지 않는다.
 
 ## Cloud Run
 

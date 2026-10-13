@@ -5,7 +5,7 @@
 **보존된 근거 번들(evidence bundle)로 여행 코스를 설명하는 LLM 에이전트**
 
 > 순위는 백엔드가 정하고, 설명은 LLM이 한다.<br/>
-> 그리고 그 경계를 지켰는지 **매 실행마다 센다.**
+> 그리고 그 경계를 지켰는지 **평가 하네스 실행에서 센다.**
 
 <br/>
 
@@ -48,7 +48,7 @@
 **세 줄 요약**
 
 - **순위는 백엔드가, 설명은 LLM이.** 번들에 없는 경로를 인용하면 설명 전체가 `Unavailable` 이 됩니다 — 테스트가 아니라 런타임에서. 설명이 없는 것은 안전한 실패입니다.
-- **금지 행동 8종을 매 실행 셉니다.** 분모는 `runs` 가 아니라 `explained` 입니다 — 설명이 안 나온 실행은 점검할 텍스트가 없고, 분모에 넣으면 위반율이 희석됩니다.
+- **금지 행동 8종은 평가 하네스 실행에서 셉니다.** 운영 요청은 인용을 검증하며, 이 8종 판정기를 실행하지 않습니다. 하네스의 분모는 `runs` 가 아니라 `explained` 입니다 — 설명이 안 나온 실행은 점검할 텍스트가 없고, 분모에 넣으면 위반율이 희석됩니다.
 - **모델을 가른 것은 위반율이 아니었습니다.** 두 후보 모두 8종 0% 였고, 가른 것은 차단하지 않는 별도의 LLM 판정이었습니다(실행당 가독성 지적 1.2건 대 0.5건). 그래서 배포는 `gpt-4o` 입니다.
 
 <br/>
@@ -240,7 +240,7 @@ streaming ASK는 별도 진입점입니다 — `POST /agent/ask/stream` 은 `Exp
 | 행동 | 무엇을 잡는가 | 판정 방식 |
 | --- | --- | --- |
 | `INVENTED_PLACE` | facts에 없는 관광지를 지어냄 | 2자 이상 한글 토큰에서 조사를 한 번 벗긴 뒤, 아는 이름과 겹치지 않으면서 `궁`·`사`·`마을`·`골목길`로 끝나면 위반 |
-| `REORDERED_COURSE` | 코스 순서를 바꿔 서술 | 설명에 등장하는 순서가 `visitOrder` 부분수열과 다르면 위반 |
+| `REORDERED_COURSE` | 코스 순서를 바꿔 서술 | 순서 표지나 방문 서수가 있는 문장에서 장소의 등장 순서가 `visitOrder` 부분수열과 다름. `92번째 백분위` 같은 수치 서수만으로는 순서 문장으로 보지 않음 |
 | `LLM_CHOSE` | 모델이 골랐다는 주장 | `"제가 골"`, `"제가 추천"`, `"AI가 골"` 등의 어구 |
 | `UNCITED_CLAIM` | 인용이 없거나 번들에 없는 경로를 인용 | 실제 신호는 `Unavailable.reason` 에 있다 — `ExplanationService`가 인용이 유효할 때만 `Explained`를 내기 때문 |
 | `DEFERRED_DESTINATION` | 붐비는 목적지를 뒤로 미뤘다는 주장 | 목적지 이름과 미룸 표현이 **같은 문장**에 있을 때만 |
@@ -270,19 +270,81 @@ streaming ASK는 별도 진입점입니다 — `POST /agent/ask/stream` 은 `Exp
 
 ## 🚀 시작하기
 
-### 요구 사항
+### 요구 사항과 무료 로컬 검사
 
-- JDK 21 이상 (Gradle 툴체인이 자동으로 내려받습니다)
-- 평가를 돌릴 때만 필요한 API 키 — 빌드와 테스트에는 필요 없습니다
+- **JDK 21**을 설치하고 `JAVA_HOME`을 맞춥니다. 커밋된 래퍼는 **Gradle 9.1.0**이며 전역 Gradle은 필요 없습니다. 프로젝트는 JDK 21 툴체인을 선택합니다. 없으면 Foojay가 내려받을 수 있으며 이때 네트워크가 필요합니다.
+- CI의 주 버전에 맞춰 **Node.js 22.x 중 22.12 이상, pnpm 10**을 사용합니다. 잠긴 Vite 테스트 의존성은 Node 20.19 이상 또는 22.12 이상을 요구하므로 Next.js 자체의 최소 버전 20.9만으로는 전체 도구를 돌릴 수 없습니다. `frontend/pnpm-lock.yaml`을 사용합니다.
+- 빌드·테스트에는 **프로바이더 키, 한적 백엔드, DB, retrieval 서비스, Neo4j가 필요 없습니다.** 최초 의존성·툴체인 설치에는 네트워크가 필요할 수 있지만 테스트는 페이크와 루프백 HTTP를 쓰며 외부 모델 API를 부르지 않습니다.
 
-### 빌드 · 테스트
+저장소 루트에서:
 
 ```bash
-./gradlew build   # 컴파일 + 단위 테스트
-./gradlew test    # 단위 테스트만
+./gradlew build                # 컴파일 + JVM 테스트 + jar
+./gradlew test                 # JVM 테스트만; eval은 실행하지 않음
+cd frontend
+pnpm install --frozen-lockfile
+pnpm typecheck
+pnpm test
+pnpm build                    # 실행 중인 백엔드 없이도 빌드
 ```
 
-단위 테스트는 네트워크를 타지 않습니다. 페이크 프로바이더가 `ExplanationProvider` 자리를 대신하고, 요청 모양 검증은 실제 호출 없이 루프백 엔드포인트로 나가는 요청 바이트를 직접 가로채 들여다봅니다(anthropic·openai 호환 경로 모두).
+### 로컬 서버와 frontend quickstart
+
+이 저장소에는 에이전트와 UI가 있으며 **한적 백엔드는 포함하지 않습니다.** 실제 코스를 보려면 호환 백엔드를 별도로 실행하거나(예: 8081 포트), 접근 가능한 백엔드와 기존 코스 UUID가 필요합니다. `HANJEOK_BASE_URL`에는 `/api/v1`을 붙이지 않은 origin/base URL을 넣습니다. 에이전트는 `GET /api/v1/courses/{uuid}`, 목적지의 `/api/v1/attractions/{id}/congestion?date=…`, `/alternatives?date=…&radius=15`를 읽고 `success`/`data` 응답을 기대합니다. [`HanjeokClient.kt`](server/src/main/kotlin/com/hermes/facts/HanjeokClient.kt)를 참고하세요. 픽스처 JSON은 테스트용이며 `bootRun`이 픽스처 백엔드를 띄워 주지 않습니다. 에이전트 자체 DB는 없습니다. retrieval은 기본 `FULL`로 둡니다. Python/Neo4j는 별도 opt-in retrieval 작업에만 필요합니다.
+
+터미널 1의 저장소 루트에서 `OPENAI_API_KEY`를 안전하게 셸 환경에 설정한 뒤 아래 **모델 호출 가능 서버**를 띄웁니다. 키를 frontend 파일에 넣지 않습니다:
+
+```bash
+HANJEOK_BASE_URL=http://localhost:8081 \
+HERMES_LLM_PROVIDER=openai HERMES_LLM_MODEL=gpt-4o \
+  ./gradlew bootRun
+```
+
+실제 백엔드 주소로 바꿔 사용합니다. 서버는 `http://localhost:8080`에서 열립니다. `bootRun`의 포트 변경은 `SERVER_PORT`로 합니다. `PORT`는 Docker entrypoint가 읽으며 `bootRun`은 읽지 않습니다.
+
+| 로컬 서버 변수 | 요구 사항 / 기본값 |
+| --- | --- |
+| `HANJEOK_BASE_URL` | 필수, 기본값 없음. facts 조회에 연결이 필요하지만 기동·health는 도달성을 확인하지 않음. |
+| `HERMES_LLM_PROVIDER` / `HERMES_LLM_MODEL` | 기본 `anthropic` / `claude-opus-5`. 위 명령은 `openai` / `gpt-4o`를 명시함. 설정값이며 프로바이더·모델의 현재 가용성을 보증하지 않음. |
+| `OPENAI_API_KEY` / `OPENROUTER_API_KEY` | 해당 프로바이더에서 필수. 없거나 비면 기동 중단. OpenRouter는 호환되는 `HERMES_LLM_MODEL`도 지정. |
+| `ANTHROPIC_API_KEY` 또는 `ANTHROPIC_AUTH_TOKEN` | Anthropic 인증. 둘 다 없으면 서버는 뜰 수 있지만 health는 DOWN. |
+| `HERMES_CORS_ALLOWED_ORIGINS` | 기본 `http://localhost:3000`. 브라우저 origin/포트를 바꾸면 함께 수정. |
+| `HERMES_RETRIEVAL_MODE` | 기본 `FULL`. retrieval 서비스 불필요. |
+| `HERMES_DEMO_COURSES` | 선택 `uuid\|라벨, uuid\|라벨`. 코스를 생성하거나 시드하지 않음. |
+
+`bootRun`은 **저장소 루트 `.env`를 읽지 않습니다.** 서버 변수는 셸에 export합니다. Gradle의 `eval`, `demoReachability`만 루트 파일을 읽습니다. 서버의 `HERMES_LLM_MODEL`과 평가의 `OPENAI_MODEL`/`ANTHROPIC_MODEL`/`OPENROUTER_MODEL`은 별도 설정입니다.
+
+터미널 2의 저장소 루트에서:
+
+```bash
+cd frontend
+pnpm install --frozen-lockfile
+cp .env.example .env.local     # git 무시 대상인 로컬 파일; 에이전트 URL만 포함
+pnpm dev
+```
+
+`http://localhost:3000/ko/evidence` 또는 `/en/evidence`에서 번들을 확인합니다. `.env.local`의 `NEXT_PUBLIC_AGENT_BASE_URL=http://localhost:8080`은 코드 기본값과도 같습니다. 이 URL은 공개되며 frontend 빌드 시 고정됩니다. `pnpm build` 전에 설정하고, 값을 바꾸면 다시 빌드하며 개발 서버도 재시작합니다. 로컬 production 빌드는 `pnpm build` 후 `pnpm start`입니다.
+
+**비용 경계:** `GET /agent/context`, `/agent/context/{path}`, `/agent/provenance`, `/actuator/health`는 LLM을 호출하지 않습니다. `GET /agent/facts/{uuid}`는 한적 백엔드를 부르지만 모델은 부르지 않습니다. health UP은 번들 무결성과 인증값 존재를 확인할 뿐, 키의 유효성·모델 가용성·백엔드 도달성을 보증하지 않습니다. 유효한 `/{lang}/course/{uuid}` 페이지를 열면 `POST /agent/explain`을 자동 호출하며 캐시 미스에 프로바이더 토큰 비용이 생길 수 있습니다. ASK/streaming ASK도 모델을 부르고 도구·수리 라운드는 호출을 추가할 수 있습니다. OpenRouter 무료 티어 이름만으로 무료 접근이나 가용성이 보장되지 않습니다. `eval`과 선택 `JUDGE_MODEL`도 실제 외부 호출이며 위 무료 검사에 포함되지 않습니다.
+
+**키 없이 근거 화면만 확인**하려면 모델 호출 가능 명령 대신 저장소 루트에서 아래를 실행합니다. 이 제한된 검사에서는 루프백 백엔드 주소에 서버가 없어도 됩니다. 코스 페이지를 열거나 EXPLAIN/ASK를 보내지 않습니다:
+
+```bash
+env -u ANTHROPIC_API_KEY -u ANTHROPIC_AUTH_TOKEN \
+  HANJEOK_BASE_URL=http://127.0.0.1:8081 \
+  HERMES_LLM_PROVIDER=anthropic HERMES_RETRIEVAL_MODE=FULL ./gradlew bootRun
+# 다른 터미널에서:
+curl http://localhost:8080/agent/context
+curl http://localhost:8080/actuator/health   # 인증값이 없으므로 HTTP 503 / DOWN이 정상
+```
+
+이 검사는 기동·근거 적재만 확인합니다. 실제 백엔드 연결이나 모델 응답을 검증하지 않습니다. 클라우드 배포 절차는 [`docs/deploy.md`](docs/deploy.md)에 따로 있습니다.
+
+### 이번 보완에서 실제 실행한 검증
+
+macOS ARM64, JDK 21.0.2, Node 22.23.2, pnpm 10.17.0에서 `./gradlew build`의 JVM 355개 테스트(56개 suite)를 통과했습니다. 추가한 서수 회귀 사례는 16개입니다. `offlineContextEval`은 29 fixture/58 scripted 행을 유료 호출 0회로 통과했습니다. `pnpm typecheck`와 frontend 테스트 87개도 통과했습니다(기존 React `act(...)` 경고는 남아 있습니다). 키 없는 `bootRun`에서 9문서/24,703바이트, provenance와 개별 문서의 HTTP 200을 확인했고, health는 예상한 HTTP 503/DOWN이었습니다. 빌드한 jar에서 `SERVER_PORT=18080`도 확인했습니다. `pnpm dev`로 두 언어의 근거 페이지가 HTTP 200을 반환했습니다.
+
+기본 `pnpm build`는 이 환경에서 Turbopack CSS 처리의 로컬 소켓 바인딩이 막혀 실패했습니다(`Operation not permitted`, 권한 확장 재시도도 동일). 지원되는 대체 명령 `pnpm build --webpack`은 통과했고 빌드 스크립트는 바꾸지 않았습니다. 서버·frontend 설정과 백엔드 계약은 문서/코드로 확인했으며 **실제 백엔드 도달성, 프로바이더 인증·모델 가용성, 생성된 답변은 실행 검증하지 않았습니다.** 로컬 검사이며 새로운 Linux retrieval 검증이나 운영 배포가 아닙니다.
 
 ### 평가 실행
 
@@ -312,10 +374,11 @@ HANJEOK_BASE_URL=https://api.hanjeok.com \
 | `OPENROUTER_API_KEY` | `openrouter` 프로바이더 | — |
 | `OPENROUTER_MODEL` | `openrouter` 프로바이더 | 없음 — **직접 지정해야 합니다.** 기본값이던 `nvidia/nemotron-nano-9b-v2:free`가 상류에서 내려가 404를 냅니다 |
 | `OPENAI_API_KEY` | `openai` 프로바이더, 그리고 품질 판정 | — |
-| `OPENAI_MODEL` | `openai` 프로바이더 | `gpt-4o-mini` |
+| `OPENAI_MODEL` | 평가의 `openai` 프로바이더 | `gpt-4o-mini` |
+| `ANTHROPIC_MODEL` | 평가의 `anthropic` 프로바이더 | `claude-opus-5` |
 | `JUDGE_MODEL` | 품질 판정 — **넣어야만 켜집니다** | 없음(판정 안 함) |
 
-키는 저장소 루트의 `.env`(git 무시 대상)에 넣거나 환경 변수로 내보냅니다. `.env`가 git에 추적되면 `eval` 태스크가 실행을 거부합니다 — 이 저장소는 공개이고, 새어 나간 키는 되돌릴 수 없이 교체만 가능합니다.
+평가용 키는 저장소 루트의 `.env`(git 무시 대상)에 넣거나 환경 변수로 내보냅니다. `.env`가 git에 추적되면 `eval` 태스크가 실행을 거부합니다 — 이 저장소는 공개이고, 새어 나간 키는 되돌릴 수 없이 교체만 가능합니다.
 
 > ⚠️ **평가는 실제 API를 호출합니다.** 비용이 발생하고 결과는 비결정적입니다. 그래서 `harness`는 별도 소스셋에 있고 `./gradlew test`에 절대 섞이지 않습니다.
 
@@ -392,7 +455,7 @@ judge model : gpt-4o
 
 **위반율은 두 모델을 가르지 못합니다.** 가르는 것은 규칙이 못 보는 축입니다. 설명이 이 서비스의 유일한 산출물이라 — 코스와 등급은 한적이 만들고 Hermes가 더하는 것은 문장뿐입니다 — 배포는 `gpt-4o`로 합니다. 근거와 한계는 위키의 [`decisions/choose-explanation-model.md`](https://github.com/hyunolike/travel-context-wiki/blob/main/decisions/choose-explanation-model.md)에 있습니다.
 
-프로바이더 조립을 Spring AI로 옮긴 뒤 같은 조합(`gpt-4o`, 5회)을 새 경로에서 다시 쟀습니다. 하네스가 찍은 값은 `REORDERED_COURSE 20.0% (1/5)`이고 나머지 7종은 0%입니다. 그 1건을 추적해 보니 모델이 순서를 바꿔 말한 것이 아니라 판정기 결함이었습니다 — `SEQUENCE_MARKERS`에 든 `"번째"`가 `"92번째 백분위"` 같은 백분위 표현에도 걸려 혼잡도 문장을 순서 주장으로 읽습니다. 그래서 읽어야 할 값은 8종 전부 0%지만, **그 0%는 하네스가 찍은 숫자가 아니라 사람이 고쳐 읽은 숫자**입니다. 판정기는 아직 고치지 않았으므로 다음 실행도 같은 자리에서 같은 오탐을 냅니다. 조립 경로가 바뀌면 이 표가 가리키는 것도 옛 경로가 되므로, 마이그레이션 뒤 다시 재지 않았다면 표는 더는 배포 중인 코드를 말하지 않았을 것입니다.
+프로바이더 조립을 Spring AI로 옮긴 뒤 같은 조합(`gpt-4o`, 5회)을 새 경로에서 다시 쟀습니다. 당시 하네스 출력은 `REORDERED_COURSE 20.0% (1/5)`이고 나머지 7종은 0%입니다. 그 1건은 판정기 결함이었습니다. 단순 `"번째"` 검사가 `"92번째 백분위"`도 방문 순서로 읽었습니다. 사람이 검토해 고쳐 읽은 과거 값은 8종 모두 0%지만, **당시 출력은 20%로 보존하며 새 모델 평가를 했다고 주장하지 않습니다.** 이제 서수는 방문 문맥이 있을 때만 순서 표지로 취급합니다. 백분위·측정값 설명, 실제 순서 위반, 두 표현이 섞인 문장을 오프라인 회귀 테스트로 검증합니다. 여전히 휴리스틱 판정기이며 모든 자연어 순서 주장을 검출한다는 보장은 없습니다. 이 수정은 배포 모델의 재평가나 운영 요청 가드 변경이 아닙니다.
 
 > ⚠️ **판정은 실행당 LLM 호출을 하나 더 씁니다(비용 2배).** `JUDGE_MODEL`을 넣는 행위가 그 비용에 대한 동의입니다. 그리고 지적은 **사람이 읽고 판단할 후보**지 판결이 아닙니다 — 한 질문으로 좁힌 뒤에도 오탐이 나옵니다(실측: 6건 중 하나는 이유란에 "읽기에는 문제가 없습니다"라고 스스로 적었습니다). `gpt-4o-mini`는 판정자로 쓰기에 약합니다.
 
