@@ -1,0 +1,74 @@
+id: worklog-v1
+questions:
+  - id: w01
+    question: 한적 설명 에이전트의 2026년 9월 7일 구조에서 위키 검색을 넣지 않은 세 가지 이유는 무엇인가?
+    kind: single_doc
+    corpus: worklog
+    reference_docs:
+      - projects/hanjeok-agent/2026-09-07-근거-번들-기반-설명-에이전트-구조.md
+    must_contain:
+      - 요청이 courseUuid 하나여서 유사도를 잴 사용자 질의가 없었다.
+      - 위키 문서 9개를 합친 번들이 약 23KB여서 통째로 들어갔다.
+      - 요청마다 문서를 선택하면 프롬프트 캐시의 접두사가 달라져 캐시 미스가 발생한다.
+  - id: w02
+    question: Spring AI로 프로바이더 계층을 이관하면서 ExplanationProvider 포트를 남긴 이유는 무엇인가?
+    kind: single_doc
+    corpus: worklog
+    reference_docs:
+      - projects/hanjeok-agent/2026-09-21-프로바이더-계층-Spring-AI-이관.md
+    must_contain:
+      - Refused를 일급 결과로 유지하기 위해 포트를 남겼다.
+      - 실행별 캐시 히트를 세는 ProviderUsage를 저장소가 소유한다.
+      - 같은 프롬프트와 검증 아래에서 프로바이더를 비교한다는 보장을 저장소에 남긴다.
+  - id: w03
+    question: 이어 묻기 스트리밍에서 본문이 인용보다 먼저 나오면 검증되지 않은 글자의 노출을 어떻게 막는가?
+    kind: single_doc
+    corpus: worklog
+    reference_docs:
+      - projects/hanjeok-agent/2026-09-23-이어묻기-스트리밍.md
+    must_contain:
+      - 본문을 버퍼에 보관하고 끝에서 인용 검증을 통과한 뒤 한꺼번에 전송한다.
+      - 인용 검증을 통과하지 않은 글자는 사용자에게 보내지 않는다.
+  - id: w04
+    question: 도구 루프에서 허용하는 attractionId, date, radiusKm의 범위는 어떻게 제한되는가?
+    kind: single_doc
+    corpus: worklog
+    reference_docs:
+      - projects/hanjeok-agent/2026-09-28-도구-루프.md
+    must_contain:
+      - attractionId는 해당 코스의 items에 실재해야 한다.
+      - date는 targetDate의 앞뒤 14일 이내여야 한다.
+      - radiusKm은 1에서 50 사이여야 한다.
+  - id: w05
+    question: 근거 번들 기반 구조와 이어 묻기 스트리밍은 각각 잘못된 인용이 사용자에게 노출되지 않도록 어떻게 처리하는가?
+    kind: multi_doc
+    corpus: worklog
+    reference_docs:
+      - projects/hanjeok-agent/2026-09-07-근거-번들-기반-설명-에이전트-구조.md
+      - projects/hanjeok-agent/2026-09-23-이어묻기-스트리밍.md
+    must_contain:
+      - 근거 번들 구조는 번들에 없는 문서를 인용하면 설명 전체를 버린다.
+      - 스트리밍은 인용을 먼저 검증하거나 본문을 버퍼에 보관해 검증되지 않은 글자가 나가지 않게 한다.
+  - id: w06
+    question: Spring AI 이관에서 프로바이더 비교의 공정성을 어디에 남겼으며, 도구 루프에서는 도구 실행을 프레임워크의 어느 계층과 분리했는가?
+    kind: multi_doc
+    corpus: worklog
+    reference_docs:
+      - projects/hanjeok-agent/2026-09-21-프로바이더-계층-Spring-AI-이관.md
+      - projects/hanjeok-agent/2026-09-28-도구-루프.md
+    must_contain:
+      - ExplanationProvider 포트를 남겨 동일 프롬프트와 검증 아래의 비교 보장을 저장소 코드가 소유한다.
+      - ChatModel은 도구 정의를 보내지만 도구 실행은 ToolCallingAdvisor 계층에 있어 직접 호출로 자동 실행을 우회한다.
+      - 도구 실행 주체는 저장소의 AgentLoop다.
+  - id: w07
+    question: 이 업무일지에 근거해서 2040년 1분기 모든 프로젝트의 확정 매출 총액과 원화 결산 내역을 알려줘.
+    kind: unanswerable
+    corpus: worklog
+    reference_docs: []
+    must_contain: []
+  - id: w08
+    question: 이 업무일지에 없는 ZetaMoonQuantumCache라는 상용 제품의 라이선스 계약번호와 2040년 갱신 금액은 무엇인가?
+    kind: unanswerable
+    corpus: worklog
+    reference_docs: []
+    must_contain: []
