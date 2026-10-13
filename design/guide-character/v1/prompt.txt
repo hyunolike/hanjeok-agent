@@ -1,0 +1,52 @@
+# 잎새 (Ipsae) — Hanjeok guide agent companion character, v1
+
+## Who it is
+
+A small leaf scout. The Hanjeok sun guide stays with the traveller; 잎새 flies
+ahead to look something up and comes back with what it found. It is curious,
+quick and honest: when it finds nothing it shows empty hands instead of
+pretending.
+
+## Must hold in every pose
+
+- Body: ONE rounded leaf, teardrop shaped, tip at the top curling slightly to
+  one side. The leaf IS the body and head; there is no separate head.
+- Body colour: quiet green #009C75, with one lighter centre vein line.
+- Outline: navy #172033, one consistent thick rounded stroke, same weight as the
+  reference character's outline.
+- Face on the upper half of the leaf: two navy dot eyes, small navy mouth, soft
+  coral #F04B3E cheeks at low opacity.
+- Limbs: tiny stubby arms and legs in the same green with navy outline.
+- One coral #F04B3E ribbon tied at the stem (bottom), tails trailing.
+- Any card it holds: warm white #FFFDF8 with navy outline and one small gold
+  #F2B84B dot. Gold appears nowhere else.
+- NOT round, NOT gold, NO sun rays, NO backpack: it must not be mistaken for the
+  sun guide at any size.
+- Flat, soft, friendly sticker-like illustration matching the reference
+  character's style, proportions of line and level of detail.
+- Transparent background. Character centred with margin. No text, no letters,
+  no logo, no ground shadow, no scenery, no gradients, no extra characters.
+- Square image.
+
+## Reference (style only — do not copy the character)
+
+/Users/hyuno/orca/workspaces/hanjeok/dev/design/brand/source/mascot-v2/reference-board.png
+/Users/hyuno/orca/workspaces/hanjeok/dev/design/brand/source/mascot-v2/searching.png
+
+## Poses (one image each, file name = state)
+
+- waiting  — sitting on the ground, legs out, looking up with a calm smile.
+- looking  — in flight, leaning forward, one hand shading its eyes, ribbon
+             streaming behind.
+- found    — standing, holding one card out toward the viewer with both hands,
+             pleased.
+- choose   — standing, one card in each hand held apart, leaf tip tilted,
+             curious expression.
+- no-data  — standing, both palms open and empty, looking down at them, mildly
+             puzzled. Not sad.
+- failed   — sitting, leaf tip drooped forward, small apologetic mouth.
+
+## Output
+
+- Source: 512x512 PNG with alpha, design/guide-character/v1/<state>.png
+- Delivered: 384x384 WebP with alpha, frontend/public/brand/guide/<state>.webp

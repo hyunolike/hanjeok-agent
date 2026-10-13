@@ -1,0 +1,29 @@
+{
+  "assetId": "guide-leaf-scout",
+  "version": "1.0.0",
+  "status": "draft",
+  "authoringMethod": "Codex built-in image generation, with identity-preserving pose edits; untouched generated PNG originals and Pillow size/format conversion.",
+  "aiExplorationUsed": true,
+  "aiExplorationTool": "image_gen.imagegen",
+  "aiExplorationPromptSummary": "design/guide-character/v1/prompt.txt를 바탕으로 잎새의 waiting을 먼저 생성하고 얼굴 위치와 볼 표현을 반복 수정했습니다. 두 기존 마스코트 이미지는 화풍 참고로만 사용했습니다. 선택한 waiting을 정체성과 크기 참고로 삼아 looking, found, choose, no-data, failed를 각각 생성했습니다. no-data의 표정과 no-data 및 failed의 얼굴 위치를 추가 수정했습니다. 모든 호출에서 실제 투명 배경을 요청했습니다.",
+  "sourceInputs": [
+    "/Users/hyuno/orca/workspaces/hanjeok/dev/design/brand/source/mascot-v2/reference-board.png",
+    "/Users/hyuno/orca/workspaces/hanjeok/dev/design/brand/source/mascot-v2/searching.png"
+  ],
+  "inputRights": "자체 서비스의 승인된 마스코트를 화풍 참고로만 사용",
+  "humanRedraw": false,
+  "humanRedrawNotes": "사람이 다시 그리지 않았습니다. 프로그래밍으로 캐릭터 형태를 그리거나 SVG 및 다운로드 이미지로 대체하지 않았습니다. Pillow는 기존 알파를 유지한 크기 조정과 PNG/WebP 인코딩에만 사용했습니다.",
+  "reviewer": null,
+  "reviewedAt": null,
+  "rightsReviewStatus": "pending",
+  "notes": [
+    "초안입니다. AI가 육안으로 포즈와 주요 제약을 확인했지만 인간의 디자인 승인 및 권리 검토는 아직 받지 않았습니다. generation-jobs.json의 visualReviewStatus는 요청대로 unreviewed입니다.",
+    "원본 PNG 6개는 도구 출력과 SHA-256이 동일한 무수정 사본입니다. 최종 PNG는 512x512, 납품 WebP는 384x384이며 실제 RGBA 투명도를 파일에서 확인했습니다. 흰색 또는 체커보드 사각형을 배경으로 넣지 않았습니다.",
+    "지정 HEX 값과 정확히 일치하지 않는 생성 색상, 미세한 색 변화와 질감이 남아 있습니다. 볼은 녹색 위 저투명도 코랄보다 옅은 분홍색 채움에 가깝습니다. 가운데 잎맥은 얇은 선보다 굵은 테이퍼 띠처럼 보입니다.",
+    "waiting의 위를 보는 시선, choose의 잎 끝 기울임, no-data의 손을 내려다보는 시선은 약하게 표현됩니다. failed의 사과 표정은 다소 슬프게 보입니다. 각 포즈에서 잎 윤곽과 얼굴 크기가 소폭 달라지므로 픽셀 단위로 완전히 같은 모델은 아닙니다.",
+    "리본은 여섯 포즈 모두 밑줄기에 있습니다. 카드와 금색 점은 found 및 choose에만 있으며 found의 카드 1개, choose의 카드 2개 각각에 점 1개입니다. 문자, 별도 캐릭터, 배낭, 햇살, 땅 그림자 또는 풍경은 관찰되지 않았습니다.",
+    "색 보정, 재드로잉, 개별 포즈 확대 또는 크롭 없이 원본 전체 정사각 캔버스를 축소했습니다. 크기와 여백은 원본 기준으로 보존했습니다.",
+    "generatedAt은 요청된 작업 날짜 2026-10-13으로 기록했습니다. 세션 도중 로컬 날짜가 2026-10-14로 넘어갔으며 이 값은 전체 배치에 지정한 날짜입니다.",
+    "도구가 자동 저장한 경로는 generation-jobs.json의 generatedFile에 그대로 기록했습니다. 해당 원본은 이동하거나 삭제하지 않았습니다. 읽기 전용 참고 저장소는 수정하지 않았고 커밋 또는 푸시는 하지 않았습니다."
+  ]
+}
