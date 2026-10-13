@@ -35,4 +35,10 @@ describe('layoutPath', () => {
     const dangling = { ...path, edges: [...path.edges, { from: 'hanjeok:place/999', to: 'hanjeok:place/101', kind: 'related' as const, rank: 1 }] }
     expect(layoutPath(dangling).edges).toHaveLength(path.edges.length)
   })
+
+  it('같은 열 안의 간선은 서로 다르게 휘어 겹치지 않는다', () => {
+    const ranked = layoutPath(path).edges.filter((e) => e.kind === 'alternative')
+    expect(new Set(ranked.map((e) => e.bend)).size).toBe(ranked.length)
+    expect(layoutPath(path).edges.filter((e) => e.kind === 'in_region').every((e) => e.bend === 0)).toBe(true)
+  })
 })

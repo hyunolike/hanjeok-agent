@@ -49,10 +49,10 @@ dependency between them.
 
 - [X] T021 [P] [US2] Deterministic layout for a path (start centred, related by rank, groups for region and documents) in `frontend/src/components/guide/path-layout.ts`, with tests on positions and order
 - [X] T022 [US2] `PathView` SVG and its equivalent list in `frontend/src/components/guide/PathView.tsx`, opened inline under the answer on `/[lang]/ask`; tests that every node and edge of the `path` event appears and nothing else
-- [ ] T023 [US2] `fetchPlaces`, `fetchPlace`, `fetchStatus` in `frontend/src/lib/guide.ts` with fixtures and tests
-- [ ] T024 [US2] `/[lang]/graph` page: from an answer, browsing by name, place panel, not-found; refresh time shown; tests per state
-- [ ] T025 [P] [US3] Fixture report and sample in `frontend/src/lib/guide-fixtures.ts`; `fetchEvalReport`, `fetchEvalSample` with tests
-- [ ] T026 [US3] `/[lang]/eval` page: provenance line, metric table with sample counts, "not scored" cells, forbidden behaviours, by-kind table, identical-inputs statement, limitations, sample view, no-report state; tests per state
+- [x] T023 [US2] `fetchPlaces`, `fetchPlace`, `fetchStatus` in `frontend/src/lib/guide.ts` with fixtures and tests
+- [x] T024 [US2] `/[lang]/graph` page: from an answer, browsing by name, place panel, not-found; refresh time shown; tests per state
+- [x] T025 [P] [US3] Fixture report and sample in `frontend/src/lib/guide-fixtures.ts`; `fetchEvalReport`, `fetchEvalSample` with tests
+- [x] T026 [US3] `/[lang]/eval` page: provenance line, metric table with sample counts, "not scored" cells, forbidden behaviours, by-kind table, identical-inputs statement, limitations, sample view, no-report state; tests per state
 
 **Checkpoint**: All four new screens work from fixtures at 360px and desktop width.
 

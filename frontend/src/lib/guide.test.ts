@@ -1,7 +1,14 @@
 import { describe, expect, it, vi } from 'vitest'
-import { askGuide, parseSseFrame } from './guide'
+import { askGuide, fetchEvalReport, fetchEvalSample, fetchPlace, fetchPlaces, fetchStatus, parseSseFrame } from './guide'
 import { DEMO_KEYS, RECORDED_STREAMS, type Frame } from './guide-fixtures'
-import { isTerminal, parseGuideFrame, type GuideEvent } from './guide-schema'
+import {
+  EVAL_KINDS,
+  EVAL_METRICS,
+  EVAL_STRATEGIES,
+  isTerminal,
+  parseGuideFrame,
+  type GuideEvent,
+} from './guide-schema'
 
 const BASE = 'http://guide.test'
 
@@ -112,5 +119,85 @@ describe('parseSseFrame', () => {
 
   it('여러 줄 data 를 잇는다', () => {
     expect(parseSseFrame('event: step\ndata: {"a":\ndata: 1}')).toEqual({ event: 'step', data: '{"a":\n1}' })
+  })
+})
+
+describe('한 번 읽어 오는 것들', () => {
+  const json = (body: unknown, status = 200) =>
+    vi.fn(async () => new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } }))
+
+  it('이름 찾기는 똑같은 이름을 앞세우고, 공백을 무시한다', async () => {
+    const exact = await fetchPlaces('은행나무길', { baseUrl: '' })
+    expect(exact.ok && exact.data.places.map((p) => p.place_id)).toEqual([140, 141])
+
+    const spaced = await fetchPlaces('솔내한옥', { baseUrl: '' })
+    expect(spaced.ok && spaced.data.places.map((p) => p.name)).toEqual(['솔내 한옥마을'])
+
+    const none = await fetchPlaces('없는곳', { baseUrl: '' })
+    expect(none.ok && none.data.places).toEqual([])
+  })
+
+  it('장소의 이웃은 순위 순서이고 혼잡도 값을 싣지 않는다', async () => {
+    const result = await fetchPlace(101, { baseUrl: '' })
+    expect(result.ok && result.data.related.map((r) => [r.rank, r.name])).toEqual([
+      [1, '솔내 한옥마을'],
+      [2, '물빛 서원'],
+      [3, '달맞이 숲길'],
+    ])
+    expect(JSON.stringify(result)).not.toMatch(/grade|concentration|혼잡도/)
+  })
+
+  it('없는 장소는 not_found 다', async () => {
+    expect(await fetchPlace(999, { baseUrl: '' })).toEqual({ ok: false, cause: 'not_found' })
+    expect(await fetchPlace(999, { baseUrl: BASE, fetchImpl: json({ cause: 'unknown_place' }, 404) })).toEqual({
+      ok: false,
+      cause: 'not_found',
+    })
+  })
+
+  it('서버 오류, 끊긴 연결, 계약에 어긋난 응답은 전부 unavailable 이고 던지지 않는다', async () => {
+    const unavailable = { ok: false, cause: 'unavailable' }
+    expect(await fetchStatus({ baseUrl: BASE, fetchImpl: json({}, 503) })).toEqual(unavailable)
+    expect(await fetchStatus({ baseUrl: BASE, fetchImpl: json({ ready: 'yes' }) })).toEqual(unavailable)
+    const broken = vi.fn(async () => {
+      throw new TypeError('network')
+    })
+    expect(await fetchEvalReport({ baseUrl: BASE, fetchImpl: broken })).toEqual(unavailable)
+  })
+
+  it('주소가 있으면 계약의 경로를 부른다', async () => {
+    const fetchImpl = json({ places: [], as_of: '2026-10-13T02:00:00Z' })
+    await fetchPlaces(' 가람 궁 ', { baseUrl: BASE, fetchImpl })
+    expect((fetchImpl.mock.calls[0] as unknown[])[0]).toBe(`${BASE}/guide/places?query=${encodeURIComponent('가람 궁')}`)
+  })
+
+  it('공개한 평가가 없으면 not_found 다', async () => {
+    expect(await fetchEvalReport({ baseUrl: '', empty: true })).toEqual({ ok: false, cause: 'not_found' })
+  })
+})
+
+describe('녹화한 평가 보고서', () => {
+  it('전체 점수의 문항 수는 종류별 문항 수의 합이다', async () => {
+    const result = await fetchEvalReport({ baseUrl: '' })
+    if (!result.ok) throw new Error('녹화본이 계약에 맞지 않는다')
+    for (const strategy of EVAL_STRATEGIES) {
+      const { metrics, by_kind, forbidden } = result.data.strategies[strategy]
+      for (const metric of EVAL_METRICS) {
+        const scored = EVAL_KINDS.reduce((sum, kind) => sum + by_kind[kind][metric].n, 0)
+        expect(metrics[metric].n, `${strategy} ${metric}`).toBe(scored)
+      }
+      for (const { runs } of Object.values(forbidden)) expect(runs).toBe(result.data.question_count)
+    }
+    expect(result.data.questions).toHaveLength(result.data.question_count)
+  })
+
+  it('목록에 있는 문항은 전부 열린다', async () => {
+    const report = await fetchEvalReport({ baseUrl: '' })
+    if (!report.ok) throw new Error('녹화본이 계약에 맞지 않는다')
+    for (const { question_id } of report.data.questions) {
+      const sample = await fetchEvalSample(report.data.report_id, question_id, { baseUrl: '' })
+      expect(sample.ok, question_id).toBe(true)
+    }
+    expect(await fetchEvalSample(report.data.report_id, 'q99', { baseUrl: '' })).toEqual({ ok: false, cause: 'not_found' })
   })
 })

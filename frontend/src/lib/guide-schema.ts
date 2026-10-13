@@ -156,3 +156,183 @@ export function parseGuideFrame(name: string, data: unknown): GuideEvent {
       throw new Error(`unknown guide event: ${name}`)
   }
 }
+
+// ---- 질문 없이 둘러보기 (`GET /guide/places`, `/guide/places/{id}`, `/guide/status`) ----
+
+export const placeHitSchema = z.object({
+  place_id: z.number().int(),
+  name: z.string().min(1),
+  region: z.string(),
+  has_congestion_data: z.boolean(),
+})
+
+export const placesResponseSchema = z.object({
+  places: z.array(placeHitSchema).max(10),
+  as_of: z.string(),
+})
+
+/**
+ * 장소 하나와 그 이웃. **혼잡도 값은 여기에 없다** — 날짜에 묶인 값이라 질문으로만
+ * 가져온다. 있는 것은 "예보 대상인가" 하나뿐이다.
+ */
+export const placeDetailSchema = z.object({
+  place: placeHitSchema.extend({
+    category: z.string().nullish(),
+    overview: z.string().nullish(),
+  }),
+  /** 한적이 정한 순위 순서. 화면이 다시 정렬하지 않는다. */
+  related: z.array(
+    z.object({
+      place_id: z.number().int(),
+      name: z.string().min(1),
+      region: z.string(),
+      rank: z.number().int().positive(),
+    }),
+  ),
+  events: z.array(
+    z.object({ id: z.string().min(1), name: z.string().min(1), start_date: z.string(), end_date: z.string() }),
+  ),
+  as_of: z.string(),
+})
+
+export const statusSchema = z.object({
+  ready: z.boolean(),
+  as_of: z.object({ export: z.string().nullable(), wiki: z.string().nullable() }),
+  counts: z.object({
+    places: z.number().int().nonnegative(),
+    related: z.number().int().nonnegative(),
+    events: z.number().int().nonnegative(),
+    regions: z.number().int().nonnegative(),
+  }),
+  generation: z.string().nullable(),
+  limits: z.object({ per_visitor: z.number().int().positive(), per_day: z.number().int().positive() }),
+})
+
+export type PlaceHit = z.infer<typeof placeHitSchema>
+export type PlacesResponse = z.infer<typeof placesResponseSchema>
+export type PlaceDetail = z.infer<typeof placeDetailSchema>
+export type GuideStatus = z.infer<typeof statusSchema>
+
+// ---- 평가 보고서 (`GET /guide/eval/*`) ----
+
+export const EVAL_STRATEGIES = ['vector', 'graph'] as const
+export type EvalStrategy = (typeof EVAL_STRATEGIES)[number]
+
+/** 앞의 넷은 판정 모델이 매긴 점수, 뒤의 둘은 가져온 레코드 id 를 정답 id 와 맞춰 센 것이다. */
+export const EVAL_METRICS = [
+  'faithfulness',
+  'answer_relevancy',
+  'context_precision',
+  'context_recall',
+  'id_precision',
+  'id_recall',
+] as const
+export type EvalMetric = (typeof EVAL_METRICS)[number]
+
+export const EVAL_KINDS = [
+  'single_place',
+  'alternatives',
+  'date_comparison',
+  'policy',
+  'multi_place',
+  'unsupported',
+] as const
+export type EvalKind = (typeof EVAL_KINDS)[number]
+
+export const FORBIDDEN_BEHAVIOURS = [
+  'INVENTED_PLACE',
+  'ALTERED_ORDER',
+  'LLM_CHOSE',
+  'UNCITED_CLAIM',
+  'GRADE_MISLABEL',
+  'NO_DATA_AS_QUIET',
+] as const
+export type ForbiddenBehaviour = (typeof FORBIDDEN_BEHAVIOURS)[number]
+
+/**
+ * 점수 하나. `value` 가 `null` 이면 "매기지 못함"이지 0 이 아니다 — 그래서 숫자와
+ * 따로 `status` 와 `reason` 이 있고, `n`(매긴 수)과 `total`(대상 수)이 항상 붙는다.
+ */
+export const aggregateSchema = z
+  .object({
+    value: z.number().min(0).max(1).nullable(),
+    n: z.number().int().nonnegative(),
+    total: z.number().int().nonnegative(),
+    status: z.enum(['ok', 'unavailable', 'not_applicable']),
+    reason: z.string().nullable().default(null),
+  })
+  .refine((a) => a.n <= a.total, 'n 이 total 보다 클 수 없다')
+  .refine((a) => (a.status === 'ok') === (a.value !== null), '값이 있으면 ok, 없으면 ok 가 아니다')
+
+const metricsSchema = z.record(z.enum(EVAL_METRICS), aggregateSchema)
+
+export const strategyReportSchema = z.object({
+  attempted: z.number().int().nonnegative(),
+  outcomes: z.record(z.string(), z.number().int().nonnegative()),
+  metrics: metricsSchema,
+  by_kind: z.record(z.enum(EVAL_KINDS), metricsSchema),
+  forbidden: z.record(
+    z.enum(FORBIDDEN_BEHAVIOURS),
+    z.object({ runs: z.number().int().nonnegative(), occurrences: z.number().int().nonnegative() }),
+  ),
+  abstention: z.object({
+    unanswerable_correct: z.number().int().nonnegative(),
+    unanswerable_total: z.number().int().nonnegative(),
+  }),
+  answer_usage: z.object({
+    model_calls: z.number().nonnegative(),
+    prompt_tokens: z.number().nonnegative(),
+    completion_tokens: z.number().nonnegative(),
+    elapsed_ms: z.number().nonnegative(),
+  }),
+})
+
+export const evalReportSchema = z.object({
+  report_id: z.string().min(1),
+  status: z.string(),
+  timestamp: z.string(),
+  question_set: z.string(),
+  question_set_revision: z.string(),
+  question_count: z.number().int().nonnegative(),
+  answer_model: z.string(),
+  judge_model: z.string(),
+  generation: z.string(),
+  export_sha256: z.string(),
+  export_as_of: z.string(),
+  live_recorded_at: z.string(),
+  strategies: z.object({ vector: strategyReportSchema, graph: strategyReportSchema }),
+  questions: z.array(z.object({ question_id: z.string().min(1), kind: z.enum(EVAL_KINDS), question: z.string() })),
+  limitations: z.array(z.string()),
+})
+
+export const evalArmSchema = z.object({
+  outcome: z.string(),
+  cause: z.string().nullable(),
+  answer: z.string().nullable(),
+  citations: z.array(z.string()),
+  steps: z.array(stepSchema),
+  passages: z.array(z.object({ id: z.string().min(1), text: z.string() })),
+  scores: z.record(
+    z.enum(EVAL_METRICS),
+    z.object({
+      value: z.number().min(0).max(1).nullable(),
+      status: z.enum(['ok', 'unavailable', 'not_applicable']),
+      reason: z.string().nullable().default(null),
+    }),
+  ),
+  forbidden: z.array(z.enum(FORBIDDEN_BEHAVIOURS)),
+})
+
+export const evalSampleSchema = z.object({
+  report_id: z.string().min(1),
+  question_id: z.string().min(1),
+  kind: z.enum(EVAL_KINDS),
+  question: z.string().min(1),
+  strategies: z.object({ vector: evalArmSchema, graph: evalArmSchema }),
+})
+
+export type Aggregate = z.infer<typeof aggregateSchema>
+export type StrategyReport = z.infer<typeof strategyReportSchema>
+export type EvalReport = z.infer<typeof evalReportSchema>
+export type EvalArm = z.infer<typeof evalArmSchema>
+export type EvalSample = z.infer<typeof evalSampleSchema>

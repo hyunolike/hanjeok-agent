@@ -10,7 +10,8 @@ const TOP = 32
 const COLUMN_X = { document: 16, place: 266, event: 266, region: 516 } as const
 
 export type PlacedNode = PathNode & { x: number; y: number; rank: number | null; isStart: boolean }
-export type PlacedEdge = PathEdge & { x1: number; y1: number; x2: number; y2: number }
+/** `bend` 는 같은 열 안의 간선이 왼쪽으로 휘는 정도다. 열을 건너는 간선은 0 이고 직선이다. */
+export type PlacedEdge = PathEdge & { x1: number; y1: number; x2: number; y2: number; bend: number }
 export type PathLayout = { nodes: PlacedNode[]; edges: PlacedEdge[]; height: number }
 
 /**
@@ -73,6 +74,9 @@ export function layoutPath(path: GuidePath): PathLayout {
       y1: from.y + NODE_HEIGHT / 2,
       x2: sameColumn ? to.x : from.x < to.x ? to.x : to.x + NODE_WIDTH,
       y2: to.y + NODE_HEIGHT / 2,
+      // 출발점에서 1·2·3순위로 가는 선이 전부 같은 세로선 위에 놓이면 하나로 보인다.
+      // 멀리 가는 선일수록 더 크게 휘게 해서 서로 떨어뜨린다.
+      bend: sameColumn ? Math.min(60, 18 + 14 * Math.round(Math.abs(to.y - from.y) / ROW)) : 0,
     })
   }
 

@@ -36,12 +36,18 @@ export default async function RootLayout({
     <html lang={lang}>
       <body className="min-h-screen antialiased">
         <header className="border-b border-black/10 dark:border-white/10">
-          <nav className="mx-auto flex max-w-3xl items-baseline gap-6 px-6 py-4 text-sm">
+          <nav className="mx-auto flex max-w-3xl flex-wrap items-baseline gap-x-6 gap-y-2 px-6 py-4 text-sm">
             <Link href={`/${lang}`} className="font-semibold">
               {t.nav.brand}
             </Link>
             <Link href={`/${lang}/ask`} className="opacity-70 hover:opacity-100">
               {t.guide.navLabel}
+            </Link>
+            <Link href={`/${lang}/graph`} className="opacity-70 hover:opacity-100">
+              {t.graph.navLabel}
+            </Link>
+            <Link href={`/${lang}/eval`} className="opacity-70 hover:opacity-100">
+              {t.evalPage.navLabel}
             </Link>
             <Link href={`/${lang}/evidence`} className="opacity-70 hover:opacity-100">
               {t.nav.evidence}

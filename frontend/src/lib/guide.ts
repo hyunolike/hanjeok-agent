@@ -5,7 +5,29 @@ import {
   type DemoKey,
   type Frame,
 } from './guide-fixtures'
-import { isTerminal, parseGuideFrame, usageLimitSchema, type GuideEvent } from './guide-schema'
+import {
+  RECORDED_EVAL_REPORT,
+  RECORDED_STATUS,
+  recordedEvalSample,
+  recordedPlace,
+  searchRecordedPlaces,
+} from './guide-data-fixtures'
+import {
+  evalReportSchema,
+  evalSampleSchema,
+  isTerminal,
+  parseGuideFrame,
+  placeDetailSchema,
+  placesResponseSchema,
+  statusSchema,
+  usageLimitSchema,
+  type EvalReport,
+  type EvalSample,
+  type GuideEvent,
+  type GuideStatus,
+  type PlaceDetail,
+  type PlacesResponse,
+} from './guide-schema'
 
 /**
  * 안내 에이전트 서버 주소. **비어 있으면 녹화본을 재생한다.**
@@ -137,4 +159,79 @@ export function parseSseFrame(raw: string): { event: string; data: string } | nu
     else if (line.startsWith('data:')) data.push(line.slice(5).replace(/^ /, ''))
   }
   return event && data.length > 0 ? { event, data: data.join('\n') } : null
+}
+
+/**
+ * 한 번 읽어 오는 것들의 결과. **던지지 않는다** — 화면이 다룰 경우는 셋뿐이다:
+ * 받았다, 그런 것이 없다(404), 지금은 못 받는다(그 밖의 전부).
+ *
+ * 계약에 어긋난 응답도 "못 받는다"로 간다. 모양이 틀린 보고서를 반쯤 그리는 것보다
+ * 없다고 말하는 편이 낫다.
+ */
+export type Loaded<T> = { ok: true; data: T } | { ok: false; cause: 'not_found' | 'unavailable' }
+
+export type ReadOptions = { baseUrl?: string; fetchImpl?: typeof fetch; signal?: AbortSignal }
+
+const found = <T>(data: T | null): Loaded<T> => (data === null ? { ok: false, cause: 'not_found' } : { ok: true, data })
+
+async function read<T>(
+  path: string,
+  schema: { parse: (data: unknown) => T },
+  recorded: () => T | null,
+  options: ReadOptions,
+): Promise<Loaded<T>> {
+  const baseUrl = options.baseUrl ?? GUIDE_BASE_URL
+  try {
+    // 녹화본도 같은 스키마를 지나게 한다. 녹화본이 계약에서 벗어나면 여기서 드러난다.
+    if (baseUrl === '') {
+      const data = recorded()
+      return found(data === null ? null : schema.parse(data))
+    }
+    const response = await (options.fetchImpl ?? fetch)(`${baseUrl}${path}`, {
+      headers: { Accept: 'application/json' },
+      cache: 'no-store',
+      signal: options.signal,
+    })
+    if (response.status === 404) return { ok: false, cause: 'not_found' }
+    if (!response.ok) return { ok: false, cause: 'unavailable' }
+    return { ok: true, data: schema.parse(await response.json()) }
+  } catch {
+    return { ok: false, cause: 'unavailable' }
+  }
+}
+
+/** 이름으로 장소 찾기. 순서는 서버가 정한 그대로다. */
+export function fetchPlaces(query: string, options: ReadOptions = {}): Promise<Loaded<PlacesResponse>> {
+  return read(
+    `/guide/places?query=${encodeURIComponent(query.trim())}`,
+    placesResponseSchema,
+    () => searchRecordedPlaces(query),
+    options,
+  )
+}
+
+export function fetchPlace(placeId: number, options: ReadOptions = {}): Promise<Loaded<PlaceDetail>> {
+  return read(`/guide/places/${placeId}`, placeDetailSchema, () => recordedPlace(placeId), options)
+}
+
+export function fetchStatus(options: ReadOptions = {}): Promise<Loaded<GuideStatus>> {
+  return read('/guide/status', statusSchema, () => RECORDED_STATUS, options)
+}
+
+/** 가장 최근에 공개한 평가. `empty` 는 "공개한 평가가 없다"를 녹화본으로 보여 줄 때만 쓴다. */
+export function fetchEvalReport(options: ReadOptions & { empty?: boolean } = {}): Promise<Loaded<EvalReport>> {
+  return read('/guide/eval/latest', evalReportSchema, () => (options.empty ? null : RECORDED_EVAL_REPORT), options)
+}
+
+export function fetchEvalSample(
+  reportId: string,
+  questionId: string,
+  options: ReadOptions = {},
+): Promise<Loaded<EvalSample>> {
+  return read(
+    `/guide/eval/${encodeURIComponent(reportId)}/samples/${encodeURIComponent(questionId)}`,
+    evalSampleSchema,
+    () => recordedEvalSample(questionId),
+    options,
+  )
 }
