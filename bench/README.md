@@ -46,3 +46,6 @@ executions. The second lost samples to provider failures, so the original
 repeatability target remains unverified; its partial means are not a pass.
 Repeated hosted evaluation is excluded from the current completion scope by the
 user's 2026-10-13 instruction; no additional repeat is required or scheduled.
+
+See [final verification](reports/final-verification.md) for the clean-checkout
+checks, independent review fixes and remaining documented limitations.

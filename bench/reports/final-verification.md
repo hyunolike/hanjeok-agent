@@ -75,6 +75,19 @@ changed to conceal that limitation.
 
 ## Review
 
-Final independent branch review and any verified corrections are recorded below
-once the review finishes. The branch is kept locally; no merge or push is part
-of this verification.
+One independent reviewer examined the full branch and found three Important
+issues and no Critical issues. All three were reproduced with failing offline
+tests and fixed in `88cb195`: first-use initialization now consumes the answer
+deadline; local setup failures retain zero provider calls and a configuration
+category; matching failed/missing execution samples cannot produce a full-set
+comparison pass. Complete matching cohorts still compare normally.
+
+After the one fix pass, both the implementation checkout and the separate clean
+clone passed **130 offline tests and 27 actual Neo4j integration tests**. The clean
+clone uses Python 3.13.5 and the locked dependencies; its source remained clean.
+Ruff lint/format passed. No second review or hosted evaluation was run.
+Three historical two-loader descriptions remain as deferred documentation
+minors; there is no second production loader. Full review dispositions and
+decision costs are in [final-review.md](final-review.md).
+
+The branch is kept locally; no merge or push is part of this verification.
