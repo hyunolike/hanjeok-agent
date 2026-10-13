@@ -16,6 +16,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_valida
 from bench.answer.citations import validate
 from bench.answer.prompt import SYSTEM, assemble
 from bench.graph.query import Passage
+from bench.provider import diagnostic
 
 
 @dataclass(frozen=True, slots=True)
@@ -68,6 +69,7 @@ class AnswerResult:
     corpus_size: int | None = None
     corpus_generation: str | None = None
     model_calls: int = 0
+    provider_errors: tuple[dict, ...] = ()
 
     def to_dict(self, *, show_supplied: bool = False) -> dict:
         supplied = []
@@ -112,6 +114,7 @@ class State(TypedDict, total=False):
     outcome: str
     cause: str | None
     inputs: dict
+    provider_errors: tuple[dict, ...]
 
 
 class AnswerPipeline:
@@ -199,7 +202,7 @@ class AnswerPipeline:
                 user,
                 timeout=max(0.001, self.deadline_ms / 1000 - (self.clock() - state["started"])),
             )
-        except Exception:
+        except Exception as error:
             return {
                 "calls": state["calls"] + 1,
                 "outcome": "model_failed",
@@ -207,6 +210,7 @@ class AnswerPipeline:
                 "answer": None,
                 "citations": (),
                 "cause": "answering model unavailable",
+                "provider_errors": (*state.get("provider_errors", ()), diagnostic(error)),
             }
         if isinstance(reply, str):
             reply = ModelReply(reply)
@@ -323,4 +327,5 @@ class AnswerPipeline:
             state["cause"],
             state["inputs"],
             model_calls=state["calls"],
+            provider_errors=state.get("provider_errors", ()),
         )

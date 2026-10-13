@@ -184,6 +184,7 @@ def build_report(report_id, question_set, profile, pairs, eligible, scores, judg
         "answer_model": answer_model,
         "judge_model": judge.settings,
         "judge_usage": dict(judge.usage),
+        "judge_errors": list(getattr(judge, "errors", [])),
         "scoring_policy": POLICY,
         "valid_pairs": sum(p.valid for p in pairs),
         "included_pairs": sum(eligible),

@@ -5,10 +5,10 @@ import os
 
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
-from openai import LengthFinishReasonError
+from openai import APIError, LengthFinishReasonError
 
 from bench.answer.pipeline import ModelAnswer, ModelReply
-from bench.provider import BASE_URL, EXTRA_BODY, MODEL, api_key
+from bench.provider import BASE_URL, EXTRA_BODY, MODEL, ProviderFailure, api_key, request_pacer
 
 
 def _default_settings() -> dict:
@@ -19,12 +19,16 @@ def _default_settings() -> dict:
         "enable_thinking": False,
         "temperature": 0,
         "max_tokens": 800,
+        "minimum_request_interval_seconds": float(
+            os.environ.get("BENCH_REQUEST_INTERVAL_SECONDS", "3")
+        ),
     }
 
 
 class AnswerModel:
     def __init__(self, *, chat=None, settings=None):
         self._settings = dict(settings or _default_settings())
+        self.pacer = request_pacer() if chat is None else None
         self.chat = (
             chat
             if chat is not None
@@ -52,6 +56,8 @@ class AnswerModel:
 
     def complete(self, system: str, user: str, *, timeout: float = 60) -> ModelReply:
         try:
+            if self.pacer is not None:
+                self.pacer.wait()
             result = self.chat.with_structured_output(
                 ModelAnswer.model_json_schema(),
                 method="json_schema",
@@ -68,6 +74,8 @@ class AnswerModel:
                 usage.completion_tokens if usage else 0,
                 "output_limit",
             )
+        except APIError as error:
+            raise ProviderFailure(error) from None
         parsed, raw = result["parsed"], result["raw"]
         usage = raw.usage_metadata or {}
         failure = None

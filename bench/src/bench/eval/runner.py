@@ -8,6 +8,7 @@ import os
 import time
 from copy import deepcopy
 from dataclasses import asdict, dataclass
+from dataclasses import field as dataclass_field
 from datetime import UTC, datetime
 from pathlib import Path
 from uuid import uuid4
@@ -41,6 +42,7 @@ class RunRecord:
     inputs: dict | None
     retrieval: dict
     model_calls: int
+    provider_errors: list[dict] = dataclass_field(default_factory=list)
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -232,6 +234,7 @@ class PairRunner:
                 "summary_chars": 240,
             },
             result.model_calls,
+            list(result.provider_errors),
         )
         _append(self.runs_file, record.to_dict())
         return record

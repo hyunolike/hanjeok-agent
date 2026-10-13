@@ -6,12 +6,12 @@ from importlib.metadata import version
 from threading import RLock
 
 from bench.embeddings import MODEL, REVISION
-from bench.provider import BASE_URL, EXTRA_BODY, api_key
+from bench.provider import BASE_URL, EXTRA_BODY, RequestPacer, api_key, diagnostic, request_pacer
 from bench.provider import MODEL as CHAT_MODEL
 
 
 class RagasJudge:
-    def __init__(self, embedder, *, client=None, model=None, min_interval_seconds=2):
+    def __init__(self, embedder, *, client=None, model=None, min_interval_seconds=None):
         os.environ.setdefault("RAGAS_DO_NOT_TRACK", "true")
         from openai import AsyncOpenAI
         from ragas.embeddings.base import BaseRagasEmbedding
@@ -23,6 +23,12 @@ class RagasJudge:
             Faithfulness,
         )
 
+        pacer = (
+            request_pacer()
+            if client is None and min_interval_seconds is None
+            else RequestPacer(2 if min_interval_seconds is None else min_interval_seconds)
+        )
+        self.errors = []
         self.settings = {
             "name": model or os.environ.get("BENCH_JUDGE_MODEL", CHAT_MODEL),
             "provider": "nvidia",
@@ -36,7 +42,7 @@ class RagasJudge:
             "provider_retries": 0,
             "structured_attempts": 1,
             "request_timeout_seconds": 90,
-            "minimum_request_interval_seconds": min_interval_seconds,
+            "minimum_request_interval_seconds": pacer.interval,
             "embedding": {"name": MODEL, "revision": REVISION, "prefix": "query: "},
         }
         self.usage = {
@@ -50,21 +56,16 @@ class RagasJudge:
             api_key=api_key(), base_url=BASE_URL, max_retries=0, timeout=90
         )
         original = self.client.chat.completions.create
-        request_lock = asyncio.Lock()
-        next_request = 0.0
 
         async def counted(*args, **kwargs):
-            nonlocal next_request
-            async with request_lock:
-                now = asyncio.get_running_loop().time()
-                if next_request > now:
-                    await asyncio.sleep(next_request - now)
-                next_request = asyncio.get_running_loop().time() + min_interval_seconds
+            await pacer.await_slot()
             self.usage["model_calls"] += 1
+            call = self.usage["model_calls"]
             try:
                 reply = await original(*args, **kwargs)
-            except BaseException:
+            except BaseException as error:
                 self.usage["calls_without_usage"] += 1
+                self.errors.append({"call": call, **diagnostic(error)})
                 raise
             if reply.usage is not None:
                 self.usage["responses_with_usage"] += 1
