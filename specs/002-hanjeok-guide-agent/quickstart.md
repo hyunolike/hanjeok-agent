@@ -22,7 +22,7 @@ The page says it is replaying a recording. Expected:
 - `/ko/ask?demo=ambiguous`, `?demo=no-data`, `?demo=declined`, `?demo=failed`,
   `?demo=partial` and `?demo=limit` each show the state of that name from
   `contracts/screens.md`.
-- "Show path" opens `/ko/graph` with the path of that answer.
+- "Show path" opens the path of that answer under it, places in rank order.
 - `/ko/eval` shows the fixture report; `/ko/design` shows the design values,
   components and six poses in both appearances.
 

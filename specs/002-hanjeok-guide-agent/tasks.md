@@ -15,40 +15,40 @@ dependency between them.
 ## Phase 1: Setup
 
 - [X] T001 Amend `.specify/memory/constitution.md` Constraints: the `guide` package is deployed; `bench` measurement stays local
-- [ ] T002 [P] Run `pnpm install` in `frontend/` and read the Next.js 16 guides under `frontend/node_modules/next/dist/docs/` that cover routing, fonts and static assets, as `frontend/AGENTS.md` requires
-- [ ] T003 [P] Add `pretendard` and `wanted-sans` to `frontend/package.json`; add `NEXT_PUBLIC_GUIDE_BASE_URL` to `frontend/.env.example`
+- [X] T002 [P] Run `pnpm install` in `frontend/` and read the Next.js 16 guides under `frontend/node_modules/next/dist/docs/` that cover routing, fonts and static assets, as `frontend/AGENTS.md` requires
+- [X] T003 [P] Add `pretendard` and `wanted-sans` to `frontend/package.json`; add `NEXT_PUBLIC_GUIDE_BASE_URL` to `frontend/.env.example`
 - [ ] T004 [P] Add the `guide` package to `bench/pyproject.toml` (wheel packages, `guide` script entry) and create `bench/src/guide/__init__.py`
 - [ ] T005 [P] Add bench steps to `.github/workflows/build.yml`: `uv sync`, `ruff check`, `pytest` (offline markers only)
 
 ## Phase 2: Design foundation (FR-033, FR-038)
 
-- [ ] T006 Write the design values in `frontend/src/app/globals.css` as Tailwind 4 `@theme`: raw scales, then the purpose-named values of `contracts/screens.md`, light and dark
-- [ ] T007 Load Pretendard and Wanted Sans in `frontend/src/app/[lang]/layout.tsx`
-- [ ] T008 [P] `Button`, `Field`, `Chip` with tests in `frontend/src/components/ui/`
-- [ ] T009 [P] `Badge`, `Card`, `Notice` with tests in `frontend/src/components/ui/`
-- [ ] T010 [P] `Sheet` in `frontend/src/components/ui/`, carrying over the Esc, backdrop and focus behaviour of `CitationSheet.tsx`, with tests
-- [ ] T011 [P] `Character` in `frontend/src/components/guide/Character.tsx`: six states, decorative image with required adjacent text, still under reduced motion; placeholder SVG poses in `frontend/public/brand/guide/`; tests
-- [ ] T012 Add `guide`, `graph`, `evalPage` and `design` namespaces to `frontend/src/lib/i18n.ts` in `ko` and `en`
-- [ ] T013 `/[lang]/design` page: swatches, type, components in each state, six poses, contrast ratio beside each colour pair; test that every purpose-named value renders
+- [X] T006 Write the design values in `frontend/src/app/globals.css` as Tailwind 4 `@theme`: raw scales, then the purpose-named values of `contracts/screens.md`, light and dark
+- [X] T007 Load Pretendard and Wanted Sans in `frontend/src/app/[lang]/layout.tsx`
+- [X] T008 [P] `Button`, `Field`, `Chip` with tests in `frontend/src/components/ui/`
+- [X] T009 [P] `Badge`, `Card`, `Notice` with tests in `frontend/src/components/ui/`
+- [X] T010 [P] `Sheet` in `frontend/src/components/ui/`, carrying over the Esc, backdrop and focus behaviour of `CitationSheet.tsx`, with tests
+- [X] T011 [P] `Character` in `frontend/src/components/guide/Character.tsx`: six states, decorative image with required adjacent text, still under reduced motion; reads `frontend/public/brand/guide/<state>.webp`, which T053–T054 produce; tests
+- [X] T012 Add `guide`, `graph`, `evalPage` and `design` namespaces to `frontend/src/lib/i18n.ts` in `ko` and `en`
+- [X] T013 `/[lang]/design` page: swatches, type, components in each state, six poses, contrast ratio beside each colour pair; test that every purpose-named value renders
 
 **Checkpoint**: `/ko/design` shows the system in both appearances. `pnpm typecheck && pnpm test && pnpm build` pass.
 
 ## Phase 3: User Story 1 on fixtures — ask and see the steps (P1)
 
-- [ ] T014 [P] [US1] zod schemas for every event and response of `contracts/guide-api.md` in `frontend/src/lib/guide-schema.ts`, with tests
-- [ ] T015 [P] [US1] Recorded streams in `frontend/src/lib/guide-fixtures.ts`: answered, partial, ambiguous, no-data, declined, failed, usage limit, stream cut
-- [ ] T016 [US1] `askGuide` in `frontend/src/lib/guide.ts`: SSE reader with injectable `fetchImpl`, exactly one terminal outcome, replay when the base URL is unset; tests for each fixture and for a stream cut mid-step
-- [ ] T017 [P] [US1] `StepList` in `frontend/src/components/ui/StepList.tsx`: running, ok, refused, no-data, failed; collapsible; tests
-- [ ] T018 [P] [US1] `CitationChip` and record/policy sheet content in `frontend/src/components/guide/`, the two kinds visibly different; tests
-- [ ] T019 [US1] `/[lang]/ask` page and `AskGuide` client component: every state of `contracts/screens.md`, follow-up questions, candidate choice resuming the question; tests per state
-- [ ] T020 [US1] Entry point to `/[lang]/ask` on the home page in `frontend/src/app/[lang]/page.tsx`, existing strings untouched
+- [X] T014 [P] [US1] zod schemas for every event and response of `contracts/guide-api.md` in `frontend/src/lib/guide-schema.ts`, with tests
+- [X] T015 [P] [US1] Recorded streams in `frontend/src/lib/guide-fixtures.ts`: answered, partial, ambiguous, no-data, declined, failed, usage limit, stream cut
+- [X] T016 [US1] `askGuide` in `frontend/src/lib/guide.ts`: SSE reader with injectable `fetchImpl`, exactly one terminal outcome, replay when the base URL is unset; tests for each fixture and for a stream cut mid-step
+- [X] T017 [P] [US1] `StepList` in `frontend/src/components/ui/StepList.tsx`: running, ok, refused, no-data, failed; collapsible; tests
+- [X] T018 [P] [US1] `CitationChip` and record/policy sheet content in `frontend/src/components/guide/`, the two kinds visibly different; tests
+- [X] T019 [US1] `/[lang]/ask` page and `AskGuide` client component: every state of `contracts/screens.md`, follow-up questions, candidate choice resuming the question; tests per state
+- [X] T020 [US1] Entry point to `/[lang]/ask` on the home page in `frontend/src/app/[lang]/page.tsx`, existing strings untouched
 
 **Checkpoint**: Story 1 is demonstrable end to end in the browser from recordings.
 
 ## Phase 4: User Stories 2 and 3 on fixtures — path and evaluation (P2)
 
-- [ ] T021 [P] [US2] Deterministic layout for a path (start centred, related by rank, groups for region and documents) in `frontend/src/components/guide/path-layout.ts`, with tests on positions and order
-- [ ] T022 [US2] `PathView` SVG and its equivalent list in `frontend/src/components/guide/PathView.tsx`; tests that every node and edge of the `path` event appears and nothing else
+- [X] T021 [P] [US2] Deterministic layout for a path (start centred, related by rank, groups for region and documents) in `frontend/src/components/guide/path-layout.ts`, with tests on positions and order
+- [X] T022 [US2] `PathView` SVG and its equivalent list in `frontend/src/components/guide/PathView.tsx`, opened inline under the answer on `/[lang]/ask`; tests that every node and edge of the `path` event appears and nothing else
 - [ ] T023 [US2] `fetchPlaces`, `fetchPlace`, `fetchStatus` in `frontend/src/lib/guide.ts` with fixtures and tests
 - [ ] T024 [US2] `/[lang]/graph` page: from an answer, browsing by name, place panel, not-found; refresh time shown; tests per state
 - [ ] T025 [P] [US3] Fixture report and sample in `frontend/src/lib/guide-fixtures.ts`; `fetchEvalReport`, `fetchEvalSample` with tests

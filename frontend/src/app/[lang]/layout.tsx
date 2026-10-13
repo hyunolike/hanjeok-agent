@@ -40,6 +40,9 @@ export default async function RootLayout({
             <Link href={`/${lang}`} className="font-semibold">
               {t.nav.brand}
             </Link>
+            <Link href={`/${lang}/ask`} className="opacity-70 hover:opacity-100">
+              {t.guide.navLabel}
+            </Link>
             <Link href={`/${lang}/evidence`} className="opacity-70 hover:opacity-100">
               {t.nav.evidence}
             </Link>

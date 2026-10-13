@@ -10,9 +10,9 @@ Components use purpose-named values only (FR-033, SC-011). The names, grouped:
 | Group | Names |
 | --- | --- |
 | Surface | `surface-canvas`, `surface-panel`, `surface-subtle`, `surface-inverse`, `surface-scrim` |
-| Text | `text-title`, `text-body`, `text-muted`, `text-disabled`, `text-inverse` |
+| Ink | `ink-title`, `ink-body`, `ink-muted`, `ink-disabled`, `ink-inverse` |
 | Line | `line-normal`, `line-strong` |
-| Brand | `brand-primary`, `brand-pressed`, `brand-soft`, `accent-route`, `accent-quiet`, `accent-sky`, `accent-gold` |
+| Brand | `brand-primary`, `brand-pressed`, `brand-soft`, `brand-on-primary`, `accent-route`, `accent-quiet`, `accent-sky`, `accent-gold` |
 | Grade | `grade-{relaxed,normal,crowded,very-crowded}-{soft,text,fill}`, `grade-unknown-{soft,text}` |
 | Status | `status-{info,success,warning,danger}-{soft,text}` |
 | Citation | `cite-record-{soft,text}`, `cite-policy-{soft,text}` |
@@ -45,7 +45,7 @@ Movement, if any, begins from the still pose and is removed under
 | --- | --- |
 | Empty | Character `waiting`, question field, four example questions as chips, the refresh time of the data |
 | Running | The question, a step list growing in order with each step's name, inputs summary and status; character `looking`; the field disabled |
-| Answered | Step list collapsed to a summary line that reopens, the answer, citation chips in two visibly different kinds (record, policy), a "show path" control, the follow-up field |
+| Answered | Step list collapsed to a summary line that reopens, the answer, citation chips in two visibly different kinds (record, policy), a "show path" control that opens the path inline, the follow-up field |
 | Partial | As answered, with a notice that lookups were cut short |
 | Ask user | Character `choose`, the prompt, candidates as buttons; choosing one resumes the question |
 | Declined / no grounds | Character `no-data`, the message, example questions |
@@ -61,9 +61,14 @@ Follow-up questions append below; earlier answers stay readable.
 
 ## `/[lang]/graph`
 
+The path of an answer opens inline under that answer on `/[lang]/ask`, so the
+answer and its path are read together: policy documents on the left, places in
+the middle with the start first and the rest in the service's rank order, and
+regions on the right; edges labelled by kind. It shows exactly what the `path`
+event carried (FR-022). This route is for browsing without a question.
+
 | State | Shows |
 | --- | --- |
-| From an answer | The path for that answer: start place centred, related places around it in rank order with rank labels, region and documents as separate groups; edges labelled by kind. Exactly what the `path` event carried (FR-022) |
 | Browsing | A name search field, results, and on selecting a place its neighbourhood from `GET /guide/places/{id}` |
 | Place selected | A side panel: name, region, category, overview, "congestion: ask a question to check" when covered, "no congestion data" when not |
 | Not found / unavailable | Message; no empty graph drawn |

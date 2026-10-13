@@ -1,3 +1,5 @@
+import { guideEn, guideKo } from './i18n-guide'
+
 /**
  * 화면 문구 사전.
  *
@@ -148,6 +150,7 @@ const ko = {
     listFailTitle: '근거 문서를 불러오지 못했습니다',
     listFailBody: (status: number) => `에이전트 서버가 번들 목록을 주지 않았습니다(${status}).`,
   },
+  ...guideKo,
 }
 
 /** `ko` 를 그대로 모양으로 삼는다. 영어가 여기서 벗어나면 타입 검사가 잡는다. */
@@ -262,6 +265,7 @@ const en: Dict = {
     listFailBody: (status: number) =>
       `The agent server did not return the bundle listing (${status}).`,
   },
+  ...guideEn,
 }
 
 const DICTS: Record<Lang, Dict> = { ko, en }

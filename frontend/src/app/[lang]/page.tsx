@@ -31,6 +31,20 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
 
   return (
     <div className="space-y-12">
+      {/* 코스가 없어도 물어볼 수 있다. 이 화면에서 가장 먼저 해 볼 수 있는 일이라 맨 위에 둔다. */}
+      <Link
+        href={`/${lang}/ask`}
+        className="flex items-center justify-between gap-4 rounded-card border border-line-normal bg-surface-panel px-5 py-4 hover:border-brand-primary"
+      >
+        <span className="flex flex-col gap-1">
+          <span className="text-title-2 text-ink-title">{t.guide.title}</span>
+          <span className="text-caption text-ink-muted">{t.guide.lead}</span>
+        </span>
+        <span aria-hidden="true" className="text-title-2 text-brand-primary">
+          →
+        </span>
+      </Link>
+
       <section className="space-y-4">
         <h1 className="text-2xl font-semibold leading-snug sm:text-3xl">{t.home.ruleTitle}</h1>
         <p className="text-sm leading-relaxed opacity-80">{t.home.ruleBody}</p>
