@@ -53,6 +53,37 @@
 
 <br/>
 
+## 🧭 한적 에이전트 (진행 중)
+
+코스 설명기 옆에 더 큰 조각이 하나 더 있습니다. "이번 토요일 경복궁 대신 조용한 곳 있어?"처럼 자기 말로 물을 수 있는 에이전트입니다. 질문은 규칙으로 읽고, 조회하는 단계를 화면에 보여 주며, 그 질문에서 실제로 가져온 것만 인용해 답합니다. 명세는 [`specs/002-hanjeok-guide-agent/`](specs/002-hanjeok-guide-agent/)에, 제품 요약은 [`docs/prd/hanjeok-guide-agent.md`](docs/prd/hanjeok-guide-agent.md)에 있습니다.
+
+| 화면 | 보여 주는 것 |
+| --- | --- |
+| `/ko/ask` | 질문, 진행되는 단계, 검증된 답, 두 종류의 인용(한적 레코드와 정책 문서), 답이 지나온 경로 |
+| `/ko/graph` | 장소 하나와 한적이 이어 둔 장소를 한적의 순위대로 |
+| `/ko/eval` | 평가 보고서. 모든 점수에 몇 문항으로 계산했는지가 붙습니다 |
+| `/ko/design` | 디자인 값, 컴포넌트, 안내 캐릭터의 여섯 포즈 |
+
+서비스는 [`bench/src/guide/`](bench/src/guide/)에 있는 Python 코드입니다(FastAPI, LangGraph, Neo4j). 모델은 입력을 코드가 검증하는 조회 일곱 가지 중에서 고르기만 하고, 쿼리를 쓰지도 순서를 정하지도 않습니다. 한적의 장소 데이터는 내보낸 파일로만 들어오고, 날짜에 묶인 값은 읽기 전용 한적 API 두 개로 조회합니다.
+
+**지금까지 잰 것은 작습니다.** 데이터는 지어낸 장소 40곳짜리 가상 내보내기 파일이고 질문은 12개입니다. 2026-10-14에 호스팅 모델로 두 번 돌렸고 RAGAS 판정은 돌리지 않았습니다.
+
+| | 글 유사도만 | 연관 링크까지 |
+| --- | --- | --- |
+| 필요한 레코드를 가져온 비율, 1차 | 0.75 (10문항) | 0.92 (10문항) |
+| 필요한 레코드를 가져온 비율, 2차 | 0.75 (10문항) | 0.82 (10문항) |
+| 답하면 안 되는 질문 거절 | 2문항 중 2문항 | 2문항 중 2문항 |
+
+공개한 보고서는 2차입니다. 2차에서는 "이어진 장소" 질문 하나가 연관 링크 방식에서 실패했는데, 모델의 응답이 출력 한도에 닿았기 때문입니다. 실행 기록은 [`bench/runs/`](bench/runs/)에, 보고서는 [`bench/reports/guide/`](bench/reports/guide/)에 있습니다. 한적 실데이터, 60문항 질문 묶음, RAGAS 점수, 배포는 아직 하지 않았습니다.
+
+```bash
+cd bench
+docker compose up -d
+uv sync
+uv run guide refresh --export tests/fixtures/hanjeok-export
+GUIDE_LIVE_MODE=replay uv run uvicorn guide.api:app --port 8090   # 답을 받으려면 NVIDIA_API_KEY 가 필요합니다
+```
+
 ## 한적 위키·에이전트 전체 구조
 
 ![수집·빌드, 운영 서비스, 별도 로컬 실험의 전체 구조](docs/images/hanjeok-wiki-agent-overview.ko.png)

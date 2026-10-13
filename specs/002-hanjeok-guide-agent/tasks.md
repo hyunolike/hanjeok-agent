@@ -121,7 +121,7 @@ dependency between them.
 - [ ] T062 Deployment spike: `bench/Dockerfile` running the service and Neo4j in one container on a Space; measure memory and import time; record the result and the fallback decision in `research.md`
 - [ ] T063 Deploy the service; set `GUIDE_CORS_ALLOWED_ORIGINS`; point the Vercel frontend at it; walk through `quickstart.md`
 - [x] T064 [P] `docs/prd/hanjeok-guide-agent.md` from the spec, in Korean
-- [ ] T065 [P] Update `README.md` and `README.ko.md`: what the guide is, the four screens, the report the claims rest on; keep the heading anchors the home page links to
+- [x] T065 [P] Update `README.md` and `README.ko.md`: what the guide is, the four screens, the report the claims rest on; keep the heading anchors the home page links to
 - [ ] T066 SC-008 walk-through by a reviewer who has not seen the code; record the time taken
 
 ## Dependencies

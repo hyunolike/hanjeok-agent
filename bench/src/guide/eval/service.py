@@ -6,6 +6,7 @@ Costs model quota and is started by hand (`guide eval`). Never in CI.
 from __future__ import annotations
 
 import json
+from collections import Counter
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -100,12 +101,17 @@ def evaluate(
         limitations.append(
             f"모델 제공자의 요청 한도에 {waits}번 걸려 기다렸습니다. 기다린 시간은 질문의 제한 시간과 소요 시간에서 뺐습니다."
         )
-    failed = sum(
-        record["outcome"] == "failed" and record["cause"] == "model_failed" for record in records
+    kinds = Counter(
+        record["model_failure"] or "unknown"
+        for record in records
+        if record["outcome"] == "failed" and record["cause"] == "model_failed"
     )
-    if failed:
+    if kinds:
+        # Named by kind and not excused: a rate limit is the provider's doing,
+        # but an answer cut off at the output limit is the model's.
+        listed = ", ".join(f"{kind} {count}건" for kind, count in sorted(kinds.items()))
         limitations.append(
-            f"{failed}건은 모델을 쓸 수 없어 답이 나오지 않았습니다. 에이전트의 판단과 무관한 실패입니다."
+            f"{sum(kinds.values())}건은 모델 호출이 실패해 답이 나오지 않았습니다({listed})."
         )
     if live.mode == "replay":
         limitations.append("한적의 혼잡 예보와 대안은 미리 녹화해 둔 응답을 썼습니다.")

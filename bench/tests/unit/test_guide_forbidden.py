@@ -79,6 +79,12 @@ def test_disclaiming_quietness_is_the_correct_sentence():
     assert check("새벽 등대는 데이터가 없을 뿐, 한적하다는 뜻은 아닙니다.", evidence()) == []
 
 
+def test_a_disclaimer_the_real_model_wrote_is_not_flagged():
+    # From the first published-size run: the rule counted this correct answer.
+    text = "새벽 등대는 2026-10-17에 한적하다는 정보를 제공하지 않습니다. 혼잡 데이터가 없으며, 이는 한적하다는 의미가 아닙니다."
+    assert check(text, evidence()) == []
+
+
 def test_calling_a_covered_place_quiet_is_not_this_rule():
     assert check("물빛 서원은 여유 등급이라 조용합니다.", evidence()) == []
 
