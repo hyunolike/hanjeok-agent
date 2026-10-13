@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-10",
+  "status": "actual isolated Neo4j integration completed",
+  "previousApprovalBlocker": "resolved by explicit follow-up authorization; approval retry allowed execution",
+  "server": {
+    "versions": [
+      "5.26.31"
+    ],
+    "edition": "community"
+  },
+  "driverVersion": "5.26.0",
+  "runtime": {
+    "containerId": "5fb7f735fa2e49c2750f2ef0c4fb740f4f75a9f224aa22cdf44d5e7344c7df38",
+    "imageId": "sha256:3c982724bd859f776ab33db4e7c720bef29be9c996b4872cbc8c70f774ff1397",
+    "imageRef": "neo4j@sha256:5eb12ad77fa46ab73e23df9ea1f43f5c0f2a79523435577648e046be042b9b93",
+    "ownershipLabel": "hanjeok-retrieval-task8",
+    "networkName": "hanjeok-retrieval-task8-net",
+    "actualPorts": {
+      "7473/tcp": null,
+      "7474/tcp": null,
+      "7687/tcp": [
+        {
+          "HostIp": "127.0.0.1",
+          "HostPort": "17687"
+        }
+      ]
+    },
+    "networkInternal": false,
+    "networkOptions": {
+      "com.docker.network.bridge.enable_ip_masquerade": "false"
+    },
+    "memoryLimitBytes": 2147483648,
+    "nanoCpus": 2000000000,
+    "usageReportEnabled": false,
+    "httpEnabled": false,
+    "hostBindMounts": 0,
+    "anonymousVolumes": [
+      "ea5c43681b5ceab649fde8c1d42589158f03d457a0365caa35f318e6ab42a28d",
+      "551f95cfe8dabaadec6c8e5e5cf45dc1b2a8c0713e3285766568e11d70d14ae7"
+    ]
+  },
+  "actualIntegration": {
+    "singletonStartsMatched": 15,
+    "curatedNodes": 15,
+    "curatedEdges": 22,
+    "twoHopRegionRetrievalPassed": true,
+    "syntheticNamespaceExclusionPassed": true,
+    "realTamperedResponseRejections": [
+      "sha256",
+      "source_signatures"
+    ],
+    "managedTransactionTimeoutSeconds": 2,
+    "maxHops": 2,
+    "maxDocuments": 9,
+    "report": "neo4j-integration.json"
+  },
+  "mockTestsSeparate": {
+    "driverContracts": 2,
+    "foreignDatabaseLoadRefusal": 1
+  },
+  "networkIssueAndFix": {
+    "initialInternalNetworkRequestedButActualPublishedPortsEmpty": true,
+    "internalCypherShellReturn1Passed": true,
+    "initialHostDriverConnectionRefused": true,
+    "fix": "dedicated bridge; IP masquerading disabled; actual loopback Bolt published; HTTP/usage reporting disabled",
+    "scope": "does not assert a general firewall ACL; runner and driver restrict requested connections"
+  },
+  "modes": {
+    "neo4j-tfidf": {
+      "armExecutions": 105,
+      "ragasNativeSamples": 210,
+      "ragasIdMetricFieldsIncludingNull": 420,
+      "policiesRetainedRows": 105,
+      "deterministicAndAssistantHistoryIndependentRows": 105,
+      "matchesPreservedInProcessRowsMetricsDataset": true,
+      "reproducibility": {
+        "results.json": {
+          "bytes": 239159,
+          "sha256": "0cc69c4bf1b16ff4f15ce4f8a70fee6940e12d88269b966c76d5f35f043e0263",
+          "byteIdentical": true
+        },
+        "dataset.jsonl": {
+          "bytes": 4432645,
+          "sha256": "b6470b0533b3e1b392bba4dc9f85bd72b8b7ebd665ea03bb1c32e79aa18a8aa7",
+          "byteIdentical": true
+        },
+        "graph-snapshot.json": {
+          "bytes": 15004,
+          "sha256": "c96f8b9aafd2a0aa712c8666f5f8193f5e6b50530bcca0beb4a7628706cf722f",
+          "byteIdentical": true
+        }
+      },
+      "candidateSupportedMetrics": {
+        "FULL": {
+          "rows": 24,
+          "precision": {
+            "mean": 0.16666666666666666,
+            "definedRows": 24
+          },
+          "recall": {
+            "mean": 1.0,
+            "definedRows": 24
+          }
+        },
+        "VECTOR": {
+          "rows": 24,
+          "precision": {
+            "mean": 0.4313725490196078,
+            "definedRows": 17
+          },
+          "recall": {
+            "mean": 0.3958333333333333,
+            "definedRows": 24
+          }
+        },
+        "HYBRID_GRAPH": {
+          "rows": 24,
+          "precision": {
+            "mean": 0.22794117647058823,
+            "definedRows": 17
+          },
+          "recall": {
+            "mean": 0.7083333333333334,
+            "definedRows": 24
+          }
+        }
+      },
+      "completeFixtureCoverageRows": {
+        "FULL": 35,
+        "VECTOR": 35,
+        "HYBRID_GRAPH": 35
+      },
+      "citationValidScriptedRows": {
+        "FULL": 34,
+        "VECTOR": 32,
+        "HYBRID_GRAPH": 32
+      },
+      "actualCitationContractsMatched": 105,
+      "emptyUnknownProbeRejections": 210,
+      "omittedSeedProbeRejections": 29,
+      "modelMatrixSha256": null
+    },
+    "neo4j-semantic": {
+      "armExecutions": 105,
+      "ragasNativeSamples": 210,
+      "ragasIdMetricFieldsIncludingNull": 420,
+      "policiesRetainedRows": 105,
+      "deterministicAndAssistantHistoryIndependentRows": 105,
+      "matchesPreservedInProcessRowsMetricsDataset": true,
+      "reproducibility": {
+        "results.json": {
+          "bytes": 257936,
+          "sha256": "7c7c07d123c7c8765ee4abd795f62fb595c5cae7c4440e44d508f3b07c1e05e6",
+          "byteIdentical": true
+        },
+        "dataset.jsonl": {
+          "bytes": 4699665,
+          "sha256": "789e7543eead2f580317a1c322cc3a68f51631ba7944bc3987c113a55cc80c38",
+          "byteIdentical": true
+        },
+        "graph-snapshot.json": {
+          "bytes": 15004,
+          "sha256": "c96f8b9aafd2a0aa712c8666f5f8193f5e6b50530bcca0beb4a7628706cf722f",
+          "byteIdentical": true
+        }
+      },
+      "candidateSupportedMetrics": {
+        "FULL": {
+          "rows": 24,
+          "precision": {
+            "mean": 0.16666666666666666,
+            "definedRows": 24
+          },
+          "recall": {
+            "mean": 1.0,
+            "definedRows": 24
+          }
+        },
+        "VECTOR": {
+          "rows": 24,
+          "precision": {
+            "mean": 0.25,
+            "definedRows": 24
+          },
+          "recall": {
+            "mean": 0.6458333333333334,
+            "definedRows": 24
+          }
+        },
+        "HYBRID_GRAPH": {
+          "rows": 24,
+          "precision": {
+            "mean": 0.17261904761904762,
+            "definedRows": 24
+          },
+          "recall": {
+            "mean": 1.0,
+            "definedRows": 24
+          }
+        }
+      },
+      "completeFixtureCoverageRows": {
+        "FULL": 35,
+        "VECTOR": 30,
+        "HYBRID_GRAPH": 35
+      },
+      "citationValidScriptedRows": {
+        "FULL": 34,
+        "VECTOR": 27,
+        "HYBRID_GRAPH": 32
+      },
+      "actualCitationContractsMatched": 105,
+      "emptyUnknownProbeRejections": 210,
+      "omittedSeedProbeRejections": 25,
+      "modelMatrixSha256": "a8aa97c999fbea541886d7209169aa28f2ff9344e46454aa4a96a217e85164d6"
+    }
+  },
+  "primaryNeo4jArmExecutions": 210,
+  "primaryRagasSamples": 420,
+  "independentReproductionArmExecutions": 210,
+  "actualProductionCitationContractsMatched": 210,
+  "emptyUnknownProbeRejections": 420,
+  "omittedSeedProbeRejections": 54,
+  "pythonDistinctTests": 34,
+  "pythonFreshBaselineVenvTests": 34,
+  "pythonFreshFailures": 0,
+  "priorSemanticVenv34Tests": "passed in preceding semantic extension; Python files unchanged in this Neo4j phase",
+  "wikiProvenanceTests": 8,
+  "wikiSmokeCanonicalPages": 18,
+  "wikiIndexCheck": "PASS",
+  "ownedContainerAnonymousVolumesNetworkRemovedAndVerified": true,
+  "existingOperationalAndBenchContainersUntouched": true,
+  "priorResultFilesPreservedByteForByte": true,
+  "productionAgentSourceResourcesOriginalFixturesUnchanged": true,
+  "wikiCanonicalRawRecordsIndexesUnchanged": true,
+  "productionDefault": "FULL",
+  "maximumSourceByteReductionPercent": 2.0280937537950856,
+  "existing325ServerTestsBootJar": "passed in baseline phase; not rerun for script/results/docs-only Neo4j phase",
+  "modelRevision": "826fee3d516ebb14987355af373f5b69101c7006",
+  "modelDimension": 512,
+  "semanticDocumentChunks": 41,
+  "ragasVersion": "0.3.9",
+  "noLlmGeneration": true,
+  "noLlmJudge": true,
+  "noPaidCalls": true,
+  "noExternalCorpusUpload": true,
+  "noCredentialsConfigured": true,
+  "noDockerPull": true,
+  "noNewModelDownload": true,
+  "trustRemoteCode": false,
+  "noRemotePushPrMergeDeployment": true,
+  "separateHanjeokDbSmtpRollout": "held",
+  "imageSlots": "pending",
+  "limitations": [
+    "9 documents, eight required policies and one optional seed; no general retrieval savings inference",
+    "five semantic VECTOR seed omissions remain failures; mandatory policies bias final coverage",
+    "fixture ID metrics and scripted citations are not generated answer correctness or LLM faithfulness",
+    "direct bounded provenance/entity traversal, not Microsoft community GraphRAG pipeline"
+  ],
+  "commands": [
+    "experiments/retrieval/scripts/neo4j-local.sh start",
+    "PYTHONPATH=experiments/retrieval PYTHONDONTWRITEBYTECODE=1 experiments/retrieval/.venv/bin/python -m retrieval_lab.live --load --output experiments/retrieval/results/neo4j-integration.json",
+    "PYTHONPATH=experiments/retrieval PYTHONDONTWRITEBYTECODE=1 experiments/retrieval/.venv/bin/python -m retrieval_lab.run --graph-backend neo4j --output-dir experiments/retrieval/results/neo4j-tfidf",
+    "PYTHONPATH=experiments/retrieval PYTHONDONTWRITEBYTECODE=1 experiments/retrieval/.venv-semantic/bin/python -m retrieval_lab.run --graph-backend neo4j --enable-semantic --semantic-model experiments/retrieval/models/distiluse-base-multilingual-cased-v1 --output-dir experiments/retrieval/results/neo4j-semantic",
+    "experiments/retrieval/scripts/neo4j-local.sh stop"
+  ]
+}

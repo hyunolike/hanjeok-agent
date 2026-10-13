@@ -1,0 +1,23 @@
+{
+  "actualLinuxImage": true,
+  "actualNeo4j": true,
+  "llmCalls": 0,
+  "healthAndPinnedProvenance": true,
+  "schemaAuthBoundsAndStalePinsRejected": true,
+  "actualSlowBodyDeadlineSeconds": 2.018,
+  "actualUid": 10001,
+  "immutableIndexWriteRejected": true,
+  "actualGraphTamperReadyDownRetrievalRejectedAndKotlinRecovered": true,
+  "readyRecoveredAfterGraphRestore": true,
+  "image": "sha256:b58fe4874bb86d664a3abbe2bd5ed56f8c5449735fa17f8644aaf9bc1f8a1c87",
+  "actualCorruptedIndexStartupRejected": true,
+  "negativeArtifactInjection": "own stopped container writable layer via docker cp; no host mount",
+  "linuxSemanticCpuWheel": {
+    "officialWheel": "torch-2.14.1+cpu-cp312-cp312-manylinux_2_28_aarch64.whl",
+    "declaredVersion": "2.14.1+cpu",
+    "preservedIndexTorchPin": "2.14.1",
+    "compatibleWithPreservedExactPin": false,
+    "fullSemanticLinuxImageRun": false
+  },
+  "hostBindMountAttempt": "Docker Desktop create timed out before object creation twice (15s/30s); no host mount made; avoided using docker cp"
+}

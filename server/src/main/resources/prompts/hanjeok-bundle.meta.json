@@ -1,0 +1,426 @@
+{
+  "bundleSha256": "ec60e6f912d16ec8d04b158504c99fc81b2c9edb6179c5da3cc0671a45b619c9",
+  "documents": [
+    {
+      "claims": [
+        {
+          "id": "concepts/travel-context-layer.md#page",
+          "scope": "document",
+          "sha256": "8d864c81a0cb2e13e2eff988c3f70896ca8de9e30a4f82b7ab30f76deb098d97",
+          "sources": [
+            {
+              "path": "raw/service-snapshots/hanjeok/design-v3.md",
+              "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+              "sha256": "990600058f5c6915bb7c057800d7fa6dd4a763c789681b208cd3318544379646"
+            },
+            {
+              "path": "raw/service-snapshots/hanjeok/api-contract-v4.md",
+              "revision": "d667c1c57df389d8665edabc9c1ffb0f67d91267",
+              "sha256": "90669792e5b7ec795a88f8063ca04532e46d88f65cc6c732a75ccc0b3243413f"
+            },
+            {
+              "path": "raw/public-tourism-api/2026-openapi-briefing.txt",
+              "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+              "sha256": "c4582c811e26852b372473d0b0f79f30627f14df1e3e58fa25e7f9f5f0cc9a34"
+            }
+          ],
+          "status": "unverified"
+        }
+      ],
+      "confidence": "high",
+      "contested": false,
+      "path": "concepts/travel-context-layer.md",
+      "sha256": "8d864c81a0cb2e13e2eff988c3f70896ca8de9e30a4f82b7ab30f76deb098d97",
+      "sources": [
+        {
+          "path": "raw/service-snapshots/hanjeok/design-v3.md",
+          "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+          "sha256": "990600058f5c6915bb7c057800d7fa6dd4a763c789681b208cd3318544379646"
+        },
+        {
+          "path": "raw/service-snapshots/hanjeok/api-contract-v4.md",
+          "revision": "d667c1c57df389d8665edabc9c1ffb0f67d91267",
+          "sha256": "90669792e5b7ec795a88f8063ca04532e46d88f65cc6c732a75ccc0b3243413f"
+        },
+        {
+          "path": "raw/public-tourism-api/2026-openapi-briefing.txt",
+          "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+          "sha256": "c4582c811e26852b372473d0b0f79f30627f14df1e3e58fa25e7f9f5f0cc9a34"
+        }
+      ]
+    },
+    {
+      "claims": [
+        {
+          "id": "concepts/congestion-diagnosis.md#page",
+          "scope": "document",
+          "sha256": "a5c9f77d0e058ee34e33617ac94804a415c45feeb91794fc5c659c9a402eae0f",
+          "sources": [
+            {
+              "path": "raw/service-snapshots/hanjeok/design-v3.md",
+              "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+              "sha256": "990600058f5c6915bb7c057800d7fa6dd4a763c789681b208cd3318544379646"
+            },
+            {
+              "path": "raw/service-snapshots/hanjeok/course-recommendation.md",
+              "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+              "sha256": "7ed36f640389aea77d7aafc412d2c4592b95b94c46d2b4427c8d5057e7eb643b"
+            },
+            {
+              "path": "raw/service-snapshots/hanjeok/api-contract-v4.md",
+              "revision": "d667c1c57df389d8665edabc9c1ffb0f67d91267",
+              "sha256": "90669792e5b7ec795a88f8063ca04532e46d88f65cc6c732a75ccc0b3243413f"
+            }
+          ],
+          "status": "unverified",
+          "topic": "congestion"
+        },
+        {
+          "id": "concepts/congestion-diagnosis.md#policy-anchor",
+          "quote": "Grades come from the **percentile**, not the raw concentration value:",
+          "scope": "quote",
+          "sha256": "ef6c99d1ad5fe4d09d576cedaefc1dd7dcd10e572ff5f11fef2aa1c3b8934786",
+          "sources": [
+            {
+              "path": "raw/service-snapshots/hanjeok/design-v3.md",
+              "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+              "sha256": "990600058f5c6915bb7c057800d7fa6dd4a763c789681b208cd3318544379646"
+            },
+            {
+              "path": "raw/service-snapshots/hanjeok/course-recommendation.md",
+              "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+              "sha256": "7ed36f640389aea77d7aafc412d2c4592b95b94c46d2b4427c8d5057e7eb643b"
+            },
+            {
+              "path": "raw/service-snapshots/hanjeok/api-contract-v4.md",
+              "revision": "d667c1c57df389d8665edabc9c1ffb0f67d91267",
+              "sha256": "90669792e5b7ec795a88f8063ca04532e46d88f65cc6c732a75ccc0b3243413f"
+            }
+          ],
+          "status": "unverified",
+          "topic": "congestion"
+        }
+      ],
+      "confidence": "high",
+      "contested": false,
+      "path": "concepts/congestion-diagnosis.md",
+      "sha256": "a5c9f77d0e058ee34e33617ac94804a415c45feeb91794fc5c659c9a402eae0f",
+      "sources": [
+        {
+          "path": "raw/service-snapshots/hanjeok/design-v3.md",
+          "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+          "sha256": "990600058f5c6915bb7c057800d7fa6dd4a763c789681b208cd3318544379646"
+        },
+        {
+          "path": "raw/service-snapshots/hanjeok/course-recommendation.md",
+          "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+          "sha256": "7ed36f640389aea77d7aafc412d2c4592b95b94c46d2b4427c8d5057e7eb643b"
+        },
+        {
+          "path": "raw/service-snapshots/hanjeok/api-contract-v4.md",
+          "revision": "d667c1c57df389d8665edabc9c1ffb0f67d91267",
+          "sha256": "90669792e5b7ec795a88f8063ca04532e46d88f65cc6c732a75ccc0b3243413f"
+        }
+      ]
+    },
+    {
+      "claims": [
+        {
+          "id": "concepts/alternative-scoring.md#page",
+          "scope": "document",
+          "sha256": "991aa330fac87832a3a8d16a68739fe302281b8816707283a460d52f2335eeb9",
+          "sources": [
+            {
+              "path": "raw/service-snapshots/hanjeok/design-v3.md",
+              "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+              "sha256": "990600058f5c6915bb7c057800d7fa6dd4a763c789681b208cd3318544379646"
+            },
+            {
+              "path": "raw/service-snapshots/hanjeok/course-recommendation.md",
+              "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+              "sha256": "7ed36f640389aea77d7aafc412d2c4592b95b94c46d2b4427c8d5057e7eb643b"
+            },
+            {
+              "path": "raw/service-snapshots/hanjeok/attractions.fixture.json",
+              "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+              "sha256": "47038fb44696f54b516282d47dc0a6cca52fb6ae1431a2b8d6b9176a76018992"
+            },
+            {
+              "path": "raw/service-snapshots/hanjeok/api-contract-v4.md",
+              "revision": "d667c1c57df389d8665edabc9c1ffb0f67d91267",
+              "sha256": "90669792e5b7ec795a88f8063ca04532e46d88f65cc6c732a75ccc0b3243413f"
+            }
+          ],
+          "status": "unverified",
+          "topic": "alternatives"
+        },
+        {
+          "id": "concepts/alternative-scoring.md#policy-anchor",
+          "quote": "Results are returned sorted by `score` descending.",
+          "scope": "quote",
+          "sha256": "d62cfd87a0ebce860d2237475e8d6cc1dc0476b9da622713bca7f246fe3bd3ac",
+          "sources": [
+            {
+              "path": "raw/service-snapshots/hanjeok/design-v3.md",
+              "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+              "sha256": "990600058f5c6915bb7c057800d7fa6dd4a763c789681b208cd3318544379646"
+            },
+            {
+              "path": "raw/service-snapshots/hanjeok/course-recommendation.md",
+              "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+              "sha256": "7ed36f640389aea77d7aafc412d2c4592b95b94c46d2b4427c8d5057e7eb643b"
+            },
+            {
+              "path": "raw/service-snapshots/hanjeok/attractions.fixture.json",
+              "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+              "sha256": "47038fb44696f54b516282d47dc0a6cca52fb6ae1431a2b8d6b9176a76018992"
+            },
+            {
+              "path": "raw/service-snapshots/hanjeok/api-contract-v4.md",
+              "revision": "d667c1c57df389d8665edabc9c1ffb0f67d91267",
+              "sha256": "90669792e5b7ec795a88f8063ca04532e46d88f65cc6c732a75ccc0b3243413f"
+            }
+          ],
+          "status": "unverified",
+          "topic": "alternatives"
+        }
+      ],
+      "confidence": "high",
+      "contested": false,
+      "path": "concepts/alternative-scoring.md",
+      "sha256": "991aa330fac87832a3a8d16a68739fe302281b8816707283a460d52f2335eeb9",
+      "sources": [
+        {
+          "path": "raw/service-snapshots/hanjeok/design-v3.md",
+          "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+          "sha256": "990600058f5c6915bb7c057800d7fa6dd4a763c789681b208cd3318544379646"
+        },
+        {
+          "path": "raw/service-snapshots/hanjeok/course-recommendation.md",
+          "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+          "sha256": "7ed36f640389aea77d7aafc412d2c4592b95b94c46d2b4427c8d5057e7eb643b"
+        },
+        {
+          "path": "raw/service-snapshots/hanjeok/attractions.fixture.json",
+          "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+          "sha256": "47038fb44696f54b516282d47dc0a6cca52fb6ae1431a2b8d6b9176a76018992"
+        },
+        {
+          "path": "raw/service-snapshots/hanjeok/api-contract-v4.md",
+          "revision": "d667c1c57df389d8665edabc9c1ffb0f67d91267",
+          "sha256": "90669792e5b7ec795a88f8063ca04532e46d88f65cc6c732a75ccc0b3243413f"
+        }
+      ]
+    },
+    {
+      "claims": [
+        {
+          "id": "concepts/course-generation-policy.md#page",
+          "scope": "document",
+          "sha256": "023ea83060483968581841a3c424b03e1258bc027c3325232b7e05f161a2e314",
+          "sources": [
+            {
+              "path": "raw/service-snapshots/hanjeok/design-v3.md",
+              "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+              "sha256": "990600058f5c6915bb7c057800d7fa6dd4a763c789681b208cd3318544379646"
+            },
+            {
+              "path": "raw/service-snapshots/hanjeok/course-recommendation.md",
+              "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+              "sha256": "7ed36f640389aea77d7aafc412d2c4592b95b94c46d2b4427c8d5057e7eb643b"
+            },
+            {
+              "path": "raw/service-snapshots/hanjeok/api-contract-v4.md",
+              "revision": "d667c1c57df389d8665edabc9c1ffb0f67d91267",
+              "sha256": "90669792e5b7ec795a88f8063ca04532e46d88f65cc6c732a75ccc0b3243413f"
+            }
+          ],
+          "status": "unverified"
+        }
+      ],
+      "confidence": "high",
+      "contested": false,
+      "path": "concepts/course-generation-policy.md",
+      "sha256": "023ea83060483968581841a3c424b03e1258bc027c3325232b7e05f161a2e314",
+      "sources": [
+        {
+          "path": "raw/service-snapshots/hanjeok/design-v3.md",
+          "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+          "sha256": "990600058f5c6915bb7c057800d7fa6dd4a763c789681b208cd3318544379646"
+        },
+        {
+          "path": "raw/service-snapshots/hanjeok/course-recommendation.md",
+          "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+          "sha256": "7ed36f640389aea77d7aafc412d2c4592b95b94c46d2b4427c8d5057e7eb643b"
+        },
+        {
+          "path": "raw/service-snapshots/hanjeok/api-contract-v4.md",
+          "revision": "d667c1c57df389d8665edabc9c1ffb0f67d91267",
+          "sha256": "90669792e5b7ec795a88f8063ca04532e46d88f65cc6c732a75ccc0b3243413f"
+        }
+      ]
+    },
+    {
+      "claims": [
+        {
+          "id": "decisions/keep-llm-out-of-ranking.md#page",
+          "scope": "document",
+          "sha256": "834f2216b024c4f6701af7b7f8601262c8e1b0619c4441941a128339157c42cf",
+          "sources": [
+            {
+              "path": "raw/service-snapshots/hanjeok/design-v3.md",
+              "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+              "sha256": "990600058f5c6915bb7c057800d7fa6dd4a763c789681b208cd3318544379646"
+            },
+            {
+              "path": "raw/public-tourism-api/2026-openapi-briefing.txt",
+              "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+              "sha256": "c4582c811e26852b372473d0b0f79f30627f14df1e3e58fa25e7f9f5f0cc9a34"
+            }
+          ],
+          "status": "unverified"
+        }
+      ],
+      "confidence": "medium",
+      "contested": false,
+      "path": "decisions/keep-llm-out-of-ranking.md",
+      "sha256": "834f2216b024c4f6701af7b7f8601262c8e1b0619c4441941a128339157c42cf",
+      "sources": [
+        {
+          "path": "raw/service-snapshots/hanjeok/design-v3.md",
+          "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+          "sha256": "990600058f5c6915bb7c057800d7fa6dd4a763c789681b208cd3318544379646"
+        },
+        {
+          "path": "raw/public-tourism-api/2026-openapi-briefing.txt",
+          "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+          "sha256": "c4582c811e26852b372473d0b0f79f30627f14df1e3e58fa25e7f9f5f0cc9a34"
+        }
+      ]
+    },
+    {
+      "claims": [
+        {
+          "id": "queries/why-this-place-today.md#page",
+          "scope": "document",
+          "sha256": "9ba28f733e0ce4fa2dbdd9c6fe5ac6ea72700a09e94c57e59b69c7c087c382c7",
+          "sources": [
+            {
+              "path": "raw/service-snapshots/hanjeok/design-v3.md",
+              "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+              "sha256": "990600058f5c6915bb7c057800d7fa6dd4a763c789681b208cd3318544379646"
+            },
+            {
+              "path": "raw/service-snapshots/hanjeok/course-recommendation.md",
+              "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+              "sha256": "7ed36f640389aea77d7aafc412d2c4592b95b94c46d2b4427c8d5057e7eb643b"
+            },
+            {
+              "path": "raw/service-snapshots/hanjeok/api-contract-v4.md",
+              "revision": "d667c1c57df389d8665edabc9c1ffb0f67d91267",
+              "sha256": "90669792e5b7ec795a88f8063ca04532e46d88f65cc6c732a75ccc0b3243413f"
+            }
+          ],
+          "status": "unverified"
+        }
+      ],
+      "confidence": "high",
+      "contested": false,
+      "path": "queries/why-this-place-today.md",
+      "sha256": "9ba28f733e0ce4fa2dbdd9c6fe5ac6ea72700a09e94c57e59b69c7c087c382c7",
+      "sources": [
+        {
+          "path": "raw/service-snapshots/hanjeok/design-v3.md",
+          "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+          "sha256": "990600058f5c6915bb7c057800d7fa6dd4a763c789681b208cd3318544379646"
+        },
+        {
+          "path": "raw/service-snapshots/hanjeok/course-recommendation.md",
+          "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+          "sha256": "7ed36f640389aea77d7aafc412d2c4592b95b94c46d2b4427c8d5057e7eb643b"
+        },
+        {
+          "path": "raw/service-snapshots/hanjeok/api-contract-v4.md",
+          "revision": "d667c1c57df389d8665edabc9c1ffb0f67d91267",
+          "sha256": "90669792e5b7ec795a88f8063ca04532e46d88f65cc6c732a75ccc0b3243413f"
+        }
+      ]
+    },
+    {
+      "claims": [
+        {
+          "id": "records/places/gyeongbokgung.json#page",
+          "scope": "document",
+          "sha256": "c58bd01a07af5d2f22e2562bb038395f76a4ae86148fda461bf968f933c04df2",
+          "sources": [
+            {
+              "path": "raw/service-snapshots/hanjeok/attractions.fixture.json",
+              "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+              "sha256": "47038fb44696f54b516282d47dc0a6cca52fb6ae1431a2b8d6b9176a76018992"
+            }
+          ],
+          "status": "unverified"
+        }
+      ],
+      "confidence": null,
+      "contested": false,
+      "path": "records/places/gyeongbokgung.json",
+      "sha256": "c58bd01a07af5d2f22e2562bb038395f76a4ae86148fda461bf968f933c04df2",
+      "sources": [
+        {
+          "path": "raw/service-snapshots/hanjeok/attractions.fixture.json",
+          "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+          "sha256": "47038fb44696f54b516282d47dc0a6cca52fb6ae1431a2b8d6b9176a76018992"
+        }
+      ]
+    },
+    {
+      "claims": [
+        {
+          "id": "records/congestion/grade-policy.json#page",
+          "scope": "document",
+          "sha256": "2d8de214c789e69c7ce1edfb96d979af962a882ae44900fe7e785f1610302107",
+          "sources": [
+            {
+              "path": "raw/service-snapshots/hanjeok/design-v3.md",
+              "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+              "sha256": "990600058f5c6915bb7c057800d7fa6dd4a763c789681b208cd3318544379646"
+            }
+          ],
+          "status": "unverified"
+        }
+      ],
+      "confidence": null,
+      "contested": false,
+      "path": "records/congestion/grade-policy.json",
+      "sha256": "2d8de214c789e69c7ce1edfb96d979af962a882ae44900fe7e785f1610302107",
+      "sources": [
+        {
+          "path": "raw/service-snapshots/hanjeok/design-v3.md",
+          "revision": "d828f1bddbeba236d841e8e5a154df47c3f8fd41",
+          "sha256": "990600058f5c6915bb7c057800d7fa6dd4a763c789681b208cd3318544379646"
+        }
+      ]
+    },
+    {
+      "claims": [
+        {
+          "id": "packages/hanjeok/prompt.md#page",
+          "scope": "document",
+          "sha256": "45609fc7b0bafc0e9f5fce0b388cdc6d3991f5dfe207b6165ba643e0d601d264",
+          "sources": [],
+          "status": "needs-review"
+        }
+      ],
+      "confidence": null,
+      "contested": false,
+      "path": "packages/hanjeok/prompt.md",
+      "sha256": "45609fc7b0bafc0e9f5fce0b388cdc6d3991f5dfe207b6165ba643e0d601d264",
+      "sources": []
+    }
+  ],
+  "inclusionPolicy": "Full static context; contested/low/unverified/needs-review remain qualified policy context, never verified facts. Backend facts take priority.",
+  "provenanceSha256": "a3f6fe4f70038823bd2a4185d2311bf0919280998762f77e639d239a8b8d7968",
+  "schemaVersion": 1,
+  "service": "hanjeok"
+}

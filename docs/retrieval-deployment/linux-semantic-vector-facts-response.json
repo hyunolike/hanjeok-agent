@@ -1,0 +1,28 @@
+{
+  "actualHttp": true,
+  "request": {
+    "schemaVersion": 1,
+    "mode": "VECTOR",
+    "query": "경복궁 북촌 한옥마을 서촌 골목길 혼잡도 방문 순서 설명",
+    "identity": {
+      "indexVersion": "8a2d47cf23a62d18ab97f85a72245376911f3a0fbe4c4d3e1e713f0f91461ef9",
+      "bundleSha256": "ec60e6f912d16ec8d04b158504c99fc81b2c9edb6179c5da3cc0671a45b619c9",
+      "metadataSha256": "62d758526e28fff443d21a9c4beb7d7f474031d5cd5698341bb1126a0af671eb",
+      "modelRevision": "826fee3d516ebb14987355af373f5b69101c7006"
+    }
+  },
+  "response": {
+    "documents": [],
+    "identity": {
+      "bundleSha256": "ec60e6f912d16ec8d04b158504c99fc81b2c9edb6179c5da3cc0671a45b619c9",
+      "indexVersion": "8a2d47cf23a62d18ab97f85a72245376911f3a0fbe4c4d3e1e713f0f91461ef9",
+      "metadataSha256": "62d758526e28fff443d21a9c4beb7d7f474031d5cd5698341bb1126a0af671eb",
+      "modelRevision": "826fee3d516ebb14987355af373f5b69101c7006"
+    },
+    "mode": "VECTOR",
+    "reason": "FALLBACK_REQUIRED_SEED",
+    "schemaVersion": 1,
+    "status": "fallback"
+  },
+  "kotlinGuardRequiredSeedFullFallbackObserved": true
+}

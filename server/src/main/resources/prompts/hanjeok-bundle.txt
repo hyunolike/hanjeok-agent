@@ -63,7 +63,7 @@ Not allowed:
 ---
 title: Congestion Diagnosis
 created: 2026-08-03
-updated: 2026-08-19
+updated: 2026-09-21
 type: concept
 tags:
   - congestion
@@ -100,9 +100,14 @@ The raw concentration is reported alongside the grade but is not the grade's inp
 
 When an attraction has no forecast coverage the response is `hasCongestionData: false` with **HTTP 200 and success true**, carrying a message and a list of nearby diagnosable places instead of a diagnosis. Missing coverage is a product state, not a failure. An explanation layer must handle this branch: there is no grade, no percentile, and no better-date list to talk about, and inventing one is the exact failure this wiki exists to prevent.
 
+## Regional Visitor Series Is Not A Substitute
+
+[[regional-visitor-api]] is the only observed visitor series in this repository, and it is tempting to read a grade from it. It does not support one. It stops at the district, while a grade is per attraction, and its figures are modelled estimates. It can say that a district was busier than usual on a given day, not that a place inside it was.
+
 ## Related Pages
 
 - [[congestion-forecast-api]]
+- [[regional-visitor-api]]
 - [[alternative-scoring]]
 - [[course-generation-policy]]
 
@@ -257,7 +262,7 @@ The service needs deterministic behavior, public-data traceability, and reproduc
 ---
 title: Why This Place Today
 created: 2026-08-03
-updated: 2026-08-19
+updated: 2026-09-14
 type: query
 tags:
   - course-explanation
@@ -298,10 +303,10 @@ The answer should:
 - mention that alternatives were ranked by [[alternative-scoring]], and that only quiet candidates are offered
 - explain the returned visit order using [[course-generation-policy]] — it minimizes travel time from a fixed start
 - state what the reduction rate compares against: the course versus visiting the destination alone
-- avoid claiming that the LLM selected or ordered anything
 
 The answer must not:
 
+- claim that the LLM selected or ordered anything, or name the system that produced the course
 - say the crowded destination was moved later; it is always the first visit
 - give a time-of-day reason for a visit time; the times come from travel time
 - assert a weather condition, because no consumer service supplies one
@@ -384,6 +389,11 @@ The answer must not:
   "서비스" have no place in the answer, and a transliteration of one is worse than the
   word itself.
 - change visit order
+- say the crowded destination was moved to a later position. It is always the first visit —
+  the backend's own `reason` string for that item says so, and
+  `concepts/course-generation-policy.md` explains why the order cannot put it anywhere
+  else. A busy destination visited first is the whole shape of the course; describing it
+  as deferred describes a course the traveller was not given.
 - invent a diagnosis when there is none. When `congestion.hasCongestionData` is false the
   place has no forecast for that date: there is no grade, no percentile, no concentration,
   and no better-date list to discuss. Say plainly that this day has no forecast for it —
@@ -485,4 +495,14 @@ Cite only the documents you actually used. A citation naming anything that is no
 those separator-line paths is rejected before the answer reaches anyone, and the whole
 answer is discarded with it — a source that cannot be verified is treated exactly like an
 invented one.
+
+## 출처 상태와 정책 인용
+
+이 번들의 canonical/record 내용은 정책 맥락이며 초기 출처 연결 상태는 미검증이다.
+low confidence 또는 contested 내용은 검증된 사실로 단정하지 않는다. 실제 코스와
+날짜의 값은 backend facts에서만 읽는다. 자료 조회 시각이 과거 예보를 오늘의 관측으로
+바꾸지 않는다. Hanjeok에 날씨 facts가 없으면 날씨를 주장하지 않는다.
+혼잡도나 백분위 설명은 `concepts/congestion-diagnosis.md`, 대안의 점수/선정 정책은
+`concepts/alternative-scoring.md`를 인용한다. 유효한 다른 경로만으로 대신하지 않는다.
+경로 인용과 주제 검사는 전체 문장의 의미적 정답을 보장하는 승인이 아니다.
 

@@ -83,4 +83,10 @@ class ExplanationServiceTest {
 
         assertThat((svc.explain(facts) as Unavailable).reason).contains("timeout after 8s")
     }
+
+    @Test
+    fun `존재하는 무관한 인용도 설명을 내보내지 않는다`() {
+        val (svc, _) = service(answered("concepts/travel-context-layer.md"))
+        assertThat((svc.explain(facts) as Unavailable).reason).startsWith("citations missing policy support:")
+    }
 }

@@ -1,0 +1,6 @@
+__pycache__/
+.venv*/
+indexes/
+models/
+artifact/
+wheelhouse/

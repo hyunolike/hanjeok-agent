@@ -1,0 +1,81 @@
+{
+  "actualPlatform": "linux/arm64",
+  "fullSemanticImageActuallyRun": true,
+  "linuxCandidateVersion": "8a2d47cf23a62d18ab97f85a72245376911f3a0fbe4c4d3e1e713f0f91461ef9",
+  "modelRevision": "826fee3d516ebb14987355af373f5b69101c7006",
+  "torchPin": "2.14.1+cpu",
+  "builderGuardTests": 13,
+  "pythonApiTests": 19,
+  "jvmTests": 339,
+  "labBaselineTests": 34,
+  "candidateFixtureCount": 35,
+  "candidateValidationRows": 70,
+  "modes": {
+    "hybrid": {
+      "fixtureCount": 35,
+      "routeChecks": 105,
+      "deterministicChecks": 35,
+      "actualHttpAndSearch": true,
+      "actualKotlinCitations": true,
+      "factsExplain": {
+        "fixture": "harness/fixtures/course-explanation-request.json",
+        "query": "경복궁 북촌 한옥마을 서촌 골목길 혼잡도 방문 순서 설명",
+        "decision": "SELECTED",
+        "actualSelectorAndFactsNormalizer": true,
+        "actualResponseReason": "",
+        "expectedRequiredSeedFallback": false,
+        "actualHttpAndCitationGate": true,
+        "providerCalls": 1
+      },
+      "decisions": {
+        "ABSTAIN": 5,
+        "FULL_FALLBACK": 14,
+        "SELECTED": 16
+      }
+    },
+    "vector": {
+      "fixtureCount": 35,
+      "routeChecks": 105,
+      "deterministicChecks": 35,
+      "actualHttpAndSearch": true,
+      "actualKotlinCitations": true,
+      "factsExplain": {
+        "fixture": "harness/fixtures/course-explanation-request.json",
+        "query": "경복궁 북촌 한옥마을 서촌 골목길 혼잡도 방문 순서 설명",
+        "decision": "FULL_FALLBACK",
+        "actualSelectorAndFactsNormalizer": true,
+        "actualResponseReason": "FALLBACK_REQUIRED_SEED",
+        "expectedRequiredSeedFallback": true,
+        "actualHttpAndCitationGate": true,
+        "providerCalls": 1
+      },
+      "decisions": {
+        "ABSTAIN": 5,
+        "FULL_FALLBACK": 16,
+        "SELECTED": 14
+      }
+    }
+  },
+  "ragasLinuxRun": false,
+  "preservedNativeRagasVersion": "0.3.9",
+  "llmOrJudgeCalls": 0,
+  "semanticImageCloudRunCompatibleArchitecture": false,
+  "amd64ImageRun": false,
+  "productionCloudIamAndReaderAclValidated": false,
+  "cloudOperationsExecuted": false,
+  "newPushOrPRCreated": false,
+  "originalFeaturePRsExternallyMerged": true,
+  "operationalAgent": "ea47917",
+  "operationalMode": "FULL",
+  "newImagesGenerated": false,
+  "removedRedundantImagesAndRestoredExisting3d": true,
+  "ownedCleanupCompleted": true,
+  "remainingFreeDiskGiB": 14.62,
+  "readmeLocalLinkTargets": 182,
+  "readmeLocalLinkFailures": 0,
+  "jvmActualFinalTests": 339,
+  "jvmFailures": 0,
+  "wikiSmokePythonTests": 8,
+  "wikiCanonicalPagesChecked": 18,
+  "wikiStaticIndexDrift": false
+}

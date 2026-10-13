@@ -1,0 +1,9 @@
+allprojects {
+    tasks.register('retrievalCitationCheck', JavaExec) {
+        dependsOn tasks.named('harnessClasses')
+        classpath = sourceSets.harness.runtimeClasspath
+        mainClass = 'com.hermes.harness.RetrievalCitationCheckMainKt'
+        args project.findProperty('retrievalResults') ?: 'experiments/retrieval/results/results.json'
+        args project.findProperty('retrievalCitationOutput') ?: 'experiments/retrieval/results/citation-validation.json'
+    }
+}

@@ -1,0 +1,2 @@
+# Keep the timestamped terminal progress separator verbatim as forensic evidence.
+docs/retrieval-deployment/amd64-container-stderr.txt -whitespace

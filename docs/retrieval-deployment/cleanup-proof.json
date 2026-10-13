@@ -1,0 +1,34 @@
+{
+  "nativePids": [
+    {
+      "pid": 96210,
+      "port": 17782,
+      "terminated": true
+    },
+    {
+      "pid": 96348,
+      "port": 17783,
+      "terminated": true
+    }
+  ],
+  "dockerContainers": [
+    "hanjeok-retrieval-api-task8",
+    "hanjeok-retrieval-task8"
+  ],
+  "removedImages": [
+    "sha256:f07a1ba5b600ca75655e0c499ded857849cca537ad3391a04c332275d6655c67",
+    "sha256:b58fe4874bb86d664a3abbe2bd5ed56f8c5449735fa17f8644aaf9bc1f8a1c87"
+  ],
+  "unrelatedServicesModified": false,
+  "networkRemoved": "hanjeok-retrieval-task8-net",
+  "ownedPortsClosed": [
+    17782,
+    17783,
+    17880,
+    17687
+  ],
+  "remainingContainers": [
+    "ogu-b7-redis",
+    "ogu-b7-pg"
+  ]
+}

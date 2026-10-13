@@ -1,0 +1,51 @@
+{
+  "purpose": "New main-based Draft PR; no merge or operational deployment",
+  "originalBranches": {
+    "agent": {
+      "branch": "local/retrieval-deployment-ready",
+      "head": "245d109f676ba4e47470bf54d4140837c8c4c638"
+    },
+    "wiki": {
+      "branch": "local/wiki-selection-docs",
+      "head": "470f27ea4f6171a97b6067e2114b1caed798829f"
+    }
+  },
+  "publicationBranches": {
+    "agent": "pr/retrieval-api-readiness",
+    "wiki": "pr/retrieval-readme-mermaid"
+  },
+  "baseMain": {
+    "agent": "54f4bfc6b725167329418c08e15104f8685a49f1",
+    "wiki": "e92675aa8f3f75316c97c83a5518af62734320c7"
+  },
+  "squashBasesSameTree": true,
+  "cherryPickConflicts": false,
+  "treeBeforeStatusDocsMatchesOriginal": true,
+  "ciTriggers": {
+    "agent": "pull_request: server Gradle build + server Docker build, frontend typecheck/test/build; no deploy job; Vercel may auto Preview",
+    "wiki": "pull_request: smoke/index only; scheduled collectors/stats not invoked"
+  },
+  "snapshotNote": "verification.json and copied wiki snapshot describe pre-publication local execution; no-follow-up-push flags are historical, not current PR state",
+  "newCredentialsResourcesPaidCallsMergeProductionDeployment": false,
+  "localPublicationValidation": {
+    "pythonApi": 19,
+    "retrievalLab": 34,
+    "jvm": {
+      "tests": 339,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "jvmSuites": 56,
+    "gradleBuildCacheUsed": false,
+    "bootJar": true,
+    "offlineOriginalFixtures": 29,
+    "offlineRows": 58,
+    "wikiTests": 8,
+    "wikiCanonicalPages": 18,
+    "wikiIndexCheck": true,
+    "mermaidDiagrams": 35,
+    "localReferences": 205,
+    "localReferenceFailures": 0
+  }
+}

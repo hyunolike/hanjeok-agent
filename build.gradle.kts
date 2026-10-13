@@ -34,6 +34,12 @@ val harnessImplementation: Configuration by configurations.getting {
     extendsFrom(configurations.implementation.get())
 }
 
+// Compile the offline experiment for its tests; this does not run the paid eval entry point.
+sourceSets.test {
+    compileClasspath += sourceSets["harness"].output
+    runtimeClasspath += sourceSets["harness"].output
+}
+
 repositories { mavenCentral() }
 
 dependencyManagement {
@@ -61,7 +67,16 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
 }
 
-tasks.test { useJUnitPlatform() }
+tasks.test {
+    useJUnitPlatform()
+    // These tests read versioned fixtures from disk, outside the compiled classpath.
+    inputs.dir("harness/fixtures/context-selection")
+        .withPropertyName("offlineContextFixtures")
+        .withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.file("harness/fixtures/course-explanation-request.json")
+        .withPropertyName("offlineBaseFactsFixture")
+        .withPathSensitivity(PathSensitivity.RELATIVE)
+}
 
 /**
  * 프로젝트 루트의 `.env` 를 읽어 돈 쓰는 태스크에만 환경변수로 넘긴다.
@@ -147,10 +162,30 @@ tasks.register<JavaExec>("eval") {
     applyDotEnv()
 }
 
+tasks.register<JavaExec>("offlineContextEval") {
+    group = "verification"
+    description = "Compare FULL and SELECTED_EXPERIMENT with scripted ports only; no network or credentials."
+    classpath = sourceSets["harness"].runtimeClasspath
+    mainClass.set("com.hermes.harness.OfflineContextEvalMainKt")
+}
+
 tasks.register<JavaExec>("demoReachability") {
     group = "verification"
     description = "고정 데모 코스가 한적에서 아직 조회되는지 확인한다. 한적 호출이 발생한다."
     classpath = sourceSets["harness"].runtimeClasspath
     mainClass.set("com.hermes.harness.DemoReachabilityMainKt")
     applyDotEnv()
+}
+
+// Explicit localhost integration only; does not load .env or call a model provider.
+tasks.register<JavaExec>("retrievalServiceE2e") {
+    group = "verification"
+    classpath = sourceSets["harness"].runtimeClasspath
+    mainClass.set("com.hermes.harness.RetrievalServiceE2eMainKt")
+}
+
+tasks.register<JavaExec>("retrievalRecoverySmoke") {
+    group = "verification"
+    classpath = sourceSets["harness"].runtimeClasspath
+    mainClass.set("com.hermes.harness.RetrievalRecoverySmokeMainKt")
 }

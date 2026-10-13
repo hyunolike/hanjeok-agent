@@ -5,6 +5,7 @@ import com.hermes.explain.CourseExplainer
 import com.hermes.explain.CourseExplanation
 import com.hermes.explain.ExplanationUnavailableException
 import com.hermes.llm.Explanation
+import java.time.Instant
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
@@ -29,7 +30,11 @@ class ExplainControllerTest {
             CourseExplanation(
                 explanation = Explanation("경복궁은 붐빕니다.", listOf("concepts/congestion-diagnosis.md")),
                 factsJson = """{"items":[{"name":"경복궁"}]}""",
-                cached = false,
+                cached = true,
+                generatedAt = Instant.parse("2026-10-09T00:00:00Z"),
+                retrievedAt = Instant.parse("2026-10-09T00:01:00Z"),
+                factsSha256 = "facts-hash",
+                bundleSha256 = "bundle-hash",
             ),
         )
 
@@ -43,6 +48,11 @@ class ExplainControllerTest {
             // 프론트가 코스를 그리려면 facts 가 필요하다 — 그래야 한적을 직접 안 부른다.
             .andExpect(jsonPath("$.facts.items[0].name").value("경복궁"))
             .andExpect(jsonPath("$.model").value("claude-opus-5"))
+            .andExpect(jsonPath("$.generatedAt").value("2026-10-09T00:00:00Z"))
+            .andExpect(jsonPath("$.retrievedAt").value("2026-10-09T00:01:00Z"))
+            .andExpect(jsonPath("$.cached").value(true))
+            .andExpect(jsonPath("$.factsSha256").value("facts-hash"))
+            .andExpect(jsonPath("$.bundleSha256").value("bundle-hash"))
     }
 
     @Test

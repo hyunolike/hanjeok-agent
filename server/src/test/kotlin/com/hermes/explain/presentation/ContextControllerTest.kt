@@ -70,4 +70,14 @@ class ContextControllerTest {
     fun `상위 디렉터리 탈출을 허용하지 않는다`() {
         mvc.perform(get("/agent/context/../../build.gradle.kts")).andExpect(status().isNotFound)
     }
+
+    @Test
+    fun `번들에 연결된 출처 계약은 본문과 별도 JSON 으로 노출한다`() {
+        mvc.perform(get("/agent/provenance"))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.bundleSha256").value(bundle.sha256))
+            .andExpect(jsonPath("$.documents.length()").value(9))
+            .andExpect(jsonPath("$.documents[0].claims[0].status").value("unverified"))
+            .andExpect(content().string(bundle.metadataJson!!))
+    }
 }

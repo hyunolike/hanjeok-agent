@@ -85,12 +85,18 @@ class AgentLoop(
     // 기본값은 무동작이다. 운영 배선은 이 인자를 주지 않는다.
     private val observer: LoopObserver = LoopObserver { },
 ) {
+    private var selectedEvidence = false
+
+    /** Each request owns its validator, including repair attempts; shared loop state is untouched. */
+    fun withValidator(requestValidator: CitationValidator): AgentLoop =
+        AgentLoop(provider, requestValidator, toolRunner, clock, maxToolRounds, deadlineMs, observer).also { it.selectedEvidence = true }
 
     fun run(
         systemText: String,
         baseUserText: String,
         bounds: CourseBounds,
         facts: ToolFacts,
+        citationContext: String = "",
         emit: (AskStreamEvent) -> Unit,
     ) {
         val startedAt = clock.millis()
@@ -104,7 +110,7 @@ class AgentLoop(
             if (outOfBudget) observer.note(LoopSignal.BUDGET_EXHAUSTED)
             val tools = if (outOfBudget) emptyList() else CourseTools.specs()
 
-            when (val outcome = attempt(systemText, turns, tools, bounds, facts, emit)) {
+            when (val outcome = attempt(systemText, turns, tools, bounds, facts, citationContext, emit)) {
                 is Continued -> {
                     turns.add(ToolCallTurn(outcome.calls))
                     turns.add(ToolResultTurn(outcome.results))
@@ -116,7 +122,7 @@ class AgentLoop(
                 // 인용이 틀린 것은 사실이 모자라서가 아니라 경로를 잘못 적어서다.
                 // 수리는 인용 무효에만 있고, 딱 한 번이며, 도구를 싣지 않는다.
                 is NeedsRepair -> {
-                    repair(systemText, turns, outcome.reason, startedAt, bounds, facts, emit)
+                    repair(systemText, turns, outcome.reason, startedAt, bounds, facts, citationContext, emit)
                     return
                 }
             }
@@ -137,6 +143,7 @@ class AgentLoop(
         startedAt: Long,
         bounds: CourseBounds,
         facts: ToolFacts,
+        citationContext: String = "",
         emit: (AskStreamEvent) -> Unit,
     ) {
         // 마감은 도구 라운드와 수리가 **함께** 쓴다. 59초에 시작한 수리는 SSE 에미터의
@@ -153,7 +160,7 @@ class AgentLoop(
         observer.note(LoopSignal.REPAIR_ASKED)
         turns.add(UserTurn(repairText(reason)))
 
-        when (val repaired = attempt(systemText, turns, emptyList(), bounds, facts, emit)) {
+        when (val repaired = attempt(systemText, turns, emptyList(), bounds, facts, citationContext, emit)) {
             // 두 번째도 인용이 무효다. 이번엔 삼키지 않는다 — 수리는 한 번뿐이다.
             is NeedsRepair -> emit(UnavailableEvent(repaired.reason, FailureCause.INVALID_CITATIONS))
             is Closed -> Unit
@@ -195,6 +202,7 @@ class AgentLoop(
         tools: List<ToolSpec>,
         bounds: CourseBounds,
         facts: ToolFacts,
+        citationContext: String = "",
         emit: (AskStreamEvent) -> Unit,
     ): Attempt {
         val parser = AskStreamParser()
@@ -203,7 +211,7 @@ class AgentLoop(
         // 문구를 다듬는 순간 조용히 깨진 적이 있다.
         var repairReason: String? = null
         var terminated = false
-        val gate = AskStreamGate(validator) { event ->
+        val gate = AskStreamGate(validator, citationContext) { event ->
             if (event is UnavailableEvent && event.cause == FailureCause.INVALID_CITATIONS) {
                 repairReason = event.reason
             } else {
@@ -314,7 +322,8 @@ class AgentLoop(
 
     private fun repairText(reason: String): String =
         "직전 답의 인용이 유효하지 않다: $reason\n" +
-            "system 블록의 `----- FILE: 경로 -----` 마커에 실제로 있는 경로만 citations 에 넣어 다시 답하라."
+            if (selectedEvidence) "이 요청의 system 정책 마커와 user 검색 근거 JSON에 실제로 제공된 ID만 citations 에 넣어 다시 답하라."
+            else "system 블록의 `----- FILE: 경로 -----` 마커에 실제로 있는 경로만 citations 에 넣어 다시 답하라."
 
     private fun quote(text: String): String = MAPPER.writeValueAsString(text)
 

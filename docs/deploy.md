@@ -171,3 +171,17 @@ HERMES_DEMO_COURSES="129efdef-41ec-4044-ac87-303abe4ccdde|덕수궁, e66302c6-b4
 
 코스가 삭제되면 데모가 깨진다. 이건 결함이 아니라 "사실은 백엔드에서만 온다"를 지킨
 대가이고, 조용히 깨지지 않도록 이 검사가 있다.
+
+## 별도 검색 API 후속 코드 — 아직 운영 미배포
+
+현재 운영 기본값 FULL과 운영 배포는 유지합니다. 이 로컬 브랜치의 [검색 서비스 준비 문서](../deployment/retrieval/README.md)는 별도 private Python API, 고정 인덱스 수동 검증/공개/롤백, 요청별 인용 검증을 설명합니다. 새 코드의 cloud IAM/Enterprise reader 권한/이미지 빌드/실제 배포는 미검증·미실행이며 별도 승인이 필요합니다.
+
+| 변수 | 기본값 / 의미 |
+| --- | --- |
+| `HERMES_RETRIEVAL_MODE` | `FULL`; 명시적으로만 `VECTOR` / `HYBRID_GRAPH` 사용 |
+| `HERMES_RETRIEVAL_URL` | 비어 있음; 선택 모드에서 승인된 private HTTPS origin |
+| `HERMES_RETRIEVAL_INDEX_VERSION` | 비어 있음; 검증된 immutable manifest SHA-256 |
+| `HERMES_RETRIEVAL_MODEL_REVISION` | 비어 있음; `tfidf-v1` 또는 고정 semantic revision |
+| `HERMES_RETRIEVAL_AUTH_MODE` | `cloud-run-iam`; 기존 attached identity의 ID token 사용 |
+
+로컬 모드만 `loopback-test`와 `HERMES_RETRIEVAL_LOCAL_TOKEN`을 사용하며 K_SERVICE가 있으면 거부합니다. 실제 비밀 값은 저장하거나 출력하지 않습니다. FULL에서는 검색 HTTP/metadata token 호출이 없습니다. API 장애·핀 불일치에는 검증된 FULL로 복구하고, 원본 FULL이 손상됐으면 기동에서 실패합니다.

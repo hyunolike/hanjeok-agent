@@ -1,0 +1,189 @@
+{
+  "server": {
+    "versions": [
+      "5.26.31"
+    ],
+    "edition": "community"
+  },
+  "uri": "bolt://127.0.0.1:17687",
+  "namespace": "retrieval-lab:ec60e6f912d16ec8d04b158504c99fc81b2c9edb6179c5da3cc0671a45b619c9",
+  "inventory": {
+    "nodes": 15,
+    "edges": 22
+  },
+  "realSingletonQueries": 15,
+  "singletonChecks": [
+    {
+      "seed": "document:concepts/alternative-scoring.md",
+      "ids": [
+        "concepts/alternative-scoring.md",
+        "concepts/congestion-diagnosis.md",
+        "concepts/course-generation-policy.md",
+        "concepts/travel-context-layer.md",
+        "decisions/keep-llm-out-of-ranking.md",
+        "queries/why-this-place-today.md",
+        "records/congestion/grade-policy.json",
+        "records/places/gyeongbokgung.json"
+      ],
+      "matched": true
+    },
+    {
+      "seed": "document:concepts/congestion-diagnosis.md",
+      "ids": [
+        "concepts/alternative-scoring.md",
+        "concepts/congestion-diagnosis.md",
+        "concepts/course-generation-policy.md",
+        "concepts/travel-context-layer.md",
+        "decisions/keep-llm-out-of-ranking.md",
+        "queries/why-this-place-today.md",
+        "records/congestion/grade-policy.json"
+      ],
+      "matched": true
+    },
+    {
+      "seed": "document:concepts/course-generation-policy.md",
+      "ids": [
+        "concepts/alternative-scoring.md",
+        "concepts/congestion-diagnosis.md",
+        "concepts/course-generation-policy.md",
+        "concepts/travel-context-layer.md",
+        "decisions/keep-llm-out-of-ranking.md",
+        "queries/why-this-place-today.md",
+        "records/congestion/grade-policy.json"
+      ],
+      "matched": true
+    },
+    {
+      "seed": "document:concepts/travel-context-layer.md",
+      "ids": [
+        "concepts/alternative-scoring.md",
+        "concepts/congestion-diagnosis.md",
+        "concepts/course-generation-policy.md",
+        "concepts/travel-context-layer.md",
+        "decisions/keep-llm-out-of-ranking.md",
+        "queries/why-this-place-today.md",
+        "records/congestion/grade-policy.json"
+      ],
+      "matched": true
+    },
+    {
+      "seed": "document:decisions/keep-llm-out-of-ranking.md",
+      "ids": [
+        "concepts/alternative-scoring.md",
+        "concepts/congestion-diagnosis.md",
+        "concepts/course-generation-policy.md",
+        "concepts/travel-context-layer.md",
+        "decisions/keep-llm-out-of-ranking.md",
+        "queries/why-this-place-today.md",
+        "records/congestion/grade-policy.json"
+      ],
+      "matched": true
+    },
+    {
+      "seed": "document:queries/why-this-place-today.md",
+      "ids": [
+        "concepts/alternative-scoring.md",
+        "concepts/congestion-diagnosis.md",
+        "concepts/course-generation-policy.md",
+        "concepts/travel-context-layer.md",
+        "decisions/keep-llm-out-of-ranking.md",
+        "queries/why-this-place-today.md",
+        "records/congestion/grade-policy.json"
+      ],
+      "matched": true
+    },
+    {
+      "seed": "document:records/congestion/grade-policy.json",
+      "ids": [
+        "concepts/alternative-scoring.md",
+        "concepts/congestion-diagnosis.md",
+        "concepts/course-generation-policy.md",
+        "concepts/travel-context-layer.md",
+        "decisions/keep-llm-out-of-ranking.md",
+        "queries/why-this-place-today.md",
+        "records/congestion/grade-policy.json"
+      ],
+      "matched": true
+    },
+    {
+      "seed": "document:records/places/gyeongbokgung.json",
+      "ids": [
+        "concepts/alternative-scoring.md",
+        "records/places/gyeongbokgung.json"
+      ],
+      "matched": true
+    },
+    {
+      "seed": "place:tourapi:sample-gyeongbokgung",
+      "ids": [
+        "records/places/gyeongbokgung.json"
+      ],
+      "matched": true
+    },
+    {
+      "seed": "region:region:seoul-jongno",
+      "ids": [
+        "records/places/gyeongbokgung.json"
+      ],
+      "matched": true
+    },
+    {
+      "seed": "source:4e77ff4cd81b58a0e27a95f50aa24afb391c3753b7c935b682048193984a5e66",
+      "ids": [
+        "concepts/travel-context-layer.md",
+        "decisions/keep-llm-out-of-ranking.md"
+      ],
+      "matched": true
+    },
+    {
+      "seed": "source:5778bf2c321678c699f42430a3ae4fe73e7dbfb959c8df5c665aad9f24e58711",
+      "ids": [
+        "concepts/alternative-scoring.md",
+        "concepts/congestion-diagnosis.md",
+        "concepts/course-generation-policy.md",
+        "concepts/travel-context-layer.md",
+        "decisions/keep-llm-out-of-ranking.md",
+        "queries/why-this-place-today.md",
+        "records/congestion/grade-policy.json"
+      ],
+      "matched": true
+    },
+    {
+      "seed": "source:63d63ab08691bbcf6b125ea7b483df47c95fe74776f42ad9e74de0222c075d13",
+      "ids": [
+        "concepts/alternative-scoring.md",
+        "records/places/gyeongbokgung.json"
+      ],
+      "matched": true
+    },
+    {
+      "seed": "source:bc7d7fedbf4991bf2b9ab074ba5167f5ec5d5d17c917431007c18d5c7e9914e7",
+      "ids": [
+        "concepts/alternative-scoring.md",
+        "concepts/congestion-diagnosis.md",
+        "concepts/course-generation-policy.md",
+        "queries/why-this-place-today.md"
+      ],
+      "matched": true
+    },
+    {
+      "seed": "source:c0a179a6841ea6752118d413efaad4f7c483dd9938338b02e7b49b11a52f0f30",
+      "ids": [
+        "concepts/alternative-scoring.md",
+        "concepts/congestion-diagnosis.md",
+        "concepts/course-generation-policy.md",
+        "concepts/travel-context-layer.md",
+        "queries/why-this-place-today.md"
+      ],
+      "matched": true
+    }
+  ],
+  "syntheticIsolationPassed": true,
+  "realTamperedResponseRejections": [
+    "sha256",
+    "source_signatures"
+  ],
+  "driverIntegration": "actual server queries, not mocks",
+  "maxHops": 2,
+  "maxDocuments": 9
+}

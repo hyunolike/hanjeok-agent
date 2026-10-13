@@ -108,7 +108,7 @@ object ForbiddenBehaviours {
      * 판별해 집계한다.
      */
     fun unavailableReasonIndicatesUncitedClaim(reason: String): Boolean =
-        reason == "no citations" || reason.startsWith("citations not in bundle:")
+        reason == "no citations" || reason.startsWith("citations not in bundle:") || reason.startsWith("citations missing policy support:")
 
     /**
      * facts 트리 어디에 있든 `name` 을 전부 모은다 — `items`/`alternatives` 뿐 아니라

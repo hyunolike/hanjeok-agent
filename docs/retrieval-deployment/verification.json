@@ -1,0 +1,282 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "aaed27772a48e19c465cab6b37717b6909c807d7",
+  "branch": "local/retrieval-deployment-ready",
+  "productionDefault": "FULL",
+  "runtimeSemanticActuallyExecuted": true,
+  "runtimeTfidfActuallyExecuted": true,
+  "pythonApiTests": {
+    "tests": 19,
+    "failures": 0,
+    "errors": 0
+  },
+  "jvmTests": {
+    "tests": 339,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suites": 56
+  },
+  "offlineOriginalFixtures": 29,
+  "offlineRows": 58,
+  "indexValidation": {
+    "tfidf": {
+      "indexVersion": "914dcc6488890edaa2c9d8743013d2ef6c1edd9e655994fef50a84d74d4d0b17",
+      "fixtureCount": 35,
+      "validationRows": 70,
+      "actualSemanticBuild": false
+    },
+    "semantic": {
+      "indexVersion": "80dd5ab3b1ac4d73f74742ee880f2c5fdc04b2083079f19d17f07c37b00c95a5",
+      "fixtureCount": 35,
+      "validationRows": 70,
+      "actualSemanticBuild": true,
+      "separateBuildSameImmutableVersion": true
+    }
+  },
+  "packagePreparation": {
+    "tfidfContextStaged": true,
+    "semanticIndexAndModelVerified": true,
+    "syntax": true,
+    "linuxImageBuilt": true,
+    "wheelhouseSupplied": true,
+    "baseImageDigestPinned": true,
+    "linuxArchitecture": "arm64",
+    "semanticLinuxImageBuilt": false
+  },
+  "graph": {
+    "newApiNeo4jIntegrationExecuted": true,
+    "candidateHybridValidation": "in_process_contract",
+    "priorActualIntegrationEvidence": "experiments/retrieval/results/neo4j-validation.json",
+    "productionReaderPrivilege": "mock contract only; actual Enterprise role unexecuted",
+    "maxHops": 2,
+    "maxDocuments": 9
+  },
+  "notExecuted": [
+    "follow-up push/PR/merge",
+    "cloud resource provisioning",
+    "credential creation/configuration",
+    "cloud IAM/invoker policy changes or verification",
+    "production Neo4j reader-role integration",
+    "deployment/traffic switching",
+    "paid LLM/embedding/judge calls",
+    "external corpus upload",
+    "separate Hanjeok DB/SMTP rollout",
+    "full Linux semantic image: CPU wheel 2.14.1+cpu differs from preserved exact 2.14.1 index pin; fresh Linux CPU candidate required"
+  ],
+  "protectedFiles": {
+    "server/src/main/resources/prompts/hanjeok-bundle.txt": "ec60e6f912d16ec8d04b158504c99fc81b2c9edb6179c5da3cc0671a45b619c9",
+    "server/src/main/resources/prompts/hanjeok-bundle.meta.json": "62d758526e28fff443d21a9c4beb7d7f474031d5cd5698341bb1126a0af671eb",
+    "harness/fixtures/context-selection/suite.json": "5fa1bf07aa42fde612ddcf8fa167eae3527c25094229d559468b4857f19cb401",
+    "experiments/retrieval/fixtures/graph-cases.json": "2be1e545f4c98c64c21af8337f10ac2a2a883325404d2367ba370545e812e2cb"
+  },
+  "freshReview": {
+    "reviewer": "fresh read-only gpt-6-astra agent",
+    "reviewedRange": "915c91db4338280a2282e88a25c4b1c0472b158a..fa0ccce391b85a8a9b354e1af565d5d84fe451e5",
+    "critical": 0,
+    "importantAsReported": 0,
+    "independentPythonTests": 18,
+    "reportedMinor": "graph-load-only incorrectly claimed actualHttp true",
+    "authorRegradedImportant": "false actual execution evidence conflicts with required actual/unexecuted distinction",
+    "fixed": "test_graph_load_only_does_not_claim_http_execution RED (True is not false) -> GREEN, full Python19/19",
+    "remainingDeferredMinors": [],
+    "declinedToJudge": [
+      "live Docker cleanup",
+      "independent JVM/container E2E reproduction",
+      "cloud IAM/private networking",
+      "Enterprise reader ACL",
+      "Linux semantic image",
+      "answer quality"
+    ]
+  },
+  "existingPRs": {
+    "agent": {
+      "url": "https://github.com/hyunolike/hanjeok-agent/pull/13",
+      "head": "aaed27772a48e19c465cab6b37717b6909c807d7",
+      "ci": "https://github.com/hyunolike/hanjeok-agent/actions/runs/38016421342",
+      "status": "success",
+      "stateObserved": "MERGED",
+      "mergePerformedByThisFollowup": false
+    },
+    "wiki": {
+      "url": "https://github.com/hyunolike/travel-context-wiki/pull/32",
+      "head": "99b7d87723a0f7b64441404e85c20bdc9779bb59",
+      "ci": "https://github.com/hyunolike/travel-context-wiki/actions/runs/38016429004",
+      "status": "success",
+      "stateObserved": "MERGED",
+      "mergePerformedByThisFollowup": false
+    }
+  },
+  "existingPRStateNote": "Read-only observation after implementation; prior same-head PRs merged outside this follow-up. No claim about current cloud production revision.",
+  "remoteMainObserved": {
+    "agent": "54f4bfc6b725167329418c08e15104f8685a49f1",
+    "wiki": "e92675aa8f3f75316c97c83a5518af62734320c7",
+    "note": "Read-only state; merges occurred outside this follow-up; current cloud production not inspected."
+  },
+  "ownedTemporaryApiServersStopped": true,
+  "gapClosure": {
+    "baseCommit": "915c91db4338280a2282e88a25c4b1c0472b158a",
+    "pythonApiTests": 19,
+    "jvmTests": {
+      "tests": 339,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "originalOfflineFixtures": 29,
+    "offlineRows": 58,
+    "cacheOverlap": "latch-controlled simultaneous selected/FULL fallback, independent model calls and cached responses; missing-context-key mutation assertion failed, original code restored and suite green",
+    "factsExplain": "actual FactsNormalizer/fixture -> production query construction -> real selector/HTTP -> actual CitationValidator; SELECTED, scripted provider; verified on all three E2Es",
+    "actualNeo4jApiE2E": [
+      "native TF-IDF",
+      "native pinned CPU semantic",
+      "Linux ARM64 TF-IDF image"
+    ],
+    "fixturesPerE2E": 35,
+    "requestRouteChecksPerE2E": 105,
+    "extraActualFactsExplainPerE2E": 1,
+    "actualLinuxImage": {
+      "actualLinuxImage": true,
+      "actualNeo4j": true,
+      "llmCalls": 0,
+      "healthAndPinnedProvenance": true,
+      "schemaAuthBoundsAndStalePinsRejected": true,
+      "actualSlowBodyDeadlineSeconds": 2.018,
+      "actualUid": 10001,
+      "immutableIndexWriteRejected": true,
+      "actualGraphTamperReadyDownRetrievalRejectedAndKotlinRecovered": true,
+      "readyRecoveredAfterGraphRestore": true,
+      "image": "sha256:b58fe4874bb86d664a3abbe2bd5ed56f8c5449735fa17f8644aaf9bc1f8a1c87",
+      "actualCorruptedIndexStartupRejected": true,
+      "negativeArtifactInjection": "own stopped container writable layer via docker cp; no host mount",
+      "linuxSemanticCpuWheel": {
+        "officialWheel": "torch-2.14.1+cpu-cp312-cp312-manylinux_2_28_aarch64.whl",
+        "declaredVersion": "2.14.1+cpu",
+        "preservedIndexTorchPin": "2.14.1",
+        "compatibleWithPreservedExactPin": false,
+        "fullSemanticLinuxImageRun": false
+      },
+      "hostBindMountAttempt": "Docker Desktop create timed out before object creation twice (15s/30s); no host mount made; avoided using docker cp"
+    },
+    "fixedDefects": [
+      "readiness only checked graph connectivity; now rechecks all eight source-backed document IDs/hash/source pins/namespace",
+      "JDK client attempted h2c upgrade against ASGI h11; now explicit HTTP1 with RED/GREEN contract"
+    ],
+    "cloudIamAndProductionReaderCredentialsConfigured": false,
+    "remotePushOrDeployment": false,
+    "freshReview": {
+      "reviewer": "fresh read-only gpt-6-astra agent",
+      "reviewedRange": "915c91db4338280a2282e88a25c4b1c0472b158a..fa0ccce391b85a8a9b354e1af565d5d84fe451e5",
+      "critical": 0,
+      "importantAsReported": 0,
+      "independentPythonTests": 18,
+      "reportedMinor": "graph-load-only incorrectly claimed actualHttp true",
+      "authorRegradedImportant": "false actual execution evidence conflicts with required actual/unexecuted distinction",
+      "fixed": "test_graph_load_only_does_not_claim_http_execution RED (True is not false) -> GREEN, full Python19/19",
+      "remainingDeferredMinors": [],
+      "declinedToJudge": [
+        "live Docker cleanup",
+        "independent JVM/container E2E reproduction",
+        "cloud IAM/private networking",
+        "Enterprise reader ACL",
+        "Linux semantic image",
+        "answer quality"
+      ]
+    },
+    "cleanup": {
+      "nativePids": [
+        {
+          "pid": 96210,
+          "port": 17782,
+          "terminated": true
+        },
+        {
+          "pid": 96348,
+          "port": 17783,
+          "terminated": true
+        }
+      ],
+      "dockerContainers": [
+        "hanjeok-retrieval-api-task8",
+        "hanjeok-retrieval-task8"
+      ],
+      "removedImages": [
+        "sha256:f07a1ba5b600ca75655e0c499ded857849cca537ad3391a04c332275d6655c67",
+        "sha256:b58fe4874bb86d664a3abbe2bd5ed56f8c5449735fa17f8644aaf9bc1f8a1c87"
+      ],
+      "unrelatedServicesModified": false,
+      "networkRemoved": "hanjeok-retrieval-task8-net",
+      "ownedPortsClosed": [
+        17782,
+        17783,
+        17880,
+        17687
+      ],
+      "remainingContainers": [
+        "ogu-b7-redis",
+        "ogu-b7-pg"
+      ]
+    }
+  },
+  "mergeRelationship": {
+    "branchForkBase": "aaed27772a48e19c465cab6b37717b6909c807d7",
+    "remoteMainSquashMerge": "54f4bfc6b725167329418c08e15104f8685a49f1",
+    "squashMergeParent": "ea47917fd6e031b0f2c6ae387249dabd690d2aed",
+    "sameTreeAtForkAndMergedMain": "52bc832cec0baeae2e947004f5979e93204850a4",
+    "forkHeadIsDirectAncestorOfSquashMain": false,
+    "operation": "fetch/read only; no rebase, merge, reset, main overwrite or push"
+  },
+  "baselineActualApiE2eAt915c91d": {
+    "backends": 2,
+    "fixturesPerBackend": 35,
+    "routeChecksPerBackend": 105,
+    "deterministicChecksPerBackend": 35,
+    "authStaleIndexGraphUnavailableFullFallback": true,
+    "llmCalls": 0,
+    "graphDisabled": true
+  },
+  "actualApiE2e": {
+    "backends": 3,
+    "fixturesPerBackend": 35,
+    "routeChecksPerBackend": 105,
+    "extraActualFactsExplainPerBackend": 1,
+    "actualNeo4j": true,
+    "llmCalls": 0,
+    "scriptedProvider": true
+  },
+  "readmeUpdate": {
+    "languages": {
+      "agent": [
+        "en",
+        "ko"
+      ],
+      "wiki": [
+        "en",
+        "ko",
+        "ja"
+      ]
+    },
+    "mermaidActualParser": "11.12.2",
+    "mermaidDiagramsParsed": 35,
+    "localLinksAndAnchorsChecked": 200,
+    "localLinkFailures": 0,
+    "externalUrls": "inventoried only, not network checked",
+    "newOverviewRequestRetrievalLabNodeCounts": [
+      7,
+      7,
+      7,
+      6
+    ],
+    "historicalPngEmbedsRemoved": true,
+    "historicalPngFilesDeleted": false,
+    "remainingAssetReferences": "historical specifications/hash records",
+    "wikiSmoke": {
+      "tests": 8,
+      "canonicalPages": 18,
+      "passed": true,
+      "indexCheckPassed": true
+    }
+  },
+  "protectedFilesRecheckedAfterFollowup": true,
+  "reportingFixCommit": "76959aa26b20f2a3f87dbaa20883019d31b13832"
+}

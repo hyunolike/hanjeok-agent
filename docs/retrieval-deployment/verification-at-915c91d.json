@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "aaed27772a48e19c465cab6b37717b6909c807d7",
+  "branch": "local/retrieval-deployment-ready",
+  "productionDefault": "FULL",
+  "runtimeSemanticActuallyExecuted": true,
+  "runtimeTfidfActuallyExecuted": true,
+  "pythonApiTests": {
+    "tests": 15,
+    "failures": 0,
+    "errors": 0
+  },
+  "jvmTests": {
+    "suites": 56,
+    "tests": 337,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "offlineOriginalFixtures": 29,
+  "offlineRows": 58,
+  "indexValidation": {
+    "tfidf": {
+      "indexVersion": "914dcc6488890edaa2c9d8743013d2ef6c1edd9e655994fef50a84d74d4d0b17",
+      "fixtureCount": 35,
+      "validationRows": 70,
+      "actualSemanticBuild": false
+    },
+    "semantic": {
+      "indexVersion": "80dd5ab3b1ac4d73f74742ee880f2c5fdc04b2083079f19d17f07c37b00c95a5",
+      "fixtureCount": 35,
+      "validationRows": 70,
+      "actualSemanticBuild": true,
+      "separateBuildSameImmutableVersion": true
+    }
+  },
+  "actualApiE2e": {
+    "backends": 2,
+    "fixturesPerBackend": 35,
+    "routeChecksPerBackend": 105,
+    "deterministicChecksPerBackend": 35,
+    "authStaleIndexGraphUnavailableFullFallback": true,
+    "llmCalls": 0,
+    "graphDisabled": true
+  },
+  "packagePreparation": {
+    "tfidfContextStaged": true,
+    "semanticIndexAndModelVerified": true,
+    "syntax": true,
+    "linuxImageBuilt": false,
+    "wheelhouseSupplied": false,
+    "baseImageDigestPinned": false
+  },
+  "graph": {
+    "newApiNeo4jIntegrationExecuted": false,
+    "candidateHybridValidation": "in_process_contract",
+    "priorActualIntegrationEvidence": "experiments/retrieval/results/neo4j-validation.json",
+    "productionReaderPrivilege": "mock contract only; actual Enterprise role unexecuted",
+    "maxHops": 2,
+    "maxDocuments": 9
+  },
+  "notExecuted": [
+    "follow-up push/PR/merge",
+    "cloud resource provisioning",
+    "credential creation/configuration",
+    "cloud IAM/invoker policy changes or verification",
+    "production Neo4j reader-role integration",
+    "Linux Docker build",
+    "deployment/traffic switching",
+    "paid LLM/embedding/judge calls",
+    "external corpus upload",
+    "separate Hanjeok DB/SMTP rollout"
+  ],
+  "protectedFiles": {
+    "server/src/main/resources/prompts/hanjeok-bundle.txt": "ec60e6f912d16ec8d04b158504c99fc81b2c9edb6179c5da3cc0671a45b619c9",
+    "server/src/main/resources/prompts/hanjeok-bundle.meta.json": "62d758526e28fff443d21a9c4beb7d7f474031d5cd5698341bb1126a0af671eb",
+    "harness/fixtures/context-selection/suite.json": "5fa1bf07aa42fde612ddcf8fa167eae3527c25094229d559468b4857f19cb401",
+    "experiments/retrieval/fixtures/graph-cases.json": "2be1e545f4c98c64c21af8337f10ac2a2a883325404d2367ba370545e812e2cb"
+  },
+  "freshReview": {
+    "reviewer": "fresh read-only gpt-6-astra agent",
+    "reviewedRange": "aaed277..70f379b",
+    "critical": 0,
+    "important": 0,
+    "independentPythonTests": 15,
+    "deferredMinors": [
+      "Latch-controlled overlapping selected/FULL-fallback cache regression is not yet added; sequential identity recovery plus existing single-flight regressions pass.",
+      "Real-selector EXPLAIN E2E with representative facts is not yet added; current HTTP E2E selects first, then sends fixed selected context through all three actual Kotlin service/citation paths."
+    ]
+  },
+  "existingPRs": {
+    "agent": {
+      "url": "https://github.com/hyunolike/hanjeok-agent/pull/13",
+      "head": "aaed27772a48e19c465cab6b37717b6909c807d7",
+      "ci": "https://github.com/hyunolike/hanjeok-agent/actions/runs/38016421342",
+      "status": "success",
+      "stateObserved": "MERGED",
+      "mergePerformedByThisFollowup": false
+    },
+    "wiki": {
+      "url": "https://github.com/hyunolike/travel-context-wiki/pull/32",
+      "head": "99b7d87723a0f7b64441404e85c20bdc9779bb59",
+      "ci": "https://github.com/hyunolike/travel-context-wiki/actions/runs/38016429004",
+      "status": "success",
+      "stateObserved": "MERGED",
+      "mergePerformedByThisFollowup": false
+    }
+  },
+  "existingPRStateNote": "Read-only observation after implementation; prior same-head PRs merged outside this follow-up. No claim about current cloud production revision.",
+  "remoteMainObserved": {
+    "agent": "54f4bfc6b725167329418c08e15104f8685a49f1",
+    "wiki": "e92675aa8f3f75316c97c83a5518af62734320c7",
+    "note": "Read-only state; merges occurred outside this follow-up; current cloud production not inspected."
+  },
+  "ownedTemporaryApiServersStopped": true
+}

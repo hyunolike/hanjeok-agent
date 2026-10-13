@@ -17,7 +17,10 @@ object BundleLoader {
     // to reject the whole bundle rather than load it partially-correct.
     private val MARKER_FRAGMENT = Regex("----- FILE: .+ -----")
 
-    fun load(resourcePath: String = "/prompts/hanjeok-bundle.txt"): Bundle {
+    fun load(
+        resourcePath: String = "/prompts/hanjeok-bundle.txt",
+        metadataPath: String? = if (resourcePath == "/prompts/hanjeok-bundle.txt") "/prompts/hanjeok-bundle.meta.json" else null,
+    ): Bundle {
         val raw = BundleLoader::class.java.getResource(resourcePath)
             ?.readText(Charsets.UTF_8)
             ?: error("bundle resource not found: $resourcePath")
@@ -40,6 +43,12 @@ object BundleLoader {
             }
         }
 
-        return Bundle(documents = documents, raw = raw)
+        val metadata = metadataPath?.let { path ->
+            val json = BundleLoader::class.java.getResource(path)?.readText(Charsets.UTF_8)
+                ?: error("bundle metadata resource not found: $path")
+            BundleMetadata.validate(raw, json)
+            json
+        }
+        return Bundle(documents = documents, raw = raw, metadataJson = metadata)
     }
 }

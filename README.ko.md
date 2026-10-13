@@ -15,8 +15,6 @@
 ![Gradle](https://img.shields.io/badge/Gradle-Kotlin%20DSL-02303A?logo=gradle&logoColor=white)
 ![Spring AI](https://img.shields.io/badge/Spring%20AI-2.0.1-6DB33F?logo=springboot&logoColor=white)
 
-<img src="docs/images/stack/kotlin.svg" alt="Kotlin" width="46"> <img src="docs/images/stack/spring-boot.svg" alt="Spring Boot" width="46"> <img src="docs/images/stack/gradle.svg" alt="Gradle" width="46"> <img src="docs/images/stack/anthropic.svg" alt="Anthropic" width="46"> <img src="docs/images/stack/nextjs.svg" alt="Next.js" width="46"> <img src="docs/images/stack/docker.svg" alt="Docker" width="46">
-
 [English](./README.md) · **한국어**
 
 </div>
@@ -41,7 +39,7 @@
 
 <a href="docs/media/hanjeok-agent.mp4"><img src="docs/media/hanjeok-agent.gif" alt="질문이 타이핑되고 답이 흐르다 멎는다 — EXPLANATION_UNAVAILABLE. 인용한 경로가 번들에 없어 답변 전체가 나가지 않았다. 이어서 근거의 전부인 문서 9개, 인용이 본문보다 먼저 오는 정상 동작, 모자란 사실을 직접 조회하는 도구 루프, 그리고 마지막 문장 — 근거가 없으면 답하지 않는다." width="820"></a>
 
-<sub>21초. 이 에이전트의 주요 역할은 답하는 것이 아니라 막는 것입니다. **[소리까지 있는 버전 →](docs/media/hanjeok-agent.mp4)**<br/>영상 속 숫자는 전부 실측입니다 — 문서 9개, 23,079바이트, 첫 실전 실행에서 지어낸 출처 5번이 5번 다 막혔습니다.</sub>
+<sub>21초. 이 에이전트의 주요 역할은 답하는 것이 아니라 막는 것입니다. **[소리까지 있는 버전 →](docs/media/hanjeok-agent.mp4)**<br/>과거 녹화 당시에는 문서 9개, 23,079 bytes였고 이전 모델 실행에서 지어낸 출처 5번을 모두 막았습니다. 현재 번들은 24,703 bytes이며 10월 9일 운영 검증은 LLM을 호출하지 않았습니다.</sub>
 
 </div>
 
@@ -55,27 +53,65 @@
 
 <br/>
 
-## 🏗 구조 두 장
+## 한적 위키·에이전트 전체 구조
 
-두 그림이 서로 다른 질문에 답합니다. 앞의 것은 요청 하나가 안에서 무엇을 하는지, 뒤의 것은 그 코드가 실제로 어디서 도는지입니다. 둘 다 이 저장소가 직접 그립니다 — 방식은 [기술 스택](#-기술-스택) 절에 있습니다.
+![수집·빌드, 운영 서비스, 별도 로컬 실험의 전체 구조](docs/images/hanjeok-wiki-agent-overview.ko.png)
 
-<div align="center">
+이 3D 그림은 현재 FULL 운영 경로입니다. 검색 배포 준비 구조는 아래 변경점에서 따로 설명합니다. 출처 메타데이터는 서버에서만 검사하고 순위는 백엔드가 정합니다.
 
-**요청 하나가 하는 일**
+## 기존 FULL 방식 대비 달라진 점
 
-<img src="docs/images/flow.svg" alt="설명 요청 흐름도 — 백엔드 응답 3종은 FactsNormalizer 를 지나 BackendFacts 로, hanjeok-bundle.txt 는 BundleLoader·PromptAssembler 를 지나 systemText 로 들어가 ExplanationService.explain() 에서 만난다. ProviderResult 가 Refused·Failed 면 Unavailable, Answered 면 CitationValidator 로 가고, 인용이 유효하면 Explained 가 되어 ForbiddenBehaviours.check() 를 거친다. 두 갈래 모두 ViolationTally 로 모인다. 아래 두 번째 갈래는 POST /agent/ask/stream 전용이다 — CourseQuestionService.askStream() 이 AgentLoop 를 돌려 congestion·alternatives 를 최대 2라운드 부를 수 있고 그 라운드들이 마감 60초를 함께 쓰며, AskStreamGate 가 인용을 검증한 뒤 답을 흘리거나 한 번 수리하거나 unavailable·aborted 로 끝난다 — unavailable 앞의 delta 는 언제나 0개다." width="900">
+**운영은 FULL을 유지합니다.** 2026-10-10 Cloud Run 설정을 읽기 전용으로 확인했으며 agent `ea47917`이 Ready·100% 트래픽이고 검색 런타임 설정은 없습니다. agent #14/wiki #33은 외부에서 merge됐고 이번 후속 변경은 별도 feature 브랜치에서 새 Draft PR로 검토합니다. 별도 API·요청별 선택은 구현·검증했으며 클라우드 배포는 보류합니다.
 
-<sub>위 갈래가 첫 설명, 아래 갈래가 이어 묻기입니다. 이어 묻기에서는 모델이 예산 안에서 조회 도구 둘을 부를 수 있고, 인용이 검증되기 전에는 본문이 한 글자도 나가지 않습니다.</sub>
+| 구분 | 기존 FULL 방식 | 현재 로컬 구현 |
+| --- | --- | --- |
+| 모델 입력 | 문서 9개, UTF-8 24,703 bytes 전체를 system 매뉴얼에 넣고 facts를 user에 전달 | 기본 FULL은 기존 bytes를 그대로 쓰고 검색을 호출하지 않습니다. 선택 모드 VECTOR/HYBRID_GRAPH도 필수 정책 8개를 항상 유지하며 선택 seed JSON은 신뢰하지 않는 user 데이터로 전달합니다. |
+| 검색 | 런타임 검색 없이 빌드 시 package 문서 목록 사용 | 별도 Python ASGI API가 고정 인덱스를 검색합니다. TF-IDF 어휘 벡터와 실제 실행한 고정 CPU 의미 임베딩을 구분합니다. HYBRID_GRAPH는 검증한 문서·출처 및 seed의 장소·지역 관계만 최대 2홉/9문서로 확장합니다. |
+| 역할 | Kotlin이 전체 번들을 읽고 백엔드 facts를 설명 | API는 문서 ID·해시·출처 서명만 반환합니다. Kotlin이 로컬 원문·근거 범위·인용을 검증하고 스트림을 수리합니다. 순위는 계속 백엔드가 정하며 facts 원문·이력은 검색 API에 보내지 않습니다. |
+| 버전·공개 | 번들과 출처 메타데이터를 agent 이미지에 함께 고정 | 인덱스·모델·런타임·번들·출처 메타데이터 버전을 고정·재검사합니다. 검증 후 로컬 registry를 수동 공개·롤백하며 실행 중 서비스 재적재나 클라우드 트래픽 전환은 없습니다. |
+| 실패·캐시 | 전체 번들 인용 목록과 코스 ID·facts 해시 기반 EXPLAIN 캐시 | 요청별 인용 목록과 컨텍스트 ID를 캐시·진행 중 생성 공유 키에 포함해 동시 선택/FULL 결과도 분리합니다. 인증·시간 초과·잘못된 버전·근거 누락 등은 검증된 FULL로 복귀하고 FULL 원본 손상은 응답을 차단합니다. |
+| 평가 | 고정 응답 기반 fixture 29개 문서 선택 비교와 과거 모델 평가 | 실제 RAGAS 0.3.9 문서 ID 정밀도·재현율을 답변 생성·LLM 심사와 구분합니다. 실제 HTTP·Neo4j·Kotlin 인용 E2E도 프로바이더는 고정 응답이며 유료 LLM·심사 호출은 없습니다. |
 
-<br/><br/>
+**로컬 검증 완료:** Python API 19/19·새 CPU builder 13/13이 통과했습니다. JVM 339/339(56 suite), lab 34/34와 기존 fixture 29개/58개 행도 검증됐습니다. 전체 Linux ARM64 CPU 의미 이미지를 실제 빌드하고 별도 인덱스를 재생성해 Neo4j·HTTP·Kotlin으로 실행했습니다. HYBRID·VECTOR 각각 fixture 35개/105개 경로와 실제 facts EXPLAIN을 검증했습니다. HYBRID는 SELECTED, VECTOR는 필수 seed 누락을 명시하고 원래 FULL로 복구합니다. [Linux 실행·재현 기록](docs/retrieval-deployment/linux-semantic-readiness.md)을 참고하세요. 기존 native·어휘·RAGAS 기록은 보존하며 새 LLM 또는 Linux RAGAS 점수라고 주장하지 않습니다.
 
-**어디서 도는가**
+**amd64 부분 검증:** 기존 builder 이미지 빌드와 x86_64 Python 실행, `pip check`, 실제 모델 가중치 로딩까지 확인했습니다. 새 amd64 인덱스와 health, 최종 fixture 결과는 미확인입니다. 이전 Mac 인덱스를 포함한 builder는 배포용으로 사용할 수 없습니다. [보존한 출력과 복구 기록](docs/retrieval-deployment/amd64-semantic-recovery.md)에서 단계를 구분합니다.
 
-<img src="docs/images/deploy.svg" alt="배포 구성도 — 브라우저가 Vercel 의 Next.js 화면을 열고, 화면은 Cloud Run 의 hanjeok-agent 서버(presentation · explain · context · llm)를 부른다. 서버는 한적 백엔드를 요청당 3회, LLM 프로바이더를 1회 부르고, 키는 Secret Manager 에서 환경 변수로 주입된다. 근거 번들은 GitHub Actions 가 위키에서 다시 만들어 표류를 검사한 뒤 이미지에 구워 배포한다. 평가 하네스는 배포 경로 밖에 있다." width="900">
+**배포 전 준비사항:** Cloud Run에 맞는 새 linux/amd64 이미지·인덱스가 필요합니다. private IAM·네트워크 경로와 실제 운영 Neo4j Enterprise reader ACL은 미검증이며 조회 범위에서 검색 서비스·reader endpoint/secret을 찾지 못했습니다. [구체적 대상·순서·비용 전제](docs/retrieval-deployment/linux-semantic-readiness.md)를 기록했습니다. credentials·IAM·클라우드 자원·트래픽 변경과 별도 한적 DB/SMTP 배포는 수행하지 않았습니다.
 
-<sub>브라우저는 한적 백엔드도 LLM 프로바이더도 직접 부르지 않습니다. 그래서 CORS 대상이 하나뿐입니다. 근거 번들은 빌드 시점에 이미지로 구워지고, 위키와 어긋나면 CI 가 실패합니다.</sub>
+**측정 한계:** 선택 대상은 501-byte 경복궁 seed 하나뿐이므로 문서 선택 절감은 최대 501/24,703 = 2.03%입니다. guard 추가나 user 입력 이동이 총 토큰·비용 절감을 증명하지 않습니다. 보존한 의미 실험의 VECTOR/HYBRID 후보 precision은 검색 허용 24건에서 0.250000/0.172619, recall은 0.645833/1.000000입니다. 최종 근거 완전성은 30/35 대 35/35이며 VECTOR seed 누락 5건을 기록했습니다. 배포용 guard는 명시적인 필수 seed 누락 시 FULL로 복귀하고 과거 지표를 덮어쓰지 않습니다. 이 제한된 관계 검색은 Microsoft community GraphRAG 전체 구현이나 답변 품질 개선 입증이 아닙니다. 없는 교통·날씨 및 합성 관계는 검증 그래프에 넣지 않습니다.
 
-</div>
+agent #14/wiki #33 게시와 해당 head의 CI는 이미 merge된 PR의 과거 증거이며 이번 후속 작업은 별도 Draft PR로 검토합니다. [기존 게시 준비 기록](docs/retrieval-deployment/publication-preparation.json)과 이전 검증 JSON은 당시 범위를 보존합니다. [현재 그림 수정 기록](docs/context-selection/readme-illustration-correction.json)에 따라 필요한 기존 3D 그림을 복원하고 중복 도식을 제거했으며 새 이미지를 생성하지 않았습니다.
+
+### 검색 구조 — 로컬 구현, 운영 미배포
+
+
+새 API와 Kotlin 설명·인용 경계는 본문과 비교 표에서 구분합니다. 런타임 모델 다운로드는 없고 검증된 source hash/revision만 인덱스에 포함합니다. 해시 검사가 내용의 진실성이나 주장의 검토 완료를 증명하지 않습니다.
+
+## 🏗 두 입력과 세 요청 경로
+
+![한적 빌드 패키징과 모델의 두 런타임 입력](docs/images/hanjeok-two-inputs-ko.png)
+
+현재 FULL 운영 입력입니다. 전체 매뉴얼은 system, 백엔드 facts는 user에 넣고 출처 메타데이터는 서버에만 둡니다. 선택 검색 준비는 별도로 설명합니다.
+
+모델은 두 입력을 받습니다. `system`에는 **정적 위키 매뉴얼**, `user`에는 **현재 백엔드 facts**가 들어갑니다. 위키는 정책을 설명하고, 백엔드는 코스와 순위, 방문 순서를 계산합니다. 백엔드 facts가 우선입니다. 새 조회 시각은 조회 완료 시각이며 예보 발행 시각이나 원천 데이터의 최신성을 보장하지 않습니다.
+
+빌드 단계에서 출처를 검사하고 `hanjeok-bundle.txt`와 metadata sidecar를 생성합니다. CI가 두 산출물을 비교한 뒤 서버 이미지에 함께 넣습니다. 기동 시 `BundleLoader`가 한 번 검증하고, 9문서 전체 매뉴얼(UTF-8 24,703 bytes)을 그대로 프롬프트에 넣습니다. sidecar는 서버의 무결성 검사와 `/agent/provenance`에만 쓰며 모델 입력에는 넣지 않습니다.
+
+
+브라우저는 Vercel 프론트에서 Cloud Run agent를 호출합니다. agent가 한적 백엔드의 facts를 조회하고 필요할 때 프로바이더를 부릅니다.
+
+| 요청 | 경로 | EXPLAIN 캐시 | 도구 |
+| --- | --- | --- | --- |
+| `POST /agent/explain` | facts 조회 → UUID/facts hash 캐시 → 저장된 답, 또는 LLM → 인용 검증 → 저장 | 생성 완료부터 5분, 같은 키의 진행 중 생성 공유 | 없음 |
+| `POST /agent/ask` | facts + 질문/이력 → LLM → 인용 검증 → 답 | 없음 | 없음 |
+| `POST /agent/ask/stream` | facts + 질문/이력 → agent loop → 인용 gate → SSE | 없음 | 검증된 혼잡도/대안 조회, 최대 2라운드와 60초 |
+
+EXPLAIN은 캐시 hit에서도 백엔드 응답 3종을 조회하고 모델 호출을 건너뜁니다. facts가 바뀌면 새 키를 사용하며 조회나 생성 실패를 옛 캐시로 숨기지 않습니다. ASK 이력은 클라이언트가 보유하는 맥락이며 새 근거가 아닙니다. 스트림은 본문 전에 인용을 검증하고 실패하거나 거부된 도구 조회는 근거 합집합에 넣지 않습니다.
+
+![EXPLAIN·blocking ASK·streaming ASK 요청 경로](docs/images/request-paths-ko.png)
+
+
+[배포 상세](docs/deploy.md)와 [시각이 기록된 운영 검증](docs/context-selection/production-verification.json): 2026-10-09 09:13 UTC에 agent `ea47917`의 Ready와 트래픽 100%, health/readiness UP, 번들/sidecar hash 일치를 확인했습니다. 프론트 배포도 완료됐습니다. 이 검증에서는 **실제 LLM을 호출하지 않았습니다**. 과거 모델 평가를 이번 변경의 운영 품질 검증으로 읽으면 안 됩니다. 별도 한적 본체 DB/SMTP 배포 보류는 유지합니다.
 
 <br/>
 
@@ -177,13 +213,13 @@
 
 ## 🔀 요청 흐름도
 
-> 이 절의 그림은 맨 위에 있습니다 — [**요청 하나가 하는 일**](#-구조-두-장).
+> 현재 경로는 위 [**두 입력과 세 요청 경로**](#-두-입력과-세-요청-경로)에 정리했습니다.
 
-`백엔드 응답 3종 → FactsNormalizer → BackendFacts` 와 `hanjeok-bundle.txt → BundleLoader → PromptAssembler` 가 `ExplanationService.explain()` 에서 만나고, `ExplanationProvider → ProviderResult → CitationValidator` 를 지나 `Explained` 또는 `Unavailable` 로 갈라진 뒤 `ForbiddenBehaviours.check()` · `ViolationTally` 로 모입니다.
+런타임의 `FactsSource`는 `FactsProjection`으로 백엔드 응답 3종을 `BackendFacts`로 조립합니다. `CourseExplainer`가 facts를 조회한 뒤 캐시를 확인합니다. miss이면 facts와 `BundleLoader → PromptAssembler`의 전체 번들이 `ExplanationService.explain()`에서 만나고, `ExplanationProvider → CitationValidator`를 거쳐 `Explained` 또는 `Unavailable`을 반환합니다. 오프라인 평가 하네스는 fixture용 `FactsNormalizer`를 사용하며 `ForbiddenBehaviours.check()`와 `ViolationTally`를 따로 실행합니다. 이 판정은 운영 요청 경로 밖에 있습니다.
 
 `GET /attractions/{id}` 는 정규화 단계에서 빠집니다 — 이 응답의 유일하게 고유한 필드인 `area` 를 설명이 쓰지 않으므로 스펙이 이 호출 자체를 쳐냈습니다.
 
-구분선 아래 갈래는 위 흐름이 이어진 것이 아니라 별도 진입점입니다 — `POST /agent/ask/stream` 은 `ExplanationService` 를 전혀 거치지 않습니다. 대신 `CourseQuestionService.askStream()` 이 `AgentLoop` 를 돌리고, 위 "주요 기능"에서 설명한 도구 루프가 거기 있습니다. 끝나는 곳도 `ForbiddenBehaviours` 가 아니라 `AskStreamGate` 입니다 — 금지 행동 8종 판정은 이 요청 경로가 아니라 평가 하네스가 합니다.
+streaming ASK는 별도 진입점입니다 — `POST /agent/ask/stream` 은 `ExplanationService` 를 전혀 거치지 않습니다. 대신 `CourseQuestionService.askStream()` 이 `AgentLoop` 를 돌리고, 위 "주요 기능"에서 설명한 도구 루프가 거기 있습니다. 끝나는 곳도 `ForbiddenBehaviours` 가 아니라 `AskStreamGate` 입니다 — 금지 행동 8종 판정은 이 요청 경로가 아니라 평가 하네스가 합니다.
 
 어댑터는 하나입니다(`SpringAiExplanationProvider`). 프로바이더별 차이는 어댑터 코드가 아니라 `ChatClients`가 조립하는 옵션에만 있습니다 — openai와 openrouter는 둘 다 OpenAI 호환 규격을 타므로 이 표에서는 한 열로 묶입니다.
 
@@ -218,24 +254,17 @@
 
 ## 🛠 기술 스택
 
-<div align="center">
-
-<img src="docs/images/tech-stack.svg" alt="hanjeok-agent 기술 스택 — 손으로 그린 로고 모음" width="740">
-
-</div>
-
 | 구분 | 사용 기술 |
 | --- | --- |
-| <img src="docs/images/stack/kotlin.svg" width="24" alt=""> <img src="docs/images/stack/java.svg" width="24" alt=""> 언어 · 런타임 | Kotlin 2.2.21, JVM Toolchain 21 |
-| <img src="docs/images/stack/spring-boot.svg" width="24" alt=""> 프레임워크 | Spring Boot 4.1.0, Spring Modulith 2.1.0 |
-| <img src="docs/images/stack/gradle.svg" width="24" alt=""> 빌드 | Gradle (Kotlin DSL), 단일 모듈 + 분리된 `harness` 소스셋 |
-| <img src="docs/images/stack/anthropic.svg" width="24" alt=""> <img src="docs/images/stack/openai.svg" width="24" alt=""> LLM | Spring AI 2.0.1 (`spring-ai-anthropic`, `spring-ai-openai`) 위에 Anthropic Java SDK 2.52.0 (`claude-opus-5`) · OpenAI Java SDK 4.49.0 (openai·openrouter 공용) |
+| 언어 · 런타임 | Kotlin 2.2.21, JVM Toolchain 21 |
+| 프레임워크 | Spring Boot 4.1.0, Spring Modulith 2.1.0 |
+| 빌드 | Gradle (Kotlin DSL), 단일 모듈 + 분리된 `harness` 소스셋 |
+| LLM | Spring AI 2.0.1 (`spring-ai-anthropic`, `spring-ai-openai`) 위에 Anthropic Java SDK 2.52.0 (`claude-opus-5`) · OpenAI Java SDK 4.49.0 (openai·openrouter 공용) |
 | 직렬화 | Jackson (`jackson-module-kotlin`) |
-| <img src="docs/images/stack/junit.svg" width="24" alt=""> 테스트 | JUnit 5 (`spring-boot-starter-test`), 프론트엔드는 Vitest + Testing Library |
-| <img src="docs/images/stack/nextjs.svg" width="24" alt=""> <img src="docs/images/stack/react.svg" width="24" alt=""> <img src="docs/images/stack/typescript.svg" width="24" alt=""> <img src="docs/images/stack/tailwind.svg" width="24" alt=""> 화면 | Next.js 16, React 19, TypeScript 5, Tailwind CSS 4 |
-| <img src="docs/images/stack/docker.svg" width="24" alt=""> <img src="docs/images/stack/cloud-run.svg" width="24" alt=""> <img src="docs/images/stack/vercel.svg" width="24" alt=""> 배포 | 서버는 Docker 이미지로 Cloud Run, 화면은 Vercel ([`docs/deploy.md`](./docs/deploy.md)) |
+| 테스트 | JUnit 5 (`spring-boot-starter-test`), 프론트엔드는 Vitest + Testing Library |
+| 화면 | Next.js 16, React 19, TypeScript 5, Tailwind CSS 4 |
+| 배포 | 서버는 Docker 이미지로 Cloud Run, 화면은 Vercel ([`docs/deploy.md`](./docs/deploy.md)) |
 
-> 위 로고는 외부에서 가져온 이미지가 아니라 이 저장소가 직접 그린 SVG 입니다(`docs/images/`). 선을 흔드는 필터를 얹어 손그림처럼 보이게 했고, 배경에 종이색 카드를 깔아 깃허브 라이트·다크 어느 테마에서도 읽힙니다. 위 흐름도(`flow.svg`)도 같은 방식입니다. 고칠 일이 생기면 `generate.py` · `generate_flow.py` · `generate_deploy.py` 를 다시 돌립니다(`python3 docs/images/<이름>`).
 
 <br/>
 
@@ -416,7 +445,7 @@ hanjeok-agent
 
 ## 🗺 배포 구성
 
-> 이 절의 그림은 맨 위에 있습니다 — [**어디서 도는가**](#-구조-두-장).
+> 이 절의 그림은 맨 위에 있습니다 — [**현재 운영 구조**](#한적-위키에이전트-전체-구조).
 
 서버는 Cloud Run, 화면은 Vercel. 상태도 DB도 없어 **0으로 스케일다운됩니다.** 그림에서 읽을 것 셋:
 
@@ -453,3 +482,65 @@ hanjeok-agent
 ## 📄 라이선스
 
 [MIT](./LICENSE) — © 2026 hyunolike.
+
+## 설명 캐시와 출처 판본
+
+출처/cache 계약은 agent `ea47917`에 배포됐습니다(wiki #31, agent #12 머지). [2026-10-09 검증](docs/context-selection/production-verification.json)은 운영 상태와 산출물 hash를 확인했으며 실제 LLM은 호출하지 않았습니다. 빌드 단계에서는
+wiki 출처 hash와 Git revision을 검사한 뒤 전체 번들 본문과 JSON sidecar를 만들어
+agent에 함께 패키징합니다. 요청 시점에는 브라우저가 agent를 부르고 agent가
+백엔드 facts를 조회한 뒤 필요한 경우 모델을 호출합니다. sidecar는 무결성과 출처
+조회에 쓰며 모델 입력에는 넣지 않습니다. 추천 순위는 백엔드가 결정합니다.
+
+캐시와 진행 중 호출 병합은 코스 UUID와 실제 facts JSON의 SHA-256을 함께 확인합니다.
+생성 완료 후 5분이 지나면 만료됩니다. 혼잡도나 대안 데이터가 바뀌면 새 설명을 만들고,
+facts 조회가 실패하면 이전 캐시로 숨기지 않습니다. `generatedAt`은 실제 생성 완료,
+추가된 `retrievedAt`은 facts 조회 완료 시각입니다. 예보 발표 시각이나 신선함을 뜻하지
+않습니다. `cached`, `factsSha256`, `bundleSha256`도 추가 필드이며 기존 프론트엔드는
+기존 필드 형식을 그대로 읽습니다.
+
+전체 정적 번들은 유지합니다. 별도 `hanjeok-bundle.meta.json`에 문서와 claim hash,
+원문 source hash 및 Git revision, 검토 상태를 기록합니다. 서버 적재와 CI에서 번들
+본문과 연결을 검사하며 `/agent/provenance`로 같은 메타데이터를 읽을 수 있습니다.
+기존 claims는 미검증이며 변경된 근거는 재검토 상태입니다. 과거 실험 결과와 승인
+기록은 추정하지 않습니다. low/contested 자료는 한정된 정책 맥락으로 남기고,
+Hanjeok 날씨는 활성화하지 않습니다.
+
+`POST /agent/explain`은 facts 조회 후 UUID/hash 캐시를 검사합니다. 적중하면
+저장된 설명과 실제 생성 시각을 반환하고, 없거나 만료됐으면 생성과 검증을 마친
+결과를 저장합니다. 생성 실패는 캐시하지 않습니다. `POST /agent/ask/stream`은
+facts와 대화 맥락 → agent 루프 → 인용 게이트 → 스트림의 별도 경로입니다.
+모델이 혼잡도나 대안 도구 호출을 제안하면 서버가 인자를 검증하고 조회한 결과를
+루프에 돌려줍니다. 거부되거나 실패한 조회는 근거 합집합에 넣지 않으며 대화 이력은
+새 facts가 아닙니다. 비스트리밍 `POST /agent/ask`에는 도구 루프가 없습니다.
+두 ASK 경로에는 설명 캐시를 적용하지 않습니다. 스트림 본문 전에 인용을 검사합니다.
+
+인용은 기존 경로 배열입니다. 혼잡도와 대안 점수의 일부 주제는 관련 정책 경로를
+요구하지만 무결성과 인용 검사는 의미적 진실이나 실험 승인의 증명이 아닙니다.
+평가 하네스는 입력과
+도구 facts 합집합의 hash를 기록합니다. 실제 유료 평가는 로컬 테스트에 포함되지
+않습니다. [설계](docs/source-cache-contract/plan.md)와
+[검증 절차](docs/source-cache-contract/quickstart.md)를 참고하세요.
+
+wiki 생성기와 agent 소비 코드는 통합됐습니다. agent가 sidecar를 요구하므로 이후 갱신도 본문과 메타데이터를 함께 동기화합니다. CI는 머지된 wiki main `7fc19c0c4a034868866bcf5a920e3f82050830c7`에 고정해 두 산출물을 검사합니다. [오프라인 보고서](docs/context-selection/report.md)에 두 저장소의 호환성 검증을 기록합니다.
+
+## 로컬 벡터·그래프·RAGAS 실험
+
+![전체·벡터·하이브리드 관계 검색의 별도 로컬 실험](docs/images/local-retrieval-lab-ko.png)
+
+[별도 retrieval lab](experiments/retrieval/README.md)은 기존 29 fixture와 그래프 경계 6건으로 FULL / VECTOR / HYBRID_GRAPH를 비교합니다. 운영은 FULL입니다. TF-IDF 어휘 벡터 baseline을 보존하고, 고정된 다국어 distiluse 모델로 실제 CPU 의미 임베딩도 실행했습니다(512차원, 잘림 없는 41개 chunk, 캐시 safetensors 해시 검증, 외부 모델 코드 금지). 실제 RAGAS 0.3.9 문서 ID 지표와 검증된 문서/출처·seed 선언 장소/지역 관계의 메모리 그래프를 사용합니다. Microsoft community GraphRAG 전체 구현은 아닙니다.
+
+검색 허용 24건에서 의미 VECTOR / HYBRID 후보 precision은 0.250000 / 0.172619, recall은 0.645833 / 1.000000입니다(모두 24건 정의). 최종 fixture 근거가 완전한 행은 30/35 / 35/35이며 VECTOR의 seed 누락 5건을 숨기지 않고 기록합니다. 정책 8개 유지와 결정성은 105/105입니다. 어휘 baseline과 빈 precision 7건은 별도로 보존했습니다. [의미 결과](experiments/retrieval/results/semantic-in-process/results.json)·[데이터셋](experiments/retrieval/results/semantic-in-process/dataset.jsonl)·[추가 검증](experiments/retrieval/results/extension-validation.json)에 별도 프로세스 bytes 재현과 실제 Kotlin citation 계약 일치(실패한 scripted 인용 포함)를 기록했습니다. 답변 진실성·LLM faithfulness 지표가 아니며 기존 약 2.03% 문서 bytes 절감 상한을 유지합니다.
+
+보존한 lab의 실제 격리 Neo4j Community 5.26.31 통합도 완료했습니다. 시작 노드 15개의 결과가 메모리 그래프와 일치하며, 2홉 지역 검색·합성 관계 격리·실제 문서/출처 해시 변조 거부를 통과했습니다. TF-IDF와 의미 모델 각각 105개 행/210개 RAGAS sample, 동일한 메모리 결과, 별도 프로세스 bytes 재현과 실제 Kotlin citation 검증을 기록했습니다. [통합 실행 명령](experiments/retrieval/README.md#actual-isolated-neo4j-integration-2026-10-10)·[실제 검증](experiments/retrieval/results/neo4j-validation.json)은 mock 계약 2개와 구분합니다. 전용 bridge의 masquerading을 끄고 localhost Bolt만 게시하며 HTTP/사용량 보고를 비활성화했습니다. 소유 자원은 정리했고 이전 승인 차단도 해소됐습니다. 이 lab에서 답변 생성·LLM judge·유료 호출·외부 corpus 업로드·운영 배포는 없고 별도 한적 DB/SMTP 배포도 보류입니다.
+
+## 오프라인 문서 선택 실험
+
+운영 기본값은 **FULL**을 유지합니다. `./gradlew offlineContextEval --args=docs/context-selection/results.json`은 별도 scripted 비교를 실행합니다. 필수 정책 8개는 모두 유지하고 경복궁 seed만 선택적으로 넣습니다. 불명확한 질문이나 참조는 검증된 전체 번들로 fallback하고 본문/sidecar hash가 잘못되면 fail closed합니다. 문서 순서와 원문 구간을 보존하며 인용 허용 목록은 요청 번들로 제한합니다. 이 보존한 오프라인 비교는 배포된 FULL 경로를 바꾸지 않습니다.
+
+[설계](docs/context-selection/design.md), [버전 관리 fixture](harness/fixtures/context-selection/suite.json), [fallback을 분리한 결과](docs/context-selection/report.md)를 참고하세요. 최대 system bytes 감소는 501/24,703 = 2.03%입니다. 토큰이나 비용, 정확도, 지연 개선은 측정하지 않았고 scripted provider/tool은 배선만 검증합니다.
+
+### 검색 API 로컬 후속 코드 — 운영 미배포
+
+opt-in 검색 API·고정 인덱스와 Kotlin 요청별 정책·인용·캐시·스트리밍 복구 코드는 agent #14/wiki #33으로 통합됐습니다. 이번 로컬 후속 작업은 실제 Linux ARM64 CPU 모델·인덱스·이미지 검증과 VECTOR seed 복구 결과를 추가합니다. [현재 실행·재현 기록](docs/retrieval-deployment/linux-semantic-readiness.md)은 완료한 로컬 검증과 미완료 amd64 검증과 클라우드 IAM·운영 ACL을 구분합니다. 기존 native RAGAS 지표·VECTOR seed 누락 5건·약 2.03% corpus 선택 상한은 그대로이며 운영은 FULL입니다.
+
+로컬 후속 검증에서 동시 선택/FULL 복구 캐시와 실제 facts EXPLAIN 공백을 해소했습니다. native 어휘·의미 API 및 실제 Linux ARM64 어휘 이미지의 API→Neo4j E2E가 통과했고, provenance·본문/시간 제한·graph/corpus 변조 거부·검증된 FULL 복구를 [검증 기록](docs/retrieval-deployment/verification.json)에 남겼습니다. Python 19/19·JVM 339/339 통과입니다. 전체 Linux ARM64 의미 이미지는 검증됐습니다. amd64 인덱스/API 최종 검증과 운영 IAM/reader 권한 검증, 클라우드 출시는 보류합니다.

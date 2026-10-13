@@ -48,8 +48,11 @@ data class AbortedEvent(val reason: String, val cause: FailureCause) : AskStream
  */
 class AskStreamGate(
     private val validator: CitationValidator,
+    private val citationContext: String = "",
     private val emit: (AskStreamEvent) -> Unit,
 ) {
+    constructor(validator: CitationValidator, emit: (AskStreamEvent) -> Unit) : this(validator, "", emit)
+
     private var validated = false
     private var closed = false
     private var deltas = 0
@@ -58,7 +61,7 @@ class AskStreamGate(
     fun accept(event: ParseEvent) {
         if (closed) return
         when (event) {
-            is CitationsClosed -> when (val result = validator.validate(event.citations)) {
+            is CitationsClosed -> when (val result = validator.validate(event.citations, citationContext)) {
                 is Valid -> {
                     validated = true
                     emit(CitationsEvent(event.citations))

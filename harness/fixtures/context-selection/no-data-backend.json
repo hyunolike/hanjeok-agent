@@ -1,0 +1,53 @@
+{
+  "courseUuid": "3f6c2b18-9a4d-4c77-8b21-5e0f7c9d1a44",
+  "backendResponses": {
+    "GET /api/v1/courses/{uuid}": {
+      "success": true,
+      "error": null,
+      "data": {
+        "uuid": "3f6c2b18-9a4d-4c77-8b21-5e0f7c9d1a44",
+        "targetDate": "2026-08-15",
+        "title": "데이터 없는 북촌 한옥마을",
+        "congestionReductionRate": 0,
+        "summary": "집중률 예측 데이터가 제공되지 않아요.",
+        "recommendedDate": null,
+        "items": [
+          {
+            "attractionId": 1001,
+            "name": "북촌 한옥마을",
+            "visitOrder": 1,
+            "timeLabel": "오전 11:38",
+            "grade": null,
+            "reason": "집중률 예측 데이터가 제공되지 않아요.",
+            "latitude": 37.5826,
+            "longitude": 126.983,
+            "imageUrls": [],
+            "travelMinutesFromPrev": null
+          }
+        ]
+      }
+    },
+    "GET /api/v1/attractions/1001": {
+      "success": true,
+      "error": null,
+      "data": {
+        "id": 1001,
+        "name": "북촌 한옥마을",
+        "area": "서울 종로구"
+      }
+    },
+    "GET /api/v1/attractions/1001/congestion?date=2026-08-15": {
+      "success": true,
+      "error": null,
+      "data": {
+        "hasCongestionData": false,
+        "message": "집중률 예측 데이터가 제공되지 않아요."
+      }
+    },
+    "GET /api/v1/attractions/1001/alternatives?date=2026-08-15&radius=15": {
+      "success": true,
+      "error": null,
+      "data": []
+    }
+  }
+}

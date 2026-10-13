@@ -114,4 +114,28 @@ class CourseQuestionServiceTest {
         assertThat(outcome).isInstanceOf(Unavailable::class.java)
         assertThat((outcome as Unavailable).reason).contains("does-not-exist")
     }
+
+    @Test
+    fun `참조 질문의 이전 질문은 맥락이며 이전 답은 출처가 아니다`() {
+        val recorder = Recorder(answered("예전 답의 값은 확인할 수 없습니다."))
+        val outcome = service(recorder).ask(
+            facts, "그날은요?", listOf(QuestionTurn("혼잡도는요?", "백분위 999라는 잘못된 예전 답")),
+        )
+        assertThat(outcome).isInstanceOf(Unavailable::class.java)
+        assertThat((outcome as Unavailable).reason).contains("congestion-diagnosis.md")
+        assertThat(recorder.lastUser).contains("맥락용 — 사실의 출처가 아니다")
+        assertThat(recorder.lastUser!!.indexOf(facts.json)).isLessThan(recorder.lastUser!!.indexOf("백분위 999"))
+    }
+
+    @Test
+    fun `여러 턴의 참조 사슬도 마지막 명시적 질문 주제에 연결한다`() {
+        val outcome = service(Recorder(answered("자료를 확인할 수 없습니다."))).ask(
+            facts, "그곳은요?", listOf(
+                QuestionTurn("혼잡도는요?", "오래된 답"),
+                QuestionTurn("그날은요?", "역시 확인하지 않은 답"),
+            ),
+        )
+        assertThat(outcome).isInstanceOf(Unavailable::class.java)
+        assertThat((outcome as Unavailable).reason).contains("congestion-diagnosis.md")
+    }
 }
