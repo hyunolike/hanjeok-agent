@@ -77,6 +77,10 @@ MESSAGES = {
     "model_failed": "답을 만드는 모델을 쓸 수 없습니다. 잠시 뒤에 다시 물어봐 주세요.",
 }
 
+UNKNOWN_SCREEN_PLACE = (
+    "보고 있던 장소는 안내가 아직 알지 못하는 곳입니다. 장소 이름을 넣어 다시 물어봐 주세요."
+)
+
 Emit = Callable[[str, dict], None]
 _INTERNAL_ID = re.compile(r"\s*\(\s*place_id\s*\d+\s*\)|\s*,?\s*place_id\s*\d+")
 
@@ -395,6 +399,11 @@ class Agent:
             found = [
                 place for place in map(self.places.detail, scope.place_ids) if place is not None
             ]
+            if not found:
+                # Only a screen's place can be unknown here: names in the question
+                # come from the gazetteer. Left to go on, the model searched the
+                # question's words and answered about a place called "오늘은 카트레이싱".
+                return self._stop("no_grounds", "no_grounds", UNKNOWN_SCREEN_PLACE)
             produced = tuple(self._lookups.add_place(place) for place in found)
             self.result.place_ids = tuple(place.id for place in found)
             names = ", ".join(
