@@ -6,6 +6,7 @@ import json
 
 import pytest
 from fastapi.testclient import TestClient
+from langgraph.checkpoint.memory import InMemorySaver
 from tests.guide_fakes import ExportPlaces, FakePolicy, ScriptedModel, action, answer, replay_live
 
 from guide.api import Snapshot, create_app
@@ -32,6 +33,8 @@ class TestRuntime:
         self.policy = FakePolicy()
         self.live = replay_live()
         self.visits = visits or Visits()
+        self.checkpointer = InMemorySaver()
+        self.callbacks = []
         self._ready = ready
 
     def snapshot(self):
@@ -327,3 +330,75 @@ def test_the_report_is_readable_while_the_graph_is_down(tmp_path):
     http = TestClient(create_app(TestRuntime(ready=False), origins=[], reports=store))
 
     assert http.get("/guide/eval/latest").status_code == 200
+
+
+def test_a_follow_up_in_the_same_visit_knows_the_place_and_date():
+    runtime = TestRuntime(
+        *SCRIPT,
+        action("events", place_id=101, date="2026-10-17"),
+        answer("가람궁 달빛 야행이 열립니다.", "hanjeok:events/101@2026-10-17"),
+    )
+    http = client(runtime)
+    visit_id = frames(ask(http))[0][1]["visit_id"]
+
+    events = frames(
+        http.post("/guide/ask", json={"question": "거기 그날 행사 있어?", "visit_id": visit_id})
+    )
+
+    assert events[-1][0] == "done"
+    assert "2026-10-17" in runtime.model.calls[-1]["user"]
+
+
+def test_an_expired_visits_questions_are_deleted_with_it():
+    from guide.visits import VISIT_TTL_S
+
+    now = [0.0]
+    saver = InMemorySaver()
+    runtime = TestRuntime(
+        *SCRIPT, visits=Visits(clock=lambda: now[0], on_expire=saver.delete_thread)
+    )
+    runtime.checkpointer = saver
+    http = client(runtime)
+    visit_id = frames(ask(http))[0][1]["visit_id"]
+    assert saver.get_tuple({"configurable": {"thread_id": visit_id}}) is not None
+
+    now[0] += VISIT_TTL_S + 1
+    runtime.visits.open(None)
+
+    assert saver.get_tuple({"configurable": {"thread_id": visit_id}}) is None
+
+
+def test_a_visit_survives_a_restart_when_checkpoints_are_kept_in_a_file(tmp_path, monkeypatch):
+    from tests.guide_fakes import TODAY
+
+    from guide.agent import Agent
+    from guide.api import checkpointer_from_env
+
+    monkeypatch.setenv("GUIDE_CHECKPOINT_DB", str(tmp_path / "visits" / "checkpoints.sqlite"))
+
+    def agent(*replies):
+        return Agent(
+            ScriptedModel(*replies),
+            ExportPlaces(),
+            FakePolicy(),
+            replay_live(),
+            checkpointer=checkpointer_from_env(),
+        )
+
+    list(agent().stream("은행나무길은 토요일에 붐벼?", thread_id="v", today=TODAY))
+
+    # A new saver over the same file, as a restarted process would open.
+    after_restart = agent(
+        action("congestion", place_id=140, date="2026-10-17"),
+        answer("알 수 없습니다.", "hanjeok:place/140"),
+    )
+    assert [c["place_id"] for c in after_restart.pending("v")] == [140, 141]
+    assert list(after_restart.stream(thread_id="v", resume=140))[-1][0] in ("done", "stopped")
+
+
+def test_tracing_is_off_without_keys(monkeypatch):
+    from guide.api import tracing_callbacks
+
+    monkeypatch.delenv("LANGFUSE_PUBLIC_KEY", raising=False)
+    monkeypatch.delenv("LANGFUSE_SECRET_KEY", raising=False)
+    assert tracing_callbacks() == []

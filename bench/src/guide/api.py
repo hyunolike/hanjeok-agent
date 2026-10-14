@@ -13,8 +13,6 @@ from __future__ import annotations
 import json
 import logging
 import os
-import queue
-import threading
 from collections.abc import Iterator
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
@@ -29,7 +27,6 @@ from guide.agent import Agent
 from guide.eval.store import ReportStore
 from guide.live import LiveClient, Recording
 from guide.model import Model
-from guide.scope import Turn
 from guide.sources import Places, Policy
 from guide.visits import Visits
 
@@ -53,6 +50,8 @@ class Snapshot:
 
 class Runtime(Protocol):
     visits: Visits
+    checkpointer: Any
+    callbacks: list
     live: LiveClient
     model: Model
     policy: Policy
@@ -165,10 +164,27 @@ def create_app(
 
         visits = current.visits
         visit = visits.open(visit_id)
-        if choice is not None and not visits.was_offered(visit, choice):
-            return _error(
-                400, "invalid_request", detail="choice is not one of the offered candidates"
+
+        def agent() -> Agent:
+            return Agent(
+                current.model,
+                snapshot.places,
+                current.policy,
+                current.live,
+                strategy=strategy,
+                checkpointer=current.checkpointer,
+                callbacks=current.callbacks,
             )
+
+        if choice is not None:
+            # A choice answers a question this visit was asked. It must be one
+            # of the places offered then; otherwise the field would be a way
+            # to reach any place by guessing its id.
+            offered = agent().pending(visit) or []
+            if choice not in [candidate["place_id"] for candidate in offered]:
+                return _error(
+                    400, "invalid_request", detail="choice is not one of the offered candidates"
+                )
         limit = visits.admit(visit, _address(request))
         if limit is not None:
             return _error(429, "usage_limit", scope=limit.scope, retry_after_s=limit.retry_after_s)
@@ -181,40 +197,18 @@ def create_app(
                     "as_of": {"export": snapshot.exported_at, "wiki": snapshot.wiki_as_of},
                 },
             )
-            events: queue.Queue[tuple[str, dict] | None] = queue.Queue()
-
-            def work() -> None:
-                try:
-                    agent = Agent(
-                        current.model,
-                        snapshot.places,
-                        current.policy,
-                        current.live,
-                        strategy=strategy,
-                    )
-                    result = agent.ask(
-                        question,
-                        lambda name, data: events.put((name, data)),
-                        turns=visits.turns(visit),
-                        choice=choice,
-                    )
-                    if result.outcome == "ask_user":
-                        visits.offer(visit, result.candidates)
-                    elif result.outcome == "answered":
-                        visits.remember(visit, Turn(question, result.place_ids, result.dates))
-                except Exception:
-                    # Logged here; the visitor gets a cause, not the exception.
-                    log.exception("question failed")
-                finally:
-                    events.put(None)
-
-            threading.Thread(target=work, daemon=True).start()
             ended = False
-            while (item := events.get()) is not None:
-                if ended:
-                    continue
-                ended = item[0] in TERMINAL
-                yield _sse(*item)
+            try:
+                # The visit id is the graph's thread: its earlier questions and
+                # any paused question are found under it.
+                for name, data in agent().stream(question, thread_id=visit, resume=choice):
+                    if ended:
+                        continue
+                    ended = name in TERMINAL
+                    yield _sse(name, data)
+            except Exception:
+                # Logged here; the visitor gets a cause, not the exception.
+                log.exception("question failed")
             if not ended:
                 # Every stream ends with exactly one terminal event, including
                 # the ones that end because something broke.
@@ -319,6 +313,39 @@ def create_app(
     return app
 
 
+def checkpointer_from_env():
+    """Where a visit's thread is kept. In memory unless a file is named, in
+    which case a visit survives a restart for as long as it has left."""
+    path = os.environ.get("GUIDE_CHECKPOINT_DB")
+    if not path:
+        from langgraph.checkpoint.memory import InMemorySaver
+
+        return InMemorySaver()
+    import sqlite3
+
+    from langgraph.checkpoint.sqlite import SqliteSaver
+
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    saver = SqliteSaver(sqlite3.connect(path, check_same_thread=False))
+    saver.setup()
+    return saver
+
+
+def tracing_callbacks() -> list:
+    """Langfuse, when its keys are set; nothing otherwise.
+
+    A trace holds the question, every prompt and every reply, and it leaves
+    this machine for whichever Langfuse the keys point at. So it is off unless
+    someone turned it on, and a deployment that turns it on should say so to
+    its visitors.
+    """
+    if not (os.environ.get("LANGFUSE_PUBLIC_KEY") and os.environ.get("LANGFUSE_SECRET_KEY")):
+        return []
+    from langfuse.langchain import CallbackHandler
+
+    return [CallbackHandler()]
+
+
 class EnvRuntime:
     """The real wiring: local Neo4j, the local embedding model, NVIDIA, Hanjeok.
 
@@ -338,9 +365,12 @@ class EnvRuntime:
         self._gazetteers: dict[str, dict] = {}
         self.model = GuideModel()
         self.policy = GraphPolicy(self._driver, self._embedder)
+        self.checkpointer = checkpointer_from_env()
+        self.callbacks = tracing_callbacks()
         self.visits = Visits(
             per_visitor=int(os.environ.get("GUIDE_LIMIT_PER_VISITOR", "20")),
             per_day=int(os.environ.get("GUIDE_LIMIT_PER_DAY", "400")),
+            on_expire=self.checkpointer.delete_thread,
         )
         mode = os.environ.get("GUIDE_LIVE_MODE", "live")
         directory = os.environ.get("GUIDE_LIVE_RECORDING") or (

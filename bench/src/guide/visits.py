@@ -1,7 +1,9 @@
 """Who is asking, what they asked before, and how much they may ask.
 
-All in memory. A visit is a browser tab's conversation; it expires thirty
-minutes after its last question and is gone on restart. That is deliberate:
+A visit is a browser tab's conversation; it expires thirty minutes after its
+last question. This module issues its id and counts its questions. What the
+visit asked about lives on its thread in the agent's checkpointer, and is
+deleted from there when the visit expires here. That is deliberate:
 this demo keeps no record of visitors, so there is nothing to protect, export
 or delete (spec, Out of Scope).
 
@@ -14,15 +16,13 @@ from __future__ import annotations
 import secrets
 import time
 from collections import deque
-from dataclasses import dataclass, field
+from collections.abc import Callable
+from dataclasses import dataclass
 from threading import Lock
-
-from guide.scope import Turn
 
 VISIT_TTL_S = 30 * 60
 WINDOW_S = 60 * 60
 DAY_S = 24 * 60 * 60
-MAX_TURNS = 10
 # A visit id is a bearer token for nothing but a conversation's context, but it
 # is still unguessable: one visitor must not be able to read another's turns.
 _ID_BYTES = 16
@@ -39,13 +39,21 @@ class Limit:
 @dataclass(slots=True)
 class _Visit:
     last_seen: float
-    turns: list[Turn] = field(default_factory=list)
-    offered: set[int] = field(default_factory=set)
 
 
 class Visits:
-    def __init__(self, *, per_visitor: int = 20, per_day: int = 400, clock=time.monotonic) -> None:
+    def __init__(
+        self,
+        *,
+        per_visitor: int = 20,
+        per_day: int = 400,
+        clock=time.monotonic,
+        on_expire: Callable[[str], None] | None = None,
+    ) -> None:
         self.per_visitor, self.per_day, self._clock = per_visitor, per_day, clock
+        # Called with a visit's id when it expires, so whatever holds that
+        # visit's questions can forget them at the same moment.
+        self.on_expire = on_expire
         self._visits: dict[str, _Visit] = {}
         self._asked: dict[str, deque[float]] = {}
         self._day: deque[float] = deque()
@@ -54,6 +62,8 @@ class Visits:
     def _sweep(self, now: float) -> None:
         for key in [k for k, visit in self._visits.items() if now - visit.last_seen > VISIT_TTL_S]:
             del self._visits[key]
+            if self.on_expire is not None:
+                self.on_expire(key)
         for key in [
             k for k, times in self._asked.items() if not times or now - times[-1] > WINDOW_S
         ]:
@@ -96,28 +106,3 @@ class Visits:
                 self._asked[key].append(now)
             self._day.append(now)
             return None
-
-    def turns(self, visit_id: str) -> tuple[Turn, ...]:
-        with self._lock:
-            visit = self._visits.get(visit_id)
-            return tuple(visit.turns) if visit else ()
-
-    def remember(self, visit_id: str, turn: Turn) -> None:
-        with self._lock:
-            visit = self._visits.get(visit_id)
-            if visit is not None:
-                visit.turns = [*visit.turns, turn][-MAX_TURNS:]
-
-    def offer(self, visit_id: str, place_ids) -> None:
-        """Record the candidates shown for an ambiguous name."""
-        with self._lock:
-            visit = self._visits.get(visit_id)
-            if visit is not None:
-                visit.offered = set(place_ids)
-
-    def was_offered(self, visit_id: str, place_id: int) -> bool:
-        """A `choice` must be one of the places this visit was shown. Otherwise
-        the field would be a way to reach any place by guessing its id."""
-        with self._lock:
-            visit = self._visits.get(visit_id)
-            return visit is not None and place_id in visit.offered

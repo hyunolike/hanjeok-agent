@@ -386,3 +386,133 @@ def test_the_kind_of_model_failure_and_gate_refusals_are_kept_for_the_record():
 
     assert failed.model_failure == "rate_limit"
     assert len(refused.rejections) == 2 and "조회한 id 가 아닙니다" in refused.rejections[0]
+
+
+# ---- pausing for the visitor, and what a visit remembers ----
+
+AMBIGUOUS = "은행나무길은 토요일에 붐벼?"
+
+
+def agent_on(checkpointer, *replies) -> Agent:
+    return Agent(
+        ScriptedModel(*replies),
+        ExportPlaces(),
+        FakePolicy(),
+        replay_live(),
+        clock=Clock(),
+        checkpointer=checkpointer,
+    )
+
+
+def test_an_ambiguous_name_pauses_the_graph_and_the_choice_resumes_it():
+    from langgraph.checkpoint.memory import InMemorySaver
+
+    saver = InMemorySaver()
+    first = agent_on(saver)
+
+    asked = list(first.stream(AMBIGUOUS, thread_id="visit-1", today=TODAY))
+
+    assert [name for name, _ in asked] == ["step", "ask_user"]
+    assert first.result.outcome == "ask_user"
+    assert [c["place_id"] for c in first.pending("visit-1")] == [140, 141]
+
+    # A different instance, as a second HTTP request would be.
+    second = agent_on(
+        saver,
+        action("congestion", place_id=141, date="2026-10-17"),
+        answer(
+            "은행나무길(솔내구)은 혼잡 데이터가 없어 알 수 없습니다.",
+            "hanjeok:congestion/141@2026-10-17",
+        ),
+    )
+    resumed = list(second.stream(thread_id="visit-1", resume=141))
+
+    assert [name for name, _ in resumed][-3:] == ["answer", "path", "done"]
+    assert second.result.outcome == "answered"
+    assert second.result.place_ids == (141,)
+    assert second.pending("visit-1") is None
+    scope_steps = [d for n, d in resumed if n == "step" and d["kind"] == "scope"]
+    assert len(scope_steps) == 1 and "장소 1곳" in scope_steps[0]["summary"]
+
+
+def test_nothing_is_pending_for_a_visit_that_was_never_asked_to_choose():
+    assert agent_on(None).pending("nobody") is None
+
+
+def test_a_new_question_replaces_a_paused_one():
+    from langgraph.checkpoint.memory import InMemorySaver
+
+    saver = InMemorySaver()
+    list(agent_on(saver).stream(AMBIGUOUS, thread_id="v", today=TODAY))
+
+    fresh = agent_on(saver, answer("가람궁은 한빛시 가람구의 옛 궁궐입니다.", "hanjeok:place/101"))
+    events = list(fresh.stream("가람궁 어때?", thread_id="v", today=TODAY))
+
+    assert events[-1][0] == "done"
+    assert fresh.pending("v") is None
+
+
+def test_a_visit_remembers_what_was_asked_about_on_its_thread():
+    from langgraph.checkpoint.memory import InMemorySaver
+
+    saver = InMemorySaver()
+    list(agent_on(saver, *LOOK_BOTH, GOOD).stream(QUESTION, thread_id="v", today=TODAY))
+
+    follow_up = agent_on(
+        saver,
+        action("events", place_id=101, date="2026-10-17"),
+        answer("가람궁 달빛 야행이 열립니다.", "hanjeok:events/101@2026-10-17"),
+    )
+    list(follow_up.stream("거기 그날 행사 있어?", thread_id="v", today=TODAY))
+
+    assert follow_up.result.outcome == "answered"
+    assert (follow_up.result.place_ids, follow_up.result.dates) == ((101,), ("2026-10-17",))
+    remembered = follow_up.graph.get_state(follow_up._config("v")).values["turns"]
+    assert [t["question"] for t in remembered] == [QUESTION, "거기 그날 행사 있어?"]
+    assert "answer" not in remembered[0], "what was answered is not kept as context"
+
+
+def test_another_visit_does_not_see_those_questions():
+    from langgraph.checkpoint.memory import InMemorySaver
+
+    saver = InMemorySaver()
+    list(agent_on(saver, *LOOK_BOTH, GOOD).stream(QUESTION, thread_id="mine", today=TODAY))
+
+    other = agent_on(saver, action("search_places", text="zzzz"), answer("없음"))
+    list(other.stream("거기 그날 행사 있어?", thread_id="theirs", today=TODAY))
+
+    assert other.result.place_ids == ()
+
+
+def test_a_question_that_did_not_end_in_an_answer_is_not_remembered():
+    from langgraph.checkpoint.memory import InMemorySaver
+
+    saver = InMemorySaver()
+    declined = agent_on(saver)
+    list(declined.stream("가람궁 입장료는 얼마야?", thread_id="v", today=TODAY))
+
+    assert declined.graph.get_state(declined._config("v")).values.get("turns", []) == []
+
+
+def test_tracing_callbacks_see_the_graph_run():
+    from langchain_core.callbacks import BaseCallbackHandler
+
+    class Seen(BaseCallbackHandler):
+        def __init__(self) -> None:
+            self.names: list[str] = []
+
+        def on_chain_start(self, serialized, inputs, *, name=None, **kwargs):
+            self.names.append(name or "")
+
+    seen = Seen()
+    agent = Agent(
+        ScriptedModel(*LOOK_BOTH, GOOD),
+        ExportPlaces(),
+        FakePolicy(),
+        replay_live(),
+        clock=Clock(),
+        callbacks=[seen],
+    )
+    agent.ask(QUESTION, lambda *_: None, today=TODAY)
+
+    assert {"scope", "act", "verify"} <= set(seen.names)

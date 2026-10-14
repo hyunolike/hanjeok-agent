@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from guide import citations as cite
-from guide.scope import Turn
 from guide.visits import VISIT_TTL_S, WINDOW_S, Visits
 
 FETCHED = {
@@ -51,16 +50,6 @@ class Clock:
         return self.now
 
 
-def test_a_visit_keeps_what_was_asked_about_and_not_what_was_answered():
-    visits = Visits()
-    visit = visits.open(None)
-    visits.remember(visit, Turn("가람궁 어때?", (101,), ("2026-10-17",)))
-
-    assert visits.open(visit) == visit
-    assert visits.turns(visit) == (Turn("가람궁 어때?", (101,), ("2026-10-17",)),)
-    assert not hasattr(visits.turns(visit)[0], "answer")
-
-
 def test_an_unknown_or_expired_visit_gets_a_new_id_rather_than_an_error():
     clock = Clock()
     visits = Visits(clock=clock)
@@ -70,7 +59,6 @@ def test_an_unknown_or_expired_visit_gets_a_new_id_rather_than_an_error():
     second = visits.open(first)
 
     assert second != first
-    assert visits.turns(second) == ()
     assert visits.open("made-up") not in ("made-up", first, second)
 
 
@@ -113,11 +101,16 @@ def test_the_daily_limit_is_for_everyone_and_a_refused_question_is_not_counted()
     assert visits.admit(visits.open(None), "3.3.3.3").scope == "day"
 
 
-def test_a_choice_must_be_one_the_visit_was_offered():
-    visits = Visits()
-    visit, other = visits.open(None), visits.open(None)
-    visits.offer(visit, [140, 141])
+def test_an_expired_visit_is_reported_so_its_questions_can_be_forgotten():
+    clock = Clock()
+    forgotten: list[str] = []
+    visits = Visits(clock=clock, on_expire=forgotten.append)
+    old = visits.open(None)
+    clock.now += VISIT_TTL_S - 10
+    kept = visits.open(None)
+    clock.now += 20
 
-    assert visits.was_offered(visit, 141)
-    assert not visits.was_offered(visit, 101)
-    assert not visits.was_offered(other, 141)
+    visits.open(None)
+
+    assert forgotten == [old]
+    assert visits.open(kept) == kept

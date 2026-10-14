@@ -18,18 +18,27 @@ Answer text leaves this module only through the `answer` event, and only after
 
 An `Agent` answers one question at a time: the graph's nodes keep the question
 in progress on the instance. The API builds one per request.
+
+Three things are LangGraph's rather than this module's own: steps reach the
+caller through the graph's custom stream, an ambiguous place name pauses the
+graph with `interrupt` until the visitor chooses, and a visit's earlier
+questions live on its thread in the checkpointer.
 """
 
 from __future__ import annotations
 
 import re
 import time
-from collections.abc import Callable
+from collections.abc import Callable, Iterator, Sequence
 from dataclasses import asdict, dataclass, field
 from datetime import UTC, date, datetime
-from typing import Any, TypedDict
+from typing import Annotated, Any, TypedDict
+from uuid import uuid4
 
+from langgraph.checkpoint.memory import InMemorySaver
+from langgraph.config import get_stream_writer
 from langgraph.graph import END, START, StateGraph
+from langgraph.types import Command, interrupt
 
 from guide import citations as cite
 from guide.live import LiveClient
@@ -39,6 +48,7 @@ from guide.scope import Scope, Turn, read_question
 from guide.sources import Places, Policy
 
 MAX_LOOKUP_ROUNDS = 3
+MAX_TURNS = 10
 DEADLINE_S = 60.0
 # Below this, a lookup followed by an answer call would not both fit: the
 # provider is paced, so two calls cost at least one interval before they start.
@@ -95,13 +105,27 @@ class Result:
     prompts: list[dict] = field(default_factory=list)
 
 
+def _recent(old: list[dict], new: list[dict]) -> list[dict]:
+    """What a visit remembers: the last few questions' places and dates."""
+    return [*old, *new][-MAX_TURNS:]
+
+
 class State(TypedDict, total=False):
-    scope: Scope
+    """Everything here is plain data, because the checkpointer stores it.
+
+    `turns` is the only field that outlives a question: it accumulates on the
+    visit's thread. The rest is set afresh by each question's input.
+    """
+
+    question: str
+    today: str
+    choice: int | None
+    turns: Annotated[list[dict], _recent]
+    dates: list[str]
     draft: dict | None
     repair: str | None
     repaired: bool
     rounds: int
-    withdrawn: bool
     partial: bool
     refusals: list[str]
     outcome: str
@@ -153,9 +177,12 @@ class Agent:
         strategy: str = "graph",
         clock: Callable[[], float] = time.monotonic,
         deadline_s: float = DEADLINE_S,
+        checkpointer=None,
+        callbacks: Sequence = (),
     ) -> None:
         self.model, self.places, self.policy, self.live = model, places, policy, live
         self.strategy, self.clock, self.deadline_s = strategy, clock, deadline_s
+        self._callbacks = list(callbacks)
         builder = StateGraph(State)
         builder.add_node("scope", self._scope)
         builder.add_node("act", self._act)
@@ -169,9 +196,88 @@ class Agent:
         )
         builder.add_conditional_edges("answer", route, {"verify": "verify", END: END})
         builder.add_conditional_edges("verify", route, {"answer": "answer", END: END})
-        self.graph = builder.compile()
+        # A checkpointer is what lets the graph stop to ask the visitor which
+        # place they mean and pick up from there, and what carries a visit's
+        # earlier questions. One of its own is enough when nobody will resume.
+        self.graph = builder.compile(checkpointer=checkpointer or InMemorySaver())
+        self.result = Result("failed")
+        self._resuming = False
 
     # ---- one question ----
+
+    def _config(self, thread_id: str) -> dict:
+        return {
+            "configurable": {"thread_id": thread_id},
+            "callbacks": self._callbacks,
+            "recursion_limit": 25,
+        }
+
+    def pending(self, thread_id: str) -> list[dict] | None:
+        """The candidates this visit is waiting to choose between, if any."""
+        state = self.graph.get_state(self._config(thread_id))
+        for task in state.tasks:
+            for interrupted in task.interrupts:
+                return interrupted.value["candidates"]
+        return None
+
+    def stream(
+        self,
+        question: str | None = None,
+        *,
+        thread_id: str | None = None,
+        today: date | None = None,
+        turns: Sequence[Turn] = (),
+        choice: int | None = None,
+        resume: int | None = None,
+    ) -> Iterator[tuple[str, dict]]:
+        """Events of one question, as they happen.
+
+        With `resume`, the visit's paused question continues with the place the
+        visitor chose; `question` is not needed and is ignored.
+        """
+        thread_id = thread_id or str(uuid4())
+        self.result = Result("failed")
+        self._index = 0
+        self._started = self.clock()
+        self._resuming = resume is not None
+        self._lookups = None
+        if resume is not None:
+            given = Command(resume=resume)
+        else:
+            given = {
+                "question": question,
+                "today": (today or self.live.today()).isoformat(),
+                "choice": choice,
+                "turns": [asdict(turn) for turn in turns],
+                "dates": [],
+                "rounds": 0,
+                "repaired": False,
+                "partial": False,
+                "refusals": [],
+                "draft": None,
+                "repair": None,
+                "outcome": "failed",
+                "cause": None,
+            }
+        config = self._config(thread_id)
+        paused = False
+        for mode, chunk in self.graph.stream(given, config, stream_mode=["custom", "updates"]):
+            if mode == "custom":
+                yield chunk
+            elif "__interrupt__" in chunk:
+                # The graph stopped inside `scope` to ask which place is meant.
+                paused = True
+                yield ("ask_user", chunk["__interrupt__"][0].value)
+
+        result = self.result
+        if paused:
+            result.outcome, result.cause = "ask_user", "ambiguous_place"
+        else:
+            values = self.graph.get_state(config).values
+            result.outcome, result.cause = values["outcome"], values.get("cause")
+        if self._lookups is not None:
+            result.fetched = tuple(self._lookups.fetched.labels)
+        result.elapsed_ms = int((self.clock() - self._started) * 1000)
 
     def ask(
         self,
@@ -179,33 +285,20 @@ class Agent:
         emit: Emit,
         *,
         today: date | None = None,
-        turns: tuple[Turn, ...] = (),
+        turns: Sequence[Turn] = (),
         choice: int | None = None,
+        thread_id: str | None = None,
     ) -> Result:
-        self._question, self._emit, self._turns, self._choice = question, emit, turns, choice
-        self._today = today or self.live.today()
-        self._started = self.clock()
-        self._lookups = Lookups(
-            self.places, self.policy, self.live, today=self._today, strategy=self.strategy
-        )
-        self._result = Result("failed")
-        self._index = 0
-        state = self.graph.invoke(
-            {
-                "rounds": 0,
-                "repaired": False,
-                "partial": False,
-                "refusals": [],
-                "draft": None,
-                "repair": None,
-            },
-            {"recursion_limit": 25},
-        )
-        result = self._result
-        result.outcome, result.cause = state["outcome"], state.get("cause")
-        result.fetched = tuple(self._lookups.fetched.labels)
-        result.elapsed_ms = int((self.clock() - self._started) * 1000)
-        return result
+        """`stream`, for callers that want a callback and the result."""
+        for name, data in self.stream(
+            question, thread_id=thread_id, today=today, turns=turns, choice=choice
+        ):
+            emit(name, data)
+        return self.result
+
+    def _emit(self, name: str, data: dict) -> None:
+        # LangGraph's own channel for "something happened inside a node".
+        get_stream_writer()((name, data))
 
     def _remaining(self) -> float:
         return self.deadline_s - (self.clock() - self._started)
@@ -222,7 +315,7 @@ class Agent:
             "as_of": outcome.as_of,
         }
         self._index += 1
-        self._result.steps.append(step)
+        self.result.steps.append(step)
         self._emit("step", step)
 
     def _stop(self, outcome: str, cause: str, message: str | None = None) -> State:
@@ -234,37 +327,59 @@ class Agent:
     # ---- nodes ----
 
     def _scope(self, state: State) -> State:
-        scope = read_question(
-            self._question,
-            today=self._today,
-            gazetteer=self.places.gazetteer(),
-            turns=self._turns,
-            choice=self._choice,
+        # Set here rather than in `stream`: a resumed question starts in this
+        # node on a new instance, with only the checkpoint to go on.
+        self._question = state["question"]
+        self._today = date.fromisoformat(state["today"])
+        self._lookups = Lookups(
+            self.places, self.policy, self.live, today=self._today, strategy=self.strategy
         )
-        self._result.dates = scope.dates
-        summary = " · ".join((scope.summary, *scope.notes))
+        turns = tuple(
+            Turn(turn["question"], tuple(turn["place_ids"]), tuple(turn["dates"]))
+            for turn in state.get("turns", [])
+        )
+
+        def read(choice: int | None) -> Scope:
+            return read_question(
+                self._question,
+                today=self._today,
+                gazetteer=self.places.gazetteer(),
+                turns=turns,
+                choice=choice,
+            )
+
+        scope = read(state.get("choice"))
         if scope.outcome == "declined":
-            self._step("scope", Outcome("refused", {}, summary, reason=scope.message))
+            self._step("scope", Outcome("refused", {}, scope.summary, reason=scope.message))
             return self._stop("declined", scope.cause, scope.message)
-        self._step("scope", Outcome("ok", {}, summary))
         if scope.outcome == "ask_user":
-            self._emit(
-                "ask_user",
+            self.result.candidates = tuple(c.place_id for c in scope.candidates)
+            self.result.dates = scope.dates
+            if not self._resuming:
+                self._step("scope", Outcome("ok", {}, scope.summary))
+            # The graph stops here. When the visitor answers, this node runs
+            # again from its first line and `interrupt` returns their choice.
+            chosen = interrupt(
                 {
                     "cause": scope.cause,
                     "prompt": scope.message,
                     "candidates": [asdict(c) for c in scope.candidates],
-                },
+                }
             )
-            self._result.candidates = tuple(c.place_id for c in scope.candidates)
-            return {"outcome": "ask_user", "cause": scope.cause, "route": END}
+            scope = read(chosen)
+            if scope.outcome != "proceed":
+                # A choice that settles nothing. The API checks the choice
+                # against the candidates first, so this is a caller's mistake.
+                return self._stop("no_grounds", "no_grounds")
 
+        self.result.dates = scope.dates
+        self._step("scope", Outcome("ok", {}, " · ".join((scope.summary, *scope.notes))))
         if scope.place_ids:
             found = [
                 place for place in map(self.places.detail, scope.place_ids) if place is not None
             ]
             produced = tuple(self._lookups.add_place(place) for place in found)
-            self._result.place_ids = tuple(place.id for place in found)
+            self.result.place_ids = tuple(place.id for place in found)
             names = ", ".join(
                 f"{place.name} ({place.region_label or '지역 정보 없음'})" for place in found
             )
@@ -278,14 +393,13 @@ class Agent:
                     as_of=self.places.exported_at,
                 ),
             )
-        return {"scope": scope, "route": "act"}
+        return {"dates": list(scope.dates), "route": "act"}
 
     def _prompt(self, state: State, actions: tuple[str, ...]) -> str:
-        scope = state["scope"]
         fetched = self._lookups.fetched
         lines = [f"오늘: {self._today.isoformat()}", f"질문: {self._question}"]
-        if scope.dates:
-            lines.append("질문에서 읽은 날짜: " + ", ".join(scope.dates))
+        if state["dates"]:
+            lines.append("질문에서 읽은 날짜: " + ", ".join(state["dates"]))
         lookups = [name for name in actions if name != "answer"]
         if lookups:
             lines += ["", "쓸 수 있는 조회:", *(f"- {DESCRIPTIONS[name]}" for name in lookups)]
@@ -301,8 +415,8 @@ class Agent:
 
     def _call(self, state: State, actions: tuple[str, ...]) -> dict:
         user = self._prompt(state, actions)
-        self._result.model_calls += 1
-        self._result.prompts.append({"system": SYSTEM, "user": user, "actions": list(actions)})
+        self.result.model_calls += 1
+        self.result.prompts.append({"system": SYSTEM, "user": user, "actions": list(actions)})
         return self.model.decide(SYSTEM, user, _schema(actions), timeout=self._remaining())
 
     def _act(self, state: State) -> State:
@@ -314,7 +428,7 @@ class Agent:
         try:
             reply = self._call(state, (*self._lookups.offered, "answer"))
         except ModelFailure as failure:
-            self._result.model_failure = failure.kind
+            self.result.model_failure = failure.kind
             return self._stop("failed", "model_failed")
         if reply["action"] == "answer":
             return {"draft": reply, "route": "verify"}
@@ -368,7 +482,7 @@ class Agent:
         try:
             reply = self._call(state, ("answer",))
         except ModelFailure as failure:
-            self._result.model_failure = failure.kind
+            self.result.model_failure = failure.kind
             return self._stop(
                 "failed", "budget_exhausted" if failure.kind == "deadline" else "model_failed"
             )
@@ -381,7 +495,7 @@ class Agent:
             return self._stop("no_grounds", "no_grounds")
         verdict = cite.gate(draft.get("answer") or "", draft.get("citations") or [], fetched.labels)
         if not verdict.ok:
-            self._result.rejections.append(verdict.reason or "")
+            self.result.rejections.append(verdict.reason or "")
             if state["repaired"]:
                 # Two drafts, both unverifiable. Neither is shown.
                 return self._stop("failed", "invalid_citations")
@@ -391,7 +505,7 @@ class Agent:
         # Told not to repeat them, it sometimes still does; they mean nothing to
         # a visitor, so they are removed rather than shown.
         text = _INTERNAL_ID.sub("", draft["answer"]).strip()
-        self._result.answer, self._result.citations, self._result.partial = (
+        self.result.answer, self.result.citations, self.result.partial = (
             text,
             verdict.citations,
             state["partial"],
@@ -421,7 +535,14 @@ class Agent:
                 "generated_at": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
             },
         )
-        return {"outcome": "answered", "cause": None, "route": END}
+        # What the visit remembers of this question: what it was about, never
+        # what was answered.
+        turn = {
+            "question": self._question,
+            "place_ids": list(self.result.place_ids),
+            "dates": list(self.result.dates),
+        }
+        return {"outcome": "answered", "cause": None, "route": END, "turns": [turn]}
 
     def path(self) -> dict[str, Any]:
         """The places, documents and links this question's lookups returned —
