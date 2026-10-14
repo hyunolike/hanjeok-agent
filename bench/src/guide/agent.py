@@ -389,6 +389,8 @@ class Agent:
 
         self.result.dates = scope.dates
         self._step("scope", Outcome("ok", {}, " · ".join((scope.summary, *scope.notes))))
+        if DATE_FROM_SCREEN in scope.notes:
+            self._lookups.screen_dates = scope.dates
         if scope.place_ids:
             found = [
                 place for place in map(self.places.detail, scope.place_ids) if place is not None

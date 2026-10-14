@@ -563,3 +563,17 @@ def test_a_date_from_the_screen_is_labelled_as_such_for_the_model():
 
     assert "방문자가 보고 있던 화면의 날짜: 2026-10-17" in model.calls[0]["user"]
     assert "질문에서 읽은 날짜" not in model.calls[0]["user"]
+
+
+def test_a_lookup_for_another_day_than_the_screens_is_refused():
+    # On the deployed service the model looked up today despite the label.
+    model = ScriptedModel(
+        action("congestion", place_id=101, date=TODAY.isoformat()),
+        action("congestion", place_id=101, date="2026-10-17"),
+        answer("10월 17일 가람궁은 매우혼잡 예보입니다.", "hanjeok:congestion/101@2026-10-17"),
+    )
+
+    result, events = run(model, "여기 붐벼?", context={"place_id": 101, "date": "2026-10-17"})
+
+    assert result.outcome == "answered"
+    assert "이 질문의 날짜는 2026-10-17입니다" in model.calls[1]["user"]

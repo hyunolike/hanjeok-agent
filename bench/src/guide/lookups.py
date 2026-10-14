@@ -127,6 +127,9 @@ class Lookups:
         self.offered = offered(strategy)
         self.fetched = Fetched()
         self._done: set[tuple] = set()
+        # Dates the visitor's screen settled. Told in the prompt, the model
+        # still looked up today; a lookup for another day is refused instead.
+        self.screen_dates: tuple[str, ...] = ()
         self._live_cache: dict[tuple, Any] = {}
 
     # ---- shared pieces ----
@@ -213,6 +216,11 @@ class Lookups:
         last = self.today + timedelta(days=FORECAST_DAYS - 1)
         if not self.today <= parsed <= last:
             return None, f"예보는 {self.today.isoformat()}부터 {last.isoformat()}까지만 있습니다."
+        if self.screen_dates and parsed.isoformat() not in self.screen_dates:
+            return (
+                None,
+                f"이 질문의 날짜는 {', '.join(self.screen_dates)}입니다. 그 날짜로 조회하세요.",
+            )
         return parsed.isoformat(), None
 
     def _text_arg(self, args: dict, limit: int) -> tuple[str | None, str | None]:
