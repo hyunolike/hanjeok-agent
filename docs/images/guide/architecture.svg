@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc"><title id="title">Hanjeok Agent — system architecture</title><desc id="desc">Runtime architecture in four columns, followed by the build-time data import. The agent has no Hanjeok database credentials.</desc><defs>
+<marker id="navy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 1 L9 5 L0 9 Z" fill="#172033"/></marker>
+<marker id="green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 1 L9 5 L0 9 Z" fill="#009C75"/></marker>
+<marker id="sky" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 1 L9 5 L0 9 Z" fill="#00A6D6"/></marker>
+<marker id="coral" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 1 L9 5 L0 9 Z" fill="#F04B3E"/></marker>
+<marker id="gold" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 1 L9 5 L0 9 Z" fill="#F2B84B"/></marker>
+</defs><g font-family="Helvetica Neue, Arial, sans-serif" xml:space="preserve">
+<rect x="0" y="0" width="1600" height="1000" rx="0" fill="#FBFCFD" stroke="none" stroke-width="1.7"/>
+<text x="48" y="67" font-size="36" font-weight="700" fill="#172033" text-anchor="start">Hanjeok Agent — system architecture</text>
+<rect x="32" y="122" width="176" height="704" rx="24" fill="#F5F7FA" stroke="#DCE2EB" stroke-width="1.5"/>
+<text x="56" y="171" font-size="25" font-weight="700" fill="#172033" text-anchor="start">Visitor</text>
+<rect x="230" y="122" width="388" height="704" rx="24" fill="#F5F7FA" stroke="#DCE2EB" stroke-width="1.5"/>
+<text x="254" y="171" font-size="25" font-weight="700" fill="#172033" text-anchor="start">Vercel</text>
+<rect x="644" y="122" width="620" height="704" rx="24" fill="#F0F9F5" stroke="#CEE8DC" stroke-width="1.5"/>
+<rect x="668" y="148" width="5" height="26" rx="2.5" fill="#009C75" stroke="none" stroke-width="1.7"/>
+<text x="686" y="171" font-size="25" font-weight="700" fill="#172033" text-anchor="start">Cloud Run · one container</text>
+<rect x="1288" y="122" width="280" height="704" rx="24" fill="#F5F7FA" stroke="#DCE2EB" stroke-width="1.5"/>
+<text x="1312" y="171" font-size="25" font-weight="700" fill="#172033" text-anchor="start">Outside services</text>
+<rect x="32" y="834" width="1536" height="144" rx="20" fill="#F2F5F8" stroke="none" stroke-width="1.7"/>
+<text x="56" y="860" font-size="23" font-weight="700" fill="#172033" text-anchor="start">Build time — how Hanjeok&#x27;s data gets in</text>
+<path d="M188 284 H248" fill="none" stroke="#172033" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#navy)"/>
+<text x="218" y="267" font-size="15" font-weight="600" fill="#172033" text-anchor="middle">HTTPS</text>
+<path d="M600 254 H674" fill="none" stroke="#172033" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#navy)"/>
+<text x="637" y="239" font-size="16" font-weight="600" fill="#172033" text-anchor="middle">SSE</text>
+<path d="M894 310 V346" fill="none" stroke="#009C75" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green)"/>
+<path d="M956 436 V488" fill="none" stroke="#009C75" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green)"/>
+<path d="M1184 400 H1208 V634 H1184" fill="none" stroke="#009C75" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green)"/>
+<path d="M734 634 H662 V336 H720 V310" fill="none" stroke="#009C75" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green)"/>
+<text x="755" y="330" font-size="16" font-weight="600" fill="#009C75" text-anchor="start">verified answer</text>
+<path d="M734 534 H698 V680 H864 V700" fill="none" stroke="#009C75" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green)"/>
+<text x="951" y="589" font-size="16" font-weight="600" fill="#009C75" text-anchor="middle">places · links · events · policy</text>
+<path d="M1184 375 H1308" fill="none" stroke="#009C75" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green)"/>
+<text x="1426" y="334" font-size="16" font-weight="600" fill="#009C75" text-anchor="middle">next action / answer</text>
+<path d="M1184 528 H1308" fill="none" stroke="#00A6D6" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#sky)"/>
+<text x="1426" y="485" font-size="16" font-weight="600" fill="#00A6D6" text-anchor="middle">congestion · alternatives</text>
+<rect x="52" y="234" width="136" height="100" rx="15" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<text x="120" y="292" font-size="25" font-weight="700" fill="#172033" text-anchor="middle">Browser</text>
+<rect x="248" y="205" width="352" height="177" rx="17" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<text x="266" y="241" font-size="26" font-weight="700" fill="#172033" text-anchor="start">Next.js screens</text>
+<text x="266" y="282" font-size="16" font-weight="400" fill="#172033" text-anchor="start">/ask  ·  question, steps, answer, path</text>
+<text x="266" y="317" font-size="16" font-weight="400" fill="#172033" text-anchor="start">/graph  ·  browse a place&#x27;s neighbours</text>
+<text x="266" y="352" font-size="16" font-weight="400" fill="#172033" text-anchor="start">/eval  ·  evaluation report</text>
+<rect x="674" y="192" width="330" height="118" rx="17" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<text x="692" y="226" font-size="25" font-weight="700" fill="#172033" text-anchor="start">FastAPI</text>
+<text x="692" y="253" font-size="16" font-weight="400" fill="#172033" text-anchor="start" data-label="POST /guide/ask (SSE) · GET /guide/places · /guide/status · /guide/eval"><tspan x="692" y="253">POST /guide/ask (SSE) · </tspan><tspan x="692" y="276">GET /guide/places · </tspan><tspan x="692" y="299">/guide/status · /guide/eval</tspan></text>
+<rect x="1028" y="192" width="212" height="118" rx="17" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<text x="1046" y="226" font-size="24" font-weight="700" fill="#172033" text-anchor="start">MCP server</text>
+<text x="1046" y="263" font-size="17" font-weight="400" fill="#172033" text-anchor="start">4 read-only tools</text>
+<rect x="734" y="346" width="450" height="90" rx="17" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<text x="752" y="379" font-size="25" font-weight="700" fill="#172033" text-anchor="start">LangGraph agent</text>
+<text x="752" y="406" font-size="16.5" font-weight="400" fill="#172033" text-anchor="start" data-label="scope → act → answer → verify · interrupt · checkpointer"><tspan x="752" y="406">scope → act → answer → verify · </tspan><tspan x="752" y="428">interrupt · checkpointer</tspan></text>
+<rect x="734" y="488" width="450" height="80" rx="17" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<text x="752" y="521" font-size="25" font-weight="700" fill="#172033" text-anchor="start">7 validated lookups</text>
+<text x="752" y="548" font-size="17" font-weight="400" fill="#172033" text-anchor="start">the model chooses; code checks the inputs</text>
+<rect x="734" y="602" width="450" height="64" rx="17" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<text x="752" y="629" font-size="24" font-weight="700" fill="#172033" text-anchor="start">Citation gate</text>
+<text x="752" y="653" font-size="17" font-weight="400" fill="#172033" text-anchor="start">cite only what this question fetched</text>
+<path d="M682 712 C682 696.0 1044 696.0 1044 712 V798 C1044 814.0 682 814.0 682 798 Z" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<ellipse cx="863.0" cy="712" rx="181.0" ry="12" fill="#E5F5EE" stroke="#172033" stroke-width="1.7"/>
+<path d="M682 788 C682 805 1044 805 1044 788" fill="none" stroke="#009C75" stroke-width="1.5"/>
+<text x="863" y="750" font-size="23" font-weight="700" fill="#172033" text-anchor="middle">Neo4j</text>
+<text x="863" y="774" font-size="14.5" font-weight="400" fill="#172033" text-anchor="middle" data-label="Place · RELATED_TO (ranked) · Event · wiki chunks · vector index"><tspan x="863" y="774">Place · RELATED_TO (ranked) · Event · </tspan><tspan x="863" y="794">wiki chunks · vector index</tspan></text>
+<rect x="1068" y="716" width="172" height="94" rx="17" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<text x="1154" y="744" font-size="18" font-weight="700" fill="#172033" text-anchor="middle">Embedding model</text>
+<text x="1154" y="771" font-size="14.5" font-weight="400" fill="#172033" text-anchor="middle" data-label="multilingual-e5-large, local"><tspan x="1154" y="771">multilingual-e5-large, </tspan><tspan x="1154" y="791">local</tspan></text>
+<rect x="1308" y="350" width="240" height="92" rx="17" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<text x="1326" y="387" font-size="25" font-weight="700" fill="#172033" text-anchor="start">NVIDIA NIM</text>
+<text x="1326" y="417" font-size="16" font-weight="400" fill="#172033" text-anchor="start">nemotron · structured output</text>
+<rect x="1308" y="500" width="240" height="154" rx="17" fill="#F1FAFE" stroke="#172033" stroke-width="1.7"/>
+<text x="1326" y="536" font-size="25" font-weight="700" fill="#172033" text-anchor="start">Hanjeok API</text>
+<text x="1326" y="571" font-size="21" font-weight="400" fill="#172033" text-anchor="start">…/congestion</text>
+<text x="1326" y="603" font-size="21" font-weight="400" fill="#172033" text-anchor="start">…/alternatives</text>
+<text x="1326" y="632" font-size="17" font-weight="400" fill="#172033" text-anchor="start">read-only, date-bound</text>
+<path d="M211 938 H260" fill="none" stroke="#00A6D6" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#sky)"/>
+<path d="M573 938 H620" fill="none" stroke="#00A6D6" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#sky)"/>
+<path d="M846 938 H892" fill="none" stroke="#009C75" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green)"/>
+<path d="M1153 938 H1200" fill="none" stroke="#009C75" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green)"/>
+<path d="M56 916 C56 902.6666666666666 211 902.6666666666666 211 916 V960 C211 973.3333333333334 56 973.3333333333334 56 960 Z" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<ellipse cx="133.5" cy="916" rx="77.5" ry="10" fill="#DDF4FC" stroke="#172033" stroke-width="1.7"/>
+<path d="M56 948 C56 965 211 965 211 948" fill="none" stroke="#00A6D6" stroke-width="1.5"/>
+<text x="133.5" y="951" font-size="20" font-weight="700" fill="#172033" text-anchor="middle">Hanjeok DB</text>
+<rect x="260" y="906" width="313" height="64" rx="13" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<text x="278" y="933" font-size="21" font-weight="700" fill="#172033" text-anchor="start">export script</text>
+<text x="278" y="956" font-size="14.5" font-weight="400" fill="#172033" text-anchor="start">public tourism tables, allow-listed columns</text>
+<rect x="620" y="906" width="226" height="64" rx="13" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<text x="733" y="945" font-size="23" font-weight="700" fill="#172033" text-anchor="middle">JSONL + manifest</text>
+<rect x="892" y="906" width="261" height="64" rx="13" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<text x="910" y="933" font-size="21" font-weight="700" fill="#172033" text-anchor="start">verify</text>
+<text x="910" y="956" font-size="16" font-weight="400" fill="#172033" text-anchor="start">hashes · row counts · columns</text>
+<rect x="1200" y="906" width="344" height="64" rx="13" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<text x="1372" y="945" font-size="23" font-weight="700" fill="#172033" text-anchor="middle">graph built into the image</text>
+<text x="56" y="886" font-size="15" font-weight="600" fill="#F04B3E" text-anchor="start">the agent holds no database credentials</text>
+</g></svg>

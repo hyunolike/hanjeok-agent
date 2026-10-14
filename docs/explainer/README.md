@@ -1,0 +1,647 @@
+> This document describes the **course explainer**, the earlier component of this repository. The project README is [here](../../README.md).
+
+<div align="center">
+
+# 🧭 hanjeok-agent
+
+**An LLM agent that explains travel courses from a preserved evidence bundle**
+
+> The backend decides the ranking. The LLM only explains it.<br/>
+> The evaluation harness **counts** whether that line was crossed.
+
+<br/>
+
+![Kotlin](https://img.shields.io/badge/Kotlin-2.2.21-7F52FF?logo=kotlin&logoColor=white)
+![Java](https://img.shields.io/badge/JDK-21-ED8B00?logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1.0-6DB33F?logo=springboot&logoColor=white)
+![Gradle](https://img.shields.io/badge/Gradle-Kotlin%20DSL-02303A?logo=gradle&logoColor=white)
+![Spring AI](https://img.shields.io/badge/Spring%20AI-2.0.1-6DB33F?logo=springboot&logoColor=white)
+
+**English** · [한국어](./README.ko.md)
+
+</div>
+
+<br/>
+
+<div align="center">
+
+<img src="../images/screens/course.png" alt="The course screen: three stops with congestion grades, then a line marking where the backend's output ends, then the explanation — labelled as written by the LLM, with the model name — and three citation chips naming the documents it used." width="820">
+
+<sub>A line marks where the backend's output ends and the LLM's paragraph begins, and every citation chip opens the exact document the model saw.<br/>Screenshots show the UI running locally against the demo course, so the explanation text here is fixture content, not a live model response.</sub>
+
+**[Live demo](https://agent.hanjeok.com)** · **[evidence browser](https://agent.hanjeok.com/evidence)**
+
+</div>
+
+<br/>
+
+<div align="center">
+
+### 🎬 What this agent actually does
+
+<a href="../media/hanjeok-agent.mp4"><img src="../media/hanjeok-agent.gif" alt="A question is typed, an answer begins to stream, and it stops — EXPLANATION_UNAVAILABLE. The cited path was not in the bundle, so the whole answer was withheld. Then: the nine documents that are the entire evidence set, a normal run where citations arrive before the body, the tool loop fetching a fact it was missing, and the closing line — no grounds, no answer." width="820"></a>
+
+<sub>21 seconds. The agent's main job is not answering — it is refusing to. **[Click for the version with sound →](../media/hanjeok-agent.mp4)**<br/>Historical recording: 9 documents / 23,079 bytes and fabricated citations blocked 5/5 on an earlier model run. The current bundle is 24,703 bytes; the October 9 deployment verification did not call an LLM.</sub>
+
+</div>
+
+<br/>
+
+**The short version**
+
+- **The backend ranks. The LLM only explains.** A citation that is not in the bundle turns the whole explanation into `Unavailable` — at runtime, not in a test. No explanation is the safe failure.
+- **Eight forbidden behaviours, counted in evaluation harness runs.** Production requests enforce citation validation; they do not run this eight-behaviour checker. The harness rate is divided by `explained`, never by `runs` — a run that produced no text cannot be checked, and counting it dilutes the number.
+- **The violation rate did not pick the model.** Both candidates scored 0% on all eight. A separate, non-blocking LLM judge did: 1.2 vs 0.5 readability findings per run, which is why `gpt-4o` ships.
+
+<br/>
+
+## 🧭 The guide agent (in progress)
+
+A second, larger piece sits beside the course explainer: an agent a visitor can ask in their own words, such as "이번 토요일 경복궁 대신 조용한 곳 있어?". It reads the question by rule, looks things up in visible steps, and answers citing only what it fetched for that question. Specification: [`specs/002-hanjeok-guide-agent/`](../../specs/002-hanjeok-guide-agent/). Product summary in Korean: [`docs/prd/hanjeok-guide-agent.md`](../prd/hanjeok-guide-agent.md).
+
+| Screen | What it shows |
+| --- | --- |
+| `/ko/ask` | The question, each step as it happens, the verified answer, citations of two kinds (Hanjeok record, policy document), and the path the answer took |
+| `/ko/graph` | A place and the places Hanjeok links to it, in Hanjeok's rank order |
+| `/ko/eval` | The evaluation report: every score with the number of questions behind it |
+| `/ko/design` | The design values, components and the six poses of the guide character |
+
+The service is Python (FastAPI, LangGraph, Neo4j) under [`bench/src/guide/`](../../bench/src/guide/). The model picks from seven fixed lookups whose inputs are validated in code; it never writes a query and never decides an order. Hanjeok's place data arrives only as an exported file, and the agent calls two read-only Hanjeok endpoints for date-bound facts.
+
+Three parts of that are libraries rather than this repository's own code: LangGraph's stream, `interrupt` and checkpointer carry a question's steps, the "which place do you mean?" pause, and a visit's earlier questions; neo4j-graphrag's `VectorCypherRetriever` does the similarity search; and `uv run guide mcp` serves four read-only tools over the Model Context Protocol, which is how the Hanjeok backend is meant to call this later. Langfuse tracing is wired and off unless its keys are set.
+
+**What has been measured so far is small.** The data is a synthetic export of forty invented places, and the question set has twelve questions. Two runs against the hosted model on 2026-10-14, without the RAGAS judge:
+
+| | Text similarity only | Plus relatedness links |
+| --- | --- | --- |
+| Share of needed records fetched, run 1 | 0.75 (10 questions) | 0.92 (10 questions) |
+| Share of needed records fetched, run 2 | 0.75 (10 questions) | 0.82 (10 questions) |
+| Unanswerable questions declined | 2 of 2 | 2 of 2 |
+
+Run 2 is the published one; in it one linked-places question failed under the second strategy because the model's reply hit its output limit. The run records are in [`bench/runs/`](../../bench/runs/) and the reports in [`bench/reports/guide/`](../../bench/reports/guide/). Not done yet: real Hanjeok data, the sixty-question set, RAGAS scores, deployment.
+
+```bash
+cd bench
+docker compose up -d
+uv sync
+uv run guide refresh --export tests/fixtures/hanjeok-export
+GUIDE_LIVE_MODE=replay uv run uvicorn guide.api:app --port 8090   # needs NVIDIA_API_KEY to answer
+```
+
+## Hanjeok Wiki and Agent overview
+
+![Hanjeok collection/build, production and separate local experiment architecture](../images/hanjeok-wiki-agent-overview.en.png)
+
+This 3D diagram describes the current FULL production path. The retrieval preparation path is shown separately under “What changed”. The metadata sidecar is server-only, and ranking stays with the backend.
+
+## What changed from the FULL-only baseline
+
+**Production remains FULL.** A read-only Cloud Run configuration check on 2026-10-10 still shows agent `ea47917` Ready at 100% traffic, with no retrieval runtime configuration. Agent #14/wiki #33 were externally merged; this follow-up is on a separate feature branch for new Draft PR review. The separate local API/request-selection implementation is tested; cloud deployment remains held.
+
+| Area | Previous FULL baseline | Current local implementation |
+| --- | --- | --- |
+| Model context | All nine documents, 24,703 UTF-8 bytes, in the system manual; facts in user input | Default FULL preserves those exact bytes and makes no retrieval call. Opt-in VECTOR/HYBRID_GRAPH always retains all eight policy documents; optional seed JSON is untrusted user data. |
+| Retrieval | No runtime search; build-time package list | Separate Python ASGI API queries an immutable index using lexical TF-IDF or the separately executed pinned CPU semantic adapter. HYBRID_GRAPH adds verified document/source and declared seed place/region relations, bounded to 2 hops/9 docs. |
+| Responsibilities | Kotlin loads the full bundle and explains backend facts | API returns IDs/hashes/source signatures only. Kotlin resolves local verified text, checks coverage and citations, repairs streams and preserves backend ranking. No raw facts/history are sent to retrieval. |
+| Versions and release | Bundle and sidecar ship together in the agent image | Index/model/runtime/bundle/sidecar identities are pinned and rechecked. Validation precedes manual local registry publication/rollback; neither hot-reloads a running service nor changes cloud traffic. |
+| Failure and cache | Bundle-wide citation allowlist; UUID + facts-hash EXPLAIN cache | Request-scoped citation allowlist and context identity in cache/single-flight keys isolate selected and FULL results, including overlapping requests. Remote/auth/timeout/stale-index/coverage failures restore verified FULL; a corrupt baseline fails closed. |
+| Evaluation | Scripted 29-fixture selection comparison and historical model evaluation | Actual RAGAS 0.3.9 document-ID precision/recall is separate from answer generation or LLM judging. Real HTTP + Neo4j + Kotlin citation E2E uses scripted providers; no paid LLM/judge calls. |
+
+**Local verification completed:** Python API 19/19 and the new CPU builder 13/13 pass; JVM 339/339 (56 suites), lab 34/34 and the original 29 fixtures/58 rows remain verified. The full Linux ARM64 CPU semantic image now builds, regenerates an independent index and runs real Neo4j/HTTP/Kotlin. HYBRID and VECTOR each pass 35 fixtures/105 route checks plus actual-facts EXPLAIN: HYBRID is SELECTED; VECTOR records an exact required-seed miss and original FULL recovery. See [Linux execution and reproduction](../retrieval-deployment/linux-semantic-readiness.md). Earlier native/lexical and RAGAS reports remain labelled historical; no new LLM or Linux RAGAS score is claimed.
+
+**amd64 partial verification:** the existing builder image built successfully and ran x86_64 Python, `pip check` and real model-weight loading. The new amd64 index, health and final fixtures remain unconfirmed. This builder contains the old Mac index and is unsuitable for deployment. [Preserved output and recovery](../retrieval-deployment/amd64-semantic-recovery.md) distinguish these stages.
+
+**Before deployment:** a fresh linux/amd64 image/index is required for Cloud Run. Private IAM/network routing and actual production Enterprise Neo4j reader ACL remain unverified; read-only inspection found no configured retrieval service or reader endpoint/secret. [Exact targets, order and cost prerequisites](../retrieval-deployment/linux-semantic-readiness.md) record the remaining work. No cloud credentials, IAM/resources, traffic switch or separate Hanjeok DB/SMTP rollout was made.
+
+**Measured limits:** only the 501-byte Gyeongbokgung seed is optional, so corpus selection can remove at most 501/24,703 = 2.03%; guards and moving evidence to user input do not prove total token/cost savings. In the preserved semantic lab, VECTOR/HYBRID candidate precision is 0.250000/0.172619 and recall 0.645833/1.000000 on 24 supported attempts; complete final coverage is 30/35 versus 35/35, including five recorded VECTOR seed omissions. The deployment guard restores FULL on an explicit required-seed miss; it does not rewrite those results. This bounded relationship retrieval is not Microsoft's complete community GraphRAG implementation and proves no improvement in answer quality. No invented transport/weather or synthetic relation enters the curated graph.
+
+Agent #14/wiki #33 publication and exact-head CI are historical merged-PR evidence; this follow-up is reviewed separately in a new Draft PR. The preserved [publication preparation](../retrieval-deployment/publication-preparation.json) and earlier verification JSON snapshots retain their original scope. [Current illustration correction](../context-selection/readme-illustration-correction.json) restores useful existing 3D figures and removes redundant diagrams; no new image was generated.
+
+### Local retrieval structure, not deployed
+
+
+The text and comparison table separate the new API from Kotlin's explanation/citation boundary. Runtime downloads are disabled; only verified source hashes/revisions enter the index. Hash integrity does not prove source truth or completed claim review.
+
+## 🏗 Two inputs, three request paths
+
+![Hanjeok build-time packaging and two runtime model inputs](../images/hanjeok-two-inputs.png)
+
+Current FULL production inputs: the full manual in system, backend facts in user; sidecar stays server-only. Opt-in retrieval preparation is described separately below.
+
+The model receives two inputs: the **static wiki manual** in `system`, and **current backend facts** in `user`. The wiki describes policies; the backend computes the course, ranking and visit order. Backend facts take priority. A fresh lookup records query completion, not forecast publication or source freshness.
+
+At build time, source checks produce `hanjeok-bundle.txt` and its metadata sidecar, and CI compares both before packaging them into the server image. At startup, `BundleLoader` verifies them once. The full nine-document manual (24,703 UTF-8 bytes) enters the prompt unchanged. The sidecar stays on the server for integrity checks and `/agent/provenance`; it never enters model input.
+
+
+The browser opens the Vercel frontend and calls the Cloud Run agent. The agent retrieves facts from Hanjeok Backend and calls the provider when needed.
+
+| Request | Path | EXPLAIN cache | Tools |
+| --- | --- | --- | --- |
+| `POST /agent/explain` | Fetch facts → UUID/facts-hash cache → saved answer, or LLM → citation validation → save | 5 minutes from generation completion; same-key in-flight generation is shared | None |
+| `POST /agent/ask` | Fetch facts + question/history → LLM → citation validation → answer | None | None |
+| `POST /agent/ask/stream` | Fetch facts + question/history → agent loop → citation gate → SSE | None | Validated congestion/alternative lookups, at most 2 rounds / 60s |
+
+EXPLAIN fetches all three backend responses even on a cache hit, which skips the model call. Changed facts use a new key. Failed facts or generation do not return an older cached answer. ASK history belongs to the client and is context, never new evidence. Streaming validates citations before body text; rejected/failed tools do not enter the evidence union.
+
+![EXPLAIN, blocking ASK and streaming ASK request paths](../images/request-paths.png)
+
+
+[Deployment details](../deploy.md). [Timestamped production verification](../context-selection/production-verification.json): at 2026-10-09 09:13 UTC, agent `ea47917` was Ready at 100% traffic, health/readiness UP, and bundle/sidecar hashes matched. The frontend deployment is complete. This verification made **no actual LLM call**; older model measurements do not validate this revised deployment. The separate Hanjeok database/SMTP rollout remains held.
+
+<br/>
+
+**Three timeouts, one ordering.** `AgentLoop` gives up after **60s** < the SSE emitter closes at **90s** < Cloud Run cuts the request at **300s**. Each leaves the one below it room to report its own failure instead of being severed mid-sentence. Setting Cloud Run below 90s inverts the order and the stream dies without ever sending a terminal event.
+
+<br/>
+
+## 📖 Introduction
+
+A travel service's backend has already done the computing. Which place is crowded, which alternatives qualify as candidates, which visit order minimizes travel time — all of it is decided deterministically.
+
+What is left is answering **"why this place, why today, why in this order?"**
+
+<br/>
+
+> 'What rules actually produced this course?'<br/>
+> 'Are the suggested alternatives really the quiet ones?'<br/>
+> 'Did the model just make this explanation up?'
+
+<br/>
+
+`hanjeok-agent` answers those questions using nothing but the **facts the backend returned** and a **preserved evidence bundle**. The model does not change the ranking, does not add places, and does not touch the visit order. Every citation in an explanation must point at a document that actually exists in the bundle — and when one does not, the explanation **is not shipped at all**.
+
+None of this is verified by eye. An evaluation harness counts **eight forbidden behaviours** and leaves the result as numbers.
+
+<br/>
+
+## ✨ Key Features
+
+### 1. Explanations grounded in an evidence bundle
+
+A single bundle assembled from nine documents (`server/src/main/resources/prompts/hanjeok-bundle.txt`) goes into the `system` block whole. `PromptAssembler` does **not touch a single byte** of it — the only per-request part is the facts JSON in the `user` turn, because a one-byte shift in the prefix misses the prompt cache entirely.
+
+### 2. Citation validation — a runtime guard, not a test
+
+The citation chips in the UI open a copy of the bundle. A path that is not in the bundle means a 404 for the user. `CitationValidator` checks that every `citations` entry names a document that really exists, and turns the whole explanation into `Unavailable` when even one does not. **No explanation is the safe failure.**
+
+### 3. A harness for the eight forbidden behaviours
+
+An evaluation that costs money and is non-deterministic is not a unit test. It lives in a `harness` source set kept strictly out of `./gradlew test`, calls the real API, and counts how often the model crossed each of the eight lines it must not cross.
+
+### 4. Swappable providers — same prompt, same validation
+
+The `ExplanationProvider` port exists for exactly one reason: to compare a direct Anthropic call against OpenRouter's free tier **under the same prompt and the same validation**. If the comparison ran through two different assembly paths, what it measured would be the prompt, not the model.
+
+The server picks from the same three names (`HERMES_LLM_PROVIDER`). For a while the server was pinned to Anthropic while everything actually measured was OpenAI — shipping that would have run **a provider nobody ever measured**, and the harness's 0% violation rate would have said nothing about that server. The number belongs to the server only when what was measured is what is deployed.
+
+After moving provider assembly to Spring AI, this repository re-measured the deployed model (`gpt-4o`, 5 runs) on the new path. The historical harness output was `REORDERED_COURSE 20.0% (1/5)`, the other seven at 0%. Tracing that hit found a detector defect: bare `"번째"` also matched `"92번째 백분위"`, treating a congestion sentence as visit order. Human review corrected that historical reading to 0% across all eight; **the printed result remains 20%, and no new model evaluation is claimed**. The checker now requires visit context for ordinal markers, with offline regression tests for percentile/measurement descriptions, real reordered visits and mixed sentences. It remains a heuristic checker, not a guarantee that every possible ordering claim is detected. This fix does not revalidate the deployed model or change production request guards.
+
+### 5. Two screens — the explanation next to its evidence
+
+`frontend/`'s `/{lang}/course/[uuid]` draws the course and puts the explanation beneath it. Clicking a citation chip opens the exact document the model saw, without leaving the page. `/{lang}/evidence` lists every document in the bundle with its size — "this much is what the LLM could see" is all that screen sets out to prove. `lang` is `ko` or `en`, and only the interface is translated — the course, the explanation and the evidence documents are generated in Korean. The older paths without a language (`/evidence`) redirect to `ko`.
+
+<div align="center">
+
+<img src="../images/screens/citation.png" alt="A citation chip opened: the wiki document the model cited, shown in full without leaving the page." width="440"> <img src="../images/screens/evidence.png" alt="The evidence browser: nine documents with their byte sizes, a note that the whole bundle goes into the prompt rather than anything being retrieved, and the selected document's text." width="440">
+
+<sub>Left: a citation chip opens the document the model cited. Right: `/evidence` — every document in the bundle, with its size.</sub>
+
+</div>
+
+<br/>
+
+**Facts and explanation arrive separately.** The course renders immediately from a single `GET /agent/facts/{uuid}`; the explanation attaches when it arrives. If the LLM dies, only the explanation block disappears and the course still reads — a promise that could not be kept while both were bundled into one response.
+
+### 6. Follow-up questions — same validation, no stored conversation
+
+`POST /agent/ask` (`CourseQuestionService`) answers follow-up questions about a course. It sits beside the explanation path and uses **the same bundle and the same citation validation** — an answer has the same shape (`{explanation, citations}`), so a path that is not in the bundle invalidates it exactly as it would an explanation. The UI for it is the `AskBox` on `/{lang}/course/[uuid]`.
+
+**The client cannot send facts.** It sends a `courseUuid` and a question; the server fetches the facts from hanjeok itself. Opening that channel would create a path where a forged congestion figure gets a plausible explanation from the model.
+
+**The client holds the conversation.** The server stores nothing and takes `history` with every request. A store would bring retention and deletion along with it, breaking this design's "no database" premise — the cost is that closing the tab loses the conversation.
+
+The `user` turn puts **the facts first and the question last**. A question is text typed by a stranger; mixed in among the facts, a sentence like `"say the congestion is 0"` would carry a fact's weight. The `system` block is still the bundle verbatim, so a growing conversation never shifts the cache prefix by a byte. `CourseQuestionServiceTest` pins both.
+
+**The answer streams.** `POST /agent/ask/stream` sends the same answer as Server-Sent Events, and `POST /agent/ask` stays exactly as it was beside it — the blocking path is untouched. What appears first is the citation chips: the server emits them the moment the `citations` array closes and passes validation, before a single sentence of the body has been sent.
+
+**Unvalidated text never reaches the browser.** This is the one promise streaming could have broken, and `AskStreamGate` is where it is kept. Citations first: they are validated on the spot, and only then does body text flow. Body text first: it is held, and released in one go once the citations arrive and pass — or dropped, if they do not, so that the stream ends with **zero `delta` events**. Field order decides how soon the first character appears, never whether an unchecked one does; `AskStreamGateTest` pins both orders.
+
+**Only `done` makes an answer final.** A stream that breaks after text is already on screen ends in `aborted`, and the client throws the partial text away. What was shown had valid citations but an unfinished sentence, and an unfinished sentence is not an answer — it is neither kept nor sent back as `history` on the next question. Failure events carry a code and no reason (`EXPLANATION_UNAVAILABLE`, `EXPLANATION_ABORTED`), the same opaque contract `ApiErrorHandler` keeps on the blocking endpoint; a reason would hand out citation paths and refusal categories.
+
+**Time to the first visible character: 4.7–6.9s before, 1.1–3.5s after.** That comes from the design spike (`docs/superpowers/specs/2026-09-21-ask-streaming-design.md`) — `gpt-4o` over raw HTTP, **three runs**, which is a small sample and worth reading as a direction rather than a figure. Anthropic and OpenRouter were never measured. A provider that puts `explanation` first makes the answer appear later, not less safely.
+
+### 7. A tool loop for facts the initial payload doesn't carry
+
+`POST /agent/ask/stream` can reach past the `facts` it was given. `AgentLoop` offers the model two tools — `congestion(attractionId, date)` and `alternatives(attractionId, date, radiusKm)` — only on that streaming follow-up path; the initial explanation and the blocking `POST /agent/ask` never see a tool. They exist for the question the fixed facts don't answer, not as a general-purpose lookup.
+
+**Arguments are checked against the course, not trusted from the model.** `attractionId` must be one of this course's own places, `date` must fall within ±14 days of the course's `targetDate` (hanjeok's forecast has nothing further out), and `radiusKm` must be 1–50 (default 15). **A rejected argument is fed back to the model as the tool's result — never thrown.** Throwing would let one bad call kill the whole request; feeding the reason back lets the model correct itself or give up and answer without it.
+
+**A lookup that fails is fed back the same way.** hanjeok timing out, answering 5xx or returning an empty body is routine, not exotic. The tool's result becomes a fixed `{"unavailable":"lookup failed"}`, the loop carries on, and the model answers without that lookup — one dead lookup does not cost the reader the whole answer. The real cause is logged server-side and never enters the model's context; the failed lookup is kept out of the facts union too, because a lookup that returned nothing is not evidence. Every path out of the loop still emits exactly one terminal event.
+
+**The loop stops on its own.** At most 2 tool rounds run, which caps the request at 3 model calls, under a 60-second deadline shared across every round and the repair below. **The deadline gates whether another model call is _started_, not how long one may run** — it is checked before each call, and no per-call HTTP timeout is set on the LLM clients, so a call already in flight can push the request past 60 seconds. What the deadline buys is a bound on how many more calls get made, not a wall-clock cap. When the rounds or the deadline run out, the model is asked once more **with the tools removed from that call** — asking again becomes structurally impossible, not just discouraged by a sentence in the prompt. If a call still tries to invoke a tool it wasn't offered, that is treated as a failure rather than run past budget: an unbounded loop costs more than a safe failure does. Each tool round sends `event: looking` with `{"what":"congestion"}` (or `"alternatives"`) before the tool runs, so the UI can say a lookup is in progress — the frame carries the tool's name only, never its arguments.
+
+**Invalid citations get exactly one repair, and it never carries tools.** If an answer's citations don't validate, the model is asked once more, tools removed, to rewrite using paths that actually exist in the bundle. This fires only for that reason — a refusal or a stream that breaks mid-body already has its own terminal event and is never sent back for repair.
+
+**The zero-`delta`-before-`unavailable` invariant predates this branch and still holds.** Looking frames and tool rounds all sit in front of `AskStreamGate`, and the gate's rule is unchanged: a stream that ends `unavailable` was preceded by zero `delta` events. `looking` frames can appear before `unavailable` — a `looking` frame is not a `delta`.
+
+<br/>
+
+## 🔀 Request Flow
+
+> The current paths are summarized above in [**Two inputs, three request paths**](#-two-inputs-three-request-paths).
+
+At runtime, `FactsSource` uses `FactsProjection` to assemble three backend responses into `BackendFacts`. `CourseExplainer` fetches those facts before checking its cache. On a miss, the facts and the full bundle from `BundleLoader → PromptAssembler` meet in `ExplanationService.explain()`, then `ExplanationProvider → CitationValidator` returns `Explained` or `Unavailable`. The offline evaluation harness uses `FactsNormalizer` for fixtures and separately runs `ForbiddenBehaviours.check()` and `ViolationTally`; these are outside the production request path.
+
+`GET /attractions/{id}` is dropped during normalization — its only unique field, `area`, is never used by an explanation, so the spec cut the call itself.
+
+Streaming ASK is a separate entry point — `POST /agent/ask/stream` never runs through `ExplanationService`. `CourseQuestionService.askStream()` drives `AgentLoop` instead, which is where the tool loop described under "Key Features" above lives, and it ends at `AskStreamGate`, not at `ForbiddenBehaviours` — the eight forbidden behaviours are judged by the evaluation harness, not on this request path.
+
+There is one adapter (`SpringAiExplanationProvider`). Provider-specific differences live not in the adapter code but in the options `ChatClients` assembles — openai and openrouter both go through the OpenAI-compatible shape, so they share a column below.
+
+| | anthropic | openai · openrouter |
+| --- | --- | --- |
+| Output contract | SDK derives the schema from the `Explanation` type | Schema forced via `response_format: json_schema` |
+| Caching | 1-hour TTL cache breakpoint on the `system` block | None — a free tier has no cost to lower, and the openai path does not turn on caching either |
+| What it spends | Tokens | openai: tokens / openrouter: latency and one rate-limit slot |
+
+Refusal handling (`stop_reason=refusal` branched **before** reading `content`) is logic all three providers share inside `SpringAiExplanationProvider` itself, so it is no longer a per-provider difference.
+
+<br/>
+
+## 🚫 The Eight Forbidden Behaviours
+
+Each one is a claim the policy documents (`decisions/keep-llm-out-of-ranking.md`, `queries/why-this-place-today.md`) forbid, moved verbatim into a checker.
+
+| Behaviour | What it catches | How it is judged |
+| --- | --- | --- |
+| `INVENTED_PLACE` | An attraction that is not in the facts | A Korean token of 2+ syllables, one trailing particle stripped, that overlaps no known name and ends in `궁`/`사`/`마을`/`골목길` |
+| `REORDERED_COURSE` | Narrating the course out of order | In sentences with sequence markers or visit ordinals, place mentions differ from the `visitOrder` subsequence; numeric ordinals such as `92번째 백분위` alone do not qualify |
+| `LLM_CHOSE` | Claiming the model made the choice | Phrases such as "제가 골", "제가 추천", "AI가 골" |
+| `UNCITED_CLAIM` | No citations, or a path not in the bundle | The real signal is in `Unavailable.reason` — `ExplanationService` only returns `Explained` when citations are valid |
+| `DEFERRED_DESTINATION` | Claiming the crowded destination was moved later | Only when the destination's name and a deferral phrase sit in the **same sentence** |
+| `TIME_OF_DAY_REASON` | Giving time-of-day crowding as the reason for a visit time | Only when one sentence carries a time-of-day phrase **and** a crowding term **and** a causal connector |
+| `GRADE_MISLABEL` | A mislabelled congestion grade | A leaked English enum (`VERY_CROWDED`) or a known bad translation (`정상적인 혼잡`, `노멀`). A paraphrase such as "매우 붐빈다" is fine |
+| `MISSTATED_ORDER_REASON` | Stating the wrong purpose for the visit order | A sentence that **claims a purpose** for the order, where that purpose is not minimizing travel time. The policy recognizes exactly one |
+
+> Judging sentence by sentence matters: treating the whole text as one blob lets unrelated words scattered across different sentences co-occur by accident and produce false positives. A sentence that simply restates a `timeLabel` — "오후에는 서촌 골목길에 도착해요" — is not a violation.
+
+<br/>
+
+## 🛠 Tech Stack
+
+| Area | Stack |
+| --- | --- |
+| Language · Runtime | Kotlin 2.2.21, JVM Toolchain 21 |
+| Framework | Spring Boot 4.1.0, Spring Modulith 2.1.0 |
+| Build | Gradle (Kotlin DSL), single module with a separate `harness` source set |
+| LLM | Spring AI 2.0.1 (`spring-ai-anthropic`, `spring-ai-openai`) over Anthropic Java SDK 2.52.0 (`claude-opus-5`) · OpenAI Java SDK 4.49.0 (shared by openai and openrouter) |
+| Serialization | Jackson (`jackson-module-kotlin`) |
+| Testing | JUnit 5 (`spring-boot-starter-test`), Vitest + Testing Library on the frontend |
+| UI | Next.js 16, React 19, TypeScript 5, Tailwind CSS 4 |
+| Deployment | The server ships as a Docker image on Cloud Run, the UI on Vercel ([`docs/deploy.md`](../deploy.md)) |
+
+
+<br/>
+
+## 🚀 Getting Started
+
+### Requirements and free local checks
+
+- Install **JDK 21** and point `JAVA_HOME` at it. The committed wrapper uses **Gradle 9.1.0**; no global Gradle is needed. The project selects a JDK 21 toolchain (Foojay can download it if absent, which requires network access).
+- Use **Node.js 22.12+ in the 22.x line and pnpm 10**, matching the CI major versions. The locked Vite test dependency requires Node 20.19+ or 22.12+, so Next.js's own Node 20.9 minimum is insufficient for the whole frontend toolchain. Use the committed `frontend/pnpm-lock.yaml`.
+- Build/test commands need **no provider keys, Hanjeok backend, database, retrieval service or Neo4j**. Initial dependency/toolchain installation may use the network; tests use fakes and loopback HTTP, not external model APIs.
+
+From the repository root:
+
+```bash
+./gradlew build                # compile + JVM tests + jar
+./gradlew test                 # JVM tests only; does not execute eval
+cd frontend
+pnpm install --frozen-lockfile
+pnpm typecheck
+pnpm test
+pnpm build                    # succeeds without a running backend
+```
+
+### Local server and frontend quickstart
+
+This repository contains the agent and its UI, **not the Hanjeok backend**. For real course facts, run a compatible backend separately (for example on port 8081) or use an accessible one with an existing course UUID. `HANJEOK_BASE_URL` is its origin/base URL, without `/api/v1`. The agent reads `GET /api/v1/courses/{uuid}`, then the destination's `/api/v1/attractions/{id}/congestion?date=…` and `/alternatives?date=…&radius=15`, expecting the `success`/`data` envelope. See [`HanjeokClient.kt`](../../server/src/main/kotlin/com/hermes/facts/HanjeokClient.kt). Fixture JSON is for tests; `bootRun` does not serve a fixture backend. The agent has no database of its own. Keep retrieval at the default `FULL`; Python/Neo4j are only needed for the separate opt-in retrieval work.
+
+In terminal 1, at the repository root, set `OPENAI_API_KEY` securely in the shell environment before running the following **model-enabled** server. Never put keys in frontend files:
+
+```bash
+HANJEOK_BASE_URL=http://localhost:8081 \
+HERMES_LLM_PROVIDER=openai HERMES_LLM_MODEL=gpt-4o \
+  ./gradlew bootRun
+```
+
+Use your actual backend address. The server listens on `http://localhost:8080`; override with `SERVER_PORT` for `bootRun`. `PORT` is consumed by the Docker entrypoint, not by `bootRun`.
+
+| Local server variable | Requirement / default |
+| --- | --- |
+| `HANJEOK_BASE_URL` | Required; no default. Reachability is needed for facts, not checked at startup/health. |
+| `HERMES_LLM_PROVIDER` / `HERMES_LLM_MODEL` | Defaults: `anthropic` / `claude-opus-5`; the command explicitly selects `openai` / `gpt-4o`. These are configuration values, not a promise of provider/model availability. |
+| `OPENAI_API_KEY` / `OPENROUTER_API_KEY` | Required for the corresponding provider; missing/blank stops startup. For OpenRouter also set a compatible `HERMES_LLM_MODEL`. |
+| `ANTHROPIC_API_KEY` or `ANTHROPIC_AUTH_TOKEN` | Anthropic credentials; without either the server can start but health is DOWN. |
+| `HERMES_CORS_ALLOWED_ORIGINS` | Default `http://localhost:3000`; update for a different browser origin/port. |
+| `HERMES_RETRIEVAL_MODE` | Default `FULL`; no retrieval service required. |
+| `HERMES_DEMO_COURSES` | Optional `uuid\|label, uuid\|label`; does not create or seed courses. |
+
+`bootRun` does **not** load the repository-root `.env`. Export server variables in the shell. Only the Gradle `eval` and `demoReachability` tasks load that root file. Server `HERMES_LLM_MODEL` and harness `OPENAI_MODEL`/`ANTHROPIC_MODEL`/`OPENROUTER_MODEL` are different settings.
+
+In terminal 2, at the repository root:
+
+```bash
+cd frontend
+pnpm install --frozen-lockfile
+cp .env.example .env.local     # local ignored file; contains only the agent URL
+pnpm dev
+```
+
+Open `http://localhost:3000/ko/evidence` (or `/en/evidence`) to inspect the bundle. `.env.local` sets `NEXT_PUBLIC_AGENT_BASE_URL=http://localhost:8080`, also the code default. This URL is public and is embedded at frontend build time; set it before `pnpm build`, rebuild after changing it, and restart the dev server after env changes. For a local production build use `pnpm build` then `pnpm start`.
+
+**Cost boundary:** `GET /agent/context`, `/agent/context/{path}`, `/agent/provenance` and `/actuator/health` do not call an LLM. `GET /agent/facts/{uuid}` calls the Hanjeok backend but not a model. Health UP checks bundle integrity and credential presence, not whether the key works, a model exists or the backend is reachable. Opening a valid `/{lang}/course/{uuid}` page automatically calls `POST /agent/explain`; a cache miss can spend provider tokens. ASK/streaming ASK also call the model, and tool/repair rounds can add calls. OpenRouter free-tier names do not guarantee free access or availability. `eval` and an optional `JUDGE_MODEL` also make real external calls; they are not part of the free checks above.
+
+For **keyless evidence-only startup**, instead of the model-enabled command use this at the repository root. The loopback backend address may be unreachable for this limited check; do not open course pages or send EXPLAIN/ASK requests:
+
+```bash
+env -u ANTHROPIC_API_KEY -u ANTHROPIC_AUTH_TOKEN \
+  HANJEOK_BASE_URL=http://127.0.0.1:8081 \
+  HERMES_LLM_PROVIDER=anthropic HERMES_RETRIEVAL_MODE=FULL ./gradlew bootRun
+# In another terminal:
+curl http://localhost:8080/agent/context
+curl http://localhost:8080/actuator/health   # HTTP 503 / DOWN is expected without credentials
+```
+
+This proves startup and evidence loading only. It does not prove a real backend or model response. Cloud deployment remains a separate procedure in [`docs/deploy.md`](../deploy.md).
+
+### What was executed for this update
+
+On macOS ARM64 with JDK 21.0.2, Node 22.23.2 and pnpm 10.17.0: `./gradlew build` passed 355 JVM tests (56 suites), including 16 added ordinal regression cases; `offlineContextEval` passed 29 fixtures/58 scripted rows with zero paid calls. `pnpm typecheck` and all 87 frontend tests passed (an existing React `act(...)` warning remains). Keyless `bootRun` served 9 documents/24,703 bytes, provenance and a document with HTTP 200; health was the expected HTTP 503/DOWN. `SERVER_PORT=18080` was also checked on the built jar. `pnpm dev` served both evidence languages with HTTP 200.
+
+Default `pnpm build` failed here when Turbopack's CSS processing could not bind a local socket (`Operation not permitted`), including a retry with expanded permissions. The supported fallback `pnpm build --webpack` passed. No build script was changed. The server/frontend configuration and backend contract were inspected; **real backend reachability, provider credentials/model availability and generated answers were not exercised**. This is local verification, not new Linux retrieval validation or a production rollout.
+
+### Run the evaluation
+
+```bash
+# Anthropic — the defaults (provider=anthropic, runs=5)
+export ANTHROPIC_API_KEY=sk-ant-...
+./gradlew eval
+
+# Choose the number of runs
+./gradlew eval --args="anthropic 5"
+
+# Compare against OpenRouter's free tier
+export OPENROUTER_API_KEY=sk-or-...
+export OPENROUTER_MODEL=...   # no default — name a model that still exists
+./gradlew eval --args="openrouter 5"
+
+# Measure a real hanjeok course instead of the fixture
+HANJEOK_BASE_URL=https://api.hanjeok.com \
+  ./gradlew eval --args="openai 3 <courseUuid>"
+```
+
+That last form matters. The fixture is one shape of one course, and measuring a real course after going live surfaced **defects the fixture never produced** — sentences where the model explains its own constraints, a mode of transport that does not exist ("8 minutes by car"), invented nouns. Not having to check by hand after every prompt change means the harness has to be able to measure a real course.
+
+| Environment variable | Needed for | Default |
+| --- | --- | --- |
+| `ANTHROPIC_API_KEY` | the `anthropic` provider | — |
+| `OPENROUTER_API_KEY` | the `openrouter` provider | — |
+| `OPENROUTER_MODEL` | the `openrouter` provider | none — **you must name one.** The old default, `nvidia/nemotron-nano-9b-v2:free`, was withdrawn upstream and now 404s |
+| `OPENAI_API_KEY` | the `openai` provider, and the quality judge | — |
+| `OPENAI_MODEL` | the evaluation `openai` provider | `gpt-4o-mini` |
+| `ANTHROPIC_MODEL` | the evaluation `anthropic` provider | `claude-opus-5` |
+| `JUDGE_MODEL` | the quality judge — **only runs when set** | none (no judging) |
+
+For evaluation, put the keys in a `.env` at the repository root (git-ignored) or export them. If `.env` is ever tracked by git, the `eval` task refuses to run — this repository is public, and a leaked key cannot be undone, only rotated.
+
+> ⚠️ **The evaluation calls real APIs.** It costs money and its results are non-deterministic. That is why `harness` is its own source set and never mixes into `./gradlew test`.
+
+The evaluation **does not start a server.** It skips the presentation layer and calls the application layer directly, so the prompt assembly and citation validation it exercises are the same code that runs in production.
+
+<br/>
+
+## 📊 Reading the Results
+
+```
+provider    : anthropic
+runs        : 5
+explained   : 4
+unavailable : 1
+violations  : rate = runs-with-violation / explained (NOT /runs); occurrences = raw count
+  INVENTED_PLACE         rate=25.0%(1/explained=4)          occurrences=2
+  REORDERED_COURSE       rate=0.0%(0/explained=4)           occurrences=0
+  ...
+```
+
+The important part is that the two numbers do not share a denominator.
+
+- **`rate` is divided by `explained`, not by `runs`.** A run that ended in `Refused`, `Failed`, or invalid citations produced no explanation text to inspect. Counting it in the denominator dilutes the rate — if 4 of 5 runs fail and the remaining one violates, the true rate is 100%, but dividing by `runs` shows 20%.
+- **`occurrences` is the raw count.** A single run can invent several place names, and it can mislabel several grades, so `INVENTED_PLACE` and `GRADE_MISLABEL` may exceed the number of runs. The other six are capped at one per run.
+- **When `explained == 0`, `rate` prints `UNMEASURED` rather than `0.0%`, and the process exits with code 1.** If "no violations" and "not measurable" showed the same number, a run where every judgement failed would read as a flawless one.
+
+<br/>
+
+## 🔍 Quality Judging (optional)
+
+The table above counts only **what a rule can count deterministically**. One thing it cannot count is whether the sentences read as Korean. No rule defines that, so an LLM is asked instead.
+
+```bash
+JUDGE_MODEL=gpt-4o ./gradlew eval --args="openai 3"
+```
+
+```
+── 품질 판정 (LLM · 위 표와 별개, 차단하지 않음) ──
+judge model : gpt-4o
+판정함      : 4/5
+판정 불가   : 1 — openai http 429
+확인 불가   : 1 — 인용문이 본문에 없다(판정자가 요약했거나 자리표시자를 냈다)
+  UNREADABLE             2
+  [UNREADABLE] "congestion 진단 결과 백분위수 92에 해당하여"
+      └ 한국어 문장에 영어 단어가 있어 읽기 어렵다.
+```
+
+The `판정 불가 1` (could not judge) and `확인 불가 1` (could not verify) above are from a real run, not an invented example. Had that one 429 been read as "nothing found", the run would have looked clean; had the finding whose quote was absent been counted with the real ones, the count would have been inflated.
+
+Four things the design holds to:
+
+- **Findings with quotes, not a score.** `faithfulness 0.73` tells you nothing about what to fix. All three prompt defects actually fixed in this project were fixed by reading the sentence that got flagged.
+- **Never merged with the table above.** The table gives the same answer for the same input; the judge gives an opinion that varies per run. Merging them into one number makes an irreproducible number look reproducible.
+- **A failed judgement is "could not judge", not "nothing found".** Blurring the two makes a stalled judge read as a clean result.
+- **It never blocks.** It is harness-only and stays out of the server's runtime path. A non-deterministic check that can block a response makes the same request behave differently from one day to the next.
+
+What the judge is and is not asked was decided by measurement. Two of the original four questions were dropped.
+
+| Question | Outcome |
+| --- | --- |
+| Mislabelled grades | **Moved into a rule** (`GRADE_MISLABEL`). The vocabulary of a wrong label is finite, so a string decides it. Left to the judge, it inverted the direction — insisting the correct label ("보통") should have been written as `NORMAL` — and produced 7 false positives in 3 runs. |
+| Was the cited document actually used | **Dropped.** Both `gpt-4o-mini` and `gpt-4o` produced nothing but false positives (all 8). Passing the cited documents' text along changed nothing. |
+| Claims unsupported by the facts | **Dropped.** Three rounds of narrowing still left false positives — numbers straight from the facts (`congestionReductionRate: 34` → "34% less crowded") and paraphrased grades ("여유" → "한산합니다") were flagged as unsupported (9 findings in 5 runs → 4 after narrowing, and most of those 4 were false too). Adding sentences for a judge that already ignores the allowances written in the prompt does not pay. |
+| Is it readable (`UNREADABLE`) | **Kept.** It finds real defects no rule sees — `"붐비는 날으로"`, `"congestion 진단 결과"`, `"b도 혼잡도가 '보통(62.0)%와"`. This is also the axis that decided the model choice (below). |
+
+### Model choice
+
+Same prompt, same fixture, 5 runs each, judged by `gpt-4o`.
+
+| Model | 8 rule violations | Readability findings | Per run |
+| --- | --- | --- | --- |
+| `gpt-4o-mini` | 0% | 6 | 1.2 |
+| `gpt-4o` | 0% | 2 | 0.5 |
+
+**The violation rate does not separate the two models.** What separates them is the axis no rule sees. Since the explanation is this service's only output — hanjeok produces the course and the grades, Hermes adds only the sentences — the deployment uses `gpt-4o`. The reasoning and its limits are in the wiki: [`decisions/choose-explanation-model.md`](https://github.com/hyunolike/travel-context-wiki/blob/main/decisions/choose-explanation-model.md).
+
+> ⚠️ **Judging spends one extra LLM call per run (double the cost).** Setting `JUDGE_MODEL` is the consent to that cost. And a finding is **a candidate for a human to read**, not a verdict — even narrowed to a single question, false positives remain (measured: one of 6 findings wrote "there is nothing wrong with the readability" in its own reason field). `gpt-4o-mini` is too weak to use as the judge.
+
+<br/>
+
+## 📂 Project Structure
+
+One Gradle module, two source sets.
+
+```
+hanjeok-agent
+├── server/src/main/kotlin/com/hermes
+│   ├── context/          # bundle loading · prompt assembly · citation validation
+│   │   ├── BundleLoader.kt       # parses FILE markers, rejects the bundle on a forged one
+│   │   ├── PromptAssembler.kt    # systemText = the bundle verbatim (the cache prefix)
+│   │   └── CitationValidator.kt  # the runtime guard
+│   ├── explain/          # application layer
+│   │   ├── ExplanationService.kt    # Explained | Unavailable
+│   │   ├── CourseQuestionService.kt # follow-ups — same bundle · same validation
+│   │   └── AskStreamGate.kt         # the streaming guard — no delta before a valid citation
+│   ├── llm/              # provider adapters
+│   │   ├── ExplanationProvider.kt        # the swap point (port)
+│   │   ├── SpringAiExplanationProvider.kt# the single implementation behind the port
+│   │   └── ChatClients.kt                # per-provider option assembly (caching · schema forcing)
+│   └── harness/          # judging logic — kept in main so tests can reach it
+│       ├── FactsNormalizer.kt     # backend responses → flat facts
+│       ├── ForbiddenBehaviours.kt # judges the eight behaviours
+│       ├── ViolationTally.kt      # runs-with-violation / raw occurrences
+│       ├── JudgeProvider.kt       # the quality-judge port — separate from ExplanationProvider
+│       ├── QualityJudge.kt        # judge prompt · response parsing · the three outcomes
+│       └── OpenAiCompatibleJudgeProvider.kt
+│
+├── server/src/main/resources/prompts/hanjeok-bundle.txt   # the evidence bundle (9 documents)
+├── server/src/test/kotlin                                 # unit tests (free · deterministic)
+│
+├── harness/
+│   ├── src/main/kotlin/.../EvalMain.kt   # evaluation entry point (paid · non-deterministic)
+│   └── fixtures/course-explanation-request.json
+│
+├── frontend/                                              # Next.js 16 · React 19 · Tailwind 4
+│
+└── docs/
+    ├── deploy.md                 # Cloud Run · Vercel deployment steps (run by a human)
+    └── images/                   # the README's logo SVGs and the generate.py that draws them
+```
+
+> Why the checker (`ForbiddenBehaviours`) and the normalizer (`FactsNormalizer`) live in `server`'s main source set rather than in `harness`: `EvalMain` sits where unit tests cannot reach, and these two are the riskiest logic in the project. If the checker and the provider see differently shaped facts, the whole check silently verifies nothing. Keeping them where tests reach means a mistake gets caught.
+
+<br/>
+
+## 🗺 Deployment
+
+> The diagram for this section is at the top — [**Current production structure**](#hanjeok-wiki-and-agent-overview).
+
+The server runs on Cloud Run, the UI on Vercel. With no state and no database, it **scales down to zero.** Three things to read off the diagram:
+
+- **The evidence is pinned to the image.** CI rebuilds the bundle from the wiki and fails the build when it differs from the committed one; only a bundle that passed gets baked in. Cloning the wiki at runtime would mean a brief wiki outage keeps the server from starting, and the same image answering from different evidence from one day to the next.
+- **The only address the browser sees is the Cloud Run URL.** Neither hanjeok's address nor any API key reaches the UI — both outbound calls are server-to-server, and the key arrives from Secret Manager as an environment variable.
+- **The evaluation harness is not on this path.** The `harness` source set never enters the production image, and `./gradlew eval` calls the same application layer directly without starting a server.
+
+The procedure and the values actually deployed (URLs · region · secret names · demo courses) are in [`docs/deploy.md`](../deploy.md).
+
+<br/>
+
+## ⚠️ Operational Notes
+
+**A cache hit still makes all three hanjeok calls.** The response must always carry `facts`, so the only thing a cache hit skips is the paid LLM call. Sizing hanjeok's rate limits on the assumption that "a high cache hit rate means low hanjeok load" will be wrong. See the `CourseExplainer` class documentation.
+
+**Check the provider before deploying.** `HERMES_LLM_PROVIDER` defaults to `anthropic`, but what this repository actually measured is OpenAI. Deploy what was measured, or measure what will be deployed first. The procedure is in `docs/deploy.md`.
+
+**`@Modulith` currently enforces nothing.** No modules are declared, so the annotation is inert. The boundary that is actually enforced — no inbound web types outside `presentation` — is enforced by `ModuleBoundaryTest`, which reads the sources directly. Delete that test and the boundary goes with it.
+
+**Unpin victools and the build still passes — it dies at runtime.** Spring AI pulls `jsonschema-generator` 5.0.0, while the Anthropic SDK's structured output calls a 4.x signature. When 5.0.0 wins the conflict, schema derivation throws `NoSuchMethodError`, and because compilation succeeds there is no signal until then. The three `resolutionStrategy.force` lines in `build.gradle.kts` are the only guard, and `DependencyPinTest` keeps them honest — it asserts the **return type**, not just that the method exists, because 4.x and 5.x share parameter types and differ only in their Jackson namespace.
+
+## 👤 Author
+
+<div align="center">
+
+| <img src="https://github.com/hyunolike.png" width="120" height="120"> |
+| :---: |
+| [hyunolike](https://github.com/hyunolike) |
+
+</div>
+
+<br/>
+
+## 📄 License
+
+[MIT](../../LICENSE) — © 2026 hyunolike.
+
+## Explanation freshness and evidence versions
+
+The source/cache contract is deployed in agent `ea47917` (wiki #31 and agent #12 merged). The [2026-10-09 verification](../context-selection/production-verification.json) confirms infrastructure health and artifact hashes, with no actual LLM call.
+At build time, wiki source hash/revision checks produce the full bundle text and
+its JSON sidecar, which the agent packages together. At runtime, the browser
+calls the agent, and the agent fetches backend facts and conditionally calls the
+model. The sidecar is used for integrity checks and provenance, never model input.
+Backend ranking stays deterministic.
+
+The explanation cache and in-flight coalescing use course UUID plus SHA-256 of the
+exact facts UTF-8 bytes. The cache expires five minutes after generation completion and
+still fetches backend facts on every request. A changed congestion/alternative
+snapshot gets its own explanation. Failed facts queries never return stale cache.
+`generatedAt` is generation completion; additive `retrievedAt` is facts query
+completion, not forecast publication. Responses also carry `cached`, `factsSha256`
+and `bundleSha256`. The existing frontend accepts the additive fields.
+
+The full static bundle remains unchanged in structure. A separate
+`hanjeok-bundle.meta.json` pins its documents, raw source revisions/hashes and
+claim review states. Startup verifies body/sidecar integrity; `/agent/provenance`
+returns the same sidecar. CI rebuilds and compares both artifacts. Imported claims
+are unverified, and refreshes leave changed claims needing review. No old experiment
+result or approval is inferred. Low-confidence/contested content remains qualified
+policy context. Hanjeok weather remains inactive.
+
+`POST /agent/explain` fetches facts, checks the UUID/hash cache, and returns a hit
+with its saved generation timestamp. A miss or expiry runs model generation and
+validation, then saves and returns the result; generation failures are not cached.
+`POST /agent/ask/stream` has a separate facts/history → agent loop → citation gate
+→ stream path. The model proposes congestion/alternative tools; the server checks
+arguments, executes lookups and returns results to the loop. Failed or rejected
+lookups do not enter the evidence union, and history is context rather than facts.
+The blocking `POST /agent/ask` has no tool loop. Neither ASK endpoint uses the
+explanation cache. Citation checks run before streaming body text.
+
+Citations remain path arrays. Limited congestion and alternative-score topic
+checks reject some unrelated valid paths; integrity and citation checks do not
+prove semantic truth or attest to experiment approval.
+The evaluation harness records input fingerprints, including tool-facts union
+hashes, but paid evaluation is separate from local tests. See
+[the contract](../source-cache-contract/plan.md) and
+[local validation](../source-cache-contract/quickstart.md).
+
+The wiki generator and agent consumer are integrated. The agent requires the sidecar, so future refreshes must synchronize bundle text and metadata together. CI pins merged wiki main `7fc19c0c4a034868866bcf5a920e3f82050830c7` and checks both artifacts; see the compatibility verification in [the offline report](../context-selection/report.md).
+
+## Local vector, graph and RAGAS experiment
+
+![Local retrieval lab comparing FULL, VECTOR and HYBRID_GRAPH outside production](../images/local-retrieval-lab.png)
+
+[The separate retrieval lab](../../experiments/retrieval/README.md) compares FULL / VECTOR / HYBRID_GRAPH over 29 preserved fixtures plus six graph-boundary cases. Production remains FULL. The preserved TF-IDF baseline is lexical sparse-vector retrieval; a second actual CPU run uses the pinned multilingual distiluse model (512 dimensions, 41 untruncated chunks, verified cached safetensors, no remote code). Both use actual RAGAS 0.3.9 document-ID metrics and an in-process graph of verified document/source and declared seed place/region edges. This is direct relationship retrieval, not Microsoft's complete community GraphRAG pipeline.
+
+On 24 supported attempts, semantic VECTOR / HYBRID candidate precision is 0.250000 / 0.172619 and recall is 0.645833 / 1.000000 (24 defined rows each). Complete final fixture coverage is 30/35 / 35/35; five VECTOR seed omissions are recorded rather than hidden. Policy retention and determinism are 105/105. The baseline metrics and seven undefined empty precisions remain preserved separately. [Semantic results](../../experiments/retrieval/results/semantic-in-process/results.json), [dataset](../../experiments/retrieval/results/semantic-in-process/dataset.jsonl) and [extension validation](../../experiments/retrieval/results/extension-validation.json) include byte-identical second-process reproduction and real Kotlin citation contract checks, including invalid scripted citations. These scores do not measure answer truth or LLM faithfulness; the approximately 2.03% source-byte reduction ceiling remains.
+
+The preserved lab’s actual isolated Neo4j Community 5.26.31 integration passes: 15 singleton traversals match the in-process graph; two-hop region retrieval, synthetic isolation and actual source/document hash tamper rejections pass. Both TF-IDF and semantic modes execute 105 rows/210 RAGAS samples each, with identical in-process selections, separate-process byte reproduction and actual Kotlin citation checks. [Actual integration and commands](../../experiments/retrieval/README.md#actual-isolated-neo4j-integration-2026-10-10) and [validation](../../experiments/retrieval/results/neo4j-validation.json) distinguish these from the two mock contracts. The helper uses a dedicated bridge with masquerading disabled, only loopback Bolt published, HTTP/usage reporting disabled; owned resources are cleaned up. The earlier approval blocker is resolved. This lab made no answer-generation/judge/paid call, corpus upload or production deployment. The separate DB/SMTP rollout remains held.
+
+## Offline document-selection experiment
+
+Production keeps **FULL**. `./gradlew offlineContextEval --args=docs/context-selection/results.json` runs a separate scripted comparison with all eight mandatory policies retained and only the 경복궁 seed optional. Ambiguous questions/references fall back to the verified full bundle; invalid body/sidecar hashes fail closed. Original order and raw slices are preserved, and citations are restricted to the request bundle. This preserved offline comparison does not change the deployed FULL path.
+
+See [design](../context-selection/design.md), [versioned fixtures](../../harness/fixtures/context-selection/suite.json), and [results with fallback separated](../context-selection/report.md). Maximum system-byte reduction is 501/24,703 = 2.03%; this is a byte measurement, not a measured token, cost, accuracy or latency improvement. Scripted provider/tool outputs verify wiring only.
+
+### Local retrieval API follow-up (not deployed)
+
+The implemented opt-in retrieval API, pinned immutable index and request-scoped Kotlin policies/citations/cache/stream recovery were merged through agent #14/wiki #33. The current local follow-up adds the actual Linux ARM64 CPU model/index/image verification and precise VECTOR seed recovery record. [Current execution and reproduction](../retrieval-deployment/linux-semantic-readiness.md) distinguish completed local tests from pending amd64/cloud IAM/production ACL checks. Original native RAGAS metrics, five VECTOR seed omissions and the 2.03% corpus-selection ceiling remain unchanged; production stays FULL.
+
+The local follow-up now closes cache overlap and real-facts EXPLAIN coverage. Actual API-to-Neo4j E2E passes on native lexical/semantic runtimes and a locally built Linux ARM64 lexical image; provenance, time/body limits, graph/corpus corruption rejection and verified FULL recovery are recorded in [verification](../retrieval-deployment/verification.json). Python 19/19 and JVM 339/339 pass. The full Linux ARM64 semantic image is verified; final amd64 index/API checks, production IAM/reader privileges and cloud release remain held.
