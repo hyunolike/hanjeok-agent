@@ -18,7 +18,8 @@ Ask one question. Responds with `text/event-stream`.
   "question": "이번 토요일 경복궁 대신 조용한 곳 있어?",
   "visit_id": null,
   "strategy": "graph",
-  "choice": null
+  "choice": null,
+  "context": {"place_id": 653, "date": "2026-10-17"}
 }
 ```
 
@@ -28,6 +29,7 @@ Ask one question. Responds with `text/event-stream`.
 | `visit_id` | `null` on the first question. Afterwards the value the service issued. An unknown or expired id is treated as `null` and a new one is issued; it is not an error, because a visitor returning after a pause should not see a failure |
 | `strategy` | Optional, `graph` or `vector`, default `graph`. The default exists because this is a visitor-facing endpoint; evaluation always states it |
 | `choice` | Optional place id, sent when answering an `ask_user` outcome. Must be one of the candidates the service offered in this visit |
+| `context` | Optional. What the calling screen already knows: `place_id` (integer) and `date` (`YYYY-MM-DD`), either or both, no other keys. Each fills only what the question leaves out — a place or date the question names wins. A screen's place wins over the previous question's in the visit. When the date came from the screen, a lookup for another day is refused, and the scope step says both came from the screen |
 
 **Events**, in order. Exactly one of the last three ends every stream.
 
@@ -57,7 +59,7 @@ Rules:
 
 | Status | Body | When |
 | --- | --- | --- |
-| 400 | `{"cause": "invalid_request", "detail"}` | Blank or over-long question, unknown strategy, `choice` not among offered candidates |
+| 400 | `{"cause": "invalid_request", "detail"}` | Blank or over-long question, unknown strategy, `choice` not among offered candidates, `context` with another key or a malformed `place_id` or `date` |
 | 429 | `{"cause": "usage_limit", "scope": "visitor"\|"day", "retry_after_s"}` | FR-030 |
 | 503 | `{"cause": "not_ready", "detail"}` | No active generation, or the graph is unreachable |
 
