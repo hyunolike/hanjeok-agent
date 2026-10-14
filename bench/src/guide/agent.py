@@ -45,7 +45,7 @@ from guide.forbidden import evidence_from, invented_order_reason, unchecked_crow
 from guide.live import LiveClient
 from guide.lookups import DESCRIPTIONS, LIVE, Lookups, Outcome
 from guide.model import Model, ModelFailure
-from guide.scope import Scope, Turn, read_question
+from guide.scope import DATE_FROM_SCREEN, Scope, Turn, read_question
 from guide.sources import Places, Policy
 
 MAX_LOOKUP_ROUNDS = 3
@@ -126,6 +126,7 @@ class State(TypedDict, total=False):
     context: dict
     turns: Annotated[list[dict], _recent]
     dates: list[str]
+    dates_from_screen: bool
     draft: dict | None
     repair: str | None
     repaired: bool
@@ -407,13 +408,25 @@ class Agent:
                     as_of=self.places.exported_at,
                 ),
             )
-        return {"dates": list(scope.dates), "route": "act"}
+        return {
+            "dates": list(scope.dates),
+            "dates_from_screen": DATE_FROM_SCREEN in scope.notes,
+            "route": "act",
+        }
 
     def _prompt(self, state: State, actions: tuple[str, ...]) -> str:
         fetched = self._lookups.fetched
         lines = [f"오늘: {self._today.isoformat()}", f"질문: {self._question}"]
         if state["dates"]:
-            lines.append("질문에서 읽은 날짜: " + ", ".join(state["dates"]))
+            # A date from the screen is not in the question's words. Labelled
+            # as read from the question, the model took it for a mistake and
+            # looked up today instead.
+            label = (
+                "방문자가 보고 있던 화면의 날짜"
+                if state.get("dates_from_screen")
+                else "질문에서 읽은 날짜"
+            )
+            lines.append(f"{label}: " + ", ".join(state["dates"]))
         lookups = [name for name in actions if name != "answer"]
         if lookups:
             lines += ["", "쓸 수 있는 조회:", *(f"- {DESCRIPTIONS[name]}" for name in lookups)]

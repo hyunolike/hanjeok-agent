@@ -120,6 +120,9 @@ class Candidate:
     it never reaches the visitor as a fact about the place."""
 
 
+DATE_FROM_SCREEN = "날짜는 보고 있던 화면에서 가져왔습니다"
+
+
 @dataclass(frozen=True, slots=True)
 class Scope:
     outcome: str
@@ -321,7 +324,7 @@ def read_question(
         notes.append("날짜는 앞 질문에서 가져왔습니다")
     if not dates and context_date is not None:
         dates = [context_date]
-        notes.append("날짜는 보고 있던 화면에서 가져왔습니다")
+        notes.append(DATE_FROM_SCREEN)
     last = today + timedelta(days=FORECAST_DAYS - 1)
     if any(value < today or value > last for value in dates):
         return Scope(
