@@ -15,7 +15,7 @@ from tests.guide_fakes import (
     replay_live,
 )
 
-from guide.agent import MAX_LOOKUP_ROUNDS, SYSTEM, Agent
+from guide.agent import MAX_LOOKUP_ROUNDS, SYSTEM, Agent, _schema
 from guide.live import LiveClient, LiveError
 from guide.scope import Turn
 
@@ -589,3 +589,23 @@ def test_a_screens_place_the_guide_does_not_know_stops_instead_of_wandering():
     assert (result.outcome, result.cause) == ("no_grounds", "no_grounds")
     assert "알지 못하는 곳" in events[-1][1]["message"]
     assert model.calls == []
+
+
+def test_the_related_places_limit_is_offered_as_a_closed_list():
+    # As a bare integer the hosted model wrote "limit": 1000… until the output
+    # limit, on all four multi-place questions of the real-data run.
+    limit = _schema(("related_places", "answer"))["properties"]["limit"]
+
+    assert limit["enum"] == [*range(1, 11), None]
+
+
+def test_only_the_screens_date_can_be_written_into_a_lookup():
+    model = ScriptedModel(
+        action("congestion", place_id=101, date="2026-10-17"),
+        answer("10월 17일 가람궁은 매우혼잡 예보입니다.", "hanjeok:congestion/101@2026-10-17"),
+    )
+
+    run(model, "여기 붐벼?", context={"place_id": 101, "date": "2026-10-17"})
+
+    assert model.calls[0]["schema"]["properties"]["date"]["enum"] == ["2026-10-17", None]
+    assert "enum" not in _schema(("congestion", "answer"))["properties"]["date"]
