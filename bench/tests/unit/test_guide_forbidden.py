@@ -210,6 +210,16 @@ def test_crowding_said_of_a_place_that_was_looked_up_is_fine_even_beside_one_tha
     assert check("솔내 수목원은 혼잡 정보를 확인할 수 없습니다.", listed_only) == []
 
 
+def test_the_place_being_replaced_is_not_what_the_crowding_describes():
+    # From the real-data run: every alternatives answer opened with the place
+    # asked about, whose own forecast is not part of the alternatives lookup.
+    listed_only = evidence(fetched_place_ids=frozenset({101, 118, 124, 131, 150, 173}))
+
+    assert check("10월 17일 솔내 수목원 대신 가람궁이 여유입니다.", listed_only) == []
+    assert check("솔내 수목원을 대신해 가람궁이 여유입니다.", listed_only) == []
+    assert check("가람궁 대신 솔내 수목원이 여유입니다.", listed_only) == ["UNCHECKED_CROWDING"]
+
+
 @pytest.mark.parametrize("reason", ["가까운 순", "거리순", "인기 순"])
 def test_a_reason_for_the_order_that_no_lookup_gave_is_invented(reason):
     assert check(

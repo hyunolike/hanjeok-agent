@@ -196,7 +196,14 @@ def unchecked_crowding(answer: str, evidence: Evidence) -> list[str]:
     for sentence in _sentences(answer):
         if not _CROWDING.search(sentence) or any(p in sentence for p in _DISCLAIMS):
             continue
-        found = find_names(sentence, evidence.gazetteer)
+        # "경복궁 대신 동십자각이 여유입니다" is about 동십자각: the place being
+        # replaced is named first but is not what the crowding word describes.
+        compact = "".join(sentence.split())
+        found = [
+            (key, candidates)
+            for key, candidates in find_names(sentence, evidence.gazetteer)
+            if not re.search(re.escape(key) + r"(을|를)?대신", compact)
+        ]
         if not found:
             continue
         _, candidates = found[0]
