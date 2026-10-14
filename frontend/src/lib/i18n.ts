@@ -66,13 +66,13 @@ const ko = {
       value: '위반율 0%',
       label: '금지 행동 8종을 매 실행마다 셉니다. 후보 모델 둘 다 여덟 항목에서 0%였습니다.',
       cta: '금지 행동 8종 보기',
-      href: `${REPO}/blob/main/README.ko.md#-금지-행동-8종`,
+      href: `${REPO}/blob/main/docs/explainer/README.ko.md#-금지-행동-8종`,
     },
     citationGuard: {
       value: '5회 중 5회 차단',
       label: '첫 실제 실행에서, 지어낸 인용이 답 전체를 막았습니다.',
       cta: '검증 방식 보기',
-      href: `${REPO}/blob/main/README.ko.md#2-인용-검증--테스트가-아니라-런타임-방어선`,
+      href: `${REPO}/blob/main/docs/explainer/README.ko.md#2-인용-검증--테스트가-아니라-런타임-방어선`,
     },
 
     demoTitle: '데모 코스',
@@ -184,13 +184,13 @@ const en: Dict = {
       label:
         'Eight forbidden behaviours, counted on every run. Both candidate models scored 0% on all eight.',
       cta: 'See the eight',
-      href: `${REPO}/blob/main/README.md#-the-eight-forbidden-behaviours`,
+      href: `${REPO}/blob/main/docs/explainer/README.md#-the-eight-forbidden-behaviours`,
     },
     citationGuard: {
       value: 'Blocked 5 of 5',
       label: 'On the first real run, a fabricated citation stopped the entire answer.',
       cta: 'See how it is checked',
-      href: `${REPO}/blob/main/README.md#2-citation-validation--a-runtime-guard-not-a-test`,
+      href: `${REPO}/blob/main/docs/explainer/README.md#2-citation-validation--a-runtime-guard-not-a-test`,
     },
 
     demoTitle: 'Demo courses',

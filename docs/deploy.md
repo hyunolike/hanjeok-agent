@@ -9,8 +9,8 @@
 ## 먼저 로컬에서 실행하기
 
 JDK 21·Node.js 22.12+ (22.x)·pnpm 10 준비, 무료 빌드/테스트, `bootRun`, frontend
-`.env.local`/`pnpm dev`와 두 서버의 연결은 [README 시작하기](../README.ko.md#-시작하기)에
-한곳에 정리했습니다([English](../README.md#-getting-started)). 아래 클라우드 명령은
+`.env.local`/`pnpm dev`와 두 서버의 연결은 [README 시작하기](explainer/README.ko.md#-시작하기)에
+한곳에 정리했습니다([English](explainer/README.md#-getting-started)). 아래 클라우드 명령은
 로컬 quickstart에 필요하지 않습니다.
 
 에이전트 자체 DB는 없지만 실제 코스에는 별도 한적 백엔드와 기존 UUID가 필요합니다.

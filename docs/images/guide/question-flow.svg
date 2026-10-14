@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc"><title id="title">What happens to one question</title><desc id="desc">Six steps from a question to a verified answer, with rule-based exits, validated lookup execution, and one citation repair.</desc><defs>
+<marker id="navy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 1 L9 5 L0 9 Z" fill="#172033"/></marker>
+<marker id="green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 1 L9 5 L0 9 Z" fill="#009C75"/></marker>
+<marker id="sky" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 1 L9 5 L0 9 Z" fill="#00A6D6"/></marker>
+<marker id="coral" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 1 L9 5 L0 9 Z" fill="#F04B3E"/></marker>
+<marker id="gold" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 1 L9 5 L0 9 Z" fill="#F2B84B"/></marker>
+</defs><g font-family="Helvetica Neue, Arial, sans-serif" xml:space="preserve">
+<rect x="0" y="0" width="1600" height="1000" rx="0" fill="#FBFCFD" stroke="none" stroke-width="1.7"/>
+<text x="48" y="67" font-size="36" font-weight="700" fill="#172033" text-anchor="start">What happens to one question</text>
+<rect x="32" y="122" width="1536" height="516" rx="24" fill="#F0F9F5" stroke="#CEE8DC" stroke-width="1.5"/>
+<path d="M262 510 H300" fill="none" stroke="#009C75" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green)"/>
+<path d="M546 510 H590" fill="none" stroke="#009C75" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green)"/>
+<path d="M825 510 H868" fill="none" stroke="#009C75" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green)"/>
+<path d="M1084 510 H1128" fill="none" stroke="#009C75" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green)"/>
+<path d="M1350 510 H1394" fill="none" stroke="#009C75" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green)"/>
+<path d="M650 410 V308" fill="none" stroke="#009C75" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green)"/>
+<path d="M790 308 V410" fill="none" stroke="#009C75" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green)"/>
+<path d="M855 210 H908" fill="none" stroke="#009C75" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green)"/>
+<path d="M855 277 H883 V304 H908" fill="none" stroke="#00A6D6" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#sky)"/>
+<path d="M350 598 V668 H194 V714" fill="none" stroke="#F04B3E" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#coral)"/>
+<path d="M480 598 V714" fill="none" stroke="#F2B84B" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#gold)"/>
+<path d="M1240 410 V365 H976 V410" fill="none" stroke="#009C75" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green)" stroke-dasharray="6 6"/>
+<text x="1100" y="350" font-size="17" font-weight="600" fill="#009C75" text-anchor="middle">one repair</text>
+<path d="M1260 598 V744" fill="none" stroke="#F04B3E" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#coral)"/>
+<rect x="600" y="178" width="255" height="130" rx="17" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<text x="618" y="216" font-size="25" font-weight="700" fill="#172033" text-anchor="start">Run it in code</text>
+<text x="618" y="251" font-size="17" font-weight="400" fill="#172033" text-anchor="start" data-label="inputs validated · refused with a reason if not"><tspan x="618" y="251">inputs validated · </tspan><tspan x="618" y="276">refused with a reason if not</tspan></text>
+<rect x="908" y="178" width="190" height="64" rx="17" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<text x="1003" y="217" font-size="22" font-weight="700" fill="#172033" text-anchor="middle">Neo4j graph</text>
+<rect x="908" y="272" width="190" height="64" rx="17" fill="#F1FAFE" stroke="#172033" stroke-width="1.7"/>
+<text x="1003" y="311" font-size="22" font-weight="700" fill="#172033" text-anchor="middle">Hanjeok API</text>
+<rect x="40" y="410" width="222" height="188" rx="17" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<circle cx="70" cy="440" r="21" fill="#F2B84B"/>
+<text x="70" y="450" font-size="29" font-weight="500" fill="#172033" text-anchor="middle">①</text>
+<text x="58" y="489" font-size="25" font-weight="700" fill="#172033" text-anchor="start">Question</text>
+<text x="58" y="524" font-size="16" font-weight="400" fill="#596579" text-anchor="start" data-label="Somewhere quiet instead of Gyeongbokgung this Saturday?"><tspan x="58" y="524">Somewhere quiet instead </tspan><tspan x="58" y="549">of Gyeongbokgung this </tspan><tspan x="58" y="574">Saturday?</tspan></text>
+<rect x="300" y="410" width="246" height="188" rx="17" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<circle cx="330" cy="440" r="21" fill="#F2B84B"/>
+<text x="330" y="450" font-size="29" font-weight="500" fill="#172033" text-anchor="middle">②</text>
+<text x="318" y="489" font-size="25" font-weight="700" fill="#172033" text-anchor="start">Read by rule</text>
+<text x="318" y="526" font-size="17" font-weight="400" fill="#172033" text-anchor="start" data-label="scope · dates · place names — before any model call"><tspan x="318" y="526">scope · dates · place names </tspan><tspan x="318" y="552">— before any model call</tspan></text>
+<rect x="590" y="410" width="235" height="188" rx="17" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<circle cx="620" cy="440" r="21" fill="#F2B84B"/>
+<text x="620" y="450" font-size="29" font-weight="500" fill="#172033" text-anchor="middle">③</text>
+<text x="608" y="489" font-size="25" font-weight="700" fill="#172033" text-anchor="start">Choose a lookup</text>
+<text x="608" y="526" font-size="17" font-weight="400" fill="#172033" text-anchor="start" data-label="model picks one of 7 · at most 3 rounds"><tspan x="608" y="526">model picks one of 7 · </tspan><tspan x="608" y="552">at most 3 rounds</tspan></text>
+<rect x="868" y="410" width="216" height="188" rx="17" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<circle cx="898" cy="440" r="21" fill="#F2B84B"/>
+<text x="898" y="450" font-size="29" font-weight="500" fill="#172033" text-anchor="middle">④</text>
+<text x="886" y="489" font-size="22" font-weight="700" fill="#172033" text-anchor="start">Write the answer</text>
+<text x="886" y="526" font-size="16.5" font-weight="400" fill="#172033" text-anchor="start" data-label="model, lookups withdrawn"><tspan x="886" y="526">model, lookups </tspan><tspan x="886" y="552">withdrawn</tspan></text>
+<rect x="1128" y="410" width="222" height="188" rx="17" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<circle cx="1158" cy="440" r="21" fill="#F2B84B"/>
+<text x="1158" y="450" font-size="29" font-weight="500" fill="#172033" text-anchor="middle">⑤</text>
+<text x="1146" y="489" font-size="25" font-weight="700" fill="#172033" text-anchor="start">Citation gate</text>
+<text x="1146" y="526" font-size="17" font-weight="400" fill="#172033" text-anchor="start" data-label="every citation was fetched for this question"><tspan x="1146" y="526">every citation was </tspan><tspan x="1146" y="552">fetched for this question</tspan></text>
+<rect x="1394" y="410" width="166" height="188" rx="17" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<circle cx="1424" cy="440" r="21" fill="#F2B84B"/>
+<text x="1424" y="450" font-size="29" font-weight="500" fill="#172033" text-anchor="middle">⑥</text>
+<text x="1412" y="489" font-size="25" font-weight="700" fill="#172033" text-anchor="start" data-label="Answer + citations + path"><tspan x="1412" y="489">Answer + </tspan><tspan x="1412" y="521">citations + </tspan><tspan x="1412" y="553">path</tspan></text>
+<rect x="64" y="714" width="260" height="130" rx="17" fill="#FFF5F3" stroke="#F04B3E" stroke-width="1.7"/>
+<text x="82" y="753" font-size="26" font-weight="700" fill="#F04B3E" text-anchor="start">Declined</text>
+<text x="82" y="789" font-size="17" font-weight="400" fill="#172033" text-anchor="start" data-label="prices, hours, &#x27;reorder the ranking&#x27;…"><tspan x="82" y="789">prices, hours, </tspan><tspan x="82" y="815">&#x27;reorder the ranking&#x27;…</tspan></text>
+<rect x="365" y="714" width="486" height="148" rx="17" fill="#FFF9EC" stroke="#F2B84B" stroke-width="1.7"/>
+<text x="383" y="753" font-size="27" font-weight="700" fill="#172033" text-anchor="start">Which one do you mean?</text>
+<text x="383" y="789" font-size="18" font-weight="400" fill="#172033" text-anchor="start" data-label="two places share the name → pause (interrupt) → resume with the choice"><tspan x="383" y="789">two places share the name → pause (interrupt) </tspan><tspan x="383" y="817">→ resume with the choice</tspan></text>
+<rect x="1088" y="744" width="460" height="100" rx="17" fill="#FFF5F3" stroke="#F04B3E" stroke-width="1.7"/>
+<text x="1318" y="802" font-size="24" font-weight="700" fill="#F04B3E" text-anchor="middle">Refused twice → nothing is shown</text>
+<rect x="32" y="920" width="1536" height="58" rx="12" fill="#EEF1F5" stroke="none" stroke-width="1.7"/>
+<text x="800" y="956" font-size="19" font-weight="500" fill="#172033" text-anchor="middle">Budget: 3 lookup rounds, 1 answer, 1 repair — 60 seconds. Unverified text never reaches the screen.</text>
+</g></svg>
