@@ -26,7 +26,12 @@ type Turn = {
   answer: { text: string; citations: Citation[]; partial: boolean } | null
   path: GuidePath | null
   ending: Ending | null
+  /** 서버에서 무엇이든 하나라도 왔는가. 아직이면 서버가 깨어나는 중일 수 있다. */
+  connected: boolean
 }
+
+/** 이만큼 기다려도 서버에서 아무것도 오지 않으면, 깨어나는 중이라고 알린다. */
+export const WAKING_AFTER_MS = 4000
 
 /** 같은 index 로 다시 온 단계는 "진행 중"이 결과로 바뀐 것이다. 덧붙이지 않고 갈아 끼운다. */
 function upsertStep(steps: Step[], step: Step): Step[] {
@@ -38,7 +43,7 @@ function upsertStep(steps: Step[], step: Step): Step[] {
 function applyEvent(turn: Turn, event: GuideEvent): Turn {
   switch (event.type) {
     case 'visit':
-      return turn
+      return { ...turn, connected: true }
     case 'step':
       return { ...turn, steps: upsertStep(turn.steps, event.step) }
     case 'answer':
@@ -46,7 +51,7 @@ function applyEvent(turn: Turn, event: GuideEvent): Turn {
     case 'path':
       return { ...turn, path: { nodes: event.nodes, edges: event.edges } }
     default:
-      return { ...turn, ending: event }
+      return { ...turn, connected: true, ending: event }
   }
 }
 
@@ -75,19 +80,31 @@ export function AskGuide({
   const [pathOpen, setPathOpen] = useState<number | null>(null)
   const nextId = useRef(0)
   const abort = useRef<AbortController | null>(null)
+  // 오래 기다리게 한 질문의 id. 그 질문이 서버와 닿는 순간 안내는 저절로 사라진다 —
+  // 지우는 코드를 따로 두지 않고, 그릴 때 `connected` 를 함께 본다.
+  const [slow, setSlow] = useState<number | null>(null)
+  const wakeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const last = turns[turns.length - 1]
   const busy = last !== undefined && last.ending === null
 
-  useEffect(() => () => abort.current?.abort(), [])
+  useEffect(
+    () => () => {
+      abort.current?.abort()
+      if (wakeTimer.current) clearTimeout(wakeTimer.current)
+    },
+    [],
+  )
 
   const submit = useCallback(
     (question: string, choice?: number) => {
       const text = question.trim()
       if (text === '' || busy) return
       const id = nextId.current++
-      setTurns((prev) => [...prev, { id, question: text, steps: [], answer: null, path: null, ending: null }])
+      setTurns((prev) => [...prev, { id, question: text, steps: [], answer: null, path: null, ending: null, connected: false }])
       setDraft('')
+      if (wakeTimer.current) clearTimeout(wakeTimer.current)
+      wakeTimer.current = setTimeout(() => setSlow(id), WAKING_AFTER_MS)
 
       const controller = new AbortController()
       abort.current = controller
@@ -148,7 +165,17 @@ export function AskGuide({
             {turn.question}
           </p>
 
-          {turn.ending === null && <Character state="looking" title={t.lookingTitle} size="sm" />}
+          {turn.ending === null && (
+            <Character state="looking" title={t.lookingTitle} size="sm">
+              {/* 한동안 쓰이지 않은 서버는 잠들어 있다. 깨어나는 30초 남짓 동안 화면이
+                  멈춘 것처럼 보이면 방문자는 고장으로 읽는다. */}
+              {slow === turn.id && !turn.connected && (
+                <p role="status" className="text-caption text-ink-muted">
+                  {t.wakingBody}
+                </p>
+              )}
+            </Character>
+          )}
 
           {turn.steps.length > 0 &&
             (turn.ending?.type === 'done' ? (

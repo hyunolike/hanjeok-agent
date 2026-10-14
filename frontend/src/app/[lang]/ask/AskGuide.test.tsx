@@ -1,10 +1,10 @@
-import { render, screen, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { askGuide } from '@/lib/guide'
 import type { DemoKey } from '@/lib/guide-fixtures'
 import type { GuideEvent } from '@/lib/guide-schema'
-import { AskGuide } from './AskGuide'
+import { AskGuide, WAKING_AFTER_MS } from './AskGuide'
 
 /** 녹화본을 지연 없이 재생한다. 화면은 실제 클라이언트와 같은 사건을 받는다. */
 const instant: typeof askGuide = (request, onEvent, options) =>
@@ -162,5 +162,72 @@ describe('AskGuide', () => {
     await userEvent.type(screen.getByLabelText('질문'), '그 중 두 번째는?')
     await userEvent.click(screen.getByRole('button', { name: '물어보기' }))
     expect(spy.mock.calls[1][0]).toMatchObject({ question: '그 중 두 번째는?', visitId: 'replay-visit' })
+  })
+
+  describe('서버가 깨어나는 동안', () => {
+    const question = { name: '이번 토요일 가람궁 대신 조용한 곳 있어?' }
+    const waking = /안내 서버를 깨우고 있습니다/
+
+    /** 사건을 손으로 밀어 넣는 가짜 서버. 아무것도 밀지 않으면 잠든 서버와 같다. */
+    function asleep() {
+      let push: (event: GuideEvent) => void = () => {}
+      const ask: typeof askGuide = (_request, onEvent) => {
+        push = onEvent
+        return new Promise<void>(() => {})
+      }
+      return { ask, push: (event: GuideEvent) => act(() => push(event)) }
+    }
+
+    it('몇 초 동안 아무것도 오지 않으면 깨우는 중이라고 알린다', () => {
+      vi.useFakeTimers()
+      try {
+        const server = asleep()
+        render(<AskGuide lang="ko" ask={server.ask} />)
+        fireEvent.click(screen.getByRole('button', question))
+
+        expect(screen.queryByText(waking)).not.toBeInTheDocument()
+        act(() => vi.advanceTimersByTime(WAKING_AFTER_MS - 1))
+        expect(screen.queryByText(waking)).not.toBeInTheDocument()
+        act(() => vi.advanceTimersByTime(1))
+        expect(screen.getByText(waking)).toBeInTheDocument()
+        expect(screen.getByText('찾아보는 중입니다')).toBeInTheDocument()
+      } finally {
+        vi.useRealTimers()
+      }
+    })
+
+    it('서버에서 첫 사건이 오면 안내가 사라진다', () => {
+      vi.useFakeTimers()
+      try {
+        const server = asleep()
+        render(<AskGuide lang="ko" ask={server.ask} />)
+        fireEvent.click(screen.getByRole('button', question))
+        act(() => vi.advanceTimersByTime(WAKING_AFTER_MS))
+        expect(screen.getByText(waking)).toBeInTheDocument()
+
+        server.push({ type: 'visit', visit_id: 'v', as_of: { export: '2026-10-14T00:47:32Z', wiki: '' } })
+
+        expect(screen.queryByText(waking)).not.toBeInTheDocument()
+        expect(screen.getByText('찾아보는 중입니다')).toBeInTheDocument()
+      } finally {
+        vi.useRealTimers()
+      }
+    })
+
+    it('제때 답한 서버에는 안내가 뜨지 않는다', () => {
+      vi.useFakeTimers()
+      try {
+        const server = asleep()
+        render(<AskGuide lang="ko" ask={server.ask} />)
+        fireEvent.click(screen.getByRole('button', question))
+        server.push({ type: 'visit', visit_id: 'v', as_of: { export: '2026-10-14T00:47:32Z', wiki: '' } })
+
+        act(() => vi.advanceTimersByTime(WAKING_AFTER_MS * 3))
+
+        expect(screen.queryByText(waking)).not.toBeInTheDocument()
+      } finally {
+        vi.useRealTimers()
+      }
+    })
   })
 })
