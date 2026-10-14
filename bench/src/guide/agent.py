@@ -363,7 +363,10 @@ class Agent:
                 {
                     "cause": scope.cause,
                     "prompt": scope.message,
-                    "candidates": [asdict(c) for c in scope.candidates],
+                    "candidates": [
+                        {"place_id": c.place_id, "name": c.name, "region": c.region}
+                        for c in scope.candidates
+                    ],
                 }
             )
             scope = read(chosen)

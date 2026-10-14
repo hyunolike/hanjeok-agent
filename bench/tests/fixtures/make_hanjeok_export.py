@@ -86,7 +86,7 @@ PLACES = [
         "산책로",
         37.6040,
         127.0180,
-        False,
+        True,
         "달맞이 숲길 입구까지 이어지는 마을 길.",
     ),
     (
@@ -463,6 +463,19 @@ PLACES = [
         True,
         "소나무 숲 안의 야영장과 산책길.",
     ),
+    # A restaurant that took the palace's name, as a real one did: the real
+    # export holds a 경복궁 in Seoul and a restaurant called 경복궁 in Ulsan.
+    (
+        193,
+        "가람궁",
+        SOLNAE,
+        "음식",
+        "한식",
+        37.6260,
+        127.0480,
+        False,
+        "가람궁이라는 이름을 쓰는 한식당.",
+    ),
 ]
 
 # base, [(related, score, distance_km, travel_minutes), ...] — rank is the order.
@@ -493,7 +506,7 @@ RELATED = {
     177: [(187, 0.78, 0.5, 8), (175, 0.71, 1.0, 14)],
     180: [(124, 0.74, 0.7, 10), (188, 0.69, 0.5, 8), (176, 0.64, 1.4, 19)],
     183: [(150, 0.85, 0.4, 6), (184, 0.77, 0.6, 9), (185, 0.68, 0.9, 13)],
-    184: [(183, 0.77, 0.6, 9)],
+    184: [(183, 0.77, 0.6, 9), (193, 0.55, 0.3, 5)],
     # A link with no rank: Hanjeok's column is nullable, so the reader must
     # order these after ranked ones rather than crash or sort them first.
     192: [(178, 0.60, 0.8, 12)],

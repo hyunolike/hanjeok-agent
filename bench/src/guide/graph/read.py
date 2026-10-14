@@ -243,14 +243,15 @@ def events(
     return [EventRow(**row) for row in rows]
 
 
-def gazetteer(driver: Driver, generation: str) -> list[tuple[int, str, str, str | None]]:
+def gazetteer(driver: Driver, generation: str) -> list[tuple[int, str, str, str | None, bool]]:
     """Every place's id, name, name key and region. Names are matched against a
     question before any model is called, so this is read once per generation
     and held in memory by the caller."""
     with session(driver) as s:
         rows = s.run(
             "MATCH (p:Place {generation: $generation}) "
-            "RETURN p.id AS id, p.name AS name, p.name_key AS key, p.region_label AS region "
+            "RETURN p.id AS id, p.name AS name, p.name_key AS key, p.region_label AS region, "
+            "p.has_congestion_data AS covered "
             "ORDER BY p.has_congestion_data DESC, p.id",
             generation=generation,
         ).values()

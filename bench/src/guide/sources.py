@@ -52,8 +52,8 @@ class Policy(Protocol):
 
 def group_gazetteer(rows) -> dict[str, list[Candidate]]:
     grouped: dict[str, list[Candidate]] = {}
-    for place_id, name, key, region in rows:
-        grouped.setdefault(key, []).append(Candidate(place_id, name, region or ""))
+    for place_id, name, key, region, covered in rows:
+        grouped.setdefault(key, []).append(Candidate(place_id, name, region or "", bool(covered)))
     return grouped
 
 

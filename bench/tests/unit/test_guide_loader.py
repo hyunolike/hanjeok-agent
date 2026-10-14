@@ -59,3 +59,35 @@ def test_place_text_says_where_and_what():
 
     assert place_text(garam).splitlines()[0] == "가람궁 · 한빛시 가람구 · 역사 고궁"
     assert "옛 궁궐" in place_text(garam)
+
+
+def test_embeddings_already_computed_survive_a_refresh_that_dies_partway(tmp_path, monkeypatch):
+    # The first load of real data embeds for most of an hour. Losing that to a
+    # crash near the end would mean paying for it twice.
+    import pytest
+
+    from guide.graph import refresh
+    from guide.graph.refresh import EmbeddingCache, _embed
+
+    monkeypatch.setattr(refresh, "EMBED_BATCH", 16)
+
+    export = read_export(GOOD)
+    path = tmp_path / "cache.sqlite"
+
+    class DiesOnSecondBatch:
+        calls = 0
+
+        def embed(self, texts):
+            self.calls += 1
+            if self.calls == 2:
+                raise RuntimeError("killed")
+            return [[0.0] * 1024 for _ in texts]
+
+    cache = EmbeddingCache(path, "m")
+    with pytest.raises(RuntimeError):
+        _embed(export, DiesOnSecondBatch(), cache)
+    # No close(): the process is gone. A new one opens the same file.
+    reopened = EmbeddingCache(path, "m")
+    kept = sum(reopened.get(place_text(p)) is not None for p in export.places)
+
+    assert 0 < kept < len(export.places)

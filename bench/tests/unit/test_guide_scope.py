@@ -161,3 +161,46 @@ def test_there_with_no_previous_question_resolves_to_nothing():
 
     assert scope.outcome == "proceed"
     assert scope.place_ids == ()
+
+
+# ---- rules that real data made necessary ----
+
+
+def test_a_name_shared_with_an_unforecast_place_reads_as_the_forecast_one_and_says_so():
+    # The real export holds a palace called 경복궁 and a restaurant in another
+    # city that took its name. Asking "which one?" there would be absurd.
+    scope = read("이번 토요일 가람궁 얼마나 붐벼?")
+
+    assert scope.outcome == "proceed"
+    assert scope.place_ids == (101,)
+    assert any("이름이 같은 2곳 중 혼잡 예보가 있는 한빛시 가람구" in note for note in scope.notes)
+
+
+def test_two_forecast_places_with_one_name_are_still_asked_about():
+    assert read("은행나무길은 토요일에 붐벼?").outcome == "ask_user"
+
+
+def short_gazetteer():
+    from guide.scope import Candidate
+
+    return {
+        "지도": [Candidate(1, "지도", "전남 신안군", True)],
+        "모습": [Candidate(2, "모습", "서울 마포구", False)],
+        "명동": [Candidate(3, "명동", "서울 중구", True)],
+        "가람궁": GAZETTEER["가람궁"],
+    }
+
+
+@pytest.mark.parametrize(
+    ("question", "expected"),
+    [
+        ("명동은 토요일에 붐벼?", ["명동"]),
+        ("토요일 명동 어때?", ["명동"]),
+        ("지도에서 가까운 곳", ["지도"]),  # the island; a known limit of the rule
+        ("붐비는 모습이 궁금해", []),  # a restaurant called 모습 is not forecast
+        ("유명동네 맛있는 곳", []),  # 명동 inside another word
+        ("가람궁지도 보여줘", ["가람궁"]),  # 지도 glued to another word is not its own word
+    ],
+)
+def test_two_character_names_count_only_as_their_own_word_and_only_if_forecast(question, expected):
+    assert [key for key, _ in find_names(question, short_gazetteer())] == expected

@@ -20,7 +20,7 @@ def test_refresh_prints_counts_and_the_generation(capsys):
     out = json.loads(capsys.readouterr().out)
     assert status == 0
     assert out["generation"] == "gen-1"
-    assert out["counts"] == {"places": 40, "related": 54, "events": 5, "regions": 2}
+    assert out["counts"] == {"places": 41, "related": 55, "events": 5, "regions": 2}
 
 
 def test_a_broken_export_exits_non_zero_names_the_file_and_never_starts_a_refresh(capsys):
@@ -59,7 +59,7 @@ def test_check_verifies_without_refreshing(capsys):
 
     assert status == 0
     assert started == []
-    assert json.loads(capsys.readouterr().out)["counts"]["places"] == 40
+    assert json.loads(capsys.readouterr().out)["counts"]["places"] == 41
 
 
 def test_rescore_is_a_command_and_reports_a_missing_run(capsys):
