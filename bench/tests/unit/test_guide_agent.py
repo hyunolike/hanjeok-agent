@@ -577,3 +577,15 @@ def test_a_lookup_for_another_day_than_the_screens_is_refused():
 
     assert result.outcome == "answered"
     assert "이 질문의 날짜는 2026-10-17입니다" in model.calls[1]["user"]
+
+
+def test_a_screens_place_the_guide_does_not_know_stops_instead_of_wandering():
+    # Seen live: unknown to the graph, the place was dropped and the model
+    # searched the question's words, landing on "오늘은 카트레이싱".
+    model = ScriptedModel()
+
+    result, events = run(model, "이날 붐벼요?", context={"place_id": 999999, "date": "2026-10-17"})
+
+    assert (result.outcome, result.cause) == ("no_grounds", "no_grounds")
+    assert "알지 못하는 곳" in events[-1][1]["message"]
+    assert model.calls == []
