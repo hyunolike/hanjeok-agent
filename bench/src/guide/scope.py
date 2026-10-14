@@ -285,7 +285,12 @@ def read_question(
     gazetteer: dict[str, Sequence[Candidate]],
     turns: Sequence[Turn] = (),
     choice: int | None = None,
+    context_place_id: int | None = None,
+    context_date: date | None = None,
 ) -> Scope:
+    """`context_*` is what the calling screen already knows — the place and day
+    a visitor was looking at when they asked. It fills only what the question
+    leaves out: a place or date the question names always wins."""
     lowered = question.lower()
 
     # Rule override first: such a question often also names a place, and
@@ -314,6 +319,9 @@ def read_question(
     if not dates and turns and any(word in question for word in _DATE_REFERENCE):
         dates = [date.fromisoformat(value) for value in turns[-1].dates]
         notes.append("날짜는 앞 질문에서 가져왔습니다")
+    if not dates and context_date is not None:
+        dates = [context_date]
+        notes.append("날짜는 보고 있던 화면에서 가져왔습니다")
     last = today + timedelta(days=FORECAST_DAYS - 1)
     if any(value < today or value > last for value in dates):
         return Scope(
@@ -359,6 +367,11 @@ def read_question(
             summary=f"'{candidates[0].name}'이(가) {len(candidates)}곳이라 어느 곳인지 물어봅니다",
         )
 
+    if not place_ids and context_place_id is not None:
+        # Before the previous question: "거기" asked from a place's own screen
+        # means that place, not whatever was asked about before.
+        place_ids = [context_place_id]
+        notes.append("장소는 보고 있던 화면에서 가져왔습니다")
     if not place_ids and turns and any(word in question for word in _REFERENCE):
         place_ids = list(turns[-1].place_ids)
         if place_ids:

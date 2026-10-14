@@ -15,6 +15,8 @@ Not exposed, here as over HTTP: refreshing the data and running an evaluation.
 
 from __future__ import annotations
 
+from datetime import date as day
+
 from mcp.server.mcpserver import MCPServer
 
 from guide.agent import Agent
@@ -50,11 +52,19 @@ def build_server(runtime: Runtime) -> MCPServer:
         return current
 
     @server.tool()
-    def ask_guide(question: str, visit_id: str | None = None, choice: int | None = None) -> dict:
+    def ask_guide(
+        question: str,
+        visit_id: str | None = None,
+        choice: int | None = None,
+        place_id: int | None = None,
+        date: str | None = None,
+    ) -> dict:
         """한적의 장소와 혼잡에 대해 묻습니다. 예: "이번 토요일 경복궁 대신 조용한 곳 있어?"
 
         visit_id 를 다시 보내면 앞 질문의 장소와 날짜를 이어서 씁니다.
         outcome 이 ask_user 였다면 choice 에 고른 place_id 를 넣어 다시 부릅니다.
+        place_id 와 date(YYYY-MM-DD)는 호출하는 쪽이 이미 아는 장소와 날짜입니다.
+        질문에 장소나 날짜가 없을 때만 씁니다.
         """
         question = question.strip()
         if not 1 <= len(question) <= 500:
@@ -63,6 +73,16 @@ def build_server(runtime: Runtime) -> MCPServer:
                 "cause": "invalid_request",
                 "message": "question 은 1~500자입니다.",
             }
+        if date is not None:
+            try:
+                day.fromisoformat(date)
+            except ValueError:
+                return {
+                    "outcome": "failed",
+                    "cause": "invalid_request",
+                    "message": "date 는 YYYY-MM-DD 입니다.",
+                }
+        context = {k: v for k, v in (("place_id", place_id), ("date", date)) if v is not None}
         current = snapshot()
         visit = runtime.visits.open(visit_id)
         agent = Agent(
@@ -92,7 +112,7 @@ def build_server(runtime: Runtime) -> MCPServer:
                 "visit_id": visit,
             }
 
-        events = list(agent.stream(question, thread_id=visit, resume=choice))
+        events = list(agent.stream(question, thread_id=visit, resume=choice, context=context))
         result = agent.result
         reply: dict = {
             "outcome": result.outcome,

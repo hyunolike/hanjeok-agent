@@ -115,3 +115,17 @@ def test_places_are_found_by_name_and_a_neighbourhood_is_in_rank_order():
 def test_status_says_when_nothing_is_loaded():
     assert call(TestRuntime(ready=False), "guide_status") == {"ready": False}
     assert call(TestRuntime(), "guide_status")["counts"]["places"] == 40
+
+
+def test_a_caller_can_say_which_place_and_day_it_is_looking_at():
+    runtime = TestRuntime(
+        action("congestion", place_id=101, date="2026-10-17"),
+        answer("10월 17일 가람궁은 매우혼잡 예보입니다.", CONGESTION),
+    )
+
+    reply = call(runtime, "ask_guide", question="여기 붐벼?", place_id=101, date="2026-10-17")
+
+    assert reply["outcome"] == "answered"
+    assert call(TestRuntime(), "ask_guide", question="여기 붐벼?", date="17 Oct")["cause"] == (
+        "invalid_request"
+    )
