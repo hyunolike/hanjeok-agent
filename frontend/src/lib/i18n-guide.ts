@@ -64,6 +64,7 @@ export const guideKo = {
     retry: '다시 물어보기',
 
     lookingTitle: '찾아보는 중입니다',
+    wakingBody: '안내 서버를 깨우고 있습니다. 한동안 쓰이지 않으면 잠들어 있어서, 첫 질문은 30초쯤 걸릴 수 있습니다.',
     stepsTitle: '답을 찾은 단계',
     stepsSummary: (count: number) => `${count}단계를 거쳤습니다`,
     stepKind: (kind: string) => STEP_KIND_KO[kind] ?? kind,
@@ -285,6 +286,7 @@ export const guideEn: GuideDict = {
     retry: 'Ask again',
 
     lookingTitle: 'Looking it up',
+    wakingBody: 'Waking the guide server. It sleeps when unused, so a first question can take about 30 seconds.',
     stepsTitle: 'Steps to the answer',
     stepsSummary: (count: number) => `${count} steps`,
     stepKind: (kind: string) => STEP_KIND_EN[kind] ?? kind,
