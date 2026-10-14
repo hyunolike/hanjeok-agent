@@ -43,7 +43,7 @@ from langgraph.types import Command, interrupt
 from guide import citations as cite
 from guide.forbidden import evidence_from, invented_order_reason, unchecked_crowding
 from guide.live import LiveClient
-from guide.lookups import DESCRIPTIONS, LIVE, Lookups, Outcome
+from guide.lookups import DESCRIPTIONS, LIVE, RELATED_LIMITS, Lookups, Outcome
 from guide.model import Model, ModelFailure
 from guide.scope import DATE_FROM_SCREEN, Scope, Turn, read_question
 from guide.sources import Places, Policy
@@ -142,7 +142,7 @@ class State(TypedDict, total=False):
     route: str
 
 
-def _schema(actions: tuple[str, ...]) -> dict:
+def _schema(actions: tuple[str, ...], dates: tuple[str, ...] = ()) -> dict:
     """One flat object. Every field is required and nullable because that is
     what strict structured output accepts; `action` is the only one that
     decides anything.
@@ -151,16 +151,21 @@ def _schema(actions: tuple[str, ...]) -> dict:
     `text` beside one named `answer`, the hosted model wrote its answer into
     `text` and left `answer` empty. When only answering is possible the lookup
     fields are not in the schema at all, so there is one place an answer can go.
+
+    `limit` is listed value by value. As a bare integer the hosted model wrote
+    `1000…` until the output ran out, on every multi-place question it tried.
+    `dates` are the screen's: told the date in words, the model still looked up
+    today and was refused, which cost the visitor a second model call.
     """
     nullable = lambda kind: {"type": [kind, "null"]}  # noqa: E731
     properties = {"action": {"type": "string", "enum": list(actions)}}
     if actions != ("answer",):
         properties |= {
             "place_id": nullable("integer"),
-            "date": nullable("string"),
+            "date": {**nullable("string"), "enum": [*dates, None]} if dates else nullable("string"),
             "query": nullable("string"),
             "region_code": nullable("string"),
-            "limit": nullable("integer"),
+            "limit": {**nullable("integer"), "enum": [*RELATED_LIMITS, None]},
         }
     properties |= {
         "answer": nullable("string"),
@@ -455,7 +460,9 @@ class Agent:
         user = self._prompt(state, actions)
         self.result.model_calls += 1
         self.result.prompts.append({"system": SYSTEM, "user": user, "actions": list(actions)})
-        return self.model.decide(SYSTEM, user, _schema(actions), timeout=self._remaining())
+        return self.model.decide(
+            SYSTEM, user, _schema(actions, self._lookups.screen_dates), timeout=self._remaining()
+        )
 
     def _act(self, state: State) -> State:
         if state["rounds"] >= MAX_LOOKUP_ROUNDS:

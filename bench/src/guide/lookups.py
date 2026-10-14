@@ -42,6 +42,9 @@ POLICY_TOPICS = (
     (("연관", "이어진", "비슷"), "entities/related-attraction-api.md"),
 )
 
+# What `related_places` may be asked for; the model's schema lists the same values.
+RELATED_LIMITS = tuple(range(1, 11))
+
 # What the model is told about each lookup. Kept beside the code that
 # validates the same arguments, so the two cannot drift apart unnoticed.
 DESCRIPTIONS = {
@@ -298,7 +301,7 @@ class Lookups:
         limit = args.get("limit")
         if limit is None:
             limit = 5
-        if not isinstance(limit, int) or isinstance(limit, bool) or not 1 <= limit <= 10:
+        if not isinstance(limit, int) or isinstance(limit, bool) or limit not in RELATED_LIMITS:
             return self._refuse({"place_id": place_id}, "limit 은 1 이상 10 이하입니다.")
         inputs = {"place_id": place_id, "limit": limit}
         rows = self.places.related(place_id, limit=limit)
