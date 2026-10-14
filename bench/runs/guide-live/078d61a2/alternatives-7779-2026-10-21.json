@@ -1,0 +1,219 @@
+{
+ "status": 200,
+ "fetched_at": "2026-10-14T04:44:06.849751Z",
+ "body": {
+  "success": true,
+  "data": [
+   {
+    "attractionId": 5027,
+    "name": "뚝섬한강공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/61/3534561_image2_1.jpg",
+    "latitude": 37.5294186076,
+    "longitude": 127.0739939307,
+    "grade": "NORMAL",
+    "concentration": 43.65,
+    "distanceKm": 12.384,
+    "relationScore": 0.52,
+    "score": 0.46828000000000003,
+    "summary": "뚝섬한강공원은 한강공원으로 새 단장하기 이전부터 강변유원지로 유명했던 곳이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "39",
+       "origin": "여의도한강공원"
+      }
+     },
+     {
+      "kind": "WEATHER_FIT",
+      "text": "낮 19도 맑음, 걷기 좋은 날이에요.",
+      "evidence": {
+       "precipitation": "NONE",
+       "rainProbability": "10",
+       "outdoorness": "OUTDOOR"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 61,
+    "rating": null
+   },
+   {
+    "attractionId": 8023,
+    "name": "용양봉저정공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/32/3493732_image2_1.jpg",
+    "latitude": 37.5118,
+    "longitude": 126.9585,
+    "grade": "NORMAL",
+    "concentration": 34.1,
+    "distanceKm": 2.73,
+    "relationScore": 0,
+    "score": 0.4272,
+    "summary": "용양봉저정은 조선 22대 정조가 아버지 사도세자가 묻힌 수원 화산의 현륭원을 찾을 때 잠시 쉬던 정자이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "53",
+       "origin": "여의도한강공원"
+      }
+     },
+     {
+      "kind": "WEATHER_FIT",
+      "text": "낮 19도 맑음, 걷기 좋은 날이에요.",
+      "evidence": {
+       "precipitation": "NONE",
+       "rainProbability": "10",
+       "outdoorness": "OUTDOOR"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "여의도한강공원에서 차로 약 6분 예상돼요.",
+      "evidence": {
+       "minutes": "6"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 6,
+    "rating": null
+   },
+   {
+    "attractionId": 6265,
+    "name": "광흥당",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/35/3393035_image2_1.JPG",
+    "latitude": 37.5486359893,
+    "longitude": 126.9286760682,
+    "grade": "NORMAL",
+    "concentration": 42.87,
+    "distanceKm": 2.511,
+    "relationScore": 0,
+    "score": 0.39504000000000006,
+    "summary": "마포 와우산 자락에 자리 잡고 있는 광흥당은 공민왕 사당 오른쪽에 있는 한옥 문화공간으로 전통문화의 소중함을 일깨우기 위해 다양한 프로그램을…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "40",
+       "origin": "여의도한강공원"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "여의도한강공원에서 차로 약 5분 예상돼요.",
+      "evidence": {
+       "minutes": "5"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 5,
+    "rating": null
+   },
+   {
+    "attractionId": 4305,
+    "name": "백범김구기념관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/98/3521598_image2_1.jpg",
+    "latitude": 37.5443314817,
+    "longitude": 126.9592678461,
+    "grade": "NORMAL",
+    "concentration": 44.26,
+    "distanceKm": 3.016,
+    "relationScore": 0,
+    "score": 0.3827466666666667,
+    "summary": "백범김구기념관은 세계에서 가장 아름답고 높은 문화를 가진 자주·민주·통일 조국을 건설하기 위해 일생을 분투하신 겨레의 큰 스승 백범 김구 선생…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "38",
+       "origin": "여의도한강공원"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "여의도한강공원에서 차로 약 6분 예상돼요.",
+      "evidence": {
+       "minutes": "6"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 6,
+    "rating": null
+   },
+   {
+    "attractionId": 6495,
+    "name": "양화진외국인선교사묘원(외인묘지)",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/36/3384436_image2_1.JPG",
+    "latitude": 37.5465275879,
+    "longitude": 126.9111804997,
+    "grade": "NORMAL",
+    "concentration": 45.07,
+    "distanceKm": 2.987,
+    "relationScore": 0,
+    "score": 0.37989333333333336,
+    "summary": "양화진외국인선교사묘원은 복음의 씨앗으로 이 땅에서 헌신한 선교사님들이 안장되어 있다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "37",
+       "origin": "여의도한강공원"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "여의도한강공원에서 차로 약 6분 예상돼요.",
+      "evidence": {
+       "minutes": "6"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 6,
+    "rating": null
+   },
+   {
+    "attractionId": 6197,
+    "name": "우석뮤지엄",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/84/3502784_image2_1.jpg",
+    "latitude": 37.5566186049,
+    "longitude": 126.9403997739,
+    "grade": "NORMAL",
+    "concentration": 48.54,
+    "distanceKm": 3.413,
+    "relationScore": 0,
+    "score": 0.36033333333333334,
+    "summary": "우석뮤지엄은 전각가이자 서예가인 우석 최규명 선생(1919~1999)의 작고 15주기를 맞아 2014년 2월 우석의 서예작품을 만날 수 있는…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "32",
+       "origin": "여의도한강공원"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "여의도한강공원에서 차로 약 7분 예상돼요.",
+      "evidence": {
+       "minutes": "7"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 7,
+    "rating": null
+   }
+  ],
+  "error": null
+ }
+}

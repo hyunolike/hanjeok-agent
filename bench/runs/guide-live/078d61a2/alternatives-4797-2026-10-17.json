@@ -1,0 +1,702 @@
+{
+ "status": 200,
+ "fetched_at": "2026-10-14T04:37:39.047613Z",
+ "body": {
+  "success": true,
+  "data": [
+   {
+    "attractionId": 4917,
+    "name": "청계천박물관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/11/3503011_image2_1.jpg",
+    "latitude": 37.57126614487816,
+    "longitude": 127.03504321042874,
+    "grade": "RELAXED",
+    "concentration": 6.81,
+    "distanceKm": 3.191,
+    "relationScore": 0,
+    "score": 0.5302133333333333,
+    "summary": "청계천박물관은 2005년 9월 26일에 개관한 박물관으로, 서울의 중심을 흐르는 청계천의 역사와 문화를 한눈에 볼 수 있는 공간이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "93",
+       "origin": "서울숲"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 7분 예상돼요.",
+      "evidence": {
+       "minutes": "7"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 7,
+    "rating": null
+   },
+   {
+    "attractionId": 9114,
+    "name": "송은",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/84/4072584_image2_1.jpg",
+    "latitude": 37.5241627892,
+    "longitude": 127.0441206423,
+    "grade": "RELAXED",
+    "concentration": 36.77,
+    "distanceKm": 2.113,
+    "relationScore": 0,
+    "score": 0.42474666666666666,
+    "summary": "송은문화재단은 1989년에 설립된 비영리 기관으로, ‘숨어 있는 소나무’라는 뜻을 가진 명칭에 걸맞게 국내 젊은 작가들의 안정적인 작업 활동을…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "62",
+       "origin": "서울숲"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 5분 예상돼요.",
+      "evidence": {
+       "minutes": "5"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 5,
+    "rating": null
+   },
+   {
+    "attractionId": 5015,
+    "name": "노룬산골목시장",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/56/2779656_image2_1.png",
+    "latitude": 37.5369286806,
+    "longitude": 127.064750115,
+    "grade": "RELAXED",
+    "concentration": 42.24,
+    "distanceKm": 2.136,
+    "relationScore": 0,
+    "score": 0.40256000000000003,
+    "summary": "1970년대에 개설된 광진구에서 가장 역사 깊은 전통시장으로 정비가 잘되어 있는 골목형 시장이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "56",
+       "origin": "서울숲"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 5분 예상돼요.",
+      "evidence": {
+       "minutes": "5"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 5,
+    "rating": null
+   },
+   {
+    "attractionId": 4892,
+    "name": "응봉체육공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/53/3455553_image2_1.JPG",
+    "latitude": 37.5519542217,
+    "longitude": 127.0374160667,
+    "grade": "RELAXED",
+    "concentration": 51.05,
+    "distanceKm": 1.061,
+    "relationScore": 0,
+    "score": 0.3816533333333334,
+    "summary": "서울 성동구 응봉산 아래 중랑천 변에 위치한 체육공원으로 축구, 테니스, 야구 등 다양한 종목의 스포츠를 즐길 수 있는 시설이 있다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "47",
+       "origin": "서울숲"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 3분 예상돼요.",
+      "evidence": {
+       "minutes": "3"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 3,
+    "rating": null
+   },
+   {
+    "attractionId": 4792,
+    "name": "살곶이체육공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/42/3564942_image2_1.jpg",
+    "latitude": 37.5540292149,
+    "longitude": 127.0504648193,
+    "grade": "RELAXED",
+    "concentration": 56.6,
+    "distanceKm": 1.438,
+    "relationScore": 0,
+    "score": 0.35442666666666667,
+    "summary": "살곶이체육공원은 청계천이 중랑천과 만나는 자리 부근으로 한양대학교에서도 내려다보면 바로 보인다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "41",
+       "origin": "서울숲"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 3분 예상돼요.",
+      "evidence": {
+       "minutes": "3"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 3,
+    "rating": null
+   },
+   {
+    "attractionId": 9617,
+    "name": "플랫폼엘",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/25/3548925_image2_1.jpg",
+    "latitude": 37.5161,
+    "longitude": 127.0344,
+    "grade": "RELAXED",
+    "concentration": 55.3,
+    "distanceKm": 3.069,
+    "relationScore": 0,
+    "score": 0.33788000000000007,
+    "summary": "플랫폼엘 컨템포러리 아트센터는 수십 년간 다양한 문화 예술 활동을 후원해 온 패션 브랜드 루이까또즈(Louis Quatorze)가 설립하고 후…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "43",
+       "origin": "서울숲"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 6분 예상돼요.",
+      "evidence": {
+       "minutes": "6"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 6,
+    "rating": null
+   },
+   {
+    "attractionId": 9740,
+    "name": "SJ쿤스트할레",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/59/4066759_image2_1.jpg",
+    "latitude": 37.52050859858252,
+    "longitude": 127.03491725063186,
+    "grade": "RELAXED",
+    "concentration": 57.66,
+    "distanceKm": 2.581,
+    "relationScore": 0,
+    "score": 0.33494666666666667,
+    "summary": "SJ쿤스트할레는 28개의 CONTAINER 컨테이너 구조물로 만들어진 곳이다.",
+    "recommendReasons": [
+     {
+      "kind": "REST_DAY",
+      "text": "이 날은 쉬는 날이에요 (매주 토요일, 일요일 / 대관행사 시).",
+      "evidence": {
+       "restDate": "매주 토요일, 일요일 / 대관행사 시"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "40",
+       "origin": "서울숲"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 6분 예상돼요.",
+      "evidence": {
+       "minutes": "6"
+      }
+     }
+    ],
+    "recommendReason": "이 날은 쉬는 날이에요 (매주 토요일, 일요일 / 대관행사 시).",
+    "travelMinutes": 6,
+    "rating": null
+   },
+   {
+    "attractionId": 5289,
+    "name": "청량리수산시장",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/40/3526840_image2_1.jpg",
+    "latitude": 37.5775745012719,
+    "longitude": 127.041764958885,
+    "grade": "RELAXED",
+    "concentration": 56.3,
+    "distanceKm": 3.837,
+    "relationScore": 0,
+    "score": 0.32364000000000004,
+    "summary": "청량리수산시장은 서울 동대문구에 위치한 수산물 전문시장으로, 도매를 중심으로 하면서 소매도 가능한 형태이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "42",
+       "origin": "서울숲"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 8분 예상돼요.",
+      "evidence": {
+       "minutes": "8"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 8,
+    "rating": null
+   },
+   {
+    "attractionId": 4769,
+    "name": "미타사(성동)",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/39/3550539_image2_1.jpg",
+    "latitude": 37.5435714979,
+    "longitude": 127.0171792585,
+    "grade": "RELAXED",
+    "concentration": 65.48,
+    "distanceKm": 2.171,
+    "relationScore": 0,
+    "score": 0.3091333333333333,
+    "summary": "옥수동에 자리한 미타사는 대한불교 조계종 조계사의 직할 사찰로 달맞이봉공원 아래 위치해 있다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "32",
+       "origin": "서울숲"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 5분 예상돼요.",
+      "evidence": {
+       "minutes": "5"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 5,
+    "rating": null
+   },
+   {
+    "attractionId": 5202,
+    "name": "답십리 고미술상가",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/98/3055898_image2_1.JPG",
+    "latitude": 37.5682581489,
+    "longitude": 127.0522448086,
+    "grade": "RELAXED",
+    "concentration": 67.18,
+    "distanceKm": 2.948,
+    "relationScore": 0,
+    "score": 0.2919733333333333,
+    "summary": "답십리 고미술상가는 고서화, 고가구, 도자기 등의 고미술품과 독특하고 다양한 생활용품을 판매하는 상점이 밀집한 곳이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "30",
+       "origin": "서울숲"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 6분 예상돼요.",
+      "evidence": {
+       "minutes": "6"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 6,
+    "rating": null
+   },
+   {
+    "attractionId": 4671,
+    "name": "금남시장",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/59/3414159_image2_1.jpg",
+    "latitude": 37.548507136,
+    "longitude": 127.022728613,
+    "grade": "NORMAL",
+    "concentration": 72.71,
+    "distanceKm": 1.787,
+    "relationScore": 0,
+    "score": 0.2853333333333334,
+    "summary": "해방 후 1949년 백범 김구 선생은 금남시장 부근에 160호 규모의 주택단지와 백범 학원을 개원했는데, 그곳을 중심으로 사람들이 모이기 시작…",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 4분 예상돼요.",
+      "evidence": {
+       "minutes": "4"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "25",
+       "origin": "서울숲"
+      }
+     }
+    ],
+    "recommendReason": "서울숲에서 차로 약 4분 예상돼요.",
+    "travelMinutes": 4,
+    "rating": null
+   },
+   {
+    "attractionId": 9092,
+    "name": "서울 선릉과 정릉 [유네스코 세계유산]",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/84/4116384_image2_1.jpg",
+    "latitude": 37.5088,
+    "longitude": 127.0486,
+    "grade": "RELAXED",
+    "concentration": 65.99,
+    "distanceKm": 3.858,
+    "relationScore": 0,
+    "score": 0.2846,
+    "summary": "선릉(宣陵)은 조선 9대 성종과 세 번째 왕비 정현왕후 윤씨의 왕릉이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "32",
+       "origin": "서울숲"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 8분 예상돼요.",
+      "evidence": {
+       "minutes": "8"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 8,
+    "rating": null
+   },
+   {
+    "attractionId": 9095,
+    "name": "서울옥션 강남센터",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/01/2791401_image2_1.JPG",
+    "latitude": 37.5274306957,
+    "longitude": 127.0339236576,
+    "grade": "NORMAL",
+    "concentration": 73.63,
+    "distanceKm": 1.873,
+    "relationScore": 0,
+    "score": 0.2805066666666667,
+    "summary": "서울옥션 강남센터는 1998년 설립된 국내 최초의 미술품 경매 회사 서울옥션의 강남 거점이다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 4분 예상돼요.",
+      "evidence": {
+       "minutes": "4"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "24",
+       "origin": "서울숲"
+      }
+     }
+    ],
+    "recommendReason": "서울숲에서 차로 약 4분 예상돼요.",
+    "travelMinutes": 4,
+    "rating": null
+   },
+   {
+    "attractionId": 5027,
+    "name": "뚝섬한강공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/61/3534561_image2_1.jpg",
+    "latitude": 37.5294186076,
+    "longitude": 127.0739939307,
+    "grade": "NORMAL",
+    "concentration": 71.45,
+    "distanceKm": 3.219,
+    "relationScore": 0,
+    "score": 0.27127999999999997,
+    "summary": "뚝섬한강공원은 한강공원으로 새 단장하기 이전부터 강변유원지로 유명했던 곳이다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 7분 예상돼요.",
+      "evidence": {
+       "minutes": "7"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "26",
+       "origin": "서울숲"
+      }
+     }
+    ],
+    "recommendReason": "서울숲에서 차로 약 7분 예상돼요.",
+    "travelMinutes": 7,
+    "rating": null
+   },
+   {
+    "attractionId": 4891,
+    "name": "응봉산(서울)",
+    "imageUrl": null,
+    "latitude": 37.5482,
+    "longitude": 127.0298,
+    "grade": "NORMAL",
+    "concentration": 79.97,
+    "distanceKm": 1.202,
+    "relationScore": 0,
+    "score": 0.26409333333333335,
+    "summary": "성동구 응봉동에 위치한 응봉산은 높이는 약 95m로 예전부터 풍경이 아름다운 곳으로 유명했다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 3분 예상돼요.",
+      "evidence": {
+       "minutes": "3"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "17",
+       "origin": "서울숲"
+      }
+     }
+    ],
+    "recommendReason": "서울숲에서 차로 약 3분 예상돼요.",
+    "travelMinutes": 3,
+    "rating": null
+   },
+   {
+    "attractionId": 9157,
+    "name": "신사공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/26/3397426_image2_1.JPG",
+    "latitude": 37.5267837847,
+    "longitude": 127.0214833948,
+    "grade": "NORMAL",
+    "concentration": 77.14,
+    "distanceKm": 2.547,
+    "relationScore": 0,
+    "score": 0.25748000000000004,
+    "summary": "신사공원은 서울 강남구 압구정동에 위치해 있는 근린공원이다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 5분 예상돼요.",
+      "evidence": {
+       "minutes": "5"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "20",
+       "origin": "서울숲"
+      }
+     }
+    ],
+    "recommendReason": "서울숲에서 차로 약 5분 예상돼요.",
+    "travelMinutes": 5,
+    "rating": null
+   },
+   {
+    "attractionId": 5138,
+    "name": "자양동 양꼬치거리 (중국음식문화거리)",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/63/2372563_image2_1.jpg",
+    "latitude": 37.5402227106,
+    "longitude": 127.0629835156,
+    "grade": "NORMAL",
+    "concentration": 80.76,
+    "distanceKm": 1.895,
+    "relationScore": 0,
+    "score": 0.2516933333333333,
+    "summary": "지하철 2호선 · 7호선 건대입구역 5번 출구로 나와 로데오거리를 지나 한강 둔치 방향으로 50m 정도 걸어 내려가면 일명 ‘양꼬치 거리’로…",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 4분 예상돼요.",
+      "evidence": {
+       "minutes": "4"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "16",
+       "origin": "서울숲"
+      }
+     }
+    ],
+    "recommendReason": "서울숲에서 차로 약 4분 예상돼요.",
+    "travelMinutes": 4,
+    "rating": null
+   },
+   {
+    "attractionId": 5181,
+    "name": "간데메공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/80/3505480_image2_1.jpg",
+    "latitude": 37.572780967593836,
+    "longitude": 127.04906426645805,
+    "grade": "NORMAL",
+    "concentration": 75.92,
+    "distanceKm": 3.365,
+    "relationScore": 0,
+    "score": 0.25145333333333336,
+    "summary": "간데메공원은 서울 동대문구 답십리 천변에 위치한 근린공원이다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 7분 예상돼요.",
+      "evidence": {
+       "minutes": "7"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "21",
+       "origin": "서울숲"
+      }
+     }
+    ],
+    "recommendReason": "서울숲에서 차로 약 7분 예상돼요.",
+    "travelMinutes": 7,
+    "rating": null
+   },
+   {
+    "attractionId": 4850,
+    "name": "에스팩토리",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/68/3584568_image2_1.jpg",
+    "latitude": 37.5422548452,
+    "longitude": 127.0594663901,
+    "grade": "NORMAL",
+    "concentration": 82.71,
+    "distanceKm": 1.56,
+    "relationScore": 0,
+    "score": 0.24836000000000005,
+    "summary": "에스팩토리는 1980년대부터 이어온 공장지대와 젊은 예술가들의 개성 강한 공간들이 멋스럽게 어우러진 성수동은 서울의 새로운 명소가 되었다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 4분 예상돼요.",
+      "evidence": {
+       "minutes": "4"
+      }
+     }
+    ],
+    "recommendReason": "서울숲에서 차로 약 4분 예상돼요.",
+    "travelMinutes": 4,
+    "rating": null
+   },
+   {
+    "attractionId": 5268,
+    "name": "용두동 쭈꾸미골목",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/51/3567851_image2_1.jpg",
+    "latitude": 37.5759403196,
+    "longitude": 127.0372154044,
+    "grade": "NORMAL",
+    "concentration": 80.14,
+    "distanceKm": 3.677,
+    "relationScore": 0,
+    "score": 0.23041333333333336,
+    "summary": "용두동 쭈꾸미 골목은 쭈꾸미 특화 거리로 지하철 1호선 제기동역 6번 출구 인근에 있다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 8분 예상돼요.",
+      "evidence": {
+       "minutes": "8"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "17",
+       "origin": "서울숲"
+      }
+     }
+    ],
+    "recommendReason": "서울숲에서 차로 약 8분 예상돼요.",
+    "travelMinutes": 8,
+    "rating": null
+   },
+   {
+    "attractionId": 9035,
+    "name": "봉은사(서울)",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/70/3422470_image2_1.jpg",
+    "latitude": 37.514861,
+    "longitude": 127.057317,
+    "grade": "NORMAL",
+    "concentration": 81.18,
+    "distanceKm": 3.422,
+    "relationScore": 0,
+    "score": 0.22965333333333332,
+    "summary": "봉은사는 서울의 중심지인 강남구 삼성동에 자리 잡은 천년고찰이다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 7분 예상돼요.",
+      "evidence": {
+       "minutes": "7"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "16",
+       "origin": "서울숲"
+      }
+     }
+    ],
+    "recommendReason": "서울숲에서 차로 약 7분 예상돼요.",
+    "travelMinutes": 7,
+    "rating": null
+   }
+  ],
+  "error": null
+ }
+}

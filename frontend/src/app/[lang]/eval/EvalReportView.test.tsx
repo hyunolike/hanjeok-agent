@@ -59,7 +59,7 @@ describe('EvalReportView', () => {
   it('한 건이라도 나온 금지 행동은 숫자로 드러난다', () => {
     const flagged = structuredClone(report)
     if (!flagged.ok) throw new Error()
-    flagged.data.strategies.vector.forbidden.INVENTED_PLACE.occurrences = 3
+    flagged.data.strategies.vector.forbidden.INVENTED_PLACE = { runs: 12, occurrences: 3 }
     render(<EvalReportView lang="ko" result={flagged} />)
     expect(screen.getByTestId('forbidden-INVENTED_PLACE-vector')).toHaveTextContent('3건 · 12문항 검사')
   })
@@ -99,6 +99,17 @@ describe('데모가 보여 주는 보고서', () => {
     for (const { question_id } of stored.data.questions) {
       expect((await fetchEvalSample(stored.data.report_id, question_id, { baseUrl: '' })).ok, question_id).toBe(true)
     }
+  })
+})
+
+describe('평가 보고서의 금지 행동', () => {
+  it('보고서가 세지 않은 행동은 0 이 아니라 "세지 않음"이다', () => {
+    const older = structuredClone(report)
+    if (!older.ok) throw new Error()
+    delete older.data.strategies.graph.forbidden.UNCHECKED_CROWDING
+    render(<EvalReportView lang="ko" result={older} />)
+    expect(screen.getByTestId('forbidden-UNCHECKED_CROWDING-graph')).toHaveTextContent('이 보고서는 세지 않음')
+    expect(screen.getByTestId('forbidden-UNCHECKED_CROWDING-vector')).toHaveTextContent('0건 · 12문항 검사')
   })
 })
 

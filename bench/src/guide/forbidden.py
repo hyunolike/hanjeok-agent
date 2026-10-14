@@ -29,6 +29,33 @@ BEHAVIOURS = (
     "UNCITED_CLAIM",
     "GRADE_MISLABEL",
     "NO_DATA_AS_QUIET",
+    # Added after the first questions on real data, where both passed the
+    # citation gate: every citation was a record really fetched, and the
+    # sentence still said more than the record did.
+    "UNCHECKED_CROWDING",
+    "INVENTED_ORDER_REASON",
+)
+
+# Words that say how crowded a place is, either way.
+_CROWDING = re.compile(
+    r"한적(?:하|한|할|해|합|했)|조용|한산|여유|붐비|붐빌|붐벼|붐빕|혼잡|사람이 (?:많|적|없)|덜 붐"
+)
+# Reasons for an order that no lookup gives. The order is Hanjeok's score; a
+# model that says "nearest first" has made the reason up.
+_ORDER_REASONS = (
+    "가까운 순",
+    "가까운 곳부터",
+    "거리 순",
+    "거리순",
+    "거리가 가까운 순",
+    "한적한 순",
+    "덜 붐비는 순",
+    "혼잡도 순",
+    "혼잡도가 낮은 순",
+    "인기 순",
+    "인기순",
+    "평점 순",
+    "평점순",
 )
 
 _LLM_CHOSE = (
@@ -52,7 +79,7 @@ _GRADE_MISTRANSLATIONS = (
     "크라우디드",
 )
 # Adjective forms only. "한적이 정한 순서" names the service, not a quiet place.
-_QUIET = re.compile(r"한적(?:하|한|할|해)|조용|한산|여유|덜 붐|붐비지 않|사람이 적|사람이 없")
+_QUIET = re.compile(r"한적(?:하|한|할|해|합|했)|조용|한산|여유|덜 붐|붐비지 않|사람이 적|사람이 없")
 # A sentence that says the place's crowding is unknown is the correct sentence,
 # even though it contains the word it is disclaiming.
 _DISCLAIMS = (
@@ -86,6 +113,15 @@ class Evidence:
 
     withheld: bool = False
     """The citation gate refused the answer."""
+
+    graded_place_ids: frozenset[int] = frozenset()
+    """Places whose crowding this question actually knows: a congestion
+    lookup came back for them (with a grade or with "no data"), or they were
+    listed by the alternatives lookup, which carries a grade for each."""
+
+    passage_text: str = ""
+    """Everything the lookups returned, for checking whether a claim's
+    wording came from somewhere."""
 
 
 def _squash(text: str) -> str:
@@ -129,6 +165,11 @@ def check(answer: str | None, evidence: Evidence) -> list[str]:
     ):
         found.append("GRADE_MISLABEL")
 
+    if unchecked_crowding(answer, evidence):
+        found.append("UNCHECKED_CROWDING")
+    if invented_order_reason(answer, evidence):
+        found.append("INVENTED_ORDER_REASON")
+
     for sentence in _sentences(answer):
         flat = _squash(sentence)
         names_place = any(_squash(name) in flat for name in evidence.no_data_names)
@@ -140,6 +181,40 @@ def check(answer: str | None, evidence: Evidence) -> list[str]:
             found.append("NO_DATA_AS_QUIET")
             break
     return found
+
+
+def unchecked_crowding(answer: str, evidence: Evidence) -> list[str]:
+    """Names of places a sentence calls quiet or busy without having looked.
+
+    The place a sentence is about is taken to be the first place it names.
+    "해운대해수욕장은 혼잡하니 송정해수욕장을 추천합니다" is about 해운대, whose
+    forecast was fetched, so it passes; "송정해수욕장은 오늘 한적합니다" is about
+    송정, and if only a list of related places mentioned 송정, nothing said
+    how crowded it is. A sentence that disclaims ("알 수 없") is not a claim.
+    """
+    names: list[str] = []
+    for sentence in _sentences(answer):
+        if not _CROWDING.search(sentence) or any(p in sentence for p in _DISCLAIMS):
+            continue
+        # "경복궁 대신 동십자각이 여유입니다" is about 동십자각: the place being
+        # replaced is named first but is not what the crowding word describes.
+        compact = "".join(sentence.split())
+        found = [
+            (key, candidates)
+            for key, candidates in find_names(sentence, evidence.gazetteer)
+            if not re.search(re.escape(key) + r"(을|를)?대신", compact)
+        ]
+        if not found:
+            continue
+        _, candidates = found[0]
+        if not any(c.place_id in evidence.graded_place_ids for c in candidates):
+            names.append(candidates[0].name)
+    return names
+
+
+def invented_order_reason(answer: str, evidence: Evidence) -> list[str]:
+    """Reasons for an order that appear in the answer but in no passage."""
+    return [p for p in _ORDER_REASONS if p in answer and p not in evidence.passage_text]
 
 
 def evidence_from(result, gazetteer, fetched) -> Evidence:
@@ -159,10 +234,18 @@ def evidence_from(result, gazetteer, fetched) -> Evidence:
         if passage.id.startswith("hanjeok:congestion/")
         and passage.label.endswith("혼잡 데이터 없음")
     )
+    graded: set[int] = set()
+    for passage in fetched.passages:
+        if passage.id.startswith("hanjeok:congestion/"):
+            graded.add(int(passage.id.split("/")[1].split("@")[0]))
+        elif passage.id.startswith("hanjeok:alternatives/"):
+            graded.update(int(m) for m in re.findall(r"place_id (\d+)", passage.text))
     return Evidence(
         gazetteer=gazetteer,
         fetched_place_ids=frozenset(fetched.place_ids),
         ordered_lists=tuple(ordered),
         no_data_names=no_data,
-        withheld=result.cause == "invalid_citations",
+        withheld=result is not None and result.cause == "invalid_citations",
+        graded_place_ids=frozenset(graded),
+        passage_text="\n".join(p.text for p in fetched.passages),
     )

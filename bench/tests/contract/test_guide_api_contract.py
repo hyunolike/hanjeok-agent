@@ -402,3 +402,28 @@ def test_tracing_is_off_without_keys(monkeypatch):
     monkeypatch.delenv("LANGFUSE_PUBLIC_KEY", raising=False)
     monkeypatch.delenv("LANGFUSE_SECRET_KEY", raising=False)
     assert tracing_callbacks() == []
+
+
+def test_context_from_the_calling_screen_is_used_and_checked():
+    runtime = TestRuntime(
+        action("congestion", place_id=124, date="2026-10-17"),
+        answer("10월 17일 물빛 서원은 여유 예보입니다.", "hanjeok:congestion/124@2026-10-17"),
+    )
+    http = client(runtime)
+
+    events = frames(
+        http.post(
+            "/guide/ask",
+            json={"question": "여기 붐벼?", "context": {"place_id": 124, "date": "2026-10-17"}},
+        )
+    )
+
+    assert events[-1][0] == "done"
+    assert "보고 있던 화면" in next(
+        d["summary"] for n, d in events if n == "step" and d["kind"] == "scope"
+    )
+    for bad in ({"place_id": "124"}, {"date": "17 Oct"}, {"user_id": 7}, "124"):
+        assert (
+            http.post("/guide/ask", json={"question": "여기 붐벼?", "context": bad}).status_code
+            == 400
+        )

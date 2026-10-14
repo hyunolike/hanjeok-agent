@@ -1,0 +1,701 @@
+{
+ "status": 200,
+ "fetched_at": "2026-10-14T04:40:31.796514Z",
+ "body": {
+  "success": true,
+  "data": [
+   {
+    "attractionId": 297,
+    "name": "보리사(경주)",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/54/3531054_image2_1.jpg",
+    "latitude": 35.8119023939,
+    "longitude": 129.2359385999,
+    "grade": "RELAXED",
+    "concentration": 22.96,
+    "distanceKm": 2.675,
+    "relationScore": 0,
+    "score": 0.4724933333333333,
+    "summary": "경주 남산 자락에 자리한 보리사는 남북국시대 통일신라 시기에 창건됐으며 남산에서 가장 규모가 큰 사찰이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "53",
+       "origin": "경주 동궁과 월지"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "경주 동궁과 월지에서 차로 약 6분 예상돼요.",
+      "evidence": {
+       "minutes": "6"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 6,
+    "rating": null
+   },
+   {
+    "attractionId": 314,
+    "name": "분황사",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/98/3506098_image2_1.jpg",
+    "latitude": 35.8407687574982,
+    "longitude": 129.233669042029,
+    "grade": "RELAXED",
+    "concentration": 30.46,
+    "distanceKm": 0.787,
+    "relationScore": 0,
+    "score": 0.4676666666666667,
+    "summary": "분황사는 경상북도 경주시에 위치한 대한불교조계종 제11교구 본사 불국사의 말사이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "37",
+       "origin": "경주 동궁과 월지"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "경주 동궁과 월지에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 95,
+    "name": "경주 진평왕릉",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/05/3542405_image2_1.jpg",
+    "latitude": 35.8321587183,
+    "longitude": 129.2506228479,
+    "grade": "RELAXED",
+    "concentration": 26.64,
+    "distanceKm": 2.036,
+    "relationScore": 0,
+    "score": 0.46629333333333334,
+    "summary": "경주 진평왕릉은 신라 26대 진평왕(재위 579∼632)의 무덤이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "45",
+       "origin": "경주 동궁과 월지"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "경주 동궁과 월지에서 차로 약 4분 예상돼요.",
+      "evidence": {
+       "minutes": "4"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 4,
+    "rating": null
+   },
+   {
+    "attractionId": 290,
+    "name": "백률사(경주)",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/85/3575785_image2_1.jpg",
+    "latitude": 35.859102532,
+    "longitude": 129.2312071143,
+    "grade": "RELAXED",
+    "concentration": 25.57,
+    "distanceKm": 2.675,
+    "relationScore": 0,
+    "score": 0.4620533333333333,
+    "summary": "경주시 북쪽 소금강산 중턱에 자리한 백률사는 신라 법흥왕 14년(527) 불교 공인을 위해 순교한 이차돈을 기리기 위한 절이자, 신라의 불교…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "47",
+       "origin": "경주 동궁과 월지"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "경주 동궁과 월지에서 차로 약 6분 예상돼요.",
+      "evidence": {
+       "minutes": "6"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 6,
+    "rating": null
+   },
+   {
+    "attractionId": 144,
+    "name": "경주읍성",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/23/3542523_image2_1.jpg",
+    "latitude": 35.8473202021,
+    "longitude": 129.2139061887,
+    "grade": "RELAXED",
+    "concentration": 29.45,
+    "distanceKm": 1.877,
+    "relationScore": 0,
+    "score": 0.4571733333333333,
+    "summary": "경주 시가지 중심부에 신라 이후의 천년 경주를 상징하는 주요 유적인 경주읍성이 자리해 있다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "39",
+       "origin": "경주 동궁과 월지"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "경주 동궁과 월지에서 차로 약 4분 예상돼요.",
+      "evidence": {
+       "minutes": "4"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 4,
+    "rating": null
+   },
+   {
+    "attractionId": 28,
+    "name": "경주 김유신묘",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/41/3028641_image2_1.jpg",
+    "latitude": 35.8453311317,
+    "longitude": 129.1923886866,
+    "grade": "RELAXED",
+    "concentration": 26.08,
+    "distanceKm": 3.433,
+    "relationScore": 0,
+    "score": 0.44990666666666673,
+    "summary": "경주시 충효동 옥녀봉 능선에 위치한 김유신 장군의 묘로 674년(문무왕 14) 축조되었다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "46",
+       "origin": "경주 동궁과 월지"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "경주 동궁과 월지에서 차로 약 7분 예상돼요.",
+      "evidence": {
+       "minutes": "7"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 7,
+    "rating": null
+   },
+   {
+    "attractionId": 106,
+    "name": "경주 황룡사지",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/86/3542386_image2_1.jpg",
+    "latitude": 35.8374438969,
+    "longitude": 129.2328298118,
+    "grade": "NORMAL",
+    "concentration": 36.38,
+    "distanceKm": 0.478,
+    "relationScore": 0,
+    "score": 0.44810666666666665,
+    "summary": "황룡사는 6세기 신라시대 때 만들어져 고려 13세기 몽고의 침입으로 불타 없어진 사찰로 지금은 그 규모를 짐작할 수 있는 터만 남아있다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "경주 동궁과 월지에서 차로 약 1분 예상돼요.",
+      "evidence": {
+       "minutes": "1"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "25",
+       "origin": "경주 동궁과 월지"
+      }
+     }
+    ],
+    "recommendReason": "경주 동궁과 월지에서 차로 약 1분 예상돼요.",
+    "travelMinutes": 1,
+    "rating": null
+   },
+   {
+    "attractionId": 582,
+    "name": "화랑마을",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/95/3501295_image2_1.jpg",
+    "latitude": 35.8607514419626,
+    "longitude": 129.178468094847,
+    "grade": "RELAXED",
+    "concentration": 22.69,
+    "distanceKm": 5.321,
+    "relationScore": 0,
+    "score": 0.4382933333333333,
+    "summary": "경주시 화랑마을은 우리의 고귀한 문화유산인 화랑의 정신과 문화를 재조명하고 확대 및 발전시켜 청소년 수련활동과 글로벌 체험관광, 휴양 문화의…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "53",
+       "origin": "경주 동궁과 월지"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "경주 동궁과 월지에서 차로 약 11분 예상돼요.",
+      "evidence": {
+       "minutes": "11"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 11,
+    "rating": null
+   },
+   {
+    "attractionId": 78,
+    "name": "경주 오릉",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/77/4056777_image2_1.jpg",
+    "latitude": 35.823449,
+    "longitude": 129.208823,
+    "grade": "NORMAL",
+    "concentration": 34.11,
+    "distanceKm": 2.189,
+    "relationScore": 0,
+    "score": 0.4343733333333334,
+    "summary": "경주시 탑동에 위치한 4기의 봉토무덤과 1기의 원형무덤이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "30",
+       "origin": "경주 동궁과 월지"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "경주 동궁과 월지에서 차로 약 5분 예상돼요.",
+      "evidence": {
+       "minutes": "5"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 5,
+    "rating": null
+   },
+   {
+    "attractionId": 335,
+    "name": "삼불사",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/21/3509421_image2_1.jpg",
+    "latitude": 35.8019923624268,
+    "longitude": 129.210758422055,
+    "grade": "RELAXED",
+    "concentration": 29.07,
+    "distanceKm": 4.014,
+    "relationScore": 0,
+    "score": 0.4302,
+    "summary": "삼불사는 경상북도 경주시 배동에 자리 잡고 있다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "40",
+       "origin": "경주 동궁과 월지"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "경주 동궁과 월지에서 차로 약 8분 예상돼요.",
+      "evidence": {
+       "minutes": "8"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 8,
+    "rating": null
+   },
+   {
+    "attractionId": 263,
+    "name": "망월사(경주)",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/99/3508599_image2_1.jpg",
+    "latitude": 35.801378133627374,
+    "longitude": 129.20999349129377,
+    "grade": "RELAXED",
+    "concentration": 29.12,
+    "distanceKm": 4.104,
+    "relationScore": 0,
+    "score": 0.42879999999999996,
+    "summary": "망월사는 경주시 배동에 자리한 대한불교원효종 소속 사찰이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "40",
+       "origin": "경주 동궁과 월지"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "경주 동궁과 월지에서 차로 약 9분 예상돼요.",
+      "evidence": {
+       "minutes": "9"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 9,
+    "rating": null
+   },
+   {
+    "attractionId": 596,
+    "name": "황성공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/18/3499418_image2_1.JPG",
+    "latitude": 35.8589974318,
+    "longitude": 129.2142423633,
+    "grade": "NORMAL",
+    "concentration": 35.7,
+    "distanceKm": 2.94,
+    "relationScore": 0,
+    "score": 0.41800000000000004,
+    "summary": "경주 황성공원은 신라 때 화랑들의 훈련장으로 쓰인 역사가 있는 오래된 숲에 자리해 있다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "경주 동궁과 월지에서 차로 약 6분 예상돼요.",
+      "evidence": {
+       "minutes": "6"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "27",
+       "origin": "경주 동궁과 월지"
+      }
+     }
+    ],
+    "recommendReason": "경주 동궁과 월지에서 차로 약 6분 예상돼요.",
+    "travelMinutes": 6,
+    "rating": null
+   },
+   {
+    "attractionId": 190,
+    "name": "금장대",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/42/3405142_image2_1.jpg",
+    "latitude": 35.8606,
+    "longitude": 129.201,
+    "grade": "NORMAL",
+    "concentration": 33.7,
+    "distanceKm": 3.752,
+    "relationScore": 0,
+    "score": 0.4151733333333334,
+    "summary": "경주에는 세 가지 진귀한 보물과 여덟 가지 기이한 현상을 뜻하는 ‘삼기팔괴’에 대한 이야기가 전해지고 있다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "31",
+       "origin": "경주 동궁과 월지"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "경주 동궁과 월지에서 차로 약 8분 예상돼요.",
+      "evidence": {
+       "minutes": "8"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 8,
+    "rating": null
+   },
+   {
+    "attractionId": 504,
+    "name": "천마총(대릉원)",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/19/3491219_image2_1.jpg",
+    "latitude": 35.8386877792,
+    "longitude": 129.2104983997,
+    "grade": "NORMAL",
+    "concentration": 40.79,
+    "distanceKm": 1.656,
+    "relationScore": 0,
+    "score": 0.41476,
+    "summary": "경주 대릉원 안에 위치한 천마총은 5세기 말에서 6세기 초에 축조된 것으로 추정되는 통일 이전 신라의 고분이다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "경주 동궁과 월지에서 차로 약 4분 예상돼요.",
+      "evidence": {
+       "minutes": "4"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "16",
+       "origin": "경주 동궁과 월지"
+      }
+     }
+    ],
+    "recommendReason": "경주 동궁과 월지에서 차로 약 4분 예상돼요.",
+    "travelMinutes": 4,
+    "rating": null
+   },
+   {
+    "attractionId": 65,
+    "name": "경주 서출지",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/62/2534162_image2_1.jpg",
+    "latitude": 35.796443149,
+    "longitude": 129.2424273605,
+    "grade": "RELAXED",
+    "concentration": 31.62,
+    "distanceKm": 4.488,
+    "relationScore": 0,
+    "score": 0.41368,
+    "summary": "신라 21대 소지왕이 서기 488년 정월 보름날 행차에 나설 때다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "35",
+       "origin": "경주 동궁과 월지"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "경주 동궁과 월지에서 차로 약 9분 예상돼요.",
+      "evidence": {
+       "minutes": "9"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 9,
+    "rating": null
+   },
+   {
+    "attractionId": 357,
+    "name": "솔거미술관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/42/3537842_image2_1.jpg",
+    "latitude": 35.8322527041009,
+    "longitude": 129.288867087571,
+    "grade": "RELAXED",
+    "concentration": 28.36,
+    "distanceKm": 5.466,
+    "relationScore": 0,
+    "score": 0.41367999999999994,
+    "summary": "경주 솔거미술관은 한국화의 거장 소산 박대성 화백이 작품 830여 점을 기증하며 건립이 추진된 공립미술관이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "42",
+       "origin": "경주 동궁과 월지"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "경주 동궁과 월지에서 차로 약 11분 예상돼요.",
+      "evidence": {
+       "minutes": "11"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 11,
+    "rating": null
+   },
+   {
+    "attractionId": 187,
+    "name": "금관총",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/26/4118626_image2_1.jpg",
+    "latitude": 35.8411326405,
+    "longitude": 129.2097579376,
+    "grade": "NORMAL",
+    "concentration": 43.04,
+    "distanceKm": 1.802,
+    "relationScore": 0,
+    "score": 0.40381333333333336,
+    "summary": "신라의 금관이 출토되어 붙은 이름이다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "경주 동궁과 월지에서 차로 약 4분 예상돼요.",
+      "evidence": {
+       "minutes": "4"
+      }
+     }
+    ],
+    "recommendReason": "경주 동궁과 월지에서 차로 약 4분 예상돼요.",
+    "travelMinutes": 4,
+    "rating": null
+   },
+   {
+    "attractionId": 502,
+    "name": "천룡사(경주)",
+    "imageUrl": null,
+    "latitude": 35.7657719073516,
+    "longitude": 129.22390545269,
+    "grade": "RELAXED",
+    "concentration": 24.38,
+    "distanceKm": 7.726,
+    "relationScore": 0,
+    "score": 0.3994666666666667,
+    "summary": "서남산의 최고봉인 고위산(高位山) 정상 부근에 자리한 천룡사는 신라시대 때 천녀(天女)와 용녀(龍女)라는 두 딸을 가진 부모가 딸들을 위해 창…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "50",
+       "origin": "경주 동궁과 월지"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "경주 동궁과 월지에서 차로 약 16분 예상돼요.",
+      "evidence": {
+       "minutes": "16"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 16,
+    "rating": null
+   },
+   {
+    "attractionId": 48,
+    "name": "경주 동궁원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/88/4071888_image2_1.jpg",
+    "latitude": 35.8527484044,
+    "longitude": 129.2604161844,
+    "grade": "NORMAL",
+    "concentration": 40.03,
+    "distanceKm": 3.49,
+    "relationScore": 0,
+    "score": 0.3933466666666667,
+    "summary": "경주동궁원은 보문관광단지 입구에 위치하여, 농업 시험포장, 화훼재배 용도로사용되어 왔던 것을 농업을 관광자원화 하는 차원에서 시작하여, 새로운…",
+    "recommendReasons": [
+     {
+      "kind": "REST_DAY",
+      "text": "이 날은 쉬는 날이에요 (- 식물원 : 매주 월요일 (단, 월요일이 공휴일인 경우 그 다음 평일) / 1월 1일 / 설·추석 당일- 버드파크 : 연중무휴).",
+      "evidence": {
+       "restDate": "- 식물원 : 매주 월요일 (단, 월요일이 공휴일인 경우 그 다음 평일) / 1월 1일 / 설·추석 당일- 버드파크 : 연중무휴"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "경주 동궁과 월지에서 차로 약 7분 예상돼요.",
+      "evidence": {
+       "minutes": "7"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "18",
+       "origin": "경주 동궁과 월지"
+      }
+     }
+    ],
+    "recommendReason": "이 날은 쉬는 날이에요 (- 식물원 : 매주 월요일 (단, 월요일이 공휴일인 경우 그 다음 평일) / 1월 1일 / 설·추석 당일- 버드파크 : 연중무휴).",
+    "travelMinutes": 7,
+    "rating": null
+   },
+   {
+    "attractionId": 437,
+    "name": "우양미술관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/03/3556803_image2_1.jpg",
+    "latitude": 35.8416002160228,
+    "longitude": 129.285930778328,
+    "grade": "NORMAL",
+    "concentration": 39.64,
+    "distanceKm": 5.24,
+    "relationScore": 0,
+    "score": 0.3715733333333333,
+    "summary": "경주보문단지 힐튼경주 부지 내에 위치한 우양미술관은 1991년 5월 18일에 개관하였다.",
+    "recommendReasons": [
+     {
+      "kind": "REST_DAY",
+      "text": "이 날은 쉬는 날이에요 (매주 월요일 / 1월 1일 / 설·추석 당일 / 전시 교체 기간).",
+      "evidence": {
+       "restDate": "매주 월요일 / 1월 1일 / 설·추석 당일 / 전시 교체 기간"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "19",
+       "origin": "경주 동궁과 월지"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "경주 동궁과 월지에서 차로 약 11분 예상돼요.",
+      "evidence": {
+       "minutes": "11"
+      }
+     }
+    ],
+    "recommendReason": "이 날은 쉬는 날이에요 (매주 월요일 / 1월 1일 / 설·추석 당일 / 전시 교체 기간).",
+    "travelMinutes": 11,
+    "rating": null
+   },
+   {
+    "attractionId": 135,
+    "name": "경주엑스포대공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/40/3537940_image2_1.jpg",
+    "latitude": 35.8340564631,
+    "longitude": 129.2895443842,
+    "grade": "NORMAL",
+    "concentration": 44.18,
+    "distanceKm": 5.518,
+    "relationScore": 0,
+    "score": 0.3497066666666667,
+    "summary": "경주엑스포대공원은 1998년 세계 최초로 문화예술을 주제로 한 문화박람회 '경주세계엑스포'가 열린 곳이다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "경주 동궁과 월지에서 차로 약 11분 예상돼요.",
+      "evidence": {
+       "minutes": "11"
+      }
+     }
+    ],
+    "recommendReason": "경주 동궁과 월지에서 차로 약 11분 예상돼요.",
+    "travelMinutes": 11,
+    "rating": null
+   }
+  ],
+  "error": null
+ }
+}

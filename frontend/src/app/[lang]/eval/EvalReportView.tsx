@@ -197,14 +197,14 @@ export function EvalReportView({ lang, result }: { lang: Lang; result: Loaded<Ev
                   <span className="block font-mono text-caption text-ink-muted">{behaviour}</span>
                 </th>
                 {EVAL_STRATEGIES.map((strategy) => {
-                  const { runs, occurrences } = report.strategies[strategy].forbidden[behaviour]
+                  const counted = report.strategies[strategy].forbidden[behaviour]
                   return (
                     <td
                       key={strategy}
-                      className={`${TD} ${occurrences > 0 ? 'text-status-danger-text' : ''}`}
+                      className={`${TD} ${counted && counted.occurrences > 0 ? 'text-status-danger-text' : ''} ${counted ? '' : 'text-ink-muted'}`}
                       data-testid={`forbidden-${behaviour}-${strategy}`}
                     >
-                      {t.occurrences(occurrences, runs)}
+                      {counted ? t.occurrences(counted.occurrences, counted.runs) : t.notCounted}
                     </td>
                   )
                 })}

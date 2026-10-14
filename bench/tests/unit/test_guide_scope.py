@@ -204,3 +204,34 @@ def short_gazetteer():
 )
 def test_two_character_names_count_only_as_their_own_word_and_only_if_forecast(question, expected):
     assert [key for key, _ in find_names(question, short_gazetteer())] == expected
+
+
+# ---- what the calling screen already knows ----
+
+
+def test_a_screens_place_and_day_fill_what_the_question_leaves_out():
+    scope = read(
+        "대신 갈 만한 조용한 곳 있어?", context_place_id=124, context_date=date(2026, 10, 17)
+    )
+
+    assert scope.outcome == "proceed"
+    assert (scope.place_ids, scope.dates) == ((124,), ("2026-10-17",))
+    assert len(scope.notes) == 2
+
+
+def test_a_place_or_day_the_question_names_wins_over_the_screen():
+    scope = read(
+        "가람궁은 10월 20일에 붐벼?", context_place_id=124, context_date=date(2026, 10, 17)
+    )
+
+    assert (scope.place_ids, scope.dates) == ((101,), ("2026-10-20",))
+
+
+def test_a_screens_place_settles_there_before_the_previous_question_does():
+    turns = (Turn("물빛 서원 어때?", (124,), ("2026-10-18",)),)
+
+    assert read("거기 행사 있어?", turns=turns, context_place_id=101).place_ids == (101,)
+
+
+def test_a_screens_place_does_not_rescue_a_declined_question():
+    assert read("입장료 얼마야?", context_place_id=101).cause == "unsupported_topic"

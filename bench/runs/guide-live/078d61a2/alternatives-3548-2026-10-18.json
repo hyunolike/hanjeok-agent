@@ -1,0 +1,842 @@
+{
+ "status": 200,
+ "fetched_at": "2026-10-14T04:28:25.991442Z",
+ "body": {
+  "success": true,
+  "data": [
+   {
+    "attractionId": 3702,
+    "name": "서울도시건축전시관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/92/2639292_image2_1.jpg",
+    "latitude": 37.566882960193,
+    "longitude": 126.976702166851,
+    "grade": "RELAXED",
+    "concentration": 20.82,
+    "distanceKm": 0.895,
+    "relationScore": 0,
+    "score": 0.5047866666666667,
+    "summary": "서울도시건축전시관은 서울시가 2015년 광복 70주년을 맞아 일제강점기의 잔재였던 옛 국세청 별관 건물을 철거하고 그 자리의 역사적 가치를 회…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "78",
+       "origin": "명동"
+      }
+     },
+     {
+      "kind": "WEATHER_FIT",
+      "text": "비 예보(60%)인 날, 실내라 영향이 적어요.",
+      "evidence": {
+       "precipitation": "RAIN",
+       "rainProbability": "60",
+       "outdoorness": "INDOOR"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "명동에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 1298,
+    "name": "춘원당한의약박물관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/26/2022426_image2_1.jpg",
+    "latitude": 37.5714382045468,
+    "longitude": 126.99020905241,
+    "grade": "RELAXED",
+    "concentration": 28.18,
+    "distanceKm": 1.133,
+    "relationScore": 0,
+    "score": 0.47217333333333333,
+    "summary": "2008년에 개관한 춘원당 한방 박물관은 한의학의 살아있는 역사와 전통을 느낄 수 있는 한방 복합문화공간으로 한의학에 관련된 다양한 유물을 수…",
+    "recommendReasons": [
+     {
+      "kind": "REST_DAY",
+      "text": "이 날은 쉬는 날이에요 (매주 일요일 / 법정공휴일).",
+      "evidence": {
+       "restDate": "매주 일요일 / 법정공휴일"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "70",
+       "origin": "명동"
+      }
+     },
+     {
+      "kind": "WEATHER_FIT",
+      "text": "비 예보(60%)인 날, 실내라 영향이 적어요.",
+      "evidence": {
+       "precipitation": "RAIN",
+       "rainProbability": "60",
+       "outdoorness": "INDOOR"
+      }
+     }
+    ],
+    "recommendReason": "이 날은 쉬는 날이에요 (매주 일요일 / 법정공휴일).",
+    "travelMinutes": 3,
+    "rating": null
+   },
+   {
+    "attractionId": 954,
+    "name": "서울 종로 낙지볶음 골목",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/46/3478546_image2_1.jpg",
+    "latitude": 37.5708982096,
+    "longitude": 126.9799374337,
+    "grade": "RELAXED",
+    "concentration": 30.32,
+    "distanceKm": 1.067,
+    "relationScore": 0,
+    "score": 0.46449333333333337,
+    "summary": "서울 종로 낙지볶음 골목은 청계천 청계광장 인근 무교동 사거리에서 종로구청으로 이어지는 일대를 말한다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "67",
+       "origin": "명동"
+      }
+     },
+     {
+      "kind": "WEATHER_FIT",
+      "text": "이 날 비 예보(60%)예요.",
+      "evidence": {
+       "precipitation": "RAIN",
+       "rainProbability": "60",
+       "outdoorness": "UNKNOWN"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "명동에서 차로 약 3분 예상돼요.",
+      "evidence": {
+       "minutes": "3"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 3,
+    "rating": null
+   },
+   {
+    "attractionId": 3738,
+    "name": "숭례문",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/39/2612539_image2_1.jpg",
+    "latitude": 37.5599855058,
+    "longitude": 126.9752992762,
+    "grade": "RELAXED",
+    "concentration": 44.62,
+    "distanceKm": 0.881,
+    "relationScore": 0,
+    "score": 0.40977333333333343,
+    "summary": "숭례문은 서울특별시 중구 남대문로 4가에 있는 조선 도성의 남쪽 정문으로 사대문 가운데 남쪽에 위치해 남대문으로도 불린다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "52",
+       "origin": "명동"
+      }
+     },
+     {
+      "kind": "WEATHER_FIT",
+      "text": "이 날 비 예보(60%)예요.",
+      "evidence": {
+       "precipitation": "RAIN",
+       "rainProbability": "60",
+       "outdoorness": "UNKNOWN"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "명동에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 3883,
+    "name": "우표박물관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/42/3569042_image2_1.jpg",
+    "latitude": 37.5615987284,
+    "longitude": 126.9821690444,
+    "grade": "RELAXED",
+    "concentration": 49.36,
+    "distanceKm": 0.25,
+    "relationScore": 0,
+    "score": 0.3992266666666666,
+    "summary": "우표박물관은 우표 문화를 장려하기 위해 우정사업본부에서 개관한 박물관이다.",
+    "recommendReasons": [
+     {
+      "kind": "WEATHER_FIT",
+      "text": "비 예보(60%)인 날, 실내라 영향이 적어요.",
+      "evidence": {
+       "precipitation": "RAIN",
+       "rainProbability": "60",
+       "outdoorness": "INDOOR"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "47",
+       "origin": "명동"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "명동에서 차로 약 1분 예상돼요.",
+      "evidence": {
+       "minutes": "1"
+      }
+     }
+    ],
+    "recommendReason": "비 예보(60%)인 날, 실내라 영향이 적어요.",
+    "travelMinutes": 1,
+    "rating": null
+   },
+   {
+    "attractionId": 3941,
+    "name": "정동1928 아트센터",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/85/3510485_image2_1.jpg",
+    "latitude": 37.56805116373988,
+    "longitude": 126.97385599202785,
+    "grade": "RELAXED",
+    "concentration": 47.49,
+    "distanceKm": 1.175,
+    "relationScore": 0,
+    "score": 0.39437333333333335,
+    "summary": "정동1928 아트센터는 100년 역사를 지닌 구세군 중앙회관 건물이 2019년에 새롭게 리뉴얼되어 전시, 공연, 세미나, 강연, 기업행사, 하…",
+    "recommendReasons": [
+     {
+      "kind": "WEATHER_FIT",
+      "text": "이 날 비 예보(60%)예요.",
+      "evidence": {
+       "precipitation": "RAIN",
+       "rainProbability": "60",
+       "outdoorness": "UNKNOWN"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "49",
+       "origin": "명동"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "명동에서 차로 약 3분 예상돼요.",
+      "evidence": {
+       "minutes": "3"
+      }
+     }
+    ],
+    "recommendReason": "이 날 비 예보(60%)예요.",
+    "travelMinutes": 3,
+    "rating": null
+   },
+   {
+    "attractionId": 876,
+    "name": "보신각터",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/23/3568323_image2_1.jpg",
+    "latitude": 37.5698150675,
+    "longitude": 126.9835760212,
+    "grade": "RELAXED",
+    "concentration": 53.35,
+    "distanceKm": 0.86,
+    "relationScore": 0,
+    "score": 0.3751333333333333,
+    "summary": "보신각터는 도성 안팎에 시간을 알리는 종루 보신각이 있던 곳이다.",
+    "recommendReasons": [
+     {
+      "kind": "WEATHER_FIT",
+      "text": "이 날 비 예보(60%)예요.",
+      "evidence": {
+       "precipitation": "RAIN",
+       "rainProbability": "60",
+       "outdoorness": "UNKNOWN"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "43",
+       "origin": "명동"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "명동에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     }
+    ],
+    "recommendReason": "이 날 비 예보(60%)예요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 4101,
+    "name": "한국의집",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/70/3332270_image2_1.jpg",
+    "latitude": 37.560223523595354,
+    "longitude": 126.9944982601229,
+    "grade": "RELAXED",
+    "concentration": 60.25,
+    "distanceKm": 0.872,
+    "relationScore": 0,
+    "score": 0.3473733333333333,
+    "summary": "한국의집은 1957년 국내·외 귀빈을 위한 영빈관으로서 한국의 전통문화와 아름다움을 소개하기 위하여 설립되었다.",
+    "recommendReasons": [
+     {
+      "kind": "REST_DAY",
+      "text": "이 날은 쉬는 날이에요 (매주 일요일~월요일 / 설·추석 연휴).",
+      "evidence": {
+       "restDate": "매주 일요일~월요일 / 설·추석 연휴"
+      }
+     },
+     {
+      "kind": "WEATHER_FIT",
+      "text": "이 날 비 예보(60%)예요.",
+      "evidence": {
+       "precipitation": "RAIN",
+       "rainProbability": "60",
+       "outdoorness": "UNKNOWN"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "35",
+       "origin": "명동"
+      }
+     }
+    ],
+    "recommendReason": "이 날은 쉬는 날이에요 (매주 일요일~월요일 / 설·추석 연휴).",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 875,
+    "name": "보성사터",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/61/3518361_image2_1.jpg",
+    "latitude": 37.5739784579,
+    "longitude": 126.9827509785,
+    "grade": "RELAXED",
+    "concentration": 58.85,
+    "distanceKm": 1.329,
+    "relationScore": 0,
+    "score": 0.34687999999999997,
+    "summary": "보성사는 1910년 말 창신사와 보성학원 소속 보성사 인쇄소를 합병하여 만든 천도교 계통의 인쇄소이다.",
+    "recommendReasons": [
+     {
+      "kind": "WEATHER_FIT",
+      "text": "이 날 비 예보(60%)예요.",
+      "evidence": {
+       "precipitation": "RAIN",
+       "rainProbability": "60",
+       "outdoorness": "UNKNOWN"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "37",
+       "origin": "명동"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "명동에서 차로 약 3분 예상돼요.",
+      "evidence": {
+       "minutes": "3"
+      }
+     }
+    ],
+    "recommendReason": "이 날 비 예보(60%)예요.",
+    "travelMinutes": 3,
+    "rating": null
+   },
+   {
+    "attractionId": 1214,
+    "name": "전태일기념관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/26/3412126_image2_1.JPG",
+    "latitude": 37.5684665212,
+    "longitude": 126.9893001966,
+    "grade": "NORMAL",
+    "concentration": 64.51,
+    "distanceKm": 0.801,
+    "relationScore": 0,
+    "score": 0.33128,
+    "summary": "전태일기념관은 서울 종로구 청계천로에 위치한 곳으로 노동운동가 청년 전태일의 일대기를 담아 그를 기념하기 위해 설립한 기념 공간이다.",
+    "recommendReasons": [
+     {
+      "kind": "WEATHER_FIT",
+      "text": "비 예보(60%)인 날, 실내라 영향이 적어요.",
+      "evidence": {
+       "precipitation": "RAIN",
+       "rainProbability": "60",
+       "outdoorness": "INDOOR"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "31",
+       "origin": "명동"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "명동에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     }
+    ],
+    "recommendReason": "비 예보(60%)인 날, 실내라 영향이 적어요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 3377,
+    "name": "남산골한옥마을",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/94/2932494_image2_1.bmp",
+    "latitude": 37.5597775194,
+    "longitude": 126.9932865315,
+    "grade": "NORMAL",
+    "concentration": 67.34,
+    "distanceKm": 0.784,
+    "relationScore": 0,
+    "score": 0.3201866666666667,
+    "summary": "1998년 조성된 남산골한옥마을은 남산 북측 옛 수도방위사령부 부지 총 79,934m²(24,180평)에 한옥 5동, 전통공예관, 천우각, 전…",
+    "recommendReasons": [
+     {
+      "kind": "WEATHER_FIT",
+      "text": "이 날 비 예보(60%)예요.",
+      "evidence": {
+       "precipitation": "RAIN",
+       "rainProbability": "60",
+       "outdoorness": "UNKNOWN"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "명동에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "28",
+       "origin": "명동"
+      }
+     }
+    ],
+    "recommendReason": "이 날 비 예보(60%)예요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 1004,
+    "name": "세종문화회관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/87/3082687_image2_1.png",
+    "latitude": 37.5720618985,
+    "longitude": 126.9763210635,
+    "grade": "NORMAL",
+    "concentration": 68.08,
+    "distanceKm": 1.337,
+    "relationScore": 0,
+    "score": 0.30985333333333337,
+    "summary": "세종문화회관은 서울특별시가 설립한 기관으로 서울의 대표적인 문화예술기관이다.",
+    "recommendReasons": [
+     {
+      "kind": "WEATHER_FIT",
+      "text": "이 날 비 예보(60%)예요.",
+      "evidence": {
+       "precipitation": "RAIN",
+       "rainProbability": "60",
+       "outdoorness": "UNKNOWN"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "명동에서 차로 약 3분 예상돼요.",
+      "evidence": {
+       "minutes": "3"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "27",
+       "origin": "명동"
+      }
+     }
+    ],
+    "recommendReason": "이 날 비 예보(60%)예요.",
+    "travelMinutes": 3,
+    "rating": null
+   },
+   {
+    "attractionId": 3370,
+    "name": "남대문시장",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/67/2612867_image2_1.jpg",
+    "latitude": 37.5592467455,
+    "longitude": 126.9776796357,
+    "grade": "NORMAL",
+    "concentration": 72.4,
+    "distanceKm": 0.715,
+    "relationScore": 0,
+    "score": 0.3008666666666666,
+    "summary": "생동감이 넘쳐나는 남대문시장은 하루 평균 30만 명이 방문한다.",
+    "recommendReasons": [
+     {
+      "kind": "WEATHER_FIT",
+      "text": "이 날 비 예보(60%)예요.",
+      "evidence": {
+       "precipitation": "RAIN",
+       "rainProbability": "60",
+       "outdoorness": "UNKNOWN"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "명동에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "22",
+       "origin": "명동"
+      }
+     }
+    ],
+    "recommendReason": "이 날 비 예보(60%)예요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 3378,
+    "name": "남산공원(서울)",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/56/3539656_image2_1.jpg",
+    "latitude": 37.5556326432,
+    "longitude": 126.9922175717,
+    "grade": "NORMAL",
+    "concentration": 74.98,
+    "distanceKm": 0.969,
+    "relationScore": 0,
+    "score": 0.28716,
+    "summary": "남산공원은 서울 도심에 위치하여 시민에게 맑은 공기를 제공하는 자연 휴식처이다.",
+    "recommendReasons": [
+     {
+      "kind": "WEATHER_FIT",
+      "text": "비 예보(60%)예요. 우산을 챙기세요.",
+      "evidence": {
+       "precipitation": "RAIN",
+       "rainProbability": "60",
+       "outdoorness": "OUTDOOR"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "명동에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "19",
+       "origin": "명동"
+      }
+     }
+    ],
+    "recommendReason": "비 예보(60%)예요. 우산을 챙기세요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 3337,
+    "name": "국립정동극장",
+    "imageUrl": null,
+    "latitude": 37.5659336365,
+    "longitude": 126.9728444346,
+    "grade": "NORMAL",
+    "concentration": 75.41,
+    "distanceKm": 1.144,
+    "relationScore": 0,
+    "score": 0.2831066666666667,
+    "summary": "국립정동극장은 한국 최초의 근대식 극장 ‘원각사’의 복원이라는 역사적 의미와 근현대 예술정신을 계승하여 1995년 ‘정동극장’ 명칭으로 개관했…",
+    "recommendReasons": [
+     {
+      "kind": "WEATHER_FIT",
+      "text": "비 예보(60%)인 날, 실내라 영향이 적어요.",
+      "evidence": {
+       "precipitation": "RAIN",
+       "rainProbability": "60",
+       "outdoorness": "INDOOR"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "명동에서 차로 약 3분 예상돼요.",
+      "evidence": {
+       "minutes": "3"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "19",
+       "origin": "명동"
+      }
+     }
+    ],
+    "recommendReason": "비 예보(60%)인 날, 실내라 영향이 적어요.",
+    "travelMinutes": 3,
+    "rating": null
+   },
+   {
+    "attractionId": 3981,
+    "name": "청계광장",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/55/3385055_image2_1.JPG",
+    "latitude": 37.569153924,
+    "longitude": 126.9775154812,
+    "grade": "NORMAL",
+    "concentration": 76.07,
+    "distanceKm": 1.016,
+    "relationScore": 0,
+    "score": 0.2821733333333334,
+    "summary": "서울 중구 청계천이 시작되는 세종로에 조성된 자연 친화적인 생태환경을 갖춘 광장이다.",
+    "recommendReasons": [
+     {
+      "kind": "WEATHER_FIT",
+      "text": "이 날 비 예보(60%)예요.",
+      "evidence": {
+       "precipitation": "RAIN",
+       "rainProbability": "60",
+       "outdoorness": "UNKNOWN"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "명동에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "18",
+       "origin": "명동"
+      }
+     }
+    ],
+    "recommendReason": "이 날 비 예보(60%)예요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 3349,
+    "name": "기억의 터(일본군 ‘위안부’)",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/67/3412267_image2_1.JPG",
+    "latitude": 37.5591063758,
+    "longitude": 126.9902649545,
+    "grade": "NORMAL",
+    "concentration": 77.96,
+    "distanceKm": 0.581,
+    "relationScore": 0,
+    "score": 0.2804133333333334,
+    "summary": "일본군 ‘위안부’ 기억의 터는 서울특별시 중구 예장동 남산에 있는 공간으로 2016년 개장했다.",
+    "recommendReasons": [
+     {
+      "kind": "WEATHER_FIT",
+      "text": "이 날 비 예보(60%)예요.",
+      "evidence": {
+       "precipitation": "RAIN",
+       "rainProbability": "60",
+       "outdoorness": "UNKNOWN"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "명동에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "16",
+       "origin": "명동"
+      }
+     }
+    ],
+    "recommendReason": "이 날 비 예보(60%)예요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 4091,
+    "name": "피크닉",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/11/3468011_image2_1.jpg",
+    "latitude": 37.5563238244,
+    "longitude": 126.9780483264,
+    "grade": "NORMAL",
+    "concentration": 77.06,
+    "distanceKm": 0.887,
+    "relationScore": 0,
+    "score": 0.2799333333333333,
+    "summary": "서울로와 남산을 잇는 언덕에 위치한 피크닉은 지하 1층, 지상 3층 규모의 전시관 겸 카페 등을 이용할 수 있는 복합문화공간이다.",
+    "recommendReasons": [
+     {
+      "kind": "WEATHER_FIT",
+      "text": "이 날 비 예보(60%)예요.",
+      "evidence": {
+       "precipitation": "RAIN",
+       "rainProbability": "60",
+       "outdoorness": "UNKNOWN"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "명동에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "17",
+       "origin": "명동"
+      }
+     }
+    ],
+    "recommendReason": "이 날 비 예보(60%)예요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 4097,
+    "name": "하이커 그라운드",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/95/4061495_image2_1.jpg",
+    "latitude": 37.5685272932,
+    "longitude": 126.9816266395,
+    "grade": "NORMAL",
+    "concentration": 78.72,
+    "distanceKm": 0.766,
+    "relationScore": 0,
+    "score": 0.27490666666666663,
+    "summary": "한국관광공사 서울센터에 개관한 ‘하이커 그라운드’는 K-POP 체험과 미디어 아트 관람을 동시에 할 수 있는 한국 관광 홍보관이다.",
+    "recommendReasons": [
+     {
+      "kind": "WEATHER_FIT",
+      "text": "이 날 비 예보(60%)예요.",
+      "evidence": {
+       "precipitation": "RAIN",
+       "rainProbability": "60",
+       "outdoorness": "UNKNOWN"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "명동에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "15",
+       "origin": "명동"
+      }
+     }
+    ],
+    "recommendReason": "이 날 비 예보(60%)예요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 1229,
+    "name": "조계사(서울)",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/13/3533413_image2_1.jpg",
+    "latitude": 37.5739260534,
+    "longitude": 126.982736852,
+    "grade": "NORMAL",
+    "concentration": 80.44,
+    "distanceKm": 1.323,
+    "relationScore": 0,
+    "score": 0.2606,
+    "summary": "조계사는 대한불교조계종의 총본산 사찰이다.",
+    "recommendReasons": [
+     {
+      "kind": "WEATHER_FIT",
+      "text": "이 날 비 예보(60%)예요.",
+      "evidence": {
+       "precipitation": "RAIN",
+       "rainProbability": "60",
+       "outdoorness": "UNKNOWN"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "명동에서 차로 약 3분 예상돼요.",
+      "evidence": {
+       "minutes": "3"
+      }
+     }
+    ],
+    "recommendReason": "이 날 비 예보(60%)예요.",
+    "travelMinutes": 3,
+    "rating": null
+   }
+  ],
+  "error": null
+ }
+}

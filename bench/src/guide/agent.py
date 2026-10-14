@@ -41,10 +41,11 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.types import Command, interrupt
 
 from guide import citations as cite
+from guide.forbidden import evidence_from, invented_order_reason, unchecked_crowding
 from guide.live import LiveClient
 from guide.lookups import DESCRIPTIONS, LIVE, Lookups, Outcome
 from guide.model import Model, ModelFailure
-from guide.scope import Scope, Turn, read_question
+from guide.scope import DATE_FROM_SCREEN, Scope, Turn, read_question
 from guide.sources import Places, Policy
 
 MAX_LOOKUP_ROUNDS = 3
@@ -122,8 +123,10 @@ class State(TypedDict, total=False):
     question: str
     today: str
     choice: int | None
+    context: dict
     turns: Annotated[list[dict], _recent]
     dates: list[str]
+    dates_from_screen: bool
     draft: dict | None
     repair: str | None
     repaired: bool
@@ -231,6 +234,7 @@ class Agent:
         turns: Sequence[Turn] = (),
         choice: int | None = None,
         resume: int | None = None,
+        context: dict | None = None,
     ) -> Iterator[tuple[str, dict]]:
         """Events of one question, as they happen.
 
@@ -250,6 +254,7 @@ class Agent:
                 "question": question,
                 "today": (today or self.live.today()).isoformat(),
                 "choice": choice,
+                "context": context or {},
                 "turns": [asdict(turn) for turn in turns],
                 "dates": [],
                 "rounds": 0,
@@ -290,10 +295,11 @@ class Agent:
         turns: Sequence[Turn] = (),
         choice: int | None = None,
         thread_id: str | None = None,
+        context: dict | None = None,
     ) -> Result:
         """`stream`, for callers that want a callback and the result."""
         for name, data in self.stream(
-            question, thread_id=thread_id, today=today, turns=turns, choice=choice
+            question, thread_id=thread_id, today=today, turns=turns, choice=choice, context=context
         ):
             emit(name, data)
         return self.result
@@ -341,6 +347,8 @@ class Agent:
             for turn in state.get("turns", [])
         )
 
+        context = state.get("context") or {}
+
         def read(choice: int | None) -> Scope:
             return read_question(
                 self._question,
@@ -348,6 +356,8 @@ class Agent:
                 gazetteer=self.places.gazetteer(),
                 turns=turns,
                 choice=choice,
+                context_place_id=context.get("place_id"),
+                context_date=date.fromisoformat(context["date"]) if context.get("date") else None,
             )
 
         scope = read(state.get("choice"))
@@ -379,6 +389,8 @@ class Agent:
 
         self.result.dates = scope.dates
         self._step("scope", Outcome("ok", {}, " · ".join((scope.summary, *scope.notes))))
+        if DATE_FROM_SCREEN in scope.notes:
+            self._lookups.screen_dates = scope.dates
         if scope.place_ids:
             found = [
                 place for place in map(self.places.detail, scope.place_ids) if place is not None
@@ -398,13 +410,25 @@ class Agent:
                     as_of=self.places.exported_at,
                 ),
             )
-        return {"dates": list(scope.dates), "route": "act"}
+        return {
+            "dates": list(scope.dates),
+            "dates_from_screen": DATE_FROM_SCREEN in scope.notes,
+            "route": "act",
+        }
 
     def _prompt(self, state: State, actions: tuple[str, ...]) -> str:
         fetched = self._lookups.fetched
         lines = [f"오늘: {self._today.isoformat()}", f"질문: {self._question}"]
         if state["dates"]:
-            lines.append("질문에서 읽은 날짜: " + ", ".join(state["dates"]))
+            # A date from the screen is not in the question's words. Labelled
+            # as read from the question, the model took it for a mistake and
+            # looked up today instead.
+            label = (
+                "방문자가 보고 있던 화면의 날짜"
+                if state.get("dates_from_screen")
+                else "질문에서 읽은 날짜"
+            )
+            lines.append(f"{label}: " + ", ".join(state["dates"]))
         lookups = [name for name in actions if name != "answer"]
         if lookups:
             lines += ["", "쓸 수 있는 조회:", *(f"- {DESCRIPTIONS[name]}" for name in lookups)]
@@ -505,6 +529,35 @@ class Agent:
                 # Two drafts, both unverifiable. Neither is shown.
                 return self._stop("failed", "invalid_citations")
             return {"repaired": True, "repair": verdict.reason, "draft": None, "route": "answer"}
+
+        # Two claims the citation gate cannot see, because the citations are
+        # real: crowding said of a place nobody looked up, and a reason for an
+        # order that no lookup gave. Both were seen on real data. They get the
+        # same treatment as a bad citation: one repair, then nothing is shown.
+        evidence = evidence_from(None, self.places.gazetteer(), fetched)
+        unchecked = unchecked_crowding(draft["answer"], evidence)
+        reasons = invented_order_reason(draft["answer"], evidence)
+        if unchecked or reasons:
+            problems = []
+            if unchecked:
+                problems.append(
+                    f"혼잡 예보를 조회하지 않은 {', '.join(dict.fromkeys(unchecked))}의 혼잡을 말했습니다. "
+                    "그 장소의 예보를 조회하지 않았다면 혼잡에 대해 말하지 마세요."
+                )
+            if reasons:
+                problems.append(
+                    f"목록 순서의 이유를 '{reasons[0]}'(이)라고 했지만 조회한 것에 그런 말이 없습니다. "
+                    "순서는 한적이 정했다고만 말하세요."
+                )
+            self.result.rejections.append(" ".join(problems))
+            if state["repaired"]:
+                return self._stop("failed", "invalid_citations")
+            return {
+                "repaired": True,
+                "repair": " ".join(problems),
+                "draft": None,
+                "route": "answer",
+            }
 
         # The passages carry place ids so the model can name a lookup's argument.
         # Told not to repeat them, it sometimes still does; they mean nothing to

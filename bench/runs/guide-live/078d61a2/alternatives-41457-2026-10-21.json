@@ -1,0 +1,1079 @@
+{
+ "status": 200,
+ "fetched_at": "2026-10-14T04:36:17.128166Z",
+ "body": {
+  "success": true,
+  "data": [
+   {
+    "attractionId": 29345,
+    "name": "꿈의동산",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/11/2932211_image2_1.jpg",
+    "latitude": 37.7845991836,
+    "longitude": 127.4833409749,
+    "grade": "RELAXED",
+    "concentration": 15.85,
+    "distanceKm": 3.924,
+    "relationScore": 0,
+    "score": 0.48428000000000004,
+    "summary": "꿈의동산은 청정 가평에 위치하여 최고의 녹지 공간 속에 어린이를 위한 다양한 놀이시설과 휴식공간을 갖추고 있다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "80",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 8분 예상돼요.",
+      "evidence": {
+       "minutes": "8"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 8,
+    "rating": null
+   },
+   {
+    "attractionId": 29666,
+    "name": "호명호수공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/25/3520225_image2_1.jpg",
+    "latitude": 37.7495,
+    "longitude": 127.4755,
+    "grade": "RELAXED",
+    "concentration": 16.02,
+    "distanceKm": 6.808,
+    "relationScore": 0,
+    "score": 0.4451466666666667,
+    "summary": "호명호수는 양수발전소의 인공저수지로, 국내 최초로 건설된 양수식 발전소의 상부저수지로 호명산의 수려한 산세와 더불어 넓은 저수지는 백두산 천지…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "80",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "WEATHER_FIT",
+      "text": "낮 19도 맑음, 걷기 좋은 날이에요.",
+      "evidence": {
+       "precipitation": "NONE",
+       "rainProbability": "10",
+       "outdoorness": "OUTDOOR"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 14분 예상돼요.",
+      "evidence": {
+       "minutes": "14"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 14,
+    "rating": null
+   },
+   {
+    "attractionId": 41433,
+    "name": "구곡폭포",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource_photo/08/3582808_image2_1.JPG",
+    "latitude": 37.7938780176,
+    "longitude": 127.6092783257,
+    "grade": "RELAXED",
+    "concentration": 14.27,
+    "distanceKm": 7.367,
+    "relationScore": 0,
+    "score": 0.44469333333333333,
+    "summary": "봉화산 근처에 위치한 구곡포포는 1981년 2월 13일 관광지로 지정되었으며 지정면적은 2,423㎢이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "82",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "WEATHER_FIT",
+      "text": "낮 18도 맑음, 걷기 좋은 날이에요.",
+      "evidence": {
+       "precipitation": "NONE",
+       "rainProbability": "10",
+       "outdoorness": "OUTDOOR"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 15분 예상돼요.",
+      "evidence": {
+       "minutes": "15"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 15,
+    "rating": null
+   },
+   {
+    "attractionId": 41634,
+    "name": "왕터리조트",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/01/2744001_image2_1.jpg",
+    "latitude": 37.7302541561,
+    "longitude": 127.5610521582,
+    "grade": "RELAXED",
+    "concentration": 13.69,
+    "distanceKm": 7.978,
+    "relationScore": 0,
+    "score": 0.4388666666666667,
+    "summary": "왕터 리조트는 강원도 춘천시 남면에 자리 잡고 있다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "83",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 16분 예상돼요.",
+      "evidence": {
+       "minutes": "16"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 16,
+    "rating": null
+   },
+   {
+    "attractionId": 29275,
+    "name": "자라섬 이화원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/77/3512877_image2_1.jpg",
+    "latitude": 37.818065,
+    "longitude": 127.519088,
+    "grade": "NORMAL",
+    "concentration": 35.77,
+    "distanceKm": 2.488,
+    "relationScore": 0,
+    "score": 0.42374666666666666,
+    "summary": "2009년에 개장한 이화원은 가평 자라섬 내에 위치해 있으며, 총면적 1만여 평 부지에 한국관과 열대관 두 곳으로 나뉘어 있다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "55",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 5분 예상돼요.",
+      "evidence": {
+       "minutes": "5"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 5,
+    "rating": null
+   },
+   {
+    "attractionId": 29559,
+    "name": "이방실장군묘",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/92/3520192_image2_1.jpg",
+    "latitude": 37.8106,
+    "longitude": 127.4868,
+    "grade": "NORMAL",
+    "concentration": 34.15,
+    "distanceKm": 3.754,
+    "relationScore": 0,
+    "score": 0.4133466666666667,
+    "summary": "고려 후기의 무신으로 홍건적을 격퇴하는 데 큰 공을 세운 이방실(李房實, 1298~1362) 장군의 무덤이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "57",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 8분 예상돼요.",
+      "evidence": {
+       "minutes": "8"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 8,
+    "rating": null
+   },
+   {
+    "attractionId": 41452,
+    "name": "김청풍부원군묘역",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/30/3382330_image2_1.JPG",
+    "latitude": 37.8365977831,
+    "longitude": 127.584621892,
+    "grade": "RELAXED",
+    "concentration": 30.93,
+    "distanceKm": 6.863,
+    "relationScore": 0,
+    "score": 0.38477333333333336,
+    "summary": "영의정 김육의 아들이며, 조선 18대 임금인 현종의 장인이자 현종의 아내 명성왕후의 아버지인 충익공 김우명의 묘역이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "61",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 14분 예상돼요.",
+      "evidence": {
+       "minutes": "14"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 14,
+    "rating": null
+   },
+   {
+    "attractionId": 29346,
+    "name": "남송미술관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/75/3503075_image2_1.jpg",
+    "latitude": 37.9044425179322,
+    "longitude": 127.472207861975,
+    "grade": "RELAXED",
+    "concentration": 11.99,
+    "distanceKm": 12.906,
+    "relationScore": 0,
+    "score": 0.37996,
+    "summary": "남송미술관은 가평 명지산과 연인산 청정 계곡 자락에 위치하여 전원의 아름다운 풍경과 다양한 문화 소재로의 예술을 감상할 수 종합 문화 예술 전…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "85",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 26분 예상돼요.",
+      "evidence": {
+       "minutes": "26"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 26,
+    "rating": null
+   },
+   {
+    "attractionId": 29285,
+    "name": "가평 연인산마을",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/82/3475682_image2_1.JPG",
+    "latitude": 37.9014296489,
+    "longitude": 127.4626644345,
+    "grade": "RELAXED",
+    "concentration": 12.66,
+    "distanceKm": 12.93,
+    "relationScore": 0,
+    "score": 0.37696,
+    "summary": "가평 연인산 마을은 물 맑고 공기 깨끗한 가평에 위치한 청정지역으로 명지산 깊은 산자락에 자리 잡고 있는 마을이며 백둔 계곡은 맑고 깨끗하여…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "84",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 26분 예상돼요.",
+      "evidence": {
+       "minutes": "26"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 26,
+    "rating": null
+   },
+   {
+    "attractionId": 29602,
+    "name": "칼봉산자연휴양림",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/93/3490493_image2_1.jpg",
+    "latitude": 37.836241691565945,
+    "longitude": 127.46533986168195,
+    "grade": "NORMAL",
+    "concentration": 34.78,
+    "distanceKm": 6.905,
+    "relationScore": 0,
+    "score": 0.3688133333333333,
+    "summary": "경기도 가평읍 경반안로에 위치한 칼봉산자연휴양림은 울창한 숲과 맑은 계곡이 어우러진 소규모 자연휴양림이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "57",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "WEATHER_FIT",
+      "text": "낮 19도 맑음, 걷기 좋은 날이에요.",
+      "evidence": {
+       "precipitation": "NONE",
+       "rainProbability": "10",
+       "outdoorness": "OUTDOOR"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 14분 예상돼요.",
+      "evidence": {
+       "minutes": "14"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 14,
+    "rating": null
+   },
+   {
+    "attractionId": 29367,
+    "name": "대원사(가평)",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/24/3510824_image2_1.jpg",
+    "latitude": 37.89465658920827,
+    "longitude": 127.50238800606652,
+    "grade": "RELAXED",
+    "concentration": 21.52,
+    "distanceKm": 11.127,
+    "relationScore": 0,
+    "score": 0.36556,
+    "summary": "명지산 대원사는 대한불교조계종 제25교구 본사인 봉선사 밀사로서 가평 지역의 대표적인 사찰 중 하나이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "73",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 22분 예상돼요.",
+      "evidence": {
+       "minutes": "22"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 22,
+    "rating": null
+   },
+   {
+    "attractionId": 29448,
+    "name": "쁘띠프랑스",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/15/3423715_image2_1.jpg",
+    "latitude": 37.715,
+    "longitude": 127.4906,
+    "grade": "RELAXED",
+    "concentration": 26.96,
+    "distanceKm": 9.543,
+    "relationScore": 0,
+    "score": 0.36491999999999997,
+    "summary": "청평댐에서 남이섬 방향으로 호숫가 길을 따라 10㎞쯤 가다 보면 왼쪽 언덕에 이국적 건물들이 옹기종기 모여 있는 걸 볼 수 있다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "66",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 19분 예상돼요.",
+      "evidence": {
+       "minutes": "19"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 19,
+    "rating": null
+   },
+   {
+    "attractionId": 29320,
+    "name": "가평향교",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/82/3520182_image2_1.jpg",
+    "latitude": 37.82996123545063,
+    "longitude": 127.50775905008138,
+    "grade": "NORMAL",
+    "concentration": 45.34,
+    "distanceKm": 4.058,
+    "relationScore": 0,
+    "score": 0.3645333333333334,
+    "summary": "가평향교는 1398년(태조 7년) 세워졌으며, 현재의 건물로는 대성전, 서무, 내삼문, 제실, 명륜당이 있어 전통 향교의 원형을 갖추고 있다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "43",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 8분 예상돼요.",
+      "evidence": {
+       "minutes": "8"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 8,
+    "rating": null
+   },
+   {
+    "attractionId": 29364,
+    "name": "대금산(가평)",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/33/4114233_image2_1.jpg",
+    "latitude": 37.8189,
+    "longitude": 127.421,
+    "grade": "RELAXED",
+    "concentration": 27.65,
+    "distanceKm": 9.518,
+    "relationScore": 0,
+    "score": 0.3624933333333334,
+    "summary": "대금산(大金山)은 가평군 가평읍 두밀리와 조종면 대보리에 걸쳐 있는 산이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "65",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 19분 예상돼요.",
+      "evidence": {
+       "minutes": "19"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 19,
+    "rating": null
+   },
+   {
+    "attractionId": 29566,
+    "name": "자연과별천문대",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/23/3357523_image2_1.jpg",
+    "latitude": 37.9129229664,
+    "longitude": 127.4741797124,
+    "grade": "RELAXED",
+    "concentration": 15.13,
+    "distanceKm": 13.732,
+    "relationScore": 0,
+    "score": 0.3563866666666667,
+    "summary": "자연과별 천문대는 가평군 북면 명지산 자락에 위치하여 별을 관측하기에 아주 좋은 최적의 장소에 자리 잡은 천문대로 도심과 1시간 반 거리에 위…",
+    "recommendReasons": [
+     {
+      "kind": "REST_DAY",
+      "text": "이 날은 쉬는 날이에요 (매주 월요일~수요일 ※ 계절마다 상이하므로 방문 전 문의 요망).",
+      "evidence": {
+       "restDate": "매주 월요일~수요일 ※ 계절마다 상이하므로 방문 전 문의 요망"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "81",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 27분 예상돼요.",
+      "evidence": {
+       "minutes": "27"
+      }
+     }
+    ],
+    "recommendReason": "이 날은 쉬는 날이에요 (매주 월요일~수요일 ※ 계절마다 상이하므로 방문 전 문의 요망).",
+    "travelMinutes": 27,
+    "rating": null
+   },
+   {
+    "attractionId": 43882,
+    "name": "모곡밤벌유원지",
+    "imageUrl": null,
+    "latitude": 37.70313878277858,
+    "longitude": 127.6010269393401,
+    "grade": "RELAXED",
+    "concentration": 22.87,
+    "distanceKm": 12.302,
+    "relationScore": 0,
+    "score": 0.3444933333333334,
+    "summary": "홍천강 유원지로 널리 알려진 밤벌유원지는 여름철 피서객들이 많이 찾는 곳이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "71",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "WEATHER_FIT",
+      "text": "낮 18도 맑음, 걷기 좋은 날이에요.",
+      "evidence": {
+       "precipitation": "NONE",
+       "rainProbability": "10",
+       "outdoorness": "OUTDOOR"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 24분 예상돼요.",
+      "evidence": {
+       "minutes": "24"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 24,
+    "rating": null
+   },
+   {
+    "attractionId": 29456,
+    "name": "산장관광지",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/90/3077290_image2_1.jpg",
+    "latitude": 37.7542985927,
+    "longitude": 127.4106484793,
+    "grade": "RELAXED",
+    "concentration": 26.84,
+    "distanceKm": 11.12,
+    "relationScore": 0,
+    "score": 0.34437333333333336,
+    "summary": "산장관광지는 면적 약 12만㎡의 규모에 굽이굽이 이어지는 맑은 내천과 우리나라에서 자생하는 야생화가 100여 가지 이상이 계절별로 피어나는 공…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "66",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 22분 예상돼요.",
+      "evidence": {
+       "minutes": "22"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 22,
+    "rating": null
+   },
+   {
+    "attractionId": 41553,
+    "name": "상원사(춘천)",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/36/565436_image2_1.jpg",
+    "latitude": 37.8410622798329,
+    "longitude": 127.669590488313,
+    "grade": "RELAXED",
+    "concentration": 18.92,
+    "distanceKm": 13.603,
+    "relationScore": 0,
+    "score": 0.3429466666666667,
+    "summary": "강원도 춘천시 서면 삼악산에 있는 삼국시대 신라 시기에 창건된 것으로 전하는 사찰대한불교조계종 제3교구 본사 신흥사의 말사이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "76",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 27분 예상돼요.",
+      "evidence": {
+       "minutes": "27"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 27,
+    "rating": null
+   },
+   {
+    "attractionId": 29357,
+    "name": "녹수계곡",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/94/3563394_image2_1.jpg",
+    "latitude": 37.7809535441,
+    "longitude": 127.3953185445,
+    "grade": "RELAXED",
+    "concentration": 26.07,
+    "distanceKm": 11.565,
+    "relationScore": 0,
+    "score": 0.34152000000000005,
+    "summary": "경기 가평군 상면 덕현리에 위치한 녹수계곡은 아름다운 청우산(619m)과 맑고 깨끗한 조종천을 끼고 흐르는, 맑고 깨끗한 물과 높이 자란 울창…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "67",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "WEATHER_FIT",
+      "text": "낮 19도 맑음, 걷기 좋은 날이에요.",
+      "evidence": {
+       "precipitation": "NONE",
+       "rainProbability": "10",
+       "outdoorness": "OUTDOOR"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 23분 예상돼요.",
+      "evidence": {
+       "minutes": "23"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 23,
+    "rating": null
+   },
+   {
+    "attractionId": 41619,
+    "name": "엘리시안 강촌",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/87/3335587_image2_1.jpg",
+    "latitude": 37.8283126847,
+    "longitude": 127.5872746724,
+    "grade": "NORMAL",
+    "concentration": 42.99,
+    "distanceKm": 6.493,
+    "relationScore": 0,
+    "score": 0.3414666666666667,
+    "summary": "엘리시안 강촌은 스키장, 골프장, 콘도 등을 결합한 사계절 종합 리조트 단지이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "46",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 13분 예상돼요.",
+      "evidence": {
+       "minutes": "13"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 13,
+    "rating": null
+   },
+   {
+    "attractionId": 29570,
+    "name": "잣향기푸른마을",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/70/4066570_image2_1.jpg",
+    "latitude": 37.7735259290142,
+    "longitude": 127.363319576835,
+    "grade": "RELAXED",
+    "concentration": 17.7,
+    "distanceKm": 14.474,
+    "relationScore": 0,
+    "score": 0.3362133333333333,
+    "summary": "잣향기푸른마을은 경기도 가평군 상면 행현리에 위치한 으뜸촌 마을로, 축령산과 서리산 자락의 아름다운 자연환경 속에서 다양한 체험과 휴식을 즐길…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "78",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 29분 예상돼요.",
+      "evidence": {
+       "minutes": "29"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 29,
+    "rating": null
+   },
+   {
+    "attractionId": 29684,
+    "name": "K-26",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/84/3357584_image2_1.jpg",
+    "latitude": 37.7030731565,
+    "longitude": 127.5163236873,
+    "grade": "RELAXED",
+    "concentration": 32.97,
+    "distanceKm": 10.394,
+    "relationScore": 0,
+    "score": 0.32953333333333334,
+    "summary": "경기 가평군에 위치한 k-26 실전잠수풀은 아시아 최고의 깊이와 최고의 기술로 사시사철 프리다이빙을 즐길 수 있는 실내 잠수풀이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "59",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 21분 예상돼요.",
+      "evidence": {
+       "minutes": "21"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 21,
+    "rating": null
+   },
+   {
+    "attractionId": 41405,
+    "name": "강아지숲",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/84/3082584_image2_1.jpg",
+    "latitude": 37.7364332304084,
+    "longitude": 127.66201933849,
+    "grade": "RELAXED",
+    "concentration": 22.47,
+    "distanceKm": 13.722,
+    "relationScore": 0,
+    "score": 0.32716,
+    "summary": "국내 최대 규모의 반려견 테마파크.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "72",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 27분 예상돼요.",
+      "evidence": {
+       "minutes": "27"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 27,
+    "rating": null
+   },
+   {
+    "attractionId": 29591,
+    "name": "청평자연휴양림",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/70/3077270_image2_1.jpg",
+    "latitude": 37.7131449494,
+    "longitude": 127.4054751473,
+    "grade": "RELAXED",
+    "concentration": 24.56,
+    "distanceKm": 14.027,
+    "relationScore": 0,
+    "score": 0.31473333333333336,
+    "summary": "경기도 가평군에 위치한 청평 자연휴양림은 깨끗한 약수를 마시며 여유롭게 산책도 할 수 있고 자연 속에서 호젓하고 여유로운 한때를 보내기에 좋은…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "69",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "WEATHER_FIT",
+      "text": "낮 19도 맑음, 걷기 좋은 날이에요.",
+      "evidence": {
+       "precipitation": "NONE",
+       "rainProbability": "10",
+       "outdoorness": "OUTDOOR"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 28분 예상돼요.",
+      "evidence": {
+       "minutes": "28"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 28,
+    "rating": null
+   },
+   {
+    "attractionId": 29483,
+    "name": "수덕산",
+    "imageUrl": null,
+    "latitude": 37.9168954333,
+    "longitude": 127.512406664,
+    "grade": "RELAXED",
+    "concentration": 27.64,
+    "distanceKm": 13.463,
+    "relationScore": 0,
+    "score": 0.3099333333333334,
+    "summary": "수덕산(794m)은 가평군 북면 도대리, 소법리, 제령리에 걸쳐져 있는 산이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "65",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 27분 예상돼요.",
+      "evidence": {
+       "minutes": "27"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 27,
+    "rating": null
+   },
+   {
+    "attractionId": 41551,
+    "name": "삼악산(춘천)",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/09/2742909_image2_1.jpeg",
+    "latitude": 37.8257698724,
+    "longitude": 127.6593320769,
+    "grade": "NORMAL",
+    "concentration": 36.76,
+    "distanceKm": 12.207,
+    "relationScore": 0,
+    "score": 0.2902,
+    "summary": "의암호와 북한강을 끼고 솟은 삼악산은 춘천을 대표하는 풍광 좋은 산 중 하나다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "54",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 24분 예상돼요.",
+      "evidence": {
+       "minutes": "24"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 24,
+    "rating": null
+   },
+   {
+    "attractionId": 29519,
+    "name": "연인산도립공원",
+    "imageUrl": null,
+    "latitude": 37.8984505104,
+    "longitude": 127.4145220085,
+    "grade": "RELAXED",
+    "concentration": 27.76,
+    "distanceKm": 14.968,
+    "relationScore": 0,
+    "score": 0.2893866666666667,
+    "summary": "연인산 도립공원은 경기도 가평군 가평읍 승안리, 조종면 마일리, 북면 백둔리 3개에 읍면에 걸쳐져 있는 자연공원이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "65",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "WEATHER_FIT",
+      "text": "낮 19도 맑음, 걷기 좋은 날이에요.",
+      "evidence": {
+       "precipitation": "NONE",
+       "rainProbability": "10",
+       "outdoorness": "OUTDOOR"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 30분 예상돼요.",
+      "evidence": {
+       "minutes": "30"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 30,
+    "rating": null
+   },
+   {
+    "attractionId": 41419,
+    "name": "강촌유원지",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/64/3533864_image2_1.jpg",
+    "latitude": 37.8157038798,
+    "longitude": 127.6325486998,
+    "grade": "NORMAL",
+    "concentration": 46.64,
+    "distanceKm": 9.651,
+    "relationScore": 0,
+    "score": 0.28476000000000007,
+    "summary": "강촌유원지는 강원특별자치도 춘천시 남산면과 서면에 걸쳐 있는 대표적인 유원지이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "42",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "WEATHER_FIT",
+      "text": "낮 18도 맑음, 걷기 좋은 날이에요.",
+      "evidence": {
+       "precipitation": "NONE",
+       "rainProbability": "10",
+       "outdoorness": "OUTDOOR"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 19분 예상돼요.",
+      "evidence": {
+       "minutes": "19"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 19,
+    "rating": null
+   },
+   {
+    "attractionId": 41659,
+    "name": "의암호스카이워크",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/13/2748613_image2_1.jpg",
+    "latitude": 37.8471622126,
+    "longitude": 127.6799656772,
+    "grade": "RELAXED",
+    "concentration": 29.82,
+    "distanceKm": 14.702,
+    "relationScore": 0,
+    "score": 0.28469333333333335,
+    "summary": "소양강스카이워크와 함께 춘천의 양대 스카이워크로, 의암호반의 김유정문인비와 춘천송암스포츠타운 사이 의암호자전거길에 위치한다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "63",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 29분 예상돼요.",
+      "evidence": {
+       "minutes": "29"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 29,
+    "rating": null
+   },
+   {
+    "attractionId": 29594,
+    "name": "청평호반",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/89/3019089_image2_1.jpg",
+    "latitude": 37.6813137501,
+    "longitude": 127.4715728354,
+    "grade": "NORMAL",
+    "concentration": 41.78,
+    "distanceKm": 13.633,
+    "relationScore": 0,
+    "score": 0.2511066666666667,
+    "summary": "청평호는 북한강을 막아 만든 청평댐이 건설되면서 만들어진 인공 호수이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "48",
+       "origin": "남이섬"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "남이섬에서 차로 약 27분 예상돼요.",
+      "evidence": {
+       "minutes": "27"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 27,
+    "rating": null
+   }
+  ],
+  "error": null
+ }
+}

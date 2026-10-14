@@ -16,6 +16,7 @@ import os
 from collections.abc import Iterator
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
+from datetime import date
 from pathlib import Path
 from typing import Any, Protocol
 
@@ -157,6 +158,19 @@ def create_app(
         choice = body.get("choice")
         if choice is not None and (not isinstance(choice, int) or isinstance(choice, bool)):
             return _error(400, "invalid_request", detail="choice must be a place id or null")
+        # What the calling screen already knows. Hanjeok's place page sends the
+        # place and day on it, so the agent need not find them in the words.
+        context = body.get("context") or {}
+        if not isinstance(context, dict) or set(context) - {"place_id", "date"}:
+            return _error(400, "invalid_request", detail="context may hold place_id and date only")
+        place_id = context.get("place_id")
+        if place_id is not None and (not isinstance(place_id, int) or isinstance(place_id, bool)):
+            return _error(400, "invalid_request", detail="context.place_id must be a place id")
+        if context.get("date") is not None:
+            try:
+                date.fromisoformat(context["date"])
+            except (TypeError, ValueError):
+                return _error(400, "invalid_request", detail="context.date must be YYYY-MM-DD")
 
         current, snapshot = ready()
         if snapshot is None:
@@ -201,7 +215,9 @@ def create_app(
             try:
                 # The visit id is the graph's thread: its earlier questions and
                 # any paused question are found under it.
-                for name, data in agent().stream(question, thread_id=visit, resume=choice):
+                for name, data in agent().stream(
+                    question, thread_id=visit, resume=choice, context=context
+                ):
                     if ended:
                         continue
                     ended = name in TERMINAL
