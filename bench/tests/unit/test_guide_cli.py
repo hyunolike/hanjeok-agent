@@ -91,3 +91,16 @@ def test_mcp_is_a_command_and_defaults_to_stdio():
     status = main(["mcp"], run_mcp=lambda args: seen.append(args.transport) or 0)
 
     assert (status, seen) == (0, ["stdio"])
+
+
+def test_embed_only_fills_the_cache_and_never_starts_a_refresh(capsys):
+    started = []
+
+    status = main(
+        ["refresh", "--export", str(FIXTURES / "hanjeok-export"), "--embed-only"],
+        run_refresh=lambda export, cache: started.append("refresh"),
+        run_embed=lambda export, cache: {"embedded": len(export.places), "reused": 0},
+    )
+
+    assert status == 0 and started == []
+    assert json.loads(capsys.readouterr().out)["embedded"] == 41

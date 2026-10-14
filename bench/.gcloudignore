@@ -1,0 +1,29 @@
+# What `gcloud builds submit` uploads. Deny by default, same list as
+# .dockerignore: neither a local .env nor the virtualenv leaves this machine.
+*
+!pyproject.toml
+!uv.lock
+!.python-version
+!README.md
+!Dockerfile
+!.dockerignore
+!cloudbuild.yaml
+!src/
+!src/**
+!deploy/
+!deploy/**
+!reports/
+!reports/guide/
+!reports/guide/**
+!tests/
+!tests/fixtures/
+!tests/fixtures/hanjeok-export/
+!tests/fixtures/hanjeok-export/**
+!tests/fixtures/hanjeok-live/
+!tests/fixtures/hanjeok-live/**
+# Opt-in data for a build with a real export; see the Dockerfile.
+!.cache/
+!.cache/exports/
+!.cache/exports/**
+!.cache/guide-embeddings.sqlite
+**/__pycache__/

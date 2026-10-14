@@ -33,6 +33,11 @@ def parser() -> argparse.ArgumentParser:
     refresh.add_argument(
         "--check", action="store_true", help="verify the export and stop; touch nothing"
     )
+    refresh.add_argument(
+        "--embed-only",
+        action="store_true",
+        help="fill the embedding cache and stop; needs the model but no database",
+    )
     evaluate = commands.add_parser(
         "eval", help="run a question set under both strategies and store a report"
     )
@@ -153,6 +158,24 @@ def _mcp_from_env(args) -> int:
     return 0
 
 
+def _embed_from_env(export, cache: Path) -> dict:
+    """Compute embeddings into the cache file and nothing else.
+
+    A container image is built where there is no database. Doing the slow part
+    here means the image carries the vectors, and starting the container only
+    has to write them into the graph.
+    """
+    from bench.embeddings import MODEL, REVISION, LocalEmbedder
+    from guide.graph.refresh import EmbeddingCache, _embed
+
+    store = EmbeddingCache(cache, f"{MODEL}@{REVISION}")
+    try:
+        _, embedded, reused = _embed(export, LocalEmbedder(), store)
+    finally:
+        store.close()
+    return {"embedded": embedded, "reused": reused, "cache": str(cache)}
+
+
 def _summary(report: dict) -> dict:
     return {
         "ok": True,
@@ -195,11 +218,13 @@ def main(
     run_eval=_eval_from_env,
     run_rescore=None,
     run_mcp=None,
+    run_embed=None,
     store=None,
 ) -> int:
     args = parser().parse_args(argv)
     run_rescore = run_rescore or _rescore_from_env
     run_mcp = run_mcp or _mcp_from_env
+    run_embed = run_embed or _embed_from_env
     try:
         if args.command == "eval":
             print(json.dumps(_summary(run_eval(args)), ensure_ascii=False))
@@ -230,6 +255,9 @@ def main(
                     ensure_ascii=False,
                 )
             )
+            return 0
+        if args.embed_only:
+            print(json.dumps({"ok": True, **run_embed(export, args.cache)}, ensure_ascii=False))
             return 0
         result = run_refresh(export, args.cache)
     except FileNotFoundError as error:
