@@ -72,6 +72,22 @@ NEXT_PUBLIC_GUIDE_BASE_URL=http://localhost:8090 pnpm dev
 
 The same screens now show live steps, and the replay notice is gone.
 
+## Another program asks the guide (MCP)
+
+```bash
+uv run guide mcp                      # stdio; point an MCP client at this command
+```
+
+Expected: the client lists `ask_guide`, `find_places`, `place_neighbourhood`
+and `guide_status`. An ambiguous place name comes back as `outcome: ask_user`
+with candidates; calling `ask_guide` again with that `visit_id` and a `choice`
+continues it.
+
+Optional: `GUIDE_CHECKPOINT_DB=.cache/visits.sqlite` keeps visits across a
+restart. `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY` and `LANGFUSE_HOST` turn
+tracing on; a trace holds the question and every prompt, and leaves this
+machine.
+
 ## Failed refresh keeps the previous copy (Story 4)
 
 ```bash

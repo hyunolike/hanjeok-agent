@@ -66,6 +66,8 @@ A second, larger piece sits beside the course explainer: an agent a visitor can 
 
 The service is Python (FastAPI, LangGraph, Neo4j) under [`bench/src/guide/`](bench/src/guide/). The model picks from seven fixed lookups whose inputs are validated in code; it never writes a query and never decides an order. Hanjeok's place data arrives only as an exported file, and the agent calls two read-only Hanjeok endpoints for date-bound facts.
 
+Three parts of that are libraries rather than this repository's own code: LangGraph's stream, `interrupt` and checkpointer carry a question's steps, the "which place do you mean?" pause, and a visit's earlier questions; neo4j-graphrag's `VectorCypherRetriever` does the similarity search; and `uv run guide mcp` serves four read-only tools over the Model Context Protocol, which is how the Hanjeok backend is meant to call this later. Langfuse tracing is wired and off unless its keys are set.
+
 **What has been measured so far is small.** The data is a synthetic export of forty invented places, and the question set has twelve questions. Two runs against the hosted model on 2026-10-14, without the RAGAS judge:
 
 | | Text similarity only | Plus relatedness links |

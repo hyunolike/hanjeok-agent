@@ -86,8 +86,10 @@
 
 | 영역 | 사용한 것 |
 | --- | --- |
-| 서비스 | Python 3.13, FastAPI, LangGraph, LangChain |
-| 그래프와 검색 | Neo4j 5.26, 장소 벡터 인덱스(multilingual-e5-large, 1024차원), 연관 관계 `RELATED_TO` |
+| 서비스 | Python 3.13, FastAPI, LangGraph(스트리밍, `interrupt`, 체크포인터), LangChain |
+| 그래프와 검색 | Neo4j 5.26, neo4j-graphrag의 `VectorCypherRetriever`, 장소 벡터 인덱스(multilingual-e5-large, 1024차원), 연관 관계 `RELATED_TO` |
+| 다른 프로그램과의 연결 | MCP 서버(읽기 전용 도구 네 개). 나중에 한적 백엔드가 이 입구로 호출 |
+| 추적 | Langfuse. 키를 넣었을 때만 켜짐 |
 | 정책 문서 | Obsidian 볼트로 관리하는 위키를 그래프에 적재 |
 | 모델 | NVIDIA NIM의 nemotron, 구조화 출력 |
 | 평가 | RAGAS 4개 지표, 레코드 id 기준 정밀도와 재현율, 규칙 기반 금지 행동 건수 |

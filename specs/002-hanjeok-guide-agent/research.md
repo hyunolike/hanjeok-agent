@@ -322,3 +322,31 @@ Hanjeok's manifest has a single `mascotMaster` object and review checklist
 item 3 is written for the sun guide's face geometry. How a second character is
 registered there is a Hanjeok-side change and belongs to attaching the agent
 to the product, which is out of scope.
+
+## 20. Libraries taken up on 2026-10-14
+
+**Decision**: At the author's direction, four things that were hand-written or
+absent are now libraries. None of them changes a boundary in this document.
+
+| Was | Now | What it did not change |
+| --- | --- | --- |
+| A callback, a thread and a queue to stream steps | LangGraph's custom stream (`get_stream_writer`) | The events and their order |
+| Re-sending the question with a `choice`, checked against a set kept beside the visit | LangGraph `interrupt`, resumed with `Command(resume=…)` | The HTTP request still carries `question`, `visit_id`, `choice`; a choice must still be one that was offered |
+| A visit's earlier questions in a dict | The visit's thread in a LangGraph checkpointer; in memory, or SQLite with `GUIDE_CHECKPOINT_DB` | Answer text is still not kept; a visit still expires after thirty minutes and its thread is deleted then |
+| A hand-written vector-index query with a twenty-fold over-fetch | neo4j-graphrag `VectorCypherRetriever` with `filters` | The Cypher fragment is fixed text. The library's text-to-Cypher retriever is not used: the model does not write queries (Principle VI) |
+| No way in for another program | An MCP server (`guide mcp`) with four read-only tools | Refresh and evaluation are still not exposed |
+| Run records read by script | Langfuse tracing through LangChain callbacks, off unless its keys are set | Nothing is sent anywhere by default |
+
+**Found on the way**: neo4j-graphrag 1.21.0 cannot run a filtered
+`VectorCypherRetriever`. The base class stores the index's embedding property
+as `_embedding_node_property`; `VectorCypherRetriever` reads
+`_node_embedding_property`, which stays `None`, and the query builder refuses
+with "Vector Search with filters requires: …". `guide.graph.read.cypher_retriever`
+copies the value across. This is a candidate for the upstream issue the course
+asks for; whether a newer release already fixes it was not checked.
+
+**Not verified**: Langfuse against a real Langfuse server (the wiring is tested
+with a plain LangChain callback handler); the MCP server's streamable-HTTP
+transport (stdio was called with a real MCP client); whether Spring AI's MCP
+client connects to it.
+
