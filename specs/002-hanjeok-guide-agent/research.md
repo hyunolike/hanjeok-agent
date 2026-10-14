@@ -342,8 +342,14 @@ absent are now libraries. None of them changes a boundary in this document.
 as `_embedding_node_property`; `VectorCypherRetriever` reads
 `_node_embedding_property`, which stays `None`, and the query builder refuses
 with "Vector Search with filters requires: …". `guide.graph.read.cypher_retriever`
-copies the value across. This is a candidate for the upstream issue the course
-asks for; whether a newer release already fixes it was not checked.
+copies the value across.
+
+Checked on 2026-10-14: this is real and already known. It is upstream issue
+#540 (opened 2026-06-07, labelled `bug`, unassigned), a fix is proposed in pull
+request #541 (open, unmerged), and the mismatch is still on `main`; the newest
+release is 1.22.0. So it is **not** a new issue this project can file. What
+remains open to contribute is confirmation that it reproduces on 1.21.0 with
+Neo4j 5.26, where the Cypher 25 `SEARCH` path is not taken.
 
 **Not verified**: Langfuse against a real Langfuse server (the wiring is tested
 with a plain LangChain callback handler); the MCP server's streamable-HTTP

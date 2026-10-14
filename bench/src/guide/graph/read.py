@@ -139,8 +139,10 @@ def cypher_retriever(
     `_embedding_node_property` but `VectorCypherRetriever` looks for it under
     `_node_embedding_property`, which therefore stays `None`, and any filtered
     search stops with "Vector Search with filters requires: …". The plain
-    `VectorRetriever` uses the first name and works. Until that is fixed
-    upstream the value is copied across here; `test_guide_graph.py` fails if a
+    `VectorRetriever` uses the first name and works. Reported upstream as
+    neo4j/neo4j-graphrag-python#540 with a fix proposed in #541, both still
+    open on 2026-10-14 and the mismatch still on `main`. Until that is merged
+    the value is copied across here; `test_guide_graph.py` fails if a
     later version makes this unnecessary in a way that breaks it.
     """
     retriever = VectorCypherRetriever(
