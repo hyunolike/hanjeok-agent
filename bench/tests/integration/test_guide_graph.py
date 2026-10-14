@@ -232,3 +232,18 @@ def test_events_can_be_asked_for_one_day(driver, corpus, embedder):
     ]
     assert read.events(driver, generation, 101, on="2026-10-26") == []
     assert read.events(driver, generation, 101, on="2026-10-15") == []
+
+
+def test_policy_search_returns_wiki_pages_once_each_when_the_wiki_is_loaded(driver, embedder):
+    from guide.sources import WIKI_CORPUS, GraphPolicy
+
+    with session(driver) as s:
+        loaded = s.run("MATCH (c:Corpus {name: $n}) RETURN c", n=WIKI_CORPUS).single()
+    if loaded is None:
+        pytest.skip("the wiki corpus is not loaded in this database")
+
+    pages = GraphPolicy(driver, embedder).search("alternative scoring", limit=3)
+
+    assert 1 <= len(pages) <= 3
+    assert len({page.path for page in pages}) == len(pages)
+    assert all(page.path.endswith(".md") and page.text for page in pages)

@@ -13,13 +13,17 @@ from typing import Protocol
 
 from neo4j import Driver
 
-from bench.graph.query import vector_search
+from bench.graph.store import VECTOR_INDEX as WIKI_INDEX
 from bench.graph.store import session
 from guide.graph import read
 from guide.graph.read import EventRow, PlaceRow, RelatedRow
 from guide.scope import Candidate
 
 WIKI_CORPUS = "wiki"
+_CHUNK_TO_PAGE = (
+    "WITH node, score MATCH (d:Doc {corpus: node.corpus})-[:HAS_CHUNK]->(node) "
+    "RETURN d.path AS path, score ORDER BY score DESC, path"
+)
 PAGE_CHARS = 1800
 
 
@@ -106,8 +110,14 @@ class GraphPolicy:
         return Page(path, row["title"], "\n\n".join(row["texts"])[:PAGE_CHARS])
 
     def search(self, text, *, limit):
-        passages = vector_search(
-            self._driver, self._corpus, self._embedder.embed_query(text), k=limit * 3
+        # The wiki's chunks, nearest first, through the same retriever the
+        # places use. The fragment maps each chunk to its page; a page is
+        # returned once, at the rank of its best chunk.
+        retriever = read.cypher_retriever(self._driver, WIKI_INDEX, _CHUNK_TO_PAGE)
+        raw = retriever.get_search_results(
+            query_vector=self._embedder.embed_query(text),
+            top_k=limit * 3,
+            filters={"corpus": self._corpus},
         )
-        paths = list(dict.fromkeys(passage.doc for passage in passages))[:limit]
+        paths = list(dict.fromkeys(record["path"] for record in raw.records))[:limit]
         return [page for page in (self.page(path) for path in paths) if page is not None]

@@ -15,6 +15,7 @@ import json
 from dataclasses import dataclass
 
 from neo4j import Driver
+from neo4j_graphrag.retrievers import VectorCypherRetriever
 
 from bench.graph.store import session
 from guide.graph.schema import PLACE_INDEX
@@ -129,6 +130,30 @@ def match_name(driver: Driver, generation: str, name: str) -> list[PlaceRow]:
     return [_place(row) for row in rows]
 
 
+def cypher_retriever(
+    driver: Driver, index_name: str, retrieval_query: str
+) -> VectorCypherRetriever:
+    """A `VectorCypherRetriever` that can take `filters`.
+
+    neo4j-graphrag 1.21.0 reads the index's embedding property into
+    `_embedding_node_property` but `VectorCypherRetriever` looks for it under
+    `_node_embedding_property`, which therefore stays `None`, and any filtered
+    search stops with "Vector Search with filters requires: …". The plain
+    `VectorRetriever` uses the first name and works. Until that is fixed
+    upstream the value is copied across here; `test_guide_graph.py` fails if a
+    later version makes this unnecessary in a way that breaks it.
+    """
+    retriever = VectorCypherRetriever(
+        driver, index_name=index_name, retrieval_query=retrieval_query
+    )
+    if getattr(retriever, "_node_embedding_property", None) is None:
+        retriever._node_embedding_property = retriever._embedding_node_property
+    return retriever
+
+
+_SEARCH_RETURN = f"WITH node AS p, score RETURN score, {_PLACE} ORDER BY score DESC, p.id"
+
+
 def search(
     driver: Driver,
     generation: str,
@@ -137,31 +162,24 @@ def search(
     limit: int = 5,
     region_code: str | None = None,
 ) -> list[tuple[PlaceRow, float]]:
-    """Nearest places by text similarity, through the vector index.
+    """Nearest places by text similarity, through neo4j-graphrag's retriever.
 
-    The index holds every generation and every region, and Neo4j 5 cannot
-    filter inside it. So more candidates are asked for than are needed and the
-    filter runs on what comes back. During a refresh two generations are in the
-    index; the over-fetch is what keeps the active one's results complete.
+    `VectorCypherRetriever` runs the similarity search and then a Cypher
+    fragment over each hit. The fragment here is fixed text that only shapes
+    the columns; the model has no part in it.
+
+    Generation and region go in as the retriever's `filters`, which it applies
+    **before** ranking. That matters during a refresh, when two generations of
+    every place exist: filtering after ranking would let the other generation
+    crowd the top results, and an earlier version of this function had to ask
+    the index for twenty times what it needed to get round that.
     """
-    with session(driver) as s:
-        rows = s.run(
-            f"""
-            CALL db.index.vector.queryNodes($index, $candidates, $vector) YIELD node AS p, score
-            WHERE p.generation = $generation
-              AND ($region_code IS NULL OR p.region_code = $region_code)
-            RETURN score, {_PLACE}
-            ORDER BY score DESC, p.id
-            LIMIT $limit
-            """,
-            index=PLACE_INDEX,
-            candidates=max(50, limit * 20),
-            vector=vector,
-            generation=generation,
-            region_code=region_code,
-            limit=limit,
-        ).data()
-    return [(_place(row), row["score"]) for row in rows]
+    filters = {"generation": generation}
+    if region_code is not None:
+        filters["region_code"] = region_code
+    retriever = cypher_retriever(driver, PLACE_INDEX, _SEARCH_RETURN)
+    raw = retriever.get_search_results(query_vector=list(vector), top_k=limit, filters=filters)
+    return [(_place(record), record["score"]) for record in raw.records]
 
 
 def detail(driver: Driver, generation: str, place_id: int) -> PlaceRow | None:
