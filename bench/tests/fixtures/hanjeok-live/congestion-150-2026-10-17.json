@@ -1,0 +1,18 @@
+{
+ "status": 200,
+ "fetched_at": "2026-10-13T14:20:05Z",
+ "body": {
+  "success": true,
+  "data": {
+   "hasCongestionData": false,
+   "attraction": {
+    "id": 150,
+    "name": "새벽 등대",
+    "imageUrl": null
+   },
+   "message": "이 장소는 집중률 예측 데이터가 제공되지 않아요",
+   "nearbyDiagnosable": []
+  },
+  "error": null
+ }
+}

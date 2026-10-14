@@ -34,8 +34,8 @@ export function ExplanationBlock({ courseUuid, lang }: { courseUuid: string; lan
   if (state.status === 'loading') {
     return (
       <section aria-busy="true" className="space-y-2">
-        <div className="h-4 w-40 animate-pulse rounded bg-black/10 dark:bg-white/10" />
-        <div className="h-4 w-full animate-pulse rounded bg-black/10 dark:bg-white/10" />
+        <div className="h-4 w-40 animate-pulse rounded-control bg-surface-subtle" />
+        <div className="h-4 w-full animate-pulse rounded-control bg-surface-subtle" />
       </section>
     )
   }
@@ -47,20 +47,20 @@ export function ExplanationBlock({ courseUuid, lang }: { courseUuid: string; lan
   const { explanation, citations, model } = state.result.value
 
   return (
-    <section className="space-y-4 rounded-lg border border-black/10 p-5 dark:border-white/10">
+    <section className="space-y-4 rounded-card border border-line-normal p-5">
       {/* 이 라벨은 블록 안에 있다. 페이지에 두면 설명이 실패해 블록이 사라졌을 때
           가리킬 문단 없이 홀로 남는다. 모델 이름도 여기로 올렸다 — 아래 구석의 흐린
           글씨였을 때는 누가 이 문장을 썼는지가 화면에서 읽히지 않았다. */}
-      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-black/10 pb-3 text-xs dark:border-white/10">
-        <span className="opacity-60">{t.llmBadge}</span>
-        <span className="font-mono opacity-50">{model}</span>
+      <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-line-normal pb-3 text-caption">
+        <span className="text-ink-muted">{t.llmBadge}</span>
+        <span className="font-mono text-ink-muted">{model}</span>
       </div>
 
       <p className="whitespace-pre-wrap leading-relaxed">{explanation}</p>
 
       <div className="space-y-2">
         {/* 칩만 있을 때는 누를 이유가 화면에 없었다. 무엇이고 왜 누르는지 한 줄 적는다. */}
-        <p className="text-xs leading-relaxed opacity-60">{t.citationsLabel(citations.length)}</p>
+        <p className="text-caption leading-relaxed text-ink-muted">{t.citationsLabel(citations.length)}</p>
         <div className="flex flex-wrap items-center gap-2">
           {/* 칩은 citations 배열에서만 나온다 — 모델이 실제로 인용한 것만 뜬다. */}
           {citations.map((path) => (
@@ -68,7 +68,7 @@ export function ExplanationBlock({ courseUuid, lang }: { courseUuid: string; lan
               key={path}
               type="button"
               onClick={() => setOpenPath(path)}
-              className="rounded-full border border-black/15 px-3 py-1 font-mono text-xs hover:bg-black/5 dark:border-white/20 dark:hover:bg-white/10"
+              className="rounded-chip border border-line-strong px-3 py-1 font-mono text-caption hover:bg-surface-subtle"
             >
               {path}
             </button>

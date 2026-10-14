@@ -21,3 +21,6 @@ bench/**/__pycache__/
 bench/.pytest_cache/
 bench/.ruff_cache/
 .kotlin/
+
+# 임베딩 캐시. 내보내기 파일에서 다시 만들 수 있다.
+bench/.cache/

@@ -31,20 +31,34 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
 
   return (
     <div className="space-y-12">
+      {/* 코스가 없어도 물어볼 수 있다. 이 화면에서 가장 먼저 해 볼 수 있는 일이라 맨 위에 둔다. */}
+      <Link
+        href={`/${lang}/ask`}
+        className="flex items-center justify-between gap-4 rounded-card border border-line-normal bg-surface-panel px-5 py-4 hover:border-brand-primary"
+      >
+        <span className="flex flex-col gap-1">
+          <span className="text-title-2 text-ink-title">{t.guide.title}</span>
+          <span className="text-caption text-ink-muted">{t.guide.lead}</span>
+        </span>
+        <span aria-hidden="true" className="text-title-2 text-brand-primary">
+          →
+        </span>
+      </Link>
+
       <section className="space-y-4">
-        <h1 className="text-2xl font-semibold leading-snug sm:text-3xl">{t.home.ruleTitle}</h1>
-        <p className="text-sm leading-relaxed opacity-80">{t.home.ruleBody}</p>
-        <p className="border-l-2 border-black/20 pl-4 text-sm leading-relaxed dark:border-white/25">
+        <h1 className="text-title-1 font-semibold leading-snug sm:text-display">{t.home.ruleTitle}</h1>
+        <p className="text-body leading-relaxed text-ink-body">{t.home.ruleBody}</p>
+        <p className="border-l-2 border-line-strong pl-4 text-body leading-relaxed">
           {t.home.ruleConsequence}
         </p>
-        <p className="text-sm leading-relaxed opacity-70">{t.home.silentFailure}</p>
+        <p className="text-body leading-relaxed text-ink-muted">{t.home.silentFailure}</p>
         {t.home.generatedLanguageNote && (
-          <p className="text-xs opacity-60">{t.home.generatedLanguageNote}</p>
+          <p className="text-caption text-ink-muted">{t.home.generatedLanguageNote}</p>
         )}
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-sm font-semibold opacity-70">{t.home.metricsTitle}</h2>
+        <h2 className="text-body font-semibold text-ink-muted">{t.home.metricsTitle}</h2>
         <ul className="grid gap-3 sm:grid-cols-3">
           <Metric
             value={
@@ -79,13 +93,13 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
       </section>
 
       <section className="space-y-4">
-        <h2 className="text-lg font-semibold">{t.home.demoTitle}</h2>
-        <p className="text-sm leading-relaxed opacity-80">{t.home.demoIntro}</p>
+        <h2 className="text-title-2 font-semibold">{t.home.demoTitle}</h2>
+        <p className="text-body leading-relaxed text-ink-body">{t.home.demoIntro}</p>
 
         {DEMO_COURSES.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-black/20 p-6 text-sm dark:border-white/20">
+          <div className="rounded-card border border-dashed border-line-strong p-6 text-body">
             <p className="font-medium">{t.home.emptyTitle}</p>
-            <p className="mt-2 opacity-70">{t.home.emptyBody(missing.join(', '))}</p>
+            <p className="mt-2 text-ink-muted">{t.home.emptyBody(missing.join(', '))}</p>
           </div>
         ) : (
           <ul className="space-y-3">
@@ -93,13 +107,13 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
               <li key={course.uuid}>
                 <Link
                   href={`/${lang}/course/${course.uuid}`}
-                  className="block rounded-lg border border-black/10 p-4 hover:bg-black/5 dark:border-white/10 dark:hover:bg-white/5"
+                  className="block rounded-card border border-line-normal p-4 hover:bg-surface-subtle"
                 >
                   <span className="font-medium">{course.label}</span>
                   {/* 여기에 `kind` 원문이 있었다. 고른 사람에게만 뜻이 있는 식별자라
                       처음 보는 사람에게는 읽을 것이 없었다. */}
-                  <span className="mt-1.5 block text-xs leading-relaxed opacity-65">
-                    <span className="opacity-70">{t.home.provesLabel}</span>{' '}
+                  <span className="mt-1.5 block text-caption leading-relaxed text-ink-muted">
+                    <span className="text-ink-muted">{t.home.provesLabel}</span>{' '}
                     {DEMO_PROVES[lang][course.kind]}
                   </span>
                 </Link>
@@ -110,14 +124,14 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
       </section>
 
       {/* 담당자에게는 노이즈이고 개발자에게만 필요하다. 접어 두되 없애지는 않는다. */}
-      <section className="border-t border-black/10 pt-6 dark:border-white/10">
+      <section className="border-t border-line-normal pt-6">
         <details className="space-y-3">
-          <summary className="cursor-pointer text-sm opacity-70 hover:opacity-100">
+          <summary className="cursor-pointer text-body text-ink-muted hover:text-ink-title">
             {t.home.openAnySummary}
           </summary>
           <div className="mt-3 space-y-3">
             <OpenAnyCourse lang={lang} />
-            <p className="text-xs leading-relaxed opacity-60">{t.home.openAnyNote}</p>
+            <p className="text-caption leading-relaxed text-ink-muted">{t.home.openAnyNote}</p>
           </div>
         </details>
       </section>
@@ -151,10 +165,10 @@ function Metric({
   )
 
   return (
-    <li className="flex flex-col gap-2 rounded-lg border border-black/10 p-4 dark:border-white/10">
-      <span className="text-sm font-semibold">{value}</span>
-      <span className="flex-1 text-xs leading-relaxed opacity-70">{label}</span>
-      <span className="text-xs">{link}</span>
+    <li className="flex flex-col gap-2 rounded-card border border-line-normal p-4">
+      <span className="text-body font-semibold">{value}</span>
+      <span className="flex-1 text-caption leading-relaxed text-ink-muted">{label}</span>
+      <span className="text-caption">{link}</span>
     </li>
   )
 }

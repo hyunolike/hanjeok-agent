@@ -53,6 +53,39 @@
 
 <br/>
 
+## 🧭 The guide agent (in progress)
+
+A second, larger piece sits beside the course explainer: an agent a visitor can ask in their own words, such as "이번 토요일 경복궁 대신 조용한 곳 있어?". It reads the question by rule, looks things up in visible steps, and answers citing only what it fetched for that question. Specification: [`specs/002-hanjeok-guide-agent/`](specs/002-hanjeok-guide-agent/). Product summary in Korean: [`docs/prd/hanjeok-guide-agent.md`](docs/prd/hanjeok-guide-agent.md).
+
+| Screen | What it shows |
+| --- | --- |
+| `/ko/ask` | The question, each step as it happens, the verified answer, citations of two kinds (Hanjeok record, policy document), and the path the answer took |
+| `/ko/graph` | A place and the places Hanjeok links to it, in Hanjeok's rank order |
+| `/ko/eval` | The evaluation report: every score with the number of questions behind it |
+| `/ko/design` | The design values, components and the six poses of the guide character |
+
+The service is Python (FastAPI, LangGraph, Neo4j) under [`bench/src/guide/`](bench/src/guide/). The model picks from seven fixed lookups whose inputs are validated in code; it never writes a query and never decides an order. Hanjeok's place data arrives only as an exported file, and the agent calls two read-only Hanjeok endpoints for date-bound facts.
+
+Three parts of that are libraries rather than this repository's own code: LangGraph's stream, `interrupt` and checkpointer carry a question's steps, the "which place do you mean?" pause, and a visit's earlier questions; neo4j-graphrag's `VectorCypherRetriever` does the similarity search; and `uv run guide mcp` serves four read-only tools over the Model Context Protocol, which is how the Hanjeok backend is meant to call this later. Langfuse tracing is wired and off unless its keys are set.
+
+**What has been measured so far is small.** The data is a synthetic export of forty invented places, and the question set has twelve questions. Two runs against the hosted model on 2026-10-14, without the RAGAS judge:
+
+| | Text similarity only | Plus relatedness links |
+| --- | --- | --- |
+| Share of needed records fetched, run 1 | 0.75 (10 questions) | 0.92 (10 questions) |
+| Share of needed records fetched, run 2 | 0.75 (10 questions) | 0.82 (10 questions) |
+| Unanswerable questions declined | 2 of 2 | 2 of 2 |
+
+Run 2 is the published one; in it one linked-places question failed under the second strategy because the model's reply hit its output limit. The run records are in [`bench/runs/`](bench/runs/) and the reports in [`bench/reports/guide/`](bench/reports/guide/). Not done yet: real Hanjeok data, the sixty-question set, RAGAS scores, deployment.
+
+```bash
+cd bench
+docker compose up -d
+uv sync
+uv run guide refresh --export tests/fixtures/hanjeok-export
+GUIDE_LIVE_MODE=replay uv run uvicorn guide.api:app --port 8090   # needs NVIDIA_API_KEY to answer
+```
+
 ## Hanjeok Wiki and Agent overview
 
 ![Hanjeok collection/build, production and separate local experiment architecture](docs/images/hanjeok-wiki-agent-overview.en.png)

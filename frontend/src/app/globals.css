@@ -1,18 +1,300 @@
+/* 두 글꼴 모두 unicode-range 로 쪼갠 subset 을 self-host 한다 — 실제로 쓰인 글자
+   범위만 내려받고, 외부 CDN 에 기대지 않는다. Pretendard 는 본문과 UI,
+   Wanted Sans 는 큰 제목 전용이다. 한적 본 서비스와 같은 조합이다. */
+@import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
+@import 'wanted-sans/fonts/webfonts/variable/split/WantedSansVariable.css';
 @import 'tailwindcss';
 
+/*
+ * 디자인 값은 두 층이다.
+ *
+ *   1. 원색 단계(--raw-*) — 색 그 자체. 컴포넌트는 이것을 쓰지 않는다.
+ *   2. 용도 이름(--surface-*, --ink-* …) — 컴포넌트가 쓰는 유일한 이름.
+ *
+ * 층을 나누는 이유는 다크 모드다. 용도 이름이 가리키는 원색만 바꾸면 모든
+ * 화면이 따라오고, 컴포넌트에는 `dark:` 가 한 번도 등장하지 않는다. 손으로 짝을
+ * 맞추던 `dark:` 22곳이 그렇게 어긋났다 — 등급 색에는 다크 값이 아예 없었다.
+ *
+ * 색 값은 한적 본 서비스(`shared/config/design-system.ts`)에서 가져왔다. 이
+ * 데모는 나중에 한적에 붙을 것이라 처음부터 같은 색으로 그린다.
+ *
+ * `design-values.test.ts` 가 이 파일을 읽어 글자와 바탕의 명암비를 잰다. 값을
+ * 바꾸면 그 테스트가 4.5:1 을 지키는지 말해 준다.
+ */
 :root {
-  --background: #fbfaf8;
-  --foreground: #1c1b19;
+  /* 원색 */
+  --raw-navy-950: #0c111b;
+  --raw-navy-900: #121a2a;
+  --raw-navy-800: #172033;
+  --raw-navy-700: #212d45;
+  --raw-navy-600: #2e3c58;
+  --raw-navy-500: #3d4a5c;
+  --raw-slate-500: #616c80;
+  --raw-slate-400: #7d879b;
+  --raw-slate-300: #a3aec0;
+  --raw-slate-200: #c6d0de;
+  --raw-slate-150: #e1e7ef;
+  --raw-slate-100: #eef2f7;
+  --raw-slate-50: #f2f5f8;
+  --raw-white: #ffffff;
+  --raw-warm-white: #fffdf8;
+
+  --raw-blue-600: #1f4fd6;
+  --raw-blue-500: #245cff;
+  --raw-blue-300: #8fb0ff;
+  --raw-blue-200: #b7ccff;
+  --raw-blue-50: #eef4ff;
+  --raw-blue-950: #16264f;
+
+  --raw-coral-600: #d6392c;
+  --raw-coral-500: #f04b3e;
+  --raw-coral-300: #ff9a92;
+  --raw-green-600: #009c75;
+  --raw-green-300: #6fdcb9;
+  --raw-sky-500: #00a6d6;
+  --raw-sky-300: #6fd3f0;
+  --raw-gold-500: #f2b84b;
+
+  /* 등급. fill 은 한적과 같은 값이고 text 는 soft 위에서 읽히도록 어둡다. */
+  --raw-relaxed-fill: #a3e4c5;
+  --raw-relaxed-text: #087052;
+  --raw-relaxed-soft: #e6fcf5;
+  --raw-normal-fill: #f7cb3f;
+  --raw-normal-text: #8a6100;
+  --raw-normal-soft: #fff9db;
+  --raw-crowded-fill: #ec8b1f;
+  --raw-crowded-text: #b54708;
+  --raw-crowded-soft: #fff4e6;
+  --raw-very-crowded-fill: #c0342a;
+  --raw-very-crowded-text: #c92a2a;
+  --raw-very-crowded-soft: #fff0f0;
+
+  /* 용도 — 밝은 화면 */
+  --surface-canvas: var(--raw-slate-100);
+  --surface-panel: var(--raw-white);
+  --surface-subtle: var(--raw-slate-50);
+  --surface-inverse: var(--raw-navy-800);
+  --surface-scrim: rgb(12 17 27 / 0.45);
+
+  --ink-title: var(--raw-navy-800);
+  --ink-body: var(--raw-navy-500);
+  --ink-muted: var(--raw-slate-500);
+  --ink-disabled: var(--raw-slate-400);
+  --ink-inverse: var(--raw-white);
+
+  --line-normal: var(--raw-slate-150);
+  --line-strong: var(--raw-slate-200);
+
+  --brand-primary: var(--raw-blue-500);
+  --brand-pressed: var(--raw-blue-600);
+  --brand-soft: var(--raw-blue-50);
+  --brand-on-primary: var(--raw-white);
+  --accent-route: var(--raw-coral-500);
+  --accent-quiet: var(--raw-green-600);
+  --accent-sky: var(--raw-sky-500);
+  --accent-gold: var(--raw-gold-500);
+
+  --grade-relaxed-soft: var(--raw-relaxed-soft);
+  --grade-relaxed-text: var(--raw-relaxed-text);
+  --grade-relaxed-fill: var(--raw-relaxed-fill);
+  --grade-normal-soft: var(--raw-normal-soft);
+  --grade-normal-text: var(--raw-normal-text);
+  --grade-normal-fill: var(--raw-normal-fill);
+  --grade-crowded-soft: var(--raw-crowded-soft);
+  --grade-crowded-text: var(--raw-crowded-text);
+  --grade-crowded-fill: var(--raw-crowded-fill);
+  --grade-very-crowded-soft: var(--raw-very-crowded-soft);
+  --grade-very-crowded-text: var(--raw-very-crowded-text);
+  --grade-very-crowded-fill: var(--raw-very-crowded-fill);
+  /* "데이터 없음"은 등급이 아니다. 등급 색을 빌려 쓰면 "여유"로 읽힌다. */
+  --grade-unknown-soft: var(--raw-slate-50);
+  --grade-unknown-text: var(--raw-slate-500);
+
+  --status-info-soft: var(--raw-blue-50);
+  --status-info-text: #1a44b8;
+  --status-success-soft: var(--raw-relaxed-soft);
+  --status-success-text: var(--raw-relaxed-text);
+  --status-warning-soft: var(--raw-crowded-soft);
+  --status-warning-text: var(--raw-crowded-text);
+  --status-danger-soft: var(--raw-very-crowded-soft);
+  --status-danger-text: #b42318;
+
+  /* 인용 두 종류. 레코드는 사실, 정책 문서는 이유 — 화면에서 섞여 보이면 안 된다. */
+  --cite-record-soft: #e3f6fb;
+  --cite-record-text: #00607d;
+  --cite-policy-soft: #fdf3dc;
+  --cite-policy-text: #7a5200;
+
+  /* 기존 화면이 아직 이 두 이름을 쓴다. */
+  --background: var(--surface-canvas);
+  --foreground: var(--ink-title);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #16151a;
-    --foreground: #ece9e4;
+    --surface-canvas: var(--raw-navy-950);
+    --surface-panel: var(--raw-navy-800);
+    --surface-subtle: var(--raw-navy-900);
+    --surface-inverse: var(--raw-slate-100);
+    --surface-scrim: rgb(0 0 0 / 0.6);
+
+    --ink-title: #f2f5fa;
+    --ink-body: #cbd4e1;
+    --ink-muted: var(--raw-slate-300);
+    --ink-disabled: var(--raw-slate-400);
+    --ink-inverse: var(--raw-navy-800);
+
+    --line-normal: var(--raw-navy-600);
+    --line-strong: #4a5a78;
+
+    --brand-primary: var(--raw-blue-300);
+    --brand-pressed: var(--raw-blue-200);
+    --brand-soft: var(--raw-blue-950);
+    --brand-on-primary: var(--raw-navy-950);
+    --accent-route: var(--raw-coral-300);
+    --accent-quiet: var(--raw-green-300);
+    --accent-sky: var(--raw-sky-300);
+
+    --grade-relaxed-soft: #0f3a2e;
+    --grade-relaxed-text: #8ee6c4;
+    --grade-normal-soft: #3a2f0a;
+    --grade-normal-text: #f7cb3f;
+    --grade-crowded-soft: #45270a;
+    --grade-crowded-text: #ffb46b;
+    --grade-very-crowded-soft: #4a1512;
+    --grade-very-crowded-text: #ffa29b;
+    --grade-unknown-soft: var(--raw-navy-900);
+    --grade-unknown-text: var(--raw-slate-300);
+
+    --status-info-soft: var(--raw-blue-950);
+    --status-info-text: var(--raw-blue-200);
+    --status-success-soft: #0f3a2e;
+    --status-success-text: #8ee6c4;
+    --status-warning-soft: #45270a;
+    --status-warning-text: #ffb46b;
+    --status-danger-soft: #4a1512;
+    --status-danger-text: #ffa29b;
+
+    --cite-record-soft: #0b3542;
+    --cite-record-text: #8adcf2;
+    --cite-policy-soft: #3d2e08;
+    --cite-policy-text: #f5cf7a;
   }
 }
 
+/* 용도 이름을 Tailwind 유틸리티로 내보낸다: bg-surface-panel, text-ink-body … */
+@theme inline {
+  --color-surface-canvas: var(--surface-canvas);
+  --color-surface-panel: var(--surface-panel);
+  --color-surface-subtle: var(--surface-subtle);
+  --color-surface-inverse: var(--surface-inverse);
+  --color-surface-scrim: var(--surface-scrim);
+
+  --color-ink-title: var(--ink-title);
+  --color-ink-body: var(--ink-body);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-disabled: var(--ink-disabled);
+  --color-ink-inverse: var(--ink-inverse);
+
+  --color-line-normal: var(--line-normal);
+  --color-line-strong: var(--line-strong);
+
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-pressed: var(--brand-pressed);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-on-primary: var(--brand-on-primary);
+  --color-accent-route: var(--accent-route);
+  --color-accent-quiet: var(--accent-quiet);
+  --color-accent-sky: var(--accent-sky);
+  --color-accent-gold: var(--accent-gold);
+
+  --color-grade-relaxed-soft: var(--grade-relaxed-soft);
+  --color-grade-relaxed-text: var(--grade-relaxed-text);
+  --color-grade-relaxed-fill: var(--grade-relaxed-fill);
+  --color-grade-normal-soft: var(--grade-normal-soft);
+  --color-grade-normal-text: var(--grade-normal-text);
+  --color-grade-normal-fill: var(--grade-normal-fill);
+  --color-grade-crowded-soft: var(--grade-crowded-soft);
+  --color-grade-crowded-text: var(--grade-crowded-text);
+  --color-grade-crowded-fill: var(--grade-crowded-fill);
+  --color-grade-very-crowded-soft: var(--grade-very-crowded-soft);
+  --color-grade-very-crowded-text: var(--grade-very-crowded-text);
+  --color-grade-very-crowded-fill: var(--grade-very-crowded-fill);
+  --color-grade-unknown-soft: var(--grade-unknown-soft);
+  --color-grade-unknown-text: var(--grade-unknown-text);
+
+  --color-status-info-soft: var(--status-info-soft);
+  --color-status-info-text: var(--status-info-text);
+  --color-status-success-soft: var(--status-success-soft);
+  --color-status-success-text: var(--status-success-text);
+  --color-status-warning-soft: var(--status-warning-soft);
+  --color-status-warning-text: var(--status-warning-text);
+  --color-status-danger-soft: var(--status-danger-soft);
+  --color-status-danger-text: var(--status-danger-text);
+
+  --color-cite-record-soft: var(--cite-record-soft);
+  --color-cite-record-text: var(--cite-record-text);
+  --color-cite-policy-soft: var(--cite-policy-soft);
+  --color-cite-policy-text: var(--cite-policy-text);
+
+  --font-sans:
+    'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo',
+    'Noto Sans KR', sans-serif;
+  --font-display: 'Wanted Sans Variable', 'Pretendard Variable', system-ui, sans-serif;
+
+  /* 글자 크기는 역할로 부른다. 줄 높이와 굵기가 함께 따라온다. */
+  --text-display: 2rem;
+  --text-display--line-height: 2.5rem;
+  --text-display--font-weight: 700;
+  --text-display--letter-spacing: -0.02em;
+  --text-title-1: 1.5rem;
+  --text-title-1--line-height: 2rem;
+  --text-title-1--font-weight: 700;
+  --text-title-1--letter-spacing: -0.01em;
+  --text-title-2: 1.125rem;
+  --text-title-2--line-height: 1.625rem;
+  --text-title-2--font-weight: 600;
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.5rem;
+  --text-body-strong: 0.9375rem;
+  --text-body-strong--line-height: 1.5rem;
+  --text-body-strong--font-weight: 600;
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.125rem;
+
+  --radius-card: 1rem;
+  --radius-control: 0.75rem;
+  --radius-chip: 9999px;
+
+  /* 손가락이 닿는 높이. 44 가 최소다. */
+  --spacing-control-sm: 2.75rem;
+  --spacing-control-md: 3rem;
+  --spacing-control-lg: 3.5rem;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--surface-canvas);
+  color: var(--ink-title);
+  font-family: var(--font-sans);
+}
+
+/* 움직임은 완성된 정지 포즈에서 시작한다. 줄여 달라고 한 사람에게는 그 포즈만 남긴다. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@keyframes guide-hover {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
 }

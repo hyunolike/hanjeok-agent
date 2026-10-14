@@ -43,42 +43,42 @@ export function EvidenceBrowser({
   return (
     <div className="space-y-6">
       <header className="space-y-2">
-        <h1 className="text-2xl font-semibold">{t.title}</h1>
-        <p className="text-sm opacity-70">
+        <h1 className="text-title-1 font-semibold">{t.title}</h1>
+        <p className="text-body text-ink-muted">
           {t.count(entries.length, systemTextBytes.toLocaleString())}
         </p>
-        <p className="text-xs opacity-55">{t.sumNote(totalBytes.toLocaleString())}</p>
+        <p className="text-caption text-ink-muted">{t.sumNote(totalBytes.toLocaleString())}</p>
         {/* 개수와 바이트만 있을 때는 이 화면이 왜 있는지가 없었다. 숫자가 무엇을
             뒷받침하는 숫자인지 적어야 세어 볼 이유가 생긴다. */}
-        <p className="max-w-prose text-sm leading-relaxed opacity-65">{t.why}</p>
+        <p className="max-w-prose text-body leading-relaxed text-ink-muted">{t.why}</p>
       </header>
 
       <div className="grid gap-6 md:grid-cols-[minmax(0,16rem)_1fr]">
-        <ul className="space-y-1 text-sm">
+        <ul className="space-y-1 text-body">
           {entries.map((entry) => (
             <li key={entry.path}>
               <button
                 type="button"
                 onClick={() => setSelected(entry.path)}
                 aria-current={entry.path === selected}
-                className={`w-full rounded px-2 py-1.5 text-left font-mono text-xs hover:bg-black/5 dark:hover:bg-white/10 ${
-                  entry.path === selected ? 'bg-black/5 dark:bg-white/10' : ''
+                className={`w-full rounded-control px-2 py-1.5 text-left font-mono text-caption hover:bg-surface-subtle ${
+                  entry.path === selected ? 'bg-surface-subtle' : ''
                 }`}
               >
                 <span className="block truncate">{entry.path}</span>
-                <span className="opacity-50">{entry.bytes.toLocaleString()}B</span>
+                <span className="text-ink-muted">{entry.bytes.toLocaleString()}B</span>
               </button>
             </li>
           ))}
         </ul>
 
         <div className="min-w-0">
-          {body === null && <p className="text-sm opacity-60">{t.loading}</p>}
+          {body === null && <p className="text-body text-ink-muted">{t.loading}</p>}
           {body?.kind === 'unavailable' && (
-            <p className="text-sm opacity-70">{t.loadFailBody(body.status)}</p>
+            <p className="text-body text-ink-muted">{t.loadFailBody(body.status)}</p>
           )}
           {body?.kind === 'loaded' && (
-            <pre className="overflow-x-auto whitespace-pre-wrap font-mono text-xs leading-relaxed">
+            <pre className="overflow-x-auto whitespace-pre-wrap font-mono text-caption leading-relaxed">
               {body.value}
             </pre>
           )}

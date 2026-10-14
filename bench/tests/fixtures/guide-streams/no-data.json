@@ -1,0 +1,128 @@
+[
+ {
+  "event": "visit",
+  "data": {
+   "visit_id": "recorded-visit",
+   "as_of": {
+    "export": "2026-10-13T02:00:00Z",
+    "wiki": "2026-10-10T09:00:00Z"
+   }
+  }
+ },
+ {
+  "event": "step",
+  "data": {
+   "index": 0,
+   "kind": "scope",
+   "inputs": {},
+   "status": "ok",
+   "reason": null,
+   "produced": [],
+   "summary": "장소 1곳, 날짜 2026-10-17(으)로 읽었습니다",
+   "as_of": null
+  }
+ },
+ {
+  "event": "step",
+  "data": {
+   "index": 1,
+   "kind": "resolve",
+   "inputs": {
+    "names": [
+     "새벽 등대"
+    ]
+   },
+   "status": "ok",
+   "reason": null,
+   "produced": [
+    "hanjeok:place/150"
+   ],
+   "summary": "새벽 등대 (한빛시 솔내구)",
+   "as_of": "2026-10-13T02:00:00Z"
+  }
+ },
+ {
+  "event": "step",
+  "data": {
+   "index": 2,
+   "kind": "congestion",
+   "inputs": {
+    "place_id": 150,
+    "date": "2026-10-17"
+   },
+   "status": "running",
+   "reason": null,
+   "produced": [],
+   "summary": "",
+   "as_of": null
+  }
+ },
+ {
+  "event": "step",
+  "data": {
+   "index": 2,
+   "kind": "congestion",
+   "inputs": {
+    "place_id": 150,
+    "date": "2026-10-17"
+   },
+   "status": "no_data",
+   "reason": null,
+   "produced": [
+    "hanjeok:congestion/150@2026-10-17"
+   ],
+   "summary": "새벽 등대: 혼잡 데이터 없음",
+   "as_of": "2026-10-13T14:20:05Z"
+  }
+ },
+ {
+  "event": "answer",
+  "data": {
+   "text": "새벽 등대는 한적이 혼잡을 예보하지 않는 곳이라 알 수 없습니다.",
+   "citations": [
+    {
+     "id": "hanjeok:congestion/150@2026-10-17",
+     "kind": "record",
+     "label": "새벽 등대 혼잡 데이터 없음"
+    }
+   ],
+   "partial": false
+  }
+ },
+ {
+  "event": "path",
+  "data": {
+   "nodes": [
+    {
+     "id": "hanjeok:place/150",
+     "kind": "place",
+     "label": "새벽 등대",
+     "region": "한빛시 솔내구"
+    },
+    {
+     "id": "region:11140",
+     "kind": "region",
+     "label": "한빛시 솔내구",
+     "region": null
+    }
+   ],
+   "edges": [
+    {
+     "from": "hanjeok:place/150",
+     "to": "region:11140",
+     "kind": "in_region",
+     "rank": null
+    }
+   ]
+  }
+ },
+ {
+  "event": "done",
+  "data": {
+   "outcome": "answered",
+   "model": "scripted",
+   "elapsed_ms": 0,
+   "generated_at": "2026-10-13T14:20:30Z"
+  }
+ }
+]

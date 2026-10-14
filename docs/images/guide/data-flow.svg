@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+<title id="title">한적 에이전트는 데이터를 어떻게 가져오나</title>
+<desc id="desc">한적 에이전트는 한적 DB에 직접 접속하지 않습니다. 내보낸 공개 관광 파일을 검증해 Neo4j에 저장하고, 질문에 따라 한적 API를 읽기 전용으로 조회합니다.</desc>
+<defs>
+<marker id="green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 1 L 9 5 L 0 9 Z" fill="#009C75"/></marker>
+<marker id="sky" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 1 L 9 5 L 0 9 Z" fill="#00A6D6"/></marker>
+<marker id="coral" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 1 L 9 5 L 0 9 Z" fill="#F04B3E"/></marker>
+<marker id="navy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 1 L 9 5 L 0 9 Z" fill="#172033"/></marker>
+</defs>
+<g font-family="Apple SD Gothic Neo, sans-serif">
+<rect x="0" y="0" width="1600" height="1000" rx="0" fill="#FBFCFD" stroke="none" stroke-width="0"/>
+<text x="48" y="67" font-size="36" font-weight="700" fill="#172033" text-anchor="start">한적 에이전트는 데이터를 어떻게 가져오나</text>
+<rect x="32" y="122" width="414" height="792" rx="24" fill="#F1FAFE" stroke="#C8E9F2" stroke-width="1.5"/>
+<rect x="492" y="122" width="838" height="792" rx="24" fill="#F0F9F5" stroke="#CEE8DC" stroke-width="1.5"/>
+<rect x="1354" y="122" width="214" height="792" rx="24" fill="#F5F7FA" stroke="#DCE2EB" stroke-width="1.5"/>
+<rect x="56" y="150" width="5" height="26" rx="2.5" fill="#00A6D6"/>
+<text x="74" y="172" font-size="26" font-weight="700" fill="#172033" text-anchor="start">한적 서비스</text>
+<rect x="516" y="150" width="5" height="26" rx="2.5" fill="#009C75"/>
+<text x="534" y="172" font-size="26" font-weight="700" fill="#172033" text-anchor="start">한적 에이전트</text>
+<text x="1378" y="172" font-size="26" font-weight="700" fill="#172033" text-anchor="start">방문자</text>
+<path d="M468 136 V895" stroke="#172033" stroke-width="2.4" stroke-dasharray="7 9" opacity="0.7"/>
+<rect x="371" y="187" width="194" height="39" rx="19" fill="#FFFFFF" stroke="#172033" stroke-width="1.5"/>
+<text x="468" y="213" font-size="18" font-weight="700" fill="#172033" text-anchor="middle">DB 접속 정보 없음</text>
+<text x="586" y="222" font-size="16" font-weight="600" fill="#009C75" text-anchor="start">천천히 바뀌는 데이터</text>
+<text x="818" y="534" font-size="16" font-weight="600" fill="#009C75" text-anchor="start">날짜에 따라 달라지는 데이터</text>
+<path d="M204 308 H229" fill="none" stroke="#00A6D6" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#sky)"/>
+<path d="M438 308 H515" fill="none" stroke="#00A6D6" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#sky)"/>
+<path d="M754 308 H785" fill="none" stroke="#009C75" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green)"/>
+<path d="M1016 308 H1048" fill="none" stroke="#009C75" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green)"/>
+<path d="M1378 580 H1310" fill="none" stroke="#172033" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#navy)"/>
+<path d="M1120 594 H1081" fill="none" stroke="#009C75" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green)"/>
+<path d="M803 594 H768" fill="none" stroke="#009C75" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green)"/>
+<path d="M641 548 V498 H1175 V386" fill="none" stroke="#009C75" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green)"/>
+<path d="M598 674 V735 H329 V692" fill="none" stroke="#00A6D6" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#sky)"/>
+<path d="M689 674 V839 H786" fill="none" stroke="#009C75" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green)"/>
+<path d="M1064 839 H1098" fill="none" stroke="#009C75" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green)"/>
+<path d="M1310 839 H1552 V570 H1540" fill="none" stroke="#009C75" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#green)"/>
+<path d="M701 451 H49 V310 H64" fill="none" stroke="#F04B3E" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="6 6" marker-end="url(#coral)"/>
+<circle cx="468" cy="451" r="24" fill="#FBFCFD"/>
+<path d="M454 437 L482 465 M482 437 L454 465" stroke="#F04B3E" stroke-width="6" stroke-linecap="round"/>
+<rect x="266" y="464" width="214" height="34" rx="17" fill="#FFF5F3" stroke="none" stroke-width="0"/>
+<text x="373" y="488" font-size="19" font-weight="700" fill="#F04B3E" text-anchor="middle">직접 접속하지 않음</text>
+<circle cx="701" cy="451" r="4" fill="#F04B3E"/>
+<path d="M64 278 C64 260 204 260 204 278 V348 C204 372 64 372 64 348 Z" fill="#FFFFFF" stroke="#172033" stroke-width="2"/>
+<ellipse cx="134" cy="278" rx="70" ry="18" fill="#DDF4FC" stroke="#172033" stroke-width="2"/>
+<text x="134" y="314" font-size="14" font-weight="700" fill="#172033" text-anchor="middle">한적 DB (PostgreSQL)</text>
+<path d="M64 337 C64 361 204 361 204 337" fill="none" stroke="#00A6D6" stroke-width="1.7"/>
+<rect x="229" y="271" width="209" height="75" rx="15" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<text x="333.5" y="314" font-size="21" font-weight="700" fill="#172033" text-anchor="middle">내보내기 스크립트</text>
+<text font-size="15" font-weight="400" fill="#172033" text-anchor="middle" data-label="한적 쪽에서 실행 · 공개 관광 테이블만"><tspan x="333.5" y="369">한적 쪽에서 실행 · </tspan><tspan x="333.5" y="391">공개 관광 테이블만</tspan></text>
+<circle cx="69" cy="422" r="8" fill="none" stroke="#F04B3E" stroke-width="1.8"/><path d="M63 416 L75 428" stroke="#F04B3E" stroke-width="1.8"/>
+<text x="85" y="427" font-size="13.5" font-weight="500" fill="#F04B3E" text-anchor="start">회원 · 사진 · 후기 · 조회 기록 → 내보내지 않음</text>
+<rect x="109" y="565" width="277" height="127" rx="17" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<text x="247.5" y="603" font-size="24" font-weight="700" fill="#172033" text-anchor="middle">한적 API</text>
+<text x="247.5" y="638" font-size="20" font-weight="400" fill="#172033" text-anchor="middle">…/congestion</text>
+<text x="247.5" y="671" font-size="20" font-weight="400" fill="#172033" text-anchor="middle">…/alternatives</text>
+<rect x="515" y="252" width="239" height="134" rx="17" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<circle cx="540" cy="275" r="19" fill="#F2B84B"/>
+<text x="540" y="285" font-size="29" font-weight="500" fill="#172033" text-anchor="middle">①</text>
+<text x="568" y="283" font-size="22" font-weight="700" fill="#172033" text-anchor="start">내보낸 파일</text>
+<path d="M535 303 H553 L566 316 V355 H535 Z" fill="#F1FAFE" stroke="#00A6D6" stroke-width="1.7"/><path d="M553 303 V316 H566 M542 330 H558 M542 338 H558" fill="none" stroke="#00A6D6" stroke-width="1.5"/>
+<text font-size="15" font-weight="400" fill="#172033" text-anchor="start" data-label="places · related · festivals · exhibitions + manifest"><tspan x="580" y="315">places · related · </tspan><tspan x="580" y="337">festivals · exhibitions </tspan><tspan x="580" y="359">+ manifest</tspan></text>
+<rect x="785" y="252" width="231" height="134" rx="17" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<circle cx="811" cy="275" r="19" fill="#F2B84B"/>
+<text x="811" y="285" font-size="29" font-weight="500" fill="#172033" text-anchor="middle">②</text>
+<text x="839" y="283" font-size="22" font-weight="700" fill="#172033" text-anchor="start">검증</text>
+<text x="900.5" y="331" font-size="16" font-weight="400" fill="#172033" text-anchor="middle">해시 · 행 수 · 허용 컬럼만</text>
+<rect x="1048" y="252" width="255" height="134" rx="17" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<circle cx="1074" cy="275" r="19" fill="#F2B84B"/>
+<text x="1074" y="285" font-size="29" font-weight="500" fill="#172033" text-anchor="middle">③</text>
+<text x="1102" y="283" font-size="22" font-weight="700" fill="#172033" text-anchor="start">Neo4j 그래프</text>
+<text x="1175.5" y="332" font-size="15" font-weight="400" fill="#172033" text-anchor="middle">장소 · 연관 순위 · 행사 + 정책 위키</text>
+<rect x="1120" y="548" width="190" height="126" rx="17" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<circle cx="1147" cy="572" r="19" fill="#F2B84B"/>
+<text x="1147" y="582" font-size="29" font-weight="500" fill="#172033" text-anchor="middle">④</text>
+<text x="1180" y="581" font-size="23" font-weight="700" fill="#172033" text-anchor="start">질문</text>
+<rect x="803" y="548" width="278" height="126" rx="17" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<circle cx="830" cy="572" r="19" fill="#F2B84B"/>
+<text x="830" y="582" font-size="29" font-weight="500" fill="#172033" text-anchor="middle">⑤</text>
+<text x="860" y="581" font-size="23" font-weight="700" fill="#172033" text-anchor="start">규칙으로 읽기</text>
+<text x="942" y="626" font-size="15" font-weight="400" fill="#172033" text-anchor="middle">범위 · 날짜 · 장소 이름 (모델 호출 전)</text>
+<rect x="515" y="548" width="253" height="126" rx="17" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<circle cx="542" cy="572" r="19" fill="#F2B84B"/>
+<text x="542" y="582" font-size="29" font-weight="500" fill="#172033" text-anchor="middle">⑥</text>
+<text x="572" y="581" font-size="22" font-weight="700" fill="#172033" text-anchor="start">조회 고르기 (모델)</text>
+<text font-size="16" font-weight="400" fill="#172033" text-anchor="middle" data-label="정해진 7가지 중 선택 · 입력은 코드가 검증"><tspan x="641.5" y="621">정해진 7가지 중 선택 · </tspan><tspan x="641.5" y="644">입력은 코드가 검증</tspan></text>
+<rect x="835" y="480" width="229" height="34" rx="8" fill="#F0F9F5" stroke="none" stroke-width="0"/>
+<text x="949.5" y="504" font-size="17" font-weight="600" fill="#009C75" text-anchor="middle">장소 · 연관 · 행사 · 정책</text>
+<rect x="363" y="742" width="277" height="32" rx="8" fill="#FBFCFD" stroke="none" stroke-width="0"/>
+<text x="501.5" y="764" font-size="17" font-weight="600" fill="#00A6D6" text-anchor="middle">혼잡 예보 · 대안, 읽기 전용</text>
+<rect x="786" y="785" width="278" height="108" rx="17" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<circle cx="813" cy="811" r="19" fill="#F2B84B"/>
+<text x="813" y="821" font-size="29" font-weight="500" fill="#172033" text-anchor="middle">⑦</text>
+<text x="843" y="820" font-size="23" font-weight="700" fill="#172033" text-anchor="start">인용 검증</text>
+<text x="925" y="863" font-size="15" font-weight="400" fill="#172033" text-anchor="middle">이번 질문에서 가져온 것만 인용 가능</text>
+<rect x="1098" y="785" width="212" height="108" rx="17" fill="#FFFFFF" stroke="#172033" stroke-width="1.7"/>
+<circle cx="1125" cy="811" r="19" fill="#F2B84B"/>
+<text x="1125" y="821" font-size="29" font-weight="500" fill="#172033" text-anchor="middle">⑧</text>
+<text x="1153" y="820" font-size="20" font-weight="700" fill="#172033" text-anchor="start">답 + 근거 + 경로</text>
+<rect x="1378" y="499" width="162" height="121" rx="13" fill="#FFFFFF" stroke="#172033" stroke-width="2"/>
+<path d="M1379 527 H1539" stroke="#172033" stroke-width="1.5"/>
+<circle cx="1390" cy="513" r="2.5" fill="#9FAABA"/>
+<circle cx="1400" cy="513" r="2.5" fill="#9FAABA"/>
+<circle cx="1410" cy="513" r="2.5" fill="#9FAABA"/>
+<text x="1459" y="579" font-size="25" font-weight="700" fill="#172033" text-anchor="middle">화면</text>
+<path d="M1459 620 V637 M1434 637 H1484" stroke="#172033" stroke-width="2.2" stroke-linecap="round"/>
+<text x="1461" y="676" font-size="18" font-weight="500" fill="#172033" text-anchor="middle">단계가 하나씩 보입니다</text>
+<rect x="32" y="934" width="1536" height="44" rx="12" fill="#EEF1F5" stroke="none" stroke-width="0"/>
+<text x="800" y="963" font-size="18" font-weight="500" fill="#172033" text-anchor="middle">지금은 지어낸 장소 40곳짜리 가상 내보내기 파일로 동작합니다. 실제 한적 데이터는 아직 받지 않았습니다.</text>
+</g></svg>

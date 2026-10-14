@@ -20,8 +20,8 @@ export default async function EvidencePage({ params }: { params: Promise<{ lang:
   if (list.kind === 'unavailable') {
     return (
       <div className="space-y-2">
-        <h1 className="text-xl font-semibold">{t.listFailTitle}</h1>
-        <p className="text-sm opacity-70">{t.listFailBody(list.status)}</p>
+        <h1 className="text-title-2 font-semibold">{t.listFailTitle}</h1>
+        <p className="text-body text-ink-muted">{t.listFailBody(list.status)}</p>
       </div>
     )
   }

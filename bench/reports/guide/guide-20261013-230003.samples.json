@@ -1,0 +1,2374 @@
+{
+ "q01": {
+  "report_id": "guide-20261013-230003",
+  "question_id": "q01",
+  "kind": "place_lookup",
+  "question": "가람궁은 10월 17일에 얼마나 붐벼?",
+  "strategies": {
+   "vector": {
+    "outcome": "answered",
+    "cause": null,
+    "answer": "가람궁은 10월 17일에 매우혼잡할 것으로 예상됩니다.",
+    "citations": [
+     "hanjeok:congestion/101@2026-10-17"
+    ],
+    "steps": [
+     {
+      "index": 0,
+      "kind": "scope",
+      "inputs": {},
+      "status": "ok",
+      "reason": null,
+      "produced": [],
+      "summary": "장소 1곳, 날짜 2026-10-17(으)로 읽었습니다",
+      "as_of": null
+     },
+     {
+      "index": 1,
+      "kind": "resolve",
+      "inputs": {
+       "names": [
+        "가람궁"
+       ]
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:place/101"
+      ],
+      "summary": "가람궁 (한빛시 가람구)",
+      "as_of": "2026-10-13T02:00:00Z"
+     },
+     {
+      "index": 2,
+      "kind": "congestion",
+      "inputs": {
+       "place_id": 101,
+       "date": "2026-10-17"
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:congestion/101@2026-10-17",
+       "wiki:concepts/congestion-diagnosis.md"
+      ],
+      "summary": "10월 17일 예보: 매우혼잡 (상위 8%)",
+      "as_of": "2026-10-13T14:20:05Z"
+     }
+    ],
+    "passages": [
+     {
+      "id": "hanjeok:place/101",
+      "text": "가람궁 · 한빛시 가람구 · 역사 고궁 · place_id 101 · 혼잡 예보 대상\n한빛시 한가운데 있는 옛 궁궐. 주말 낮에는 정문 앞마당부터 사람이 찬다."
+     },
+     {
+      "id": "hanjeok:congestion/101@2026-10-17",
+      "text": "가람궁 10월 17일(2026-10-17) 혼잡 예보: 매우혼잡 (전국 대비 상위 8%, 집중률 88)\n그 뒤의 더 한적한 날(한적이 고른 순서): 10월 20일(2026-10-20) 보통, 10월 21일(2026-10-21) 보통"
+     },
+     {
+      "id": "wiki:concepts/congestion-diagnosis.md",
+      "text": "Congestion Diagnosis converts public congestion forecast data into a user-facing crowding grade for a selected attraction and visit date.\n\nThe inputs are attraction id and visit date. **There is no time-of-day axis** — the public congestion API returns a date and no time field, so the slot parameter was deleted from the contract rather than left unimplemented. An explanation may not assert a time-of-day crowding claim; the data to support one does not exist.\n\nGrades come from the **percentile**, not the raw concentration value:\n\n- `RELAXED`: up to 50th percentile\n- `NORMAL`: 50th to 75th percentile\n- `CROWDED`: 75th to 90th percentile\n- `VERY_CROWDED`: 90th percentile and above\n\nThe raw concentration is reported alongside the grade but is not the grade's input. Feeding concentration straight into the percentile cutoffs is a known implementation error the consumer service made once and corrected; an explanation that describes the grade as coming from the concentration value repeats it.\n\nWhen an attraction has no forecast coverage the response is `hasCongestionData: false` with **HTTP 200 and success true**, carrying a message and a list of nearby diagnosable places instead of a diagnosis. Missing coverage is a product state, not a failure. An explanation layer must handle this branch: there is no grade, no percentile, and no better-date list to talk about, and inventing one is the exact failure this wiki exists to prevent.\n\n- [[congestion-forecast-api]]\n- [[alternative-scoring]]\n- [[course-generation-policy]]"
+     }
+    ],
+    "scores": {
+     "faithfulness": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "answer_relevancy": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_precision": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_recall": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "id_precision": {
+      "value": 0.3333333333333333,
+      "status": "ok",
+      "reason": null
+     },
+     "id_recall": {
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+     }
+    },
+    "forbidden": []
+   },
+   "graph": {
+    "outcome": "answered",
+    "cause": null,
+    "answer": "가람궁은 10월 17일에 매우혼잡할 것으로 예상됩니다.",
+    "citations": [
+     "hanjeok:congestion/101@2026-10-17"
+    ],
+    "steps": [
+     {
+      "index": 0,
+      "kind": "scope",
+      "inputs": {},
+      "status": "ok",
+      "reason": null,
+      "produced": [],
+      "summary": "장소 1곳, 날짜 2026-10-17(으)로 읽었습니다",
+      "as_of": null
+     },
+     {
+      "index": 1,
+      "kind": "resolve",
+      "inputs": {
+       "names": [
+        "가람궁"
+       ]
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:place/101"
+      ],
+      "summary": "가람궁 (한빛시 가람구)",
+      "as_of": "2026-10-13T02:00:00Z"
+     },
+     {
+      "index": 2,
+      "kind": "congestion",
+      "inputs": {
+       "place_id": 101,
+       "date": "2026-10-17"
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:congestion/101@2026-10-17",
+       "wiki:concepts/congestion-diagnosis.md"
+      ],
+      "summary": "10월 17일 예보: 매우혼잡 (상위 8%)",
+      "as_of": "2026-10-13T14:20:05Z"
+     }
+    ],
+    "passages": [
+     {
+      "id": "hanjeok:place/101",
+      "text": "가람궁 · 한빛시 가람구 · 역사 고궁 · place_id 101 · 혼잡 예보 대상\n한빛시 한가운데 있는 옛 궁궐. 주말 낮에는 정문 앞마당부터 사람이 찬다."
+     },
+     {
+      "id": "hanjeok:congestion/101@2026-10-17",
+      "text": "가람궁 10월 17일(2026-10-17) 혼잡 예보: 매우혼잡 (전국 대비 상위 8%, 집중률 88)\n그 뒤의 더 한적한 날(한적이 고른 순서): 10월 20일(2026-10-20) 보통, 10월 21일(2026-10-21) 보통"
+     },
+     {
+      "id": "wiki:concepts/congestion-diagnosis.md",
+      "text": "Congestion Diagnosis converts public congestion forecast data into a user-facing crowding grade for a selected attraction and visit date.\n\nThe inputs are attraction id and visit date. **There is no time-of-day axis** — the public congestion API returns a date and no time field, so the slot parameter was deleted from the contract rather than left unimplemented. An explanation may not assert a time-of-day crowding claim; the data to support one does not exist.\n\nGrades come from the **percentile**, not the raw concentration value:\n\n- `RELAXED`: up to 50th percentile\n- `NORMAL`: 50th to 75th percentile\n- `CROWDED`: 75th to 90th percentile\n- `VERY_CROWDED`: 90th percentile and above\n\nThe raw concentration is reported alongside the grade but is not the grade's input. Feeding concentration straight into the percentile cutoffs is a known implementation error the consumer service made once and corrected; an explanation that describes the grade as coming from the concentration value repeats it.\n\nWhen an attraction has no forecast coverage the response is `hasCongestionData: false` with **HTTP 200 and success true**, carrying a message and a list of nearby diagnosable places instead of a diagnosis. Missing coverage is a product state, not a failure. An explanation layer must handle this branch: there is no grade, no percentile, and no better-date list to talk about, and inventing one is the exact failure this wiki exists to prevent.\n\n- [[congestion-forecast-api]]\n- [[alternative-scoring]]\n- [[course-generation-policy]]"
+     }
+    ],
+    "scores": {
+     "faithfulness": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "answer_relevancy": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_precision": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_recall": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "id_precision": {
+      "value": 0.3333333333333333,
+      "status": "ok",
+      "reason": null
+     },
+     "id_recall": {
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+     }
+    },
+    "forbidden": []
+   }
+  }
+ },
+ "q02": {
+  "report_id": "guide-20261013-230003",
+  "question_id": "q02",
+  "kind": "place_lookup",
+  "question": "새벽 등대는 10월 17일에 한적해?",
+  "strategies": {
+   "vector": {
+    "outcome": "answered",
+    "cause": null,
+    "answer": "2026-10-17 새벽 등대의 혼잡 데이터는 없습니다. 데이터가 없다는 것은 한적하다는 뜻이 아닙니다.",
+    "citations": [
+     "hanjeok:congestion/150@2026-10-17"
+    ],
+    "steps": [
+     {
+      "index": 0,
+      "kind": "scope",
+      "inputs": {},
+      "status": "ok",
+      "reason": null,
+      "produced": [],
+      "summary": "장소 1곳, 날짜 2026-10-17(으)로 읽었습니다",
+      "as_of": null
+     },
+     {
+      "index": 1,
+      "kind": "resolve",
+      "inputs": {
+       "names": [
+        "새벽 등대"
+       ]
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:place/150"
+      ],
+      "summary": "새벽 등대 (한빛시 솔내구)",
+      "as_of": "2026-10-13T02:00:00Z"
+     },
+     {
+      "index": 2,
+      "kind": "congestion",
+      "inputs": {
+       "place_id": 150,
+       "date": "2026-10-17"
+      },
+      "status": "no_data",
+      "reason": null,
+      "produced": [
+       "hanjeok:congestion/150@2026-10-17"
+      ],
+      "summary": "새벽 등대: 혼잡 데이터 없음",
+      "as_of": "2026-10-13T14:20:05Z"
+     }
+    ],
+    "passages": [
+     {
+      "id": "hanjeok:place/150",
+      "text": "새벽 등대 · 한빛시 솔내구 · 자연 등대 · place_id 150 · 혼잡 데이터 없음(한적하다는 뜻이 아님)\n솔내구 끝 방파제에 선 작은 등대."
+     },
+     {
+      "id": "hanjeok:congestion/150@2026-10-17",
+      "text": "새벽 등대은(는) 한적이 혼잡을 예보하지 않는 장소다. 데이터가 없다는 뜻이며, 한적하다는 뜻이 아니다."
+     }
+    ],
+    "scores": {
+     "faithfulness": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "answer_relevancy": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_precision": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_recall": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "id_precision": {
+      "value": 0.5,
+      "status": "ok",
+      "reason": null
+     },
+     "id_recall": {
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+     }
+    },
+    "forbidden": []
+   },
+   "graph": {
+    "outcome": "answered",
+    "cause": null,
+    "answer": "새벽 등대의 2026-10-17 혼잡 데이터는 없으며, 데이터가 없다는 것은 한적하다는 뜻이 아닙니다.",
+    "citations": [
+     "hanjeok:congestion/150@2026-10-17"
+    ],
+    "steps": [
+     {
+      "index": 0,
+      "kind": "scope",
+      "inputs": {},
+      "status": "ok",
+      "reason": null,
+      "produced": [],
+      "summary": "장소 1곳, 날짜 2026-10-17(으)로 읽었습니다",
+      "as_of": null
+     },
+     {
+      "index": 1,
+      "kind": "resolve",
+      "inputs": {
+       "names": [
+        "새벽 등대"
+       ]
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:place/150"
+      ],
+      "summary": "새벽 등대 (한빛시 솔내구)",
+      "as_of": "2026-10-13T02:00:00Z"
+     },
+     {
+      "index": 2,
+      "kind": "congestion",
+      "inputs": {
+       "place_id": 150,
+       "date": "2026-10-17"
+      },
+      "status": "no_data",
+      "reason": null,
+      "produced": [
+       "hanjeok:congestion/150@2026-10-17"
+      ],
+      "summary": "새벽 등대: 혼잡 데이터 없음",
+      "as_of": "2026-10-13T14:20:05Z"
+     }
+    ],
+    "passages": [
+     {
+      "id": "hanjeok:place/150",
+      "text": "새벽 등대 · 한빛시 솔내구 · 자연 등대 · place_id 150 · 혼잡 데이터 없음(한적하다는 뜻이 아님)\n솔내구 끝 방파제에 선 작은 등대."
+     },
+     {
+      "id": "hanjeok:congestion/150@2026-10-17",
+      "text": "새벽 등대은(는) 한적이 혼잡을 예보하지 않는 장소다. 데이터가 없다는 뜻이며, 한적하다는 뜻이 아니다."
+     }
+    ],
+    "scores": {
+     "faithfulness": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "answer_relevancy": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_precision": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_recall": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "id_precision": {
+      "value": 0.5,
+      "status": "ok",
+      "reason": null
+     },
+     "id_recall": {
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+     }
+    },
+    "forbidden": []
+   }
+  }
+ },
+ "q03": {
+  "report_id": "guide-20261013-230003",
+  "question_id": "q03",
+  "kind": "alternatives",
+  "question": "10월 17일에 가람궁 대신 갈 만한 곳은?",
+  "strategies": {
+   "vector": {
+    "outcome": "answered",
+    "cause": null,
+    "answer": "가람궁 대신 10월 17일에 갈 만한 곳은 솔내 한옥마을, 물빛 서원, 달맞이 숲길 순입니다. 솔내 한옥마을은 보통 혼잡도이며 가람궁에서 0.8km 떨어져 있습니다. 물빛 서원과 달맞이 숲길은 여유로운 혼잡도를 보이며 각각 4.1km, 4.9km 거리에 있습니다.",
+    "citations": [
+     "hanjeok:alternatives/101@2026-10-17"
+    ],
+    "steps": [
+     {
+      "index": 0,
+      "kind": "scope",
+      "inputs": {},
+      "status": "ok",
+      "reason": null,
+      "produced": [],
+      "summary": "장소 1곳, 날짜 2026-10-17(으)로 읽었습니다",
+      "as_of": null
+     },
+     {
+      "index": 1,
+      "kind": "resolve",
+      "inputs": {
+       "names": [
+        "가람궁"
+       ]
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:place/101"
+      ],
+      "summary": "가람궁 (한빛시 가람구)",
+      "as_of": "2026-10-13T02:00:00Z"
+     },
+     {
+      "index": 2,
+      "kind": "alternatives",
+      "inputs": {
+       "place_id": 101,
+       "date": "2026-10-17"
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:alternatives/101@2026-10-17",
+       "hanjeok:place/118",
+       "hanjeok:place/124",
+       "hanjeok:place/131",
+       "wiki:concepts/alternative-scoring.md",
+       "wiki:decisions/keep-llm-out-of-ranking.md"
+      ],
+      "summary": "대안 3곳: 솔내 한옥마을, 물빛 서원, 달맞이 숲길",
+      "as_of": "2026-10-13T14:20:05Z"
+     }
+    ],
+    "passages": [
+     {
+      "id": "hanjeok:place/101",
+      "text": "가람궁 · 한빛시 가람구 · 역사 고궁 · place_id 101 · 혼잡 예보 대상\n한빛시 한가운데 있는 옛 궁궐. 주말 낮에는 정문 앞마당부터 사람이 찬다."
+     },
+     {
+      "id": "hanjeok:place/118",
+      "text": "솔내 한옥마을 · 한빛시 가람구 · 역사 전통마을 · place_id 118 · 혼잡 예보 대상\n가람궁 동쪽 담을 따라 이어지는 한옥 골목. 사람이 사는 동네라 조용히 걷는 곳이다."
+     },
+     {
+      "id": "hanjeok:place/124",
+      "text": "물빛 서원 · 한빛시 솔내구 · 역사 서원 · place_id 124 · 혼잡 예보 대상\n개울을 끼고 앉은 서원. 마루에 앉으면 물소리가 들린다."
+     },
+     {
+      "id": "hanjeok:place/131",
+      "text": "달맞이 숲길 · 한빛시 솔내구 · 자연 숲길 · place_id 131 · 혼잡 예보 대상\n서원 뒤편 언덕으로 오르는 2km 남짓한 숲길."
+     },
+     {
+      "id": "hanjeok:alternatives/101@2026-10-17",
+      "text": "가람궁 대신 10월 17일(2026-10-17)에 갈 만한 곳. 순서는 한적이 정했고 바꿀 수 없다.\n1. 솔내 한옥마을 — 보통, 0.8km (place_id 118)\n2. 물빛 서원 — 여유, 4.1km (place_id 124)\n3. 달맞이 숲길 — 여유, 4.9km (place_id 131)"
+     },
+     {
+      "id": "wiki:concepts/alternative-scoring.md",
+      "text": "Alternative Scoring ranks related attractions when the original destination is crowded, combining relatedness, quietness, and distance into one number.\n\nThe consumer service's concrete formula is:\n\n```text\nscore = 0.4 * relationScore\n      + 0.4 * (1 - concentration / 100)\n      + 0.2 * (1 - min(distanceKm, 15) / 15)\n```\n\nResults are returned sorted by `score` descending.\n\n**The weights 0.4 / 0.4 / 0.2 are provisional.** They were chosen without supporting data and are expected to move once real usage exists. An explanation may say which factors the score combines; it should not present the weights as a tuned or validated result.\n\nIf the related-attraction API does not supply a numeric relatedness score, a consumer service may substitute a binary \"is related\" weight.\n\nThe list contains **`RELAXED` and `NORMAL` grades only** — `CROWDED` and `VERY_CROWDED` never appear, and candidates with no congestion coverage are excluded before scoring. This is a filter applied before ranking, not a consequence of the score.\n\nTwo things follow for an explanation. It may not describe a returned alternative as busy, because a busy one cannot be in the list. And an empty list means no quiet, covered, related candidate existed — not that the scoring rejected them.\n\nEach alternative carries both a `summary` (what the place is) and a `recommendReason` (why it suits this date). They serve different screens and must not be merged or treated as interchangeable.\n\nThe backend owns this score. [[travel-context-layer]] may explain the resulting score factors, but it must not recalculate or override the ranked list.\n\n- [[congestion-diagnosis]]\n- [[related-attraction-api]]\n- [[keep-llm-out-of-ranking]]"
+     },
+     {
+      "id": "wiki:decisions/keep-llm-out-of-ranking.md",
+      "text": "Travel Context Wiki will not let an LLM decide attraction ranking or course order for consuming services.\n\nThe service needs deterministic behavior, public-data traceability, and reproducible harness results. LLM output is suitable for explanation and synthesis, not for replacing [[alternative-scoring]] or [[course-generation-policy]].\n\n- Backend recommendation tests remain deterministic.\n- LLM prompts must consume backend-generated course facts.\n- User-facing explanations can be regenerated without changing the saved course.\n\n- [[travel-context-layer]]\n- [[why-this-place-today]]\n- [[alternative-scoring]]"
+     }
+    ],
+    "scores": {
+     "faithfulness": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "answer_relevancy": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_precision": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_recall": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "id_precision": {
+      "value": 0.14285714285714285,
+      "status": "ok",
+      "reason": null
+     },
+     "id_recall": {
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+     }
+    },
+    "forbidden": []
+   },
+   "graph": {
+    "outcome": "answered",
+    "cause": null,
+    "answer": "가람궁 대신 10월 17일에 갈 만한 곳은 솔내 한옥마을, 물빛 서원, 달맞이 숲길 순입니다. 솔내 한옥마을은 보통 혼잡도이며 가람궁에서 0.8km 떨어져 있습니다. 물빛 서원과 달맞이 숲길은 여유로운 혼잡도를 보이며 각각 4.1km, 4.9km 거리에 있습니다.",
+    "citations": [
+     "hanjeok:alternatives/101@2026-10-17"
+    ],
+    "steps": [
+     {
+      "index": 0,
+      "kind": "scope",
+      "inputs": {},
+      "status": "ok",
+      "reason": null,
+      "produced": [],
+      "summary": "장소 1곳, 날짜 2026-10-17(으)로 읽었습니다",
+      "as_of": null
+     },
+     {
+      "index": 1,
+      "kind": "resolve",
+      "inputs": {
+       "names": [
+        "가람궁"
+       ]
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:place/101"
+      ],
+      "summary": "가람궁 (한빛시 가람구)",
+      "as_of": "2026-10-13T02:00:00Z"
+     },
+     {
+      "index": 2,
+      "kind": "alternatives",
+      "inputs": {
+       "place_id": 101,
+       "date": "2026-10-17"
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:alternatives/101@2026-10-17",
+       "hanjeok:place/118",
+       "hanjeok:place/124",
+       "hanjeok:place/131",
+       "wiki:concepts/alternative-scoring.md",
+       "wiki:decisions/keep-llm-out-of-ranking.md"
+      ],
+      "summary": "대안 3곳: 솔내 한옥마을, 물빛 서원, 달맞이 숲길",
+      "as_of": "2026-10-13T14:20:05Z"
+     }
+    ],
+    "passages": [
+     {
+      "id": "hanjeok:place/101",
+      "text": "가람궁 · 한빛시 가람구 · 역사 고궁 · place_id 101 · 혼잡 예보 대상\n한빛시 한가운데 있는 옛 궁궐. 주말 낮에는 정문 앞마당부터 사람이 찬다."
+     },
+     {
+      "id": "hanjeok:place/118",
+      "text": "솔내 한옥마을 · 한빛시 가람구 · 역사 전통마을 · place_id 118 · 혼잡 예보 대상\n가람궁 동쪽 담을 따라 이어지는 한옥 골목. 사람이 사는 동네라 조용히 걷는 곳이다."
+     },
+     {
+      "id": "hanjeok:place/124",
+      "text": "물빛 서원 · 한빛시 솔내구 · 역사 서원 · place_id 124 · 혼잡 예보 대상\n개울을 끼고 앉은 서원. 마루에 앉으면 물소리가 들린다."
+     },
+     {
+      "id": "hanjeok:place/131",
+      "text": "달맞이 숲길 · 한빛시 솔내구 · 자연 숲길 · place_id 131 · 혼잡 예보 대상\n서원 뒤편 언덕으로 오르는 2km 남짓한 숲길."
+     },
+     {
+      "id": "hanjeok:alternatives/101@2026-10-17",
+      "text": "가람궁 대신 10월 17일(2026-10-17)에 갈 만한 곳. 순서는 한적이 정했고 바꿀 수 없다.\n1. 솔내 한옥마을 — 보통, 0.8km (place_id 118)\n2. 물빛 서원 — 여유, 4.1km (place_id 124)\n3. 달맞이 숲길 — 여유, 4.9km (place_id 131)"
+     },
+     {
+      "id": "wiki:concepts/alternative-scoring.md",
+      "text": "Alternative Scoring ranks related attractions when the original destination is crowded, combining relatedness, quietness, and distance into one number.\n\nThe consumer service's concrete formula is:\n\n```text\nscore = 0.4 * relationScore\n      + 0.4 * (1 - concentration / 100)\n      + 0.2 * (1 - min(distanceKm, 15) / 15)\n```\n\nResults are returned sorted by `score` descending.\n\n**The weights 0.4 / 0.4 / 0.2 are provisional.** They were chosen without supporting data and are expected to move once real usage exists. An explanation may say which factors the score combines; it should not present the weights as a tuned or validated result.\n\nIf the related-attraction API does not supply a numeric relatedness score, a consumer service may substitute a binary \"is related\" weight.\n\nThe list contains **`RELAXED` and `NORMAL` grades only** — `CROWDED` and `VERY_CROWDED` never appear, and candidates with no congestion coverage are excluded before scoring. This is a filter applied before ranking, not a consequence of the score.\n\nTwo things follow for an explanation. It may not describe a returned alternative as busy, because a busy one cannot be in the list. And an empty list means no quiet, covered, related candidate existed — not that the scoring rejected them.\n\nEach alternative carries both a `summary` (what the place is) and a `recommendReason` (why it suits this date). They serve different screens and must not be merged or treated as interchangeable.\n\nThe backend owns this score. [[travel-context-layer]] may explain the resulting score factors, but it must not recalculate or override the ranked list.\n\n- [[congestion-diagnosis]]\n- [[related-attraction-api]]\n- [[keep-llm-out-of-ranking]]"
+     },
+     {
+      "id": "wiki:decisions/keep-llm-out-of-ranking.md",
+      "text": "Travel Context Wiki will not let an LLM decide attraction ranking or course order for consuming services.\n\nThe service needs deterministic behavior, public-data traceability, and reproducible harness results. LLM output is suitable for explanation and synthesis, not for replacing [[alternative-scoring]] or [[course-generation-policy]].\n\n- Backend recommendation tests remain deterministic.\n- LLM prompts must consume backend-generated course facts.\n- User-facing explanations can be regenerated without changing the saved course.\n\n- [[travel-context-layer]]\n- [[why-this-place-today]]\n- [[alternative-scoring]]"
+     }
+    ],
+    "scores": {
+     "faithfulness": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "answer_relevancy": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_precision": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_recall": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "id_precision": {
+      "value": 0.14285714285714285,
+      "status": "ok",
+      "reason": null
+     },
+     "id_recall": {
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+     }
+    },
+    "forbidden": []
+   }
+  }
+ },
+ "q04": {
+  "report_id": "guide-20261013-230003",
+  "question_id": "q04",
+  "kind": "alternatives",
+  "question": "10월 17일에 물빛 서원이 붐비면 어디로 가?",
+  "strategies": {
+   "vector": {
+    "outcome": "answered",
+    "cause": null,
+    "answer": "물빛 서원이 붐비면 대신 갈 만한 곳은 달맞이 숲길과 솔내 한옥마을입니다. 달맞이 숲길은 여유 등급이며 물빛 서원에서 0.8km 떨어져 있습니다. 솔내 한옥마을은 보통 등급이며 3.6km 떨어져 있습니다.",
+    "citations": [
+     "hanjeok:alternatives/124@2026-10-17"
+    ],
+    "steps": [
+     {
+      "index": 0,
+      "kind": "scope",
+      "inputs": {},
+      "status": "ok",
+      "reason": null,
+      "produced": [],
+      "summary": "장소 1곳, 날짜 2026-10-17(으)로 읽었습니다",
+      "as_of": null
+     },
+     {
+      "index": 1,
+      "kind": "resolve",
+      "inputs": {
+       "names": [
+        "물빛 서원"
+       ]
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:place/124"
+      ],
+      "summary": "물빛 서원 (한빛시 솔내구)",
+      "as_of": "2026-10-13T02:00:00Z"
+     },
+     {
+      "index": 2,
+      "kind": "congestion",
+      "inputs": {
+       "place_id": 124,
+       "date": "2026-10-17"
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:congestion/124@2026-10-17",
+       "wiki:concepts/congestion-diagnosis.md"
+      ],
+      "summary": "10월 17일 예보: 여유 (상위 70%)",
+      "as_of": "2026-10-13T14:20:05Z"
+     },
+     {
+      "index": 3,
+      "kind": "alternatives",
+      "inputs": {
+       "place_id": 124,
+       "date": "2026-10-17"
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:alternatives/124@2026-10-17",
+       "hanjeok:place/131",
+       "hanjeok:place/118",
+       "wiki:concepts/alternative-scoring.md",
+       "wiki:decisions/keep-llm-out-of-ranking.md"
+      ],
+      "summary": "대안 2곳: 달맞이 숲길, 솔내 한옥마을",
+      "as_of": "2026-10-13T14:20:05Z"
+     }
+    ],
+    "passages": [
+     {
+      "id": "hanjeok:place/124",
+      "text": "물빛 서원 · 한빛시 솔내구 · 역사 서원 · place_id 124 · 혼잡 예보 대상\n개울을 끼고 앉은 서원. 마루에 앉으면 물소리가 들린다."
+     },
+     {
+      "id": "hanjeok:congestion/124@2026-10-17",
+      "text": "물빛 서원 10월 17일(2026-10-17) 혼잡 예보: 여유 (전국 대비 상위 70%, 집중률 28)"
+     },
+     {
+      "id": "wiki:concepts/congestion-diagnosis.md",
+      "text": "Congestion Diagnosis converts public congestion forecast data into a user-facing crowding grade for a selected attraction and visit date.\n\nThe inputs are attraction id and visit date. **There is no time-of-day axis** — the public congestion API returns a date and no time field, so the slot parameter was deleted from the contract rather than left unimplemented. An explanation may not assert a time-of-day crowding claim; the data to support one does not exist.\n\nGrades come from the **percentile**, not the raw concentration value:\n\n- `RELAXED`: up to 50th percentile\n- `NORMAL`: 50th to 75th percentile\n- `CROWDED`: 75th to 90th percentile\n- `VERY_CROWDED`: 90th percentile and above\n\nThe raw concentration is reported alongside the grade but is not the grade's input. Feeding concentration straight into the percentile cutoffs is a known implementation error the consumer service made once and corrected; an explanation that describes the grade as coming from the concentration value repeats it.\n\nWhen an attraction has no forecast coverage the response is `hasCongestionData: false` with **HTTP 200 and success true**, carrying a message and a list of nearby diagnosable places instead of a diagnosis. Missing coverage is a product state, not a failure. An explanation layer must handle this branch: there is no grade, no percentile, and no better-date list to talk about, and inventing one is the exact failure this wiki exists to prevent.\n\n- [[congestion-forecast-api]]\n- [[alternative-scoring]]\n- [[course-generation-policy]]"
+     },
+     {
+      "id": "hanjeok:place/131",
+      "text": "달맞이 숲길 · 한빛시 솔내구 · 자연 숲길 · place_id 131 · 혼잡 예보 대상\n서원 뒤편 언덕으로 오르는 2km 남짓한 숲길."
+     },
+     {
+      "id": "hanjeok:place/118",
+      "text": "솔내 한옥마을 · 한빛시 가람구 · 역사 전통마을 · place_id 118 · 혼잡 예보 대상\n가람궁 동쪽 담을 따라 이어지는 한옥 골목. 사람이 사는 동네라 조용히 걷는 곳이다."
+     },
+     {
+      "id": "hanjeok:alternatives/124@2026-10-17",
+      "text": "물빛 서원 대신 10월 17일(2026-10-17)에 갈 만한 곳. 순서는 한적이 정했고 바꿀 수 없다.\n1. 달맞이 숲길 — 여유, 0.8km (place_id 131)\n2. 솔내 한옥마을 — 보통, 3.6km (place_id 118)"
+     },
+     {
+      "id": "wiki:concepts/alternative-scoring.md",
+      "text": "Alternative Scoring ranks related attractions when the original destination is crowded, combining relatedness, quietness, and distance into one number.\n\nThe consumer service's concrete formula is:\n\n```text\nscore = 0.4 * relationScore\n      + 0.4 * (1 - concentration / 100)\n      + 0.2 * (1 - min(distanceKm, 15) / 15)\n```\n\nResults are returned sorted by `score` descending.\n\n**The weights 0.4 / 0.4 / 0.2 are provisional.** They were chosen without supporting data and are expected to move once real usage exists. An explanation may say which factors the score combines; it should not present the weights as a tuned or validated result.\n\nIf the related-attraction API does not supply a numeric relatedness score, a consumer service may substitute a binary \"is related\" weight.\n\nThe list contains **`RELAXED` and `NORMAL` grades only** — `CROWDED` and `VERY_CROWDED` never appear, and candidates with no congestion coverage are excluded before scoring. This is a filter applied before ranking, not a consequence of the score.\n\nTwo things follow for an explanation. It may not describe a returned alternative as busy, because a busy one cannot be in the list. And an empty list means no quiet, covered, related candidate existed — not that the scoring rejected them.\n\nEach alternative carries both a `summary` (what the place is) and a `recommendReason` (why it suits this date). They serve different screens and must not be merged or treated as interchangeable.\n\nThe backend owns this score. [[travel-context-layer]] may explain the resulting score factors, but it must not recalculate or override the ranked list.\n\n- [[congestion-diagnosis]]\n- [[related-attraction-api]]\n- [[keep-llm-out-of-ranking]]"
+     },
+     {
+      "id": "wiki:decisions/keep-llm-out-of-ranking.md",
+      "text": "Travel Context Wiki will not let an LLM decide attraction ranking or course order for consuming services.\n\nThe service needs deterministic behavior, public-data traceability, and reproducible harness results. LLM output is suitable for explanation and synthesis, not for replacing [[alternative-scoring]] or [[course-generation-policy]].\n\n- Backend recommendation tests remain deterministic.\n- LLM prompts must consume backend-generated course facts.\n- User-facing explanations can be regenerated without changing the saved course.\n\n- [[travel-context-layer]]\n- [[why-this-place-today]]\n- [[alternative-scoring]]"
+     }
+    ],
+    "scores": {
+     "faithfulness": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "answer_relevancy": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_precision": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_recall": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "id_precision": {
+      "value": 0.125,
+      "status": "ok",
+      "reason": null
+     },
+     "id_recall": {
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+     }
+    },
+    "forbidden": []
+   },
+   "graph": {
+    "outcome": "answered",
+    "cause": null,
+    "answer": "물빛 서원이 붐비면 대신 갈 만한 곳은 달맞이 숲길과 솔내 한옥마을입니다. 달맞이 숲길은 여유 등급이며 물빛 서원에서 0.8km 떨어져 있습니다. 솔내 한옥마을은 보통 등급이며 3.6km 떨어져 있습니다.",
+    "citations": [
+     "hanjeok:alternatives/124@2026-10-17"
+    ],
+    "steps": [
+     {
+      "index": 0,
+      "kind": "scope",
+      "inputs": {},
+      "status": "ok",
+      "reason": null,
+      "produced": [],
+      "summary": "장소 1곳, 날짜 2026-10-17(으)로 읽었습니다",
+      "as_of": null
+     },
+     {
+      "index": 1,
+      "kind": "resolve",
+      "inputs": {
+       "names": [
+        "물빛 서원"
+       ]
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:place/124"
+      ],
+      "summary": "물빛 서원 (한빛시 솔내구)",
+      "as_of": "2026-10-13T02:00:00Z"
+     },
+     {
+      "index": 2,
+      "kind": "congestion",
+      "inputs": {
+       "place_id": 124,
+       "date": "2026-10-17"
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:congestion/124@2026-10-17",
+       "wiki:concepts/congestion-diagnosis.md"
+      ],
+      "summary": "10월 17일 예보: 여유 (상위 70%)",
+      "as_of": "2026-10-13T14:20:05Z"
+     },
+     {
+      "index": 3,
+      "kind": "alternatives",
+      "inputs": {
+       "place_id": 124,
+       "date": "2026-10-17"
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:alternatives/124@2026-10-17",
+       "hanjeok:place/131",
+       "hanjeok:place/118",
+       "wiki:concepts/alternative-scoring.md",
+       "wiki:decisions/keep-llm-out-of-ranking.md"
+      ],
+      "summary": "대안 2곳: 달맞이 숲길, 솔내 한옥마을",
+      "as_of": "2026-10-13T14:20:05Z"
+     }
+    ],
+    "passages": [
+     {
+      "id": "hanjeok:place/124",
+      "text": "물빛 서원 · 한빛시 솔내구 · 역사 서원 · place_id 124 · 혼잡 예보 대상\n개울을 끼고 앉은 서원. 마루에 앉으면 물소리가 들린다."
+     },
+     {
+      "id": "hanjeok:congestion/124@2026-10-17",
+      "text": "물빛 서원 10월 17일(2026-10-17) 혼잡 예보: 여유 (전국 대비 상위 70%, 집중률 28)"
+     },
+     {
+      "id": "wiki:concepts/congestion-diagnosis.md",
+      "text": "Congestion Diagnosis converts public congestion forecast data into a user-facing crowding grade for a selected attraction and visit date.\n\nThe inputs are attraction id and visit date. **There is no time-of-day axis** — the public congestion API returns a date and no time field, so the slot parameter was deleted from the contract rather than left unimplemented. An explanation may not assert a time-of-day crowding claim; the data to support one does not exist.\n\nGrades come from the **percentile**, not the raw concentration value:\n\n- `RELAXED`: up to 50th percentile\n- `NORMAL`: 50th to 75th percentile\n- `CROWDED`: 75th to 90th percentile\n- `VERY_CROWDED`: 90th percentile and above\n\nThe raw concentration is reported alongside the grade but is not the grade's input. Feeding concentration straight into the percentile cutoffs is a known implementation error the consumer service made once and corrected; an explanation that describes the grade as coming from the concentration value repeats it.\n\nWhen an attraction has no forecast coverage the response is `hasCongestionData: false` with **HTTP 200 and success true**, carrying a message and a list of nearby diagnosable places instead of a diagnosis. Missing coverage is a product state, not a failure. An explanation layer must handle this branch: there is no grade, no percentile, and no better-date list to talk about, and inventing one is the exact failure this wiki exists to prevent.\n\n- [[congestion-forecast-api]]\n- [[alternative-scoring]]\n- [[course-generation-policy]]"
+     },
+     {
+      "id": "hanjeok:place/131",
+      "text": "달맞이 숲길 · 한빛시 솔내구 · 자연 숲길 · place_id 131 · 혼잡 예보 대상\n서원 뒤편 언덕으로 오르는 2km 남짓한 숲길."
+     },
+     {
+      "id": "hanjeok:place/118",
+      "text": "솔내 한옥마을 · 한빛시 가람구 · 역사 전통마을 · place_id 118 · 혼잡 예보 대상\n가람궁 동쪽 담을 따라 이어지는 한옥 골목. 사람이 사는 동네라 조용히 걷는 곳이다."
+     },
+     {
+      "id": "hanjeok:alternatives/124@2026-10-17",
+      "text": "물빛 서원 대신 10월 17일(2026-10-17)에 갈 만한 곳. 순서는 한적이 정했고 바꿀 수 없다.\n1. 달맞이 숲길 — 여유, 0.8km (place_id 131)\n2. 솔내 한옥마을 — 보통, 3.6km (place_id 118)"
+     },
+     {
+      "id": "wiki:concepts/alternative-scoring.md",
+      "text": "Alternative Scoring ranks related attractions when the original destination is crowded, combining relatedness, quietness, and distance into one number.\n\nThe consumer service's concrete formula is:\n\n```text\nscore = 0.4 * relationScore\n      + 0.4 * (1 - concentration / 100)\n      + 0.2 * (1 - min(distanceKm, 15) / 15)\n```\n\nResults are returned sorted by `score` descending.\n\n**The weights 0.4 / 0.4 / 0.2 are provisional.** They were chosen without supporting data and are expected to move once real usage exists. An explanation may say which factors the score combines; it should not present the weights as a tuned or validated result.\n\nIf the related-attraction API does not supply a numeric relatedness score, a consumer service may substitute a binary \"is related\" weight.\n\nThe list contains **`RELAXED` and `NORMAL` grades only** — `CROWDED` and `VERY_CROWDED` never appear, and candidates with no congestion coverage are excluded before scoring. This is a filter applied before ranking, not a consequence of the score.\n\nTwo things follow for an explanation. It may not describe a returned alternative as busy, because a busy one cannot be in the list. And an empty list means no quiet, covered, related candidate existed — not that the scoring rejected them.\n\nEach alternative carries both a `summary` (what the place is) and a `recommendReason` (why it suits this date). They serve different screens and must not be merged or treated as interchangeable.\n\nThe backend owns this score. [[travel-context-layer]] may explain the resulting score factors, but it must not recalculate or override the ranked list.\n\n- [[congestion-diagnosis]]\n- [[related-attraction-api]]\n- [[keep-llm-out-of-ranking]]"
+     },
+     {
+      "id": "wiki:decisions/keep-llm-out-of-ranking.md",
+      "text": "Travel Context Wiki will not let an LLM decide attraction ranking or course order for consuming services.\n\nThe service needs deterministic behavior, public-data traceability, and reproducible harness results. LLM output is suitable for explanation and synthesis, not for replacing [[alternative-scoring]] or [[course-generation-policy]].\n\n- Backend recommendation tests remain deterministic.\n- LLM prompts must consume backend-generated course facts.\n- User-facing explanations can be regenerated without changing the saved course.\n\n- [[travel-context-layer]]\n- [[why-this-place-today]]\n- [[alternative-scoring]]"
+     }
+    ],
+    "scores": {
+     "faithfulness": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "answer_relevancy": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_precision": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_recall": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "id_precision": {
+      "value": 0.125,
+      "status": "ok",
+      "reason": null
+     },
+     "id_recall": {
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+     }
+    },
+    "forbidden": []
+   }
+  }
+ },
+ "q05": {
+  "report_id": "guide-20261013-230003",
+  "question_id": "q05",
+  "kind": "date_comparison",
+  "question": "가람궁은 10월 17일과 10월 20일 중 언제 덜 붐벼?",
+  "strategies": {
+   "vector": {
+    "outcome": "answered",
+    "cause": null,
+    "answer": "가람궁은 10월 20일에 덜 붐빕니다. 10월 17일은 매우혼잡이지만, 10월 20일은 보통 수준으로 예측됩니다.",
+    "citations": [
+     "hanjeok:congestion/101@2026-10-17"
+    ],
+    "steps": [
+     {
+      "index": 0,
+      "kind": "scope",
+      "inputs": {},
+      "status": "ok",
+      "reason": null,
+      "produced": [],
+      "summary": "장소 1곳, 날짜 2026-10-17, 2026-10-20(으)로 읽었습니다",
+      "as_of": null
+     },
+     {
+      "index": 1,
+      "kind": "resolve",
+      "inputs": {
+       "names": [
+        "가람궁"
+       ]
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:place/101"
+      ],
+      "summary": "가람궁 (한빛시 가람구)",
+      "as_of": "2026-10-13T02:00:00Z"
+     },
+     {
+      "index": 2,
+      "kind": "congestion",
+      "inputs": {
+       "place_id": 101,
+       "date": "2026-10-17"
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:congestion/101@2026-10-17",
+       "wiki:concepts/congestion-diagnosis.md"
+      ],
+      "summary": "10월 17일 예보: 매우혼잡 (상위 8%)",
+      "as_of": "2026-10-13T14:20:05Z"
+     }
+    ],
+    "passages": [
+     {
+      "id": "hanjeok:place/101",
+      "text": "가람궁 · 한빛시 가람구 · 역사 고궁 · place_id 101 · 혼잡 예보 대상\n한빛시 한가운데 있는 옛 궁궐. 주말 낮에는 정문 앞마당부터 사람이 찬다."
+     },
+     {
+      "id": "hanjeok:congestion/101@2026-10-17",
+      "text": "가람궁 10월 17일(2026-10-17) 혼잡 예보: 매우혼잡 (전국 대비 상위 8%, 집중률 88)\n그 뒤의 더 한적한 날(한적이 고른 순서): 10월 20일(2026-10-20) 보통, 10월 21일(2026-10-21) 보통"
+     },
+     {
+      "id": "wiki:concepts/congestion-diagnosis.md",
+      "text": "Congestion Diagnosis converts public congestion forecast data into a user-facing crowding grade for a selected attraction and visit date.\n\nThe inputs are attraction id and visit date. **There is no time-of-day axis** — the public congestion API returns a date and no time field, so the slot parameter was deleted from the contract rather than left unimplemented. An explanation may not assert a time-of-day crowding claim; the data to support one does not exist.\n\nGrades come from the **percentile**, not the raw concentration value:\n\n- `RELAXED`: up to 50th percentile\n- `NORMAL`: 50th to 75th percentile\n- `CROWDED`: 75th to 90th percentile\n- `VERY_CROWDED`: 90th percentile and above\n\nThe raw concentration is reported alongside the grade but is not the grade's input. Feeding concentration straight into the percentile cutoffs is a known implementation error the consumer service made once and corrected; an explanation that describes the grade as coming from the concentration value repeats it.\n\nWhen an attraction has no forecast coverage the response is `hasCongestionData: false` with **HTTP 200 and success true**, carrying a message and a list of nearby diagnosable places instead of a diagnosis. Missing coverage is a product state, not a failure. An explanation layer must handle this branch: there is no grade, no percentile, and no better-date list to talk about, and inventing one is the exact failure this wiki exists to prevent.\n\n- [[congestion-forecast-api]]\n- [[alternative-scoring]]\n- [[course-generation-policy]]"
+     }
+    ],
+    "scores": {
+     "faithfulness": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "answer_relevancy": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_precision": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_recall": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "id_precision": {
+      "value": 0.3333333333333333,
+      "status": "ok",
+      "reason": null
+     },
+     "id_recall": {
+      "value": 0.5,
+      "status": "ok",
+      "reason": null
+     }
+    },
+    "forbidden": []
+   },
+   "graph": {
+    "outcome": "answered",
+    "cause": null,
+    "answer": "가람궁은 10월 20일에 덜 붐빕니다. 10월 17일은 매우혼잡이지만, 10월 20일은 보통 수준으로 예측됩니다.",
+    "citations": [
+     "hanjeok:congestion/101@2026-10-17"
+    ],
+    "steps": [
+     {
+      "index": 0,
+      "kind": "scope",
+      "inputs": {},
+      "status": "ok",
+      "reason": null,
+      "produced": [],
+      "summary": "장소 1곳, 날짜 2026-10-17, 2026-10-20(으)로 읽었습니다",
+      "as_of": null
+     },
+     {
+      "index": 1,
+      "kind": "resolve",
+      "inputs": {
+       "names": [
+        "가람궁"
+       ]
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:place/101"
+      ],
+      "summary": "가람궁 (한빛시 가람구)",
+      "as_of": "2026-10-13T02:00:00Z"
+     },
+     {
+      "index": 2,
+      "kind": "congestion",
+      "inputs": {
+       "place_id": 101,
+       "date": "2026-10-17"
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:congestion/101@2026-10-17",
+       "wiki:concepts/congestion-diagnosis.md"
+      ],
+      "summary": "10월 17일 예보: 매우혼잡 (상위 8%)",
+      "as_of": "2026-10-13T14:20:05Z"
+     }
+    ],
+    "passages": [
+     {
+      "id": "hanjeok:place/101",
+      "text": "가람궁 · 한빛시 가람구 · 역사 고궁 · place_id 101 · 혼잡 예보 대상\n한빛시 한가운데 있는 옛 궁궐. 주말 낮에는 정문 앞마당부터 사람이 찬다."
+     },
+     {
+      "id": "hanjeok:congestion/101@2026-10-17",
+      "text": "가람궁 10월 17일(2026-10-17) 혼잡 예보: 매우혼잡 (전국 대비 상위 8%, 집중률 88)\n그 뒤의 더 한적한 날(한적이 고른 순서): 10월 20일(2026-10-20) 보통, 10월 21일(2026-10-21) 보통"
+     },
+     {
+      "id": "wiki:concepts/congestion-diagnosis.md",
+      "text": "Congestion Diagnosis converts public congestion forecast data into a user-facing crowding grade for a selected attraction and visit date.\n\nThe inputs are attraction id and visit date. **There is no time-of-day axis** — the public congestion API returns a date and no time field, so the slot parameter was deleted from the contract rather than left unimplemented. An explanation may not assert a time-of-day crowding claim; the data to support one does not exist.\n\nGrades come from the **percentile**, not the raw concentration value:\n\n- `RELAXED`: up to 50th percentile\n- `NORMAL`: 50th to 75th percentile\n- `CROWDED`: 75th to 90th percentile\n- `VERY_CROWDED`: 90th percentile and above\n\nThe raw concentration is reported alongside the grade but is not the grade's input. Feeding concentration straight into the percentile cutoffs is a known implementation error the consumer service made once and corrected; an explanation that describes the grade as coming from the concentration value repeats it.\n\nWhen an attraction has no forecast coverage the response is `hasCongestionData: false` with **HTTP 200 and success true**, carrying a message and a list of nearby diagnosable places instead of a diagnosis. Missing coverage is a product state, not a failure. An explanation layer must handle this branch: there is no grade, no percentile, and no better-date list to talk about, and inventing one is the exact failure this wiki exists to prevent.\n\n- [[congestion-forecast-api]]\n- [[alternative-scoring]]\n- [[course-generation-policy]]"
+     }
+    ],
+    "scores": {
+     "faithfulness": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "answer_relevancy": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_precision": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_recall": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "id_precision": {
+      "value": 0.3333333333333333,
+      "status": "ok",
+      "reason": null
+     },
+     "id_recall": {
+      "value": 0.5,
+      "status": "ok",
+      "reason": null
+     }
+    },
+    "forbidden": []
+   }
+  }
+ },
+ "q06": {
+  "report_id": "guide-20261013-230003",
+  "question_id": "q06",
+  "kind": "date_comparison",
+  "question": "솔내 한옥마을은 10월 17일과 10월 18일 중 언제가 나아?",
+  "strategies": {
+   "vector": {
+    "outcome": "answered",
+    "cause": null,
+    "answer": "10월 17일이 더 나아집니다. 10월 17일의 혼잡 예보는 '보통'이지만, 10월 18일은 '혼잡'으로 예측됩니다. 따라서 10월 17일에 방문하는 것이 한적하게 즐기기 좋습니다.",
+    "citations": [
+     "hanjeok:congestion/118@2026-10-17",
+     "hanjeok:congestion/118@2026-10-18"
+    ],
+    "steps": [
+     {
+      "index": 0,
+      "kind": "scope",
+      "inputs": {},
+      "status": "ok",
+      "reason": null,
+      "produced": [],
+      "summary": "장소 1곳, 날짜 2026-10-17, 2026-10-18(으)로 읽었습니다",
+      "as_of": null
+     },
+     {
+      "index": 1,
+      "kind": "resolve",
+      "inputs": {
+       "names": [
+        "솔내 한옥마을"
+       ]
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:place/118"
+      ],
+      "summary": "솔내 한옥마을 (한빛시 가람구)",
+      "as_of": "2026-10-13T02:00:00Z"
+     },
+     {
+      "index": 2,
+      "kind": "congestion",
+      "inputs": {
+       "place_id": 118,
+       "date": "2026-10-17"
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:congestion/118@2026-10-17",
+       "wiki:concepts/congestion-diagnosis.md"
+      ],
+      "summary": "10월 17일 예보: 보통 (상위 48%)",
+      "as_of": "2026-10-13T14:20:05Z"
+     },
+     {
+      "index": 3,
+      "kind": "congestion",
+      "inputs": {
+       "place_id": 118,
+       "date": "2026-10-18"
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:congestion/118@2026-10-18",
+       "wiki:concepts/congestion-diagnosis.md"
+      ],
+      "summary": "10월 18일 예보: 혼잡 (상위 21%)",
+      "as_of": "2026-10-13T14:20:05Z"
+     }
+    ],
+    "passages": [
+     {
+      "id": "hanjeok:place/118",
+      "text": "솔내 한옥마을 · 한빛시 가람구 · 역사 전통마을 · place_id 118 · 혼잡 예보 대상\n가람궁 동쪽 담을 따라 이어지는 한옥 골목. 사람이 사는 동네라 조용히 걷는 곳이다."
+     },
+     {
+      "id": "hanjeok:congestion/118@2026-10-17",
+      "text": "솔내 한옥마을 10월 17일(2026-10-17) 혼잡 예보: 보통 (전국 대비 상위 48%, 집중률 49)"
+     },
+     {
+      "id": "wiki:concepts/congestion-diagnosis.md",
+      "text": "Congestion Diagnosis converts public congestion forecast data into a user-facing crowding grade for a selected attraction and visit date.\n\nThe inputs are attraction id and visit date. **There is no time-of-day axis** — the public congestion API returns a date and no time field, so the slot parameter was deleted from the contract rather than left unimplemented. An explanation may not assert a time-of-day crowding claim; the data to support one does not exist.\n\nGrades come from the **percentile**, not the raw concentration value:\n\n- `RELAXED`: up to 50th percentile\n- `NORMAL`: 50th to 75th percentile\n- `CROWDED`: 75th to 90th percentile\n- `VERY_CROWDED`: 90th percentile and above\n\nThe raw concentration is reported alongside the grade but is not the grade's input. Feeding concentration straight into the percentile cutoffs is a known implementation error the consumer service made once and corrected; an explanation that describes the grade as coming from the concentration value repeats it.\n\nWhen an attraction has no forecast coverage the response is `hasCongestionData: false` with **HTTP 200 and success true**, carrying a message and a list of nearby diagnosable places instead of a diagnosis. Missing coverage is a product state, not a failure. An explanation layer must handle this branch: there is no grade, no percentile, and no better-date list to talk about, and inventing one is the exact failure this wiki exists to prevent.\n\n- [[congestion-forecast-api]]\n- [[alternative-scoring]]\n- [[course-generation-policy]]"
+     },
+     {
+      "id": "hanjeok:congestion/118@2026-10-18",
+      "text": "솔내 한옥마을 10월 18일(2026-10-18) 혼잡 예보: 혼잡 (전국 대비 상위 21%, 집중률 75)\n그 뒤의 더 한적한 날(한적이 고른 순서): 10월 20일(2026-10-20) 여유"
+     }
+    ],
+    "scores": {
+     "faithfulness": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "answer_relevancy": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_precision": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_recall": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "id_precision": {
+      "value": 0.5,
+      "status": "ok",
+      "reason": null
+     },
+     "id_recall": {
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+     }
+    },
+    "forbidden": []
+   },
+   "graph": {
+    "outcome": "answered",
+    "cause": null,
+    "answer": "10월 17일이 더 나아요. 10월 17일은 보통 혼잡도(전국 대비 상위 48%)이고, 10월 18일은 혼잡도(전국 대비 상위 21%)로 더 붐비기 때문입니다.",
+    "citations": [
+     "hanjeok:congestion/118@2026-10-17",
+     "hanjeok:congestion/118@2026-10-18"
+    ],
+    "steps": [
+     {
+      "index": 0,
+      "kind": "scope",
+      "inputs": {},
+      "status": "ok",
+      "reason": null,
+      "produced": [],
+      "summary": "장소 1곳, 날짜 2026-10-17, 2026-10-18(으)로 읽었습니다",
+      "as_of": null
+     },
+     {
+      "index": 1,
+      "kind": "resolve",
+      "inputs": {
+       "names": [
+        "솔내 한옥마을"
+       ]
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:place/118"
+      ],
+      "summary": "솔내 한옥마을 (한빛시 가람구)",
+      "as_of": "2026-10-13T02:00:00Z"
+     },
+     {
+      "index": 2,
+      "kind": "congestion",
+      "inputs": {
+       "place_id": 118,
+       "date": "2026-10-17"
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:congestion/118@2026-10-17",
+       "wiki:concepts/congestion-diagnosis.md"
+      ],
+      "summary": "10월 17일 예보: 보통 (상위 48%)",
+      "as_of": "2026-10-13T14:20:05Z"
+     },
+     {
+      "index": 3,
+      "kind": "congestion",
+      "inputs": {
+       "place_id": 118,
+       "date": "2026-10-18"
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:congestion/118@2026-10-18",
+       "wiki:concepts/congestion-diagnosis.md"
+      ],
+      "summary": "10월 18일 예보: 혼잡 (상위 21%)",
+      "as_of": "2026-10-13T14:20:05Z"
+     }
+    ],
+    "passages": [
+     {
+      "id": "hanjeok:place/118",
+      "text": "솔내 한옥마을 · 한빛시 가람구 · 역사 전통마을 · place_id 118 · 혼잡 예보 대상\n가람궁 동쪽 담을 따라 이어지는 한옥 골목. 사람이 사는 동네라 조용히 걷는 곳이다."
+     },
+     {
+      "id": "hanjeok:congestion/118@2026-10-17",
+      "text": "솔내 한옥마을 10월 17일(2026-10-17) 혼잡 예보: 보통 (전국 대비 상위 48%, 집중률 49)"
+     },
+     {
+      "id": "wiki:concepts/congestion-diagnosis.md",
+      "text": "Congestion Diagnosis converts public congestion forecast data into a user-facing crowding grade for a selected attraction and visit date.\n\nThe inputs are attraction id and visit date. **There is no time-of-day axis** — the public congestion API returns a date and no time field, so the slot parameter was deleted from the contract rather than left unimplemented. An explanation may not assert a time-of-day crowding claim; the data to support one does not exist.\n\nGrades come from the **percentile**, not the raw concentration value:\n\n- `RELAXED`: up to 50th percentile\n- `NORMAL`: 50th to 75th percentile\n- `CROWDED`: 75th to 90th percentile\n- `VERY_CROWDED`: 90th percentile and above\n\nThe raw concentration is reported alongside the grade but is not the grade's input. Feeding concentration straight into the percentile cutoffs is a known implementation error the consumer service made once and corrected; an explanation that describes the grade as coming from the concentration value repeats it.\n\nWhen an attraction has no forecast coverage the response is `hasCongestionData: false` with **HTTP 200 and success true**, carrying a message and a list of nearby diagnosable places instead of a diagnosis. Missing coverage is a product state, not a failure. An explanation layer must handle this branch: there is no grade, no percentile, and no better-date list to talk about, and inventing one is the exact failure this wiki exists to prevent.\n\n- [[congestion-forecast-api]]\n- [[alternative-scoring]]\n- [[course-generation-policy]]"
+     },
+     {
+      "id": "hanjeok:congestion/118@2026-10-18",
+      "text": "솔내 한옥마을 10월 18일(2026-10-18) 혼잡 예보: 혼잡 (전국 대비 상위 21%, 집중률 75)\n그 뒤의 더 한적한 날(한적이 고른 순서): 10월 20일(2026-10-20) 여유"
+     }
+    ],
+    "scores": {
+     "faithfulness": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "answer_relevancy": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_precision": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_recall": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "id_precision": {
+      "value": 0.5,
+      "status": "ok",
+      "reason": null
+     },
+     "id_recall": {
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+     }
+    },
+    "forbidden": []
+   }
+  }
+ },
+ "q07": {
+  "report_id": "guide-20261013-230003",
+  "question_id": "q07",
+  "kind": "policy",
+  "question": "대안 장소는 어떤 기준으로 순서를 정해?",
+  "strategies": {
+   "vector": {
+    "outcome": "answered",
+    "cause": null,
+    "answer": "대안 장소는 관련성, 혼잡도, 거리 세 가지 요소를 점수로 합산해 순위를 정합니다. 점수 계산식은 score = 0.4 × relationScore + 0.4 × (1 - concentration/100) + 0.2 × (1 - min(distanceKm, 15)/15)이며, 점수가 높은 순서대로 결과가 반환됩니다. 혼잡도가 높은 곳은 사전 필터링으로 제외되어 목록에 나타나지 않습니다.",
+    "citations": [
+     "wiki:concepts/alternative-scoring.md"
+    ],
+    "steps": [
+     {
+      "index": 0,
+      "kind": "scope",
+      "inputs": {},
+      "status": "ok",
+      "reason": null,
+      "produced": [],
+      "summary": "장소 이름 없음, 날짜 없음(으)로 읽었습니다",
+      "as_of": null
+     },
+     {
+      "index": 1,
+      "kind": "policy",
+      "inputs": {
+       "text": "대안 장소 순서 기준"
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "wiki:concepts/alternative-scoring.md",
+       "wiki:decisions/keep-llm-out-of-ranking.md",
+       "wiki:decisions/choose-explanation-model.md"
+      ],
+      "summary": "문서 Alternative Scoring, Keep LLM Out Of Ranking, Choose Explanation Model By Readability, Not By Rule Violations",
+      "as_of": null
+     }
+    ],
+    "passages": [
+     {
+      "id": "wiki:concepts/alternative-scoring.md",
+      "text": "Alternative Scoring ranks related attractions when the original destination is crowded, combining relatedness, quietness, and distance into one number.\n\nThe consumer service's concrete formula is:\n\n```text\nscore = 0.4 * relationScore\n      + 0.4 * (1 - concentration / 100)\n      + 0.2 * (1 - min(distanceKm, 15) / 15)\n```\n\nResults are returned sorted by `score` descending.\n\n**The weights 0.4 / 0.4 / 0.2 are provisional.** They were chosen without supporting data and are expected to move once real usage exists. An explanation may say which factors the score combines; it should not present the weights as a tuned or validated result.\n\nIf the related-attraction API does not supply a numeric relatedness score, a consumer service may substitute a binary \"is related\" weight.\n\nThe list contains **`RELAXED` and `NORMAL` grades only** — `CROWDED` and `VERY_CROWDED` never appear, and candidates with no congestion coverage are excluded before scoring. This is a filter applied before ranking, not a consequence of the score.\n\nTwo things follow for an explanation. It may not describe a returned alternative as busy, because a busy one cannot be in the list. And an empty list means no quiet, covered, related candidate existed — not that the scoring rejected them.\n\nEach alternative carries both a `summary` (what the place is) and a `recommendReason` (why it suits this date). They serve different screens and must not be merged or treated as interchangeable.\n\nThe backend owns this score. [[travel-context-layer]] may explain the resulting score factors, but it must not recalculate or override the ranked list.\n\n- [[congestion-diagnosis]]\n- [[related-attraction-api]]\n- [[keep-llm-out-of-ranking]]"
+     },
+     {
+      "id": "wiki:decisions/keep-llm-out-of-ranking.md",
+      "text": "Travel Context Wiki will not let an LLM decide attraction ranking or course order for consuming services.\n\nThe service needs deterministic behavior, public-data traceability, and reproducible harness results. LLM output is suitable for explanation and synthesis, not for replacing [[alternative-scoring]] or [[course-generation-policy]].\n\n- Backend recommendation tests remain deterministic.\n- LLM prompts must consume backend-generated course facts.\n- User-facing explanations can be regenerated without changing the saved course.\n\n- [[travel-context-layer]]\n- [[why-this-place-today]]\n- [[alternative-scoring]]"
+     },
+     {
+      "id": "wiki:decisions/choose-explanation-model.md",
+      "text": "설명 모델은 **금지 행동 위반율이 아니라 한국어 가독성으로 고른다.** 쇼케이스 배포에는 `gpt-4o`를 쓴다.\n\nHermes Agent 하네스가 세는 금지 행동 7종은 모델을 가르지 못한다. 같은 프롬프트, 같은 픽스처, 각 5회 실행에서 **`gpt-4o-mini`와 `gpt-4o`가 모두 7종 전부 0%**였다. 위반율만 보면 두 모델은 구분되지 않고, 싼 쪽을 고르는 것이 당연해 보인다.\n\n가르는 것은 규칙이 못 보는 축이었다. 같은 판정자(`gpt-4o`)로 잰 문장 가독성 지적:\n\n| 모델 | 규칙 위반 7종 | 가독성 지적 | 실행당 |\n| --- | --- | --- | --- |\n| `gpt-4o-mini` | 0% (5/5 실행) | 6건 (판정 5/5) | 1.2 |\n| `gpt-4o` | 0% (5/5 실행) | 2건 (판정 4/5) | 0.5 |\n\n`gpt-4o-mini`가 실제로 낸 문장들이다. 어느 것도 일곱 규칙에 걸리지 않는다.\n\n- `\"b도 혼잡도가 '보통(62.0)%와 '여유(41.5)%로\"` — 알파벳이 섞여 들어갔다\n- `\"congestion 진단 결과 백분위수 92에 해당하여\"` — 영어 필드 이름을 그대로 옮겼다\n- `\"매우 붐비는 날으로\"` — 조사가 어긋났다\n- `\"이들 대체지는\"` — 없는 단어다\n\n설명이 이 서비스의 **유일한 산출물**이다. 코스와 등급은 한적이 만들고, Hermes가 더하는 것은 문장뿐이다. 그 문장이 한국어로 읽히지 않으면 이 서비스가 하는 일이 없다. 위반율 0%는 \"거짓말은 안 했다\"는 뜻이지 \"읽을 만하다\"는 뜻이 아니다.\n\n- **비용이 오른다.** `gpt-4o`는 `gpt-4o-mini`보다 비싸다. 프롬프트 캐시가 18KB 접두사를 잡아 주므로 증가분은 주로 출력 토큰이지만, 싼 쪽을 버리는 선택인 것은 분명하다.\n- **작은 모델을 쓰려면 프롬프트가 아니라 다른 것을 바꿔야 한다.** 문체 지시를 세 번 조인 뒤에도 `gpt-4o-mini`의 가독성 결함은 줄지 않았다. 영어 토큰 누출은 닫혔지만 비문은 남았다. 프롬프트로 닫히지 않는 종류의 결함이다.\n- **이 표는 픽스처 하나, 실행 5회짜리다.** 코스 종류가 늘면 다시 재야 한다.\n\n- **Anthropic은 재지 않았다.** 키가 없어 실행하지 못했다. `hermes-agent` 스펙 §6.1의 \"Anthropic 직접\" 결정은 **여전히 측정 근거가 없다** — 이 문서는 그 결정을 지지하지도 반박하지도 않는다.\n- **판정자가 `gpt-4o`다.** 한쪽 실행에서는 같은 모델이 자기 출력을 검사했다. 편향은 `gpt-4o`에게 **유리한** 방향이므로 위 격차는 실제보다 크게 나왔을 수 있다. 격차의 방향은 사람이 문장을 읽어 확인했다(위 인용문이 그것이다).\n- **판정자도 틀린다.** `gpt-4o-mini` 쪽 6건 중 하나는 이유란에 \"읽기에는 문제가 없습니다\"라고 스스로 적었다. 지적은 판결이 아니라 사람이 읽을 후보다.\n\n- [[keep-llm-out-of-ranking]] — LLM이 순위를 정하지 않는다는 결정. 이 문서는 그 LLM이 *어느 모델*이어야 하는가를 다룬다.\n- [[why-this-place-today]] — 설명이 답해야 할 질의.\n- [[congestion-diagnosis]] — 등급 어휘의 출처."
+     }
+    ],
+    "scores": {
+     "faithfulness": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "answer_relevancy": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_precision": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_recall": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "id_precision": {
+      "value": 0.3333333333333333,
+      "status": "ok",
+      "reason": null
+     },
+     "id_recall": {
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+     }
+    },
+    "forbidden": []
+   },
+   "graph": {
+    "outcome": "answered",
+    "cause": null,
+    "answer": "대안 장소는 relatedScore(연관성), 1 - concentration/100(혼잡도 역수), 1 - min(distanceKm,15)/15(거리 역수)를 각각 0.4, 0.4, 0.2의 가중치로 합산한 점수를 기준으로 내림차순 정렬됩니다. 이 점수는 혼잡도가 낮은 순위만 대상으로 사전 필터링된 후 계산됩니다.",
+    "citations": [
+     "wiki:concepts/alternative-scoring.md"
+    ],
+    "steps": [
+     {
+      "index": 0,
+      "kind": "scope",
+      "inputs": {},
+      "status": "ok",
+      "reason": null,
+      "produced": [],
+      "summary": "장소 이름 없음, 날짜 없음(으)로 읽었습니다",
+      "as_of": null
+     },
+     {
+      "index": 1,
+      "kind": "policy",
+      "inputs": {
+       "text": "대안 장소 순서 기준"
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "wiki:concepts/alternative-scoring.md",
+       "wiki:decisions/keep-llm-out-of-ranking.md",
+       "wiki:decisions/choose-explanation-model.md"
+      ],
+      "summary": "문서 Alternative Scoring, Keep LLM Out Of Ranking, Choose Explanation Model By Readability, Not By Rule Violations",
+      "as_of": null
+     }
+    ],
+    "passages": [
+     {
+      "id": "wiki:concepts/alternative-scoring.md",
+      "text": "Alternative Scoring ranks related attractions when the original destination is crowded, combining relatedness, quietness, and distance into one number.\n\nThe consumer service's concrete formula is:\n\n```text\nscore = 0.4 * relationScore\n      + 0.4 * (1 - concentration / 100)\n      + 0.2 * (1 - min(distanceKm, 15) / 15)\n```\n\nResults are returned sorted by `score` descending.\n\n**The weights 0.4 / 0.4 / 0.2 are provisional.** They were chosen without supporting data and are expected to move once real usage exists. An explanation may say which factors the score combines; it should not present the weights as a tuned or validated result.\n\nIf the related-attraction API does not supply a numeric relatedness score, a consumer service may substitute a binary \"is related\" weight.\n\nThe list contains **`RELAXED` and `NORMAL` grades only** — `CROWDED` and `VERY_CROWDED` never appear, and candidates with no congestion coverage are excluded before scoring. This is a filter applied before ranking, not a consequence of the score.\n\nTwo things follow for an explanation. It may not describe a returned alternative as busy, because a busy one cannot be in the list. And an empty list means no quiet, covered, related candidate existed — not that the scoring rejected them.\n\nEach alternative carries both a `summary` (what the place is) and a `recommendReason` (why it suits this date). They serve different screens and must not be merged or treated as interchangeable.\n\nThe backend owns this score. [[travel-context-layer]] may explain the resulting score factors, but it must not recalculate or override the ranked list.\n\n- [[congestion-diagnosis]]\n- [[related-attraction-api]]\n- [[keep-llm-out-of-ranking]]"
+     },
+     {
+      "id": "wiki:decisions/keep-llm-out-of-ranking.md",
+      "text": "Travel Context Wiki will not let an LLM decide attraction ranking or course order for consuming services.\n\nThe service needs deterministic behavior, public-data traceability, and reproducible harness results. LLM output is suitable for explanation and synthesis, not for replacing [[alternative-scoring]] or [[course-generation-policy]].\n\n- Backend recommendation tests remain deterministic.\n- LLM prompts must consume backend-generated course facts.\n- User-facing explanations can be regenerated without changing the saved course.\n\n- [[travel-context-layer]]\n- [[why-this-place-today]]\n- [[alternative-scoring]]"
+     },
+     {
+      "id": "wiki:decisions/choose-explanation-model.md",
+      "text": "설명 모델은 **금지 행동 위반율이 아니라 한국어 가독성으로 고른다.** 쇼케이스 배포에는 `gpt-4o`를 쓴다.\n\nHermes Agent 하네스가 세는 금지 행동 7종은 모델을 가르지 못한다. 같은 프롬프트, 같은 픽스처, 각 5회 실행에서 **`gpt-4o-mini`와 `gpt-4o`가 모두 7종 전부 0%**였다. 위반율만 보면 두 모델은 구분되지 않고, 싼 쪽을 고르는 것이 당연해 보인다.\n\n가르는 것은 규칙이 못 보는 축이었다. 같은 판정자(`gpt-4o`)로 잰 문장 가독성 지적:\n\n| 모델 | 규칙 위반 7종 | 가독성 지적 | 실행당 |\n| --- | --- | --- | --- |\n| `gpt-4o-mini` | 0% (5/5 실행) | 6건 (판정 5/5) | 1.2 |\n| `gpt-4o` | 0% (5/5 실행) | 2건 (판정 4/5) | 0.5 |\n\n`gpt-4o-mini`가 실제로 낸 문장들이다. 어느 것도 일곱 규칙에 걸리지 않는다.\n\n- `\"b도 혼잡도가 '보통(62.0)%와 '여유(41.5)%로\"` — 알파벳이 섞여 들어갔다\n- `\"congestion 진단 결과 백분위수 92에 해당하여\"` — 영어 필드 이름을 그대로 옮겼다\n- `\"매우 붐비는 날으로\"` — 조사가 어긋났다\n- `\"이들 대체지는\"` — 없는 단어다\n\n설명이 이 서비스의 **유일한 산출물**이다. 코스와 등급은 한적이 만들고, Hermes가 더하는 것은 문장뿐이다. 그 문장이 한국어로 읽히지 않으면 이 서비스가 하는 일이 없다. 위반율 0%는 \"거짓말은 안 했다\"는 뜻이지 \"읽을 만하다\"는 뜻이 아니다.\n\n- **비용이 오른다.** `gpt-4o`는 `gpt-4o-mini`보다 비싸다. 프롬프트 캐시가 18KB 접두사를 잡아 주므로 증가분은 주로 출력 토큰이지만, 싼 쪽을 버리는 선택인 것은 분명하다.\n- **작은 모델을 쓰려면 프롬프트가 아니라 다른 것을 바꿔야 한다.** 문체 지시를 세 번 조인 뒤에도 `gpt-4o-mini`의 가독성 결함은 줄지 않았다. 영어 토큰 누출은 닫혔지만 비문은 남았다. 프롬프트로 닫히지 않는 종류의 결함이다.\n- **이 표는 픽스처 하나, 실행 5회짜리다.** 코스 종류가 늘면 다시 재야 한다.\n\n- **Anthropic은 재지 않았다.** 키가 없어 실행하지 못했다. `hermes-agent` 스펙 §6.1의 \"Anthropic 직접\" 결정은 **여전히 측정 근거가 없다** — 이 문서는 그 결정을 지지하지도 반박하지도 않는다.\n- **판정자가 `gpt-4o`다.** 한쪽 실행에서는 같은 모델이 자기 출력을 검사했다. 편향은 `gpt-4o`에게 **유리한** 방향이므로 위 격차는 실제보다 크게 나왔을 수 있다. 격차의 방향은 사람이 문장을 읽어 확인했다(위 인용문이 그것이다).\n- **판정자도 틀린다.** `gpt-4o-mini` 쪽 6건 중 하나는 이유란에 \"읽기에는 문제가 없습니다\"라고 스스로 적었다. 지적은 판결이 아니라 사람이 읽을 후보다.\n\n- [[keep-llm-out-of-ranking]] — LLM이 순위를 정하지 않는다는 결정. 이 문서는 그 LLM이 *어느 모델*이어야 하는가를 다룬다.\n- [[why-this-place-today]] — 설명이 답해야 할 질의.\n- [[congestion-diagnosis]] — 등급 어휘의 출처."
+     }
+    ],
+    "scores": {
+     "faithfulness": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "answer_relevancy": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_precision": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_recall": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "id_precision": {
+      "value": 0.3333333333333333,
+      "status": "ok",
+      "reason": null
+     },
+     "id_recall": {
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+     }
+    },
+    "forbidden": []
+   }
+  }
+ },
+ "q08": {
+  "report_id": "guide-20261013-230003",
+  "question_id": "q08",
+  "kind": "policy",
+  "question": "혼잡 등급은 어떻게 나눠?",
+  "strategies": {
+   "vector": {
+    "outcome": "answered",
+    "cause": null,
+    "answer": "혼잡 등급은 백분위수를 기준으로 나눕니다. 50번째 백분위수 이하는 '여유', 50~75번째는 '보통', 75~90번째는 '혼잡', 90번째 이상은 '매우혼잡'으로 표기됩니다. 등급은 원시 농도 값이 아닌 퍼센타일 계산 결과이며, 해당 날짜의 혼잡 예보가 없을 경우 등급을 제공하지 않습니다.",
+    "citations": [
+     "wiki:concepts/congestion-diagnosis.md"
+    ],
+    "steps": [
+     {
+      "index": 0,
+      "kind": "scope",
+      "inputs": {},
+      "status": "ok",
+      "reason": null,
+      "produced": [],
+      "summary": "장소 이름 없음, 날짜 없음(으)로 읽었습니다",
+      "as_of": null
+     },
+     {
+      "index": 1,
+      "kind": "policy",
+      "inputs": {
+       "text": "혼잡 등급 기준"
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "wiki:concepts/congestion-diagnosis.md",
+       "wiki:decisions/choose-explanation-model.md",
+       "wiki:queries/why-this-place-today.md"
+      ],
+      "summary": "문서 Congestion Diagnosis, Choose Explanation Model By Readability, Not By Rule Violations, Why This Place Today",
+      "as_of": null
+     }
+    ],
+    "passages": [
+     {
+      "id": "wiki:concepts/congestion-diagnosis.md",
+      "text": "Congestion Diagnosis converts public congestion forecast data into a user-facing crowding grade for a selected attraction and visit date.\n\nThe inputs are attraction id and visit date. **There is no time-of-day axis** — the public congestion API returns a date and no time field, so the slot parameter was deleted from the contract rather than left unimplemented. An explanation may not assert a time-of-day crowding claim; the data to support one does not exist.\n\nGrades come from the **percentile**, not the raw concentration value:\n\n- `RELAXED`: up to 50th percentile\n- `NORMAL`: 50th to 75th percentile\n- `CROWDED`: 75th to 90th percentile\n- `VERY_CROWDED`: 90th percentile and above\n\nThe raw concentration is reported alongside the grade but is not the grade's input. Feeding concentration straight into the percentile cutoffs is a known implementation error the consumer service made once and corrected; an explanation that describes the grade as coming from the concentration value repeats it.\n\nWhen an attraction has no forecast coverage the response is `hasCongestionData: false` with **HTTP 200 and success true**, carrying a message and a list of nearby diagnosable places instead of a diagnosis. Missing coverage is a product state, not a failure. An explanation layer must handle this branch: there is no grade, no percentile, and no better-date list to talk about, and inventing one is the exact failure this wiki exists to prevent.\n\n- [[congestion-forecast-api]]\n- [[alternative-scoring]]\n- [[course-generation-policy]]"
+     },
+     {
+      "id": "wiki:decisions/choose-explanation-model.md",
+      "text": "설명 모델은 **금지 행동 위반율이 아니라 한국어 가독성으로 고른다.** 쇼케이스 배포에는 `gpt-4o`를 쓴다.\n\nHermes Agent 하네스가 세는 금지 행동 7종은 모델을 가르지 못한다. 같은 프롬프트, 같은 픽스처, 각 5회 실행에서 **`gpt-4o-mini`와 `gpt-4o`가 모두 7종 전부 0%**였다. 위반율만 보면 두 모델은 구분되지 않고, 싼 쪽을 고르는 것이 당연해 보인다.\n\n가르는 것은 규칙이 못 보는 축이었다. 같은 판정자(`gpt-4o`)로 잰 문장 가독성 지적:\n\n| 모델 | 규칙 위반 7종 | 가독성 지적 | 실행당 |\n| --- | --- | --- | --- |\n| `gpt-4o-mini` | 0% (5/5 실행) | 6건 (판정 5/5) | 1.2 |\n| `gpt-4o` | 0% (5/5 실행) | 2건 (판정 4/5) | 0.5 |\n\n`gpt-4o-mini`가 실제로 낸 문장들이다. 어느 것도 일곱 규칙에 걸리지 않는다.\n\n- `\"b도 혼잡도가 '보통(62.0)%와 '여유(41.5)%로\"` — 알파벳이 섞여 들어갔다\n- `\"congestion 진단 결과 백분위수 92에 해당하여\"` — 영어 필드 이름을 그대로 옮겼다\n- `\"매우 붐비는 날으로\"` — 조사가 어긋났다\n- `\"이들 대체지는\"` — 없는 단어다\n\n설명이 이 서비스의 **유일한 산출물**이다. 코스와 등급은 한적이 만들고, Hermes가 더하는 것은 문장뿐이다. 그 문장이 한국어로 읽히지 않으면 이 서비스가 하는 일이 없다. 위반율 0%는 \"거짓말은 안 했다\"는 뜻이지 \"읽을 만하다\"는 뜻이 아니다.\n\n- **비용이 오른다.** `gpt-4o`는 `gpt-4o-mini`보다 비싸다. 프롬프트 캐시가 18KB 접두사를 잡아 주므로 증가분은 주로 출력 토큰이지만, 싼 쪽을 버리는 선택인 것은 분명하다.\n- **작은 모델을 쓰려면 프롬프트가 아니라 다른 것을 바꿔야 한다.** 문체 지시를 세 번 조인 뒤에도 `gpt-4o-mini`의 가독성 결함은 줄지 않았다. 영어 토큰 누출은 닫혔지만 비문은 남았다. 프롬프트로 닫히지 않는 종류의 결함이다.\n- **이 표는 픽스처 하나, 실행 5회짜리다.** 코스 종류가 늘면 다시 재야 한다.\n\n- **Anthropic은 재지 않았다.** 키가 없어 실행하지 못했다. `hermes-agent` 스펙 §6.1의 \"Anthropic 직접\" 결정은 **여전히 측정 근거가 없다** — 이 문서는 그 결정을 지지하지도 반박하지도 않는다.\n- **판정자가 `gpt-4o`다.** 한쪽 실행에서는 같은 모델이 자기 출력을 검사했다. 편향은 `gpt-4o`에게 **유리한** 방향이므로 위 격차는 실제보다 크게 나왔을 수 있다. 격차의 방향은 사람이 문장을 읽어 확인했다(위 인용문이 그것이다).\n- **판정자도 틀린다.** `gpt-4o-mini` 쪽 6건 중 하나는 이유란에 \"읽기에는 문제가 없습니다\"라고 스스로 적었다. 지적은 판결이 아니라 사람이 읽을 후보다.\n\n- [[keep-llm-out-of-ranking]] — LLM이 순위를 정하지 않는다는 결정. 이 문서는 그 LLM이 *어느 모델*이어야 하는가를 다룬다.\n- [[why-this-place-today]] — 설명이 답해야 할 질의.\n- [[congestion-diagnosis]] — 등급 어휘의 출처."
+     },
+     {
+      "id": "wiki:queries/why-this-place-today.md",
+      "text": "This query template explains why a travel service recommended a place and an order for a specific date, using only the facts the service backend returns.\n\nFive facts. They do not arrive in one payload — the course response carries the visit date and the items, while the destination, the diagnosis, and the alternatives come from their own endpoints. Every response is wrapped in `{ success, data, error }` and the facts live under `data`.\n\n| Fact | Source endpoint |\n| --- | --- |\n| `destination` | `GET /attractions/{id}` |\n| `visitDate` | `targetDate` on `GET /courses/{uuid}` |\n| `congestionDiagnosis` | `GET /attractions/{id}/congestion?date=` |\n| `alternatives` | `GET /attractions/{id}/alternatives?date=&radius=` |\n| `courseItems` | `items` on `GET /courses/{uuid}` |\n\nA field absent from these is a field the explanation may not assert. `harness/fixtures/course-explanation-request.json` holds a worked example of all four responses.\n\nThe answer should:\n\n- summarize the destination's congestion diagnosis using [[congestion-diagnosis]], in percentile terms\n- mention that alternatives were ranked by [[alternative-scoring]], and that only quiet candidates are offered\n- explain the returned visit order using [[course-generation-policy]] — it minimizes travel time from a fixed start\n- state what the reduction rate compares against: the course versus visiting the destination alone\n- avoid claiming that the LLM selected or ordered anything\n\nThe answer must not:\n\n- say the crowded destination was moved later; it is always the first visit\n- give a time-of-day reason for a visit time; the times come from travel time\n- assert a weather condition, because no consumer service supplies one\n- assert a requested time slot, because the contract has no time axis\n\nWhen `hasCongestionData` is f"
+     }
+    ],
+    "scores": {
+     "faithfulness": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "answer_relevancy": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_precision": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_recall": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "id_precision": {
+      "value": 0.3333333333333333,
+      "status": "ok",
+      "reason": null
+     },
+     "id_recall": {
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+     }
+    },
+    "forbidden": []
+   },
+   "graph": {
+    "outcome": "answered",
+    "cause": null,
+    "answer": "혼잡 등급은 백분위수를 기준으로 나눕니다. 50번째 백분위수 이하는 '여유', 50~75번째는 '보통', 75~90번째는 '혼잡', 90번째 이상은 '매우혼잡'으로 표기됩니다. 등급은 원시 농도 값이 아닌 퍼센타일에서 결정되며, 원시 값은 등급과 함께 참고용으로만 제공됩니다.",
+    "citations": [
+     "wiki:concepts/congestion-diagnosis.md"
+    ],
+    "steps": [
+     {
+      "index": 0,
+      "kind": "scope",
+      "inputs": {},
+      "status": "ok",
+      "reason": null,
+      "produced": [],
+      "summary": "장소 이름 없음, 날짜 없음(으)로 읽었습니다",
+      "as_of": null
+     },
+     {
+      "index": 1,
+      "kind": "policy",
+      "inputs": {
+       "text": "혼잡 등급 기준"
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "wiki:concepts/congestion-diagnosis.md",
+       "wiki:decisions/choose-explanation-model.md",
+       "wiki:queries/why-this-place-today.md"
+      ],
+      "summary": "문서 Congestion Diagnosis, Choose Explanation Model By Readability, Not By Rule Violations, Why This Place Today",
+      "as_of": null
+     }
+    ],
+    "passages": [
+     {
+      "id": "wiki:concepts/congestion-diagnosis.md",
+      "text": "Congestion Diagnosis converts public congestion forecast data into a user-facing crowding grade for a selected attraction and visit date.\n\nThe inputs are attraction id and visit date. **There is no time-of-day axis** — the public congestion API returns a date and no time field, so the slot parameter was deleted from the contract rather than left unimplemented. An explanation may not assert a time-of-day crowding claim; the data to support one does not exist.\n\nGrades come from the **percentile**, not the raw concentration value:\n\n- `RELAXED`: up to 50th percentile\n- `NORMAL`: 50th to 75th percentile\n- `CROWDED`: 75th to 90th percentile\n- `VERY_CROWDED`: 90th percentile and above\n\nThe raw concentration is reported alongside the grade but is not the grade's input. Feeding concentration straight into the percentile cutoffs is a known implementation error the consumer service made once and corrected; an explanation that describes the grade as coming from the concentration value repeats it.\n\nWhen an attraction has no forecast coverage the response is `hasCongestionData: false` with **HTTP 200 and success true**, carrying a message and a list of nearby diagnosable places instead of a diagnosis. Missing coverage is a product state, not a failure. An explanation layer must handle this branch: there is no grade, no percentile, and no better-date list to talk about, and inventing one is the exact failure this wiki exists to prevent.\n\n- [[congestion-forecast-api]]\n- [[alternative-scoring]]\n- [[course-generation-policy]]"
+     },
+     {
+      "id": "wiki:decisions/choose-explanation-model.md",
+      "text": "설명 모델은 **금지 행동 위반율이 아니라 한국어 가독성으로 고른다.** 쇼케이스 배포에는 `gpt-4o`를 쓴다.\n\nHermes Agent 하네스가 세는 금지 행동 7종은 모델을 가르지 못한다. 같은 프롬프트, 같은 픽스처, 각 5회 실행에서 **`gpt-4o-mini`와 `gpt-4o`가 모두 7종 전부 0%**였다. 위반율만 보면 두 모델은 구분되지 않고, 싼 쪽을 고르는 것이 당연해 보인다.\n\n가르는 것은 규칙이 못 보는 축이었다. 같은 판정자(`gpt-4o`)로 잰 문장 가독성 지적:\n\n| 모델 | 규칙 위반 7종 | 가독성 지적 | 실행당 |\n| --- | --- | --- | --- |\n| `gpt-4o-mini` | 0% (5/5 실행) | 6건 (판정 5/5) | 1.2 |\n| `gpt-4o` | 0% (5/5 실행) | 2건 (판정 4/5) | 0.5 |\n\n`gpt-4o-mini`가 실제로 낸 문장들이다. 어느 것도 일곱 규칙에 걸리지 않는다.\n\n- `\"b도 혼잡도가 '보통(62.0)%와 '여유(41.5)%로\"` — 알파벳이 섞여 들어갔다\n- `\"congestion 진단 결과 백분위수 92에 해당하여\"` — 영어 필드 이름을 그대로 옮겼다\n- `\"매우 붐비는 날으로\"` — 조사가 어긋났다\n- `\"이들 대체지는\"` — 없는 단어다\n\n설명이 이 서비스의 **유일한 산출물**이다. 코스와 등급은 한적이 만들고, Hermes가 더하는 것은 문장뿐이다. 그 문장이 한국어로 읽히지 않으면 이 서비스가 하는 일이 없다. 위반율 0%는 \"거짓말은 안 했다\"는 뜻이지 \"읽을 만하다\"는 뜻이 아니다.\n\n- **비용이 오른다.** `gpt-4o`는 `gpt-4o-mini`보다 비싸다. 프롬프트 캐시가 18KB 접두사를 잡아 주므로 증가분은 주로 출력 토큰이지만, 싼 쪽을 버리는 선택인 것은 분명하다.\n- **작은 모델을 쓰려면 프롬프트가 아니라 다른 것을 바꿔야 한다.** 문체 지시를 세 번 조인 뒤에도 `gpt-4o-mini`의 가독성 결함은 줄지 않았다. 영어 토큰 누출은 닫혔지만 비문은 남았다. 프롬프트로 닫히지 않는 종류의 결함이다.\n- **이 표는 픽스처 하나, 실행 5회짜리다.** 코스 종류가 늘면 다시 재야 한다.\n\n- **Anthropic은 재지 않았다.** 키가 없어 실행하지 못했다. `hermes-agent` 스펙 §6.1의 \"Anthropic 직접\" 결정은 **여전히 측정 근거가 없다** — 이 문서는 그 결정을 지지하지도 반박하지도 않는다.\n- **판정자가 `gpt-4o`다.** 한쪽 실행에서는 같은 모델이 자기 출력을 검사했다. 편향은 `gpt-4o`에게 **유리한** 방향이므로 위 격차는 실제보다 크게 나왔을 수 있다. 격차의 방향은 사람이 문장을 읽어 확인했다(위 인용문이 그것이다).\n- **판정자도 틀린다.** `gpt-4o-mini` 쪽 6건 중 하나는 이유란에 \"읽기에는 문제가 없습니다\"라고 스스로 적었다. 지적은 판결이 아니라 사람이 읽을 후보다.\n\n- [[keep-llm-out-of-ranking]] — LLM이 순위를 정하지 않는다는 결정. 이 문서는 그 LLM이 *어느 모델*이어야 하는가를 다룬다.\n- [[why-this-place-today]] — 설명이 답해야 할 질의.\n- [[congestion-diagnosis]] — 등급 어휘의 출처."
+     },
+     {
+      "id": "wiki:queries/why-this-place-today.md",
+      "text": "This query template explains why a travel service recommended a place and an order for a specific date, using only the facts the service backend returns.\n\nFive facts. They do not arrive in one payload — the course response carries the visit date and the items, while the destination, the diagnosis, and the alternatives come from their own endpoints. Every response is wrapped in `{ success, data, error }` and the facts live under `data`.\n\n| Fact | Source endpoint |\n| --- | --- |\n| `destination` | `GET /attractions/{id}` |\n| `visitDate` | `targetDate` on `GET /courses/{uuid}` |\n| `congestionDiagnosis` | `GET /attractions/{id}/congestion?date=` |\n| `alternatives` | `GET /attractions/{id}/alternatives?date=&radius=` |\n| `courseItems` | `items` on `GET /courses/{uuid}` |\n\nA field absent from these is a field the explanation may not assert. `harness/fixtures/course-explanation-request.json` holds a worked example of all four responses.\n\nThe answer should:\n\n- summarize the destination's congestion diagnosis using [[congestion-diagnosis]], in percentile terms\n- mention that alternatives were ranked by [[alternative-scoring]], and that only quiet candidates are offered\n- explain the returned visit order using [[course-generation-policy]] — it minimizes travel time from a fixed start\n- state what the reduction rate compares against: the course versus visiting the destination alone\n- avoid claiming that the LLM selected or ordered anything\n\nThe answer must not:\n\n- say the crowded destination was moved later; it is always the first visit\n- give a time-of-day reason for a visit time; the times come from travel time\n- assert a weather condition, because no consumer service supplies one\n- assert a requested time slot, because the contract has no time axis\n\nWhen `hasCongestionData` is f"
+     }
+    ],
+    "scores": {
+     "faithfulness": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "answer_relevancy": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_precision": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_recall": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "id_precision": {
+      "value": 0.3333333333333333,
+      "status": "ok",
+      "reason": null
+     },
+     "id_recall": {
+      "value": 1.0,
+      "status": "ok",
+      "reason": null
+     }
+    },
+    "forbidden": []
+   }
+  }
+ },
+ "q09": {
+  "report_id": "guide-20261013-230003",
+  "question_id": "q09",
+  "kind": "multi_place",
+  "question": "가람궁과 이어진 장소 중 솔내구에 있는 곳은 어디야?",
+  "strategies": {
+   "vector": {
+    "outcome": "answered",
+    "cause": null,
+    "answer": "가람궁과 이어진 장소 중 솔내구에 있는 곳은 물안개 습지, 솔내 호수공원, 솔내 천문대, 솔내 수목원, 솔내 어시장입니다.",
+    "citations": [
+     "hanjeok:place/175",
+     "hanjeok:place/174",
+     "hanjeok:place/178",
+     "hanjeok:place/173",
+     "hanjeok:place/184"
+    ],
+    "steps": [
+     {
+      "index": 0,
+      "kind": "scope",
+      "inputs": {},
+      "status": "ok",
+      "reason": null,
+      "produced": [],
+      "summary": "장소 1곳, 날짜 없음(으)로 읽었습니다",
+      "as_of": null
+     },
+     {
+      "index": 1,
+      "kind": "resolve",
+      "inputs": {
+       "names": [
+        "가람궁"
+       ]
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:place/101"
+      ],
+      "summary": "가람궁 (한빛시 가람구)",
+      "as_of": "2026-10-13T02:00:00Z"
+     },
+     {
+      "index": 2,
+      "kind": "search_places",
+      "inputs": {
+       "text": "솔내구"
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:place/175",
+       "hanjeok:place/174",
+       "hanjeok:place/178",
+       "hanjeok:place/173",
+       "hanjeok:place/184"
+      ],
+      "summary": "5곳: 물안개 습지, 솔내 호수공원, 솔내 천문대, 솔내 수목원, 솔내 어시장",
+      "as_of": "2026-10-13T02:00:00Z"
+     }
+    ],
+    "passages": [
+     {
+      "id": "hanjeok:place/101",
+      "text": "가람궁 · 한빛시 가람구 · 역사 고궁 · place_id 101 · 혼잡 예보 대상\n한빛시 한가운데 있는 옛 궁궐. 주말 낮에는 정문 앞마당부터 사람이 찬다."
+     },
+     {
+      "id": "hanjeok:place/175",
+      "text": "물안개 습지 · 한빛시 솔내구 · 자연 습지 · place_id 175 · 혼잡 예보 대상\n새벽에 물안개가 끼는 습지. 나무 데크로 걷는다."
+     },
+     {
+      "id": "hanjeok:place/174",
+      "text": "솔내 호수공원 · 한빛시 솔내구 · 자연 공원 · place_id 174 · 혼잡 예보 대상\n호수를 한 바퀴 도는 3km 길이 있는 공원."
+     },
+     {
+      "id": "hanjeok:place/178",
+      "text": "솔내 천문대 · 한빛시 솔내구 · 문화 천문대 · place_id 178 · 혼잡 예보 대상\n예약한 사람만 밤 관측에 들어가는 작은 천문대."
+     },
+     {
+      "id": "hanjeok:place/173",
+      "text": "솔내 수목원 · 한빛시 솔내구 · 자연 수목원 · place_id 173 · 혼잡 예보 대상\n침엽수 숲이 넓은 수목원. 단풍철 주말에 가장 붐빈다."
+     },
+     {
+      "id": "hanjeok:place/184",
+      "text": "솔내 어시장 · 한빛시 솔내구 · 쇼핑 전통시장 · place_id 184 · 혼잡 예보 대상\n새벽 경매가 끝나면 한산해지는 어시장."
+     }
+    ],
+    "scores": {
+     "faithfulness": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "answer_relevancy": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_precision": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_recall": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "id_precision": {
+      "value": 0.0,
+      "status": "ok",
+      "reason": null
+     },
+     "id_recall": {
+      "value": 0.0,
+      "status": "ok",
+      "reason": null
+     }
+    },
+    "forbidden": []
+   },
+   "graph": {
+    "outcome": "failed",
+    "cause": "model_failed",
+    "answer": null,
+    "citations": [],
+    "steps": [
+     {
+      "index": 0,
+      "kind": "scope",
+      "inputs": {},
+      "status": "ok",
+      "reason": null,
+      "produced": [],
+      "summary": "장소 1곳, 날짜 없음(으)로 읽었습니다",
+      "as_of": null
+     },
+     {
+      "index": 1,
+      "kind": "resolve",
+      "inputs": {
+       "names": [
+        "가람궁"
+       ]
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:place/101"
+      ],
+      "summary": "가람궁 (한빛시 가람구)",
+      "as_of": "2026-10-13T02:00:00Z"
+     }
+    ],
+    "passages": [
+     {
+      "id": "hanjeok:place/101",
+      "text": "가람궁 · 한빛시 가람구 · 역사 고궁 · place_id 101 · 혼잡 예보 대상\n한빛시 한가운데 있는 옛 궁궐. 주말 낮에는 정문 앞마당부터 사람이 찬다."
+     }
+    ],
+    "scores": {
+     "faithfulness": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "answer_relevancy": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_precision": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_recall": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "id_precision": {
+      "value": 0.0,
+      "status": "ok",
+      "reason": null
+     },
+     "id_recall": {
+      "value": 0.0,
+      "status": "ok",
+      "reason": null
+     }
+    },
+    "forbidden": []
+   }
+  }
+ },
+ "q10": {
+  "report_id": "guide-20261013-230003",
+  "question_id": "q10",
+  "kind": "multi_place",
+  "question": "가람 시립미술관과 이어진 곳 중에 전시가 열리는 곳이 있어?",
+  "strategies": {
+   "vector": {
+    "outcome": "answered",
+    "cause": null,
+    "answer": "가람 시립미술관에서 10월 13일에 '종이와 빛' 전시가 열리고 있습니다.",
+    "citations": [
+     "hanjeok:events/160@2026-10-13"
+    ],
+    "steps": [
+     {
+      "index": 0,
+      "kind": "scope",
+      "inputs": {},
+      "status": "ok",
+      "reason": null,
+      "produced": [],
+      "summary": "장소 1곳, 날짜 없음(으)로 읽었습니다",
+      "as_of": null
+     },
+     {
+      "index": 1,
+      "kind": "resolve",
+      "inputs": {
+       "names": [
+        "가람 시립미술관"
+       ]
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:place/160"
+      ],
+      "summary": "가람 시립미술관 (한빛시 가람구)",
+      "as_of": "2026-10-13T02:00:00Z"
+     },
+     {
+      "index": 2,
+      "kind": "events",
+      "inputs": {
+       "place_id": 160,
+       "date": "2026-10-13"
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:events/160@2026-10-13"
+      ],
+      "summary": "행사 1건: 종이와 빛",
+      "as_of": "2026-10-13T02:00:00Z"
+     }
+    ],
+    "passages": [
+     {
+      "id": "hanjeok:place/160",
+      "text": "가람 시립미술관 · 한빛시 가람구 · 문화 미술관 · place_id 160 · 혼잡 예보 대상\n옛 법원 건물을 고쳐 쓴 미술관. 평일 오전이 한가하다."
+     },
+     {
+      "id": "hanjeok:events/160@2026-10-13",
+      "text": "가람 시립미술관이나 바로 옆에서 10월 13일에 열리는 행사:\n- 종이와 빛 (2026-10-01 ~ 2026-10-31)"
+     }
+    ],
+    "scores": {
+     "faithfulness": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "answer_relevancy": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_precision": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_recall": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "id_precision": {
+      "value": 0.0,
+      "status": "ok",
+      "reason": null
+     },
+     "id_recall": {
+      "value": 0.0,
+      "status": "ok",
+      "reason": null
+     }
+    },
+    "forbidden": []
+   },
+   "graph": {
+    "outcome": "answered",
+    "cause": null,
+    "answer": "가람 시립미술관과 이어진 곳 중 전시가 열리는 곳은 옛 우체국 전시관입니다.",
+    "citations": [
+     "hanjeok:related/160"
+    ],
+    "steps": [
+     {
+      "index": 0,
+      "kind": "scope",
+      "inputs": {},
+      "status": "ok",
+      "reason": null,
+      "produced": [],
+      "summary": "장소 1곳, 날짜 없음(으)로 읽었습니다",
+      "as_of": null
+     },
+     {
+      "index": 1,
+      "kind": "resolve",
+      "inputs": {
+       "names": [
+        "가람 시립미술관"
+       ]
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:place/160"
+      ],
+      "summary": "가람 시립미술관 (한빛시 가람구)",
+      "as_of": "2026-10-13T02:00:00Z"
+     },
+     {
+      "index": 2,
+      "kind": "related_places",
+      "inputs": {
+       "place_id": 160,
+       "limit": 5
+      },
+      "status": "ok",
+      "reason": null,
+      "produced": [
+       "hanjeok:related/160",
+       "hanjeok:place/161",
+       "hanjeok:place/190",
+       "hanjeok:place/169",
+       "wiki:concepts/alternative-scoring.md"
+      ],
+      "summary": "가람 시립미술관와(과) 이어진 3곳",
+      "as_of": "2026-10-13T02:00:00Z"
+     }
+    ],
+    "passages": [
+     {
+      "id": "hanjeok:place/160",
+      "text": "가람 시립미술관 · 한빛시 가람구 · 문화 미술관 · place_id 160 · 혼잡 예보 대상\n옛 법원 건물을 고쳐 쓴 미술관. 평일 오전이 한가하다."
+     },
+     {
+      "id": "hanjeok:place/161",
+      "text": "가람 역사박물관 · 한빛시 가람구 · 문화 박물관 · place_id 161 · 혼잡 예보 대상\n한빛시의 옛 지도와 생활 도구를 모아 둔 박물관."
+     },
+     {
+      "id": "hanjeok:place/190",
+      "text": "옛 우체국 전시관 · 한빛시 가람구 · 문화 전시관 · place_id 190 · 혼잡 예보 대상\n백 년 된 우체국 건물을 전시관으로 쓴다."
+     },
+     {
+      "id": "hanjeok:place/169",
+      "text": "한빛 문학관 · 한빛시 가람구 · 문화 문학관 · place_id 169 · 혼잡 예보 대상\n한빛시 출신 작가들의 원고를 보여 주는 작은 문학관."
+     },
+     {
+      "id": "hanjeok:related/160",
+      "text": "가람 시립미술관와(과) 이어진 장소. 순서는 한적이 정한 순위다.\n1. 가람 역사박물관 (한빛시 가람구, place_id 161)\n2. 옛 우체국 전시관 (한빛시 가람구, place_id 190)\n3. 한빛 문학관 (한빛시 가람구, place_id 169)"
+     },
+     {
+      "id": "wiki:concepts/alternative-scoring.md",
+      "text": "Alternative Scoring ranks related attractions when the original destination is crowded, combining relatedness, quietness, and distance into one number.\n\nThe consumer service's concrete formula is:\n\n```text\nscore = 0.4 * relationScore\n      + 0.4 * (1 - concentration / 100)\n      + 0.2 * (1 - min(distanceKm, 15) / 15)\n```\n\nResults are returned sorted by `score` descending.\n\n**The weights 0.4 / 0.4 / 0.2 are provisional.** They were chosen without supporting data and are expected to move once real usage exists. An explanation may say which factors the score combines; it should not present the weights as a tuned or validated result.\n\nIf the related-attraction API does not supply a numeric relatedness score, a consumer service may substitute a binary \"is related\" weight.\n\nThe list contains **`RELAXED` and `NORMAL` grades only** — `CROWDED` and `VERY_CROWDED` never appear, and candidates with no congestion coverage are excluded before scoring. This is a filter applied before ranking, not a consequence of the score.\n\nTwo things follow for an explanation. It may not describe a returned alternative as busy, because a busy one cannot be in the list. And an empty list means no quiet, covered, related candidate existed — not that the scoring rejected them.\n\nEach alternative carries both a `summary` (what the place is) and a `recommendReason` (why it suits this date). They serve different screens and must not be merged or treated as interchangeable.\n\nThe backend owns this score. [[travel-context-layer]] may explain the resulting score factors, but it must not recalculate or override the ranked list.\n\n- [[congestion-diagnosis]]\n- [[related-attraction-api]]\n- [[keep-llm-out-of-ranking]]"
+     }
+    ],
+    "scores": {
+     "faithfulness": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "answer_relevancy": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_precision": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "context_recall": {
+      "value": null,
+      "status": "unavailable",
+      "reason": "판정 모델을 돌리지 않은 평가입니다."
+     },
+     "id_precision": {
+      "value": 0.3333333333333333,
+      "status": "ok",
+      "reason": null
+     },
+     "id_recall": {
+      "value": 0.6666666666666666,
+      "status": "ok",
+      "reason": null
+     }
+    },
+    "forbidden": []
+   }
+  }
+ },
+ "q11": {
+  "report_id": "guide-20261013-230003",
+  "question_id": "q11",
+  "kind": "unsupported",
+  "question": "가람궁 입장료는 얼마야?",
+  "strategies": {
+   "vector": {
+    "outcome": "declined",
+    "cause": "unsupported_topic",
+    "answer": null,
+    "citations": [],
+    "steps": [
+     {
+      "index": 0,
+      "kind": "scope",
+      "inputs": {},
+      "status": "refused",
+      "reason": "입장료와 요금은(는) 제가 갖고 있지 않은 정보입니다. 혼잡 예보, 대신 갈 만한 곳, 이어진 장소와 행사는 알려 드릴 수 있습니다.",
+      "produced": [],
+      "summary": "답할 수 없는 주제(입장료와 요금)로 읽었습니다",
+      "as_of": null
+     }
+    ],
+    "passages": [],
+    "scores": {
+     "faithfulness": {
+      "value": null,
+      "status": "not_applicable",
+      "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+     },
+     "answer_relevancy": {
+      "value": null,
+      "status": "not_applicable",
+      "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+     },
+     "context_precision": {
+      "value": null,
+      "status": "not_applicable",
+      "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+     },
+     "context_recall": {
+      "value": null,
+      "status": "not_applicable",
+      "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+     },
+     "id_precision": {
+      "value": null,
+      "status": "not_applicable",
+      "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+     },
+     "id_recall": {
+      "value": null,
+      "status": "not_applicable",
+      "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+     }
+    },
+    "forbidden": []
+   },
+   "graph": {
+    "outcome": "declined",
+    "cause": "unsupported_topic",
+    "answer": null,
+    "citations": [],
+    "steps": [
+     {
+      "index": 0,
+      "kind": "scope",
+      "inputs": {},
+      "status": "refused",
+      "reason": "입장료와 요금은(는) 제가 갖고 있지 않은 정보입니다. 혼잡 예보, 대신 갈 만한 곳, 이어진 장소와 행사는 알려 드릴 수 있습니다.",
+      "produced": [],
+      "summary": "답할 수 없는 주제(입장료와 요금)로 읽었습니다",
+      "as_of": null
+     }
+    ],
+    "passages": [],
+    "scores": {
+     "faithfulness": {
+      "value": null,
+      "status": "not_applicable",
+      "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+     },
+     "answer_relevancy": {
+      "value": null,
+      "status": "not_applicable",
+      "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+     },
+     "context_precision": {
+      "value": null,
+      "status": "not_applicable",
+      "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+     },
+     "context_recall": {
+      "value": null,
+      "status": "not_applicable",
+      "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+     },
+     "id_precision": {
+      "value": null,
+      "status": "not_applicable",
+      "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+     },
+     "id_recall": {
+      "value": null,
+      "status": "not_applicable",
+      "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+     }
+    },
+    "forbidden": []
+   }
+  }
+ },
+ "q12": {
+  "report_id": "guide-20261013-230003",
+  "question_id": "q12",
+  "kind": "unsupported",
+  "question": "솔내구 맛집 추천해 줘",
+  "strategies": {
+   "vector": {
+    "outcome": "declined",
+    "cause": "unsupported_topic",
+    "answer": null,
+    "citations": [],
+    "steps": [
+     {
+      "index": 0,
+      "kind": "scope",
+      "inputs": {},
+      "status": "refused",
+      "reason": "식당과 숙소은(는) 제가 갖고 있지 않은 정보입니다. 혼잡 예보, 대신 갈 만한 곳, 이어진 장소와 행사는 알려 드릴 수 있습니다.",
+      "produced": [],
+      "summary": "답할 수 없는 주제(식당과 숙소)로 읽었습니다",
+      "as_of": null
+     }
+    ],
+    "passages": [],
+    "scores": {
+     "faithfulness": {
+      "value": null,
+      "status": "not_applicable",
+      "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+     },
+     "answer_relevancy": {
+      "value": null,
+      "status": "not_applicable",
+      "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+     },
+     "context_precision": {
+      "value": null,
+      "status": "not_applicable",
+      "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+     },
+     "context_recall": {
+      "value": null,
+      "status": "not_applicable",
+      "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+     },
+     "id_precision": {
+      "value": null,
+      "status": "not_applicable",
+      "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+     },
+     "id_recall": {
+      "value": null,
+      "status": "not_applicable",
+      "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+     }
+    },
+    "forbidden": []
+   },
+   "graph": {
+    "outcome": "declined",
+    "cause": "unsupported_topic",
+    "answer": null,
+    "citations": [],
+    "steps": [
+     {
+      "index": 0,
+      "kind": "scope",
+      "inputs": {},
+      "status": "refused",
+      "reason": "식당과 숙소은(는) 제가 갖고 있지 않은 정보입니다. 혼잡 예보, 대신 갈 만한 곳, 이어진 장소와 행사는 알려 드릴 수 있습니다.",
+      "produced": [],
+      "summary": "답할 수 없는 주제(식당과 숙소)로 읽었습니다",
+      "as_of": null
+     }
+    ],
+    "passages": [],
+    "scores": {
+     "faithfulness": {
+      "value": null,
+      "status": "not_applicable",
+      "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+     },
+     "answer_relevancy": {
+      "value": null,
+      "status": "not_applicable",
+      "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+     },
+     "context_precision": {
+      "value": null,
+      "status": "not_applicable",
+      "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+     },
+     "context_recall": {
+      "value": null,
+      "status": "not_applicable",
+      "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+     },
+     "id_precision": {
+      "value": null,
+      "status": "not_applicable",
+      "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+     },
+     "id_recall": {
+      "value": null,
+      "status": "not_applicable",
+      "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+     }
+    },
+    "forbidden": []
+   }
+  }
+ }
+}

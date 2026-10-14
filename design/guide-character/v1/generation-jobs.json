@@ -1,0 +1,628 @@
+[
+  {
+    "key": "waiting",
+    "generatedFile": "/Users/hyuno/.codex/generated_images/01a135bf-2a0e-7cb3-b015-75f1f2cf236c/exec-9fe76488-dfbc-4bed-9848-e0bafda8ab7f.png",
+    "prompt": "Create the final WAITING pose of the attached leaf character in a pure flat-color cartoon sticker style. The previous render still has unwanted texture and dull brown cheeks; correct those. Preserve identity and pose but render fresh with completely uniform solid areas. One elongated green teardrop LEAF is the entire body and head, top point gently bent right, one fine light green middle vein, navy #172033 bold rounded outline, tiny green outlined arms, sitting legs out, one coral ribbon bow tied at the BOTTOM stem with trailing tails. No neck or separate head. Two small navy dot eyes and small upward calm smile all in the upper half of the leaf. Soft coral cheeks must be muted pink-coral, NOT brown/olive, not bright orange. Flat body #009C75, flat ribbon #F04B3E. No brush texture, no lighting, no gradient, no shadow, no blur, no dimensional rendering. Think clean flat cartoon art for a small interface icon. One character only. No gold, sun rays, backpack, scenery, cards, text or any letters. True transparent background. Square canvas, generous margin, leaf body height approximately 54% of canvas, keep whole figure within middle 76% of canvas. Requested 512x512 transparent PNG.",
+    "reference": [
+      "/Users/hyuno/.codex/generated_images/01a135bf-2a0e-7cb3-b015-75f1f2cf236c/exec-81d4b006-3971-437e-9665-af6f6c72866e.png"
+    ],
+    "original": "design/guide-character/v1/originals/waiting.png",
+    "actualTool": "image_gen.imagegen",
+    "generatedAt": "2026-10-13",
+    "dimensions": {
+      "source": {
+        "width": 512,
+        "height": 512
+      },
+      "public": {
+        "width": 384,
+        "height": 384
+      }
+    },
+    "originalDimensions": {
+      "width": 1254,
+      "height": 1254
+    },
+    "originalSha256": "72ffd5e88cb230f1d399ea7b12bd80fad99588e6e3c681d701432cd272bea4d2",
+    "sourceSha256": "f528fde4d5a91556e67a708ed7a31f89542a8a27992f59a5f33dcacb833b5610",
+    "publicSha256": "a0bb7d433c7d4e0e774aed4b249d6ee5550ac678c662cd6645ba12d3845c7d2f",
+    "bytes": {
+      "original": 504229,
+      "source": 97762,
+      "public": 42608
+    },
+    "output": {
+      "source": "design/guide-character/v1/waiting.png",
+      "public": "frontend/public/brand/guide/waiting.webp"
+    },
+    "edits": [
+      "Copied the selected generator PNG byte-for-byte to the originals folder; the original is untouched.",
+      "Used the existing real alpha channel; no background removal was needed.",
+      "Resized the whole 1254x1254 square canvas to 512x512 with Pillow LANCZOS and saved an optimized RGBA PNG, preserving aspect ratio and margins.",
+      "Resized the same original whole canvas directly to 384x384 with Pillow LANCZOS and encoded lossless WebP with alpha (method 6, exact enabled).",
+      "Reopened all outputs and computed actual dimensions, byte counts and SHA-256 hashes; verified transparent pixels and alpha channels. No crop, redraw or palette correction was applied."
+    ],
+    "visualReviewStatus": "unreviewed",
+    "rightsReviewStatus": "not-performed",
+    "alphaVerification": {
+      "original": {
+        "mode": "RGBA",
+        "alphaMin": 0,
+        "alphaMax": 255,
+        "fullyTransparentPixels": 1177652,
+        "partiallyTransparentPixels": 393642,
+        "fullyOpaquePixels": 1222,
+        "allBorderPixelsTransparent": true,
+        "visibleBoundsAtAlpha32": [
+          353,
+          178,
+          940,
+          1093
+        ]
+      },
+      "source": {
+        "mode": "RGBA",
+        "alphaMin": 0,
+        "alphaMax": 255,
+        "fullyTransparentPixels": 195405,
+        "partiallyTransparentPixels": 65843,
+        "fullyOpaquePixels": 896,
+        "allBorderPixelsTransparent": true,
+        "visibleBoundsAtAlpha32": [
+          144,
+          72,
+          384,
+          446
+        ]
+      },
+      "public": {
+        "mode": "RGBA",
+        "alphaMin": 0,
+        "alphaMax": 255,
+        "fullyTransparentPixels": 109550,
+        "partiallyTransparentPixels": 37221,
+        "fullyOpaquePixels": 685,
+        "allBorderPixelsTransparent": true,
+        "visibleBoundsAtAlpha32": [
+          108,
+          54,
+          288,
+          335
+        ]
+      }
+    },
+    "aiVisualReviewNotes": [
+      "Generated colors differ from the exact requested HEX palette.",
+      "Subtle raster color variation/texture remains despite flat-fill prompts.",
+      "Cheeks read as pale pink filled ovals rather than clearly low-opacity coral over green.",
+      "The centre vein is a relatively broad tapered stripe rather than a fine line.",
+      "Upward gaze is subtle with dot eyes; the seated pose is clear."
+    ],
+    "sourceStyleReferences": [
+      "/Users/hyuno/orca/workspaces/hanjeok/dev/design/brand/source/mascot-v2/reference-board.png",
+      "/Users/hyuno/orca/workspaces/hanjeok/dev/design/brand/source/mascot-v2/searching.png"
+    ]
+  },
+  {
+    "key": "looking",
+    "prompt": "Input image 1: the selected WAITING identity reference of 잎새. Generate a different pose of precisely this same character; retain its teardrop single leaf body, proportions, face identity, outline weight, centre vein, tiny limbs and bottom-stem ribbon. Keep the same scale of leaf body as the reference, not larger or smaller; allow the pose to change the total bounding box. Same square framing and balanced margins. Requested 512x512 transparent PNG.\nUse clean flat solid fills, no texture and no gradients: green #009C75, navy #172033, coral ribbon #F04B3E, subtle low-opacity coral cheeks. A card, only if required, is warm white #FFFDF8 with navy outline and one small gold #F2B84B dot; gold nowhere else.\nONE single rounded elongated teardrop leaf forms head AND body, top curling to a side; no separate torso or head. One lighter centre vein. Face on upper half: two navy dot eyes, small navy mouth. Tiny stubby green arms and legs with navy outlines. Exactly one coral ribbon tied at BOTTOM STEM (not neck) with trailing tails. Keep ribbon visible. Flat soft friendly sticker-like illustration. True transparent alpha background, no painted checkerboard or white rectangle. No sun rays, no backpack, no round/gold body, no scenery, no ground shadow, no extra characters, NO TEXT OR LETTERS OR SYMBOLS.\n\nPose looking: in flight, leaning forward diagonally, one hand shading its eyes as it scouts ahead, other hand close to the body, little legs tucked trailing, bottom-stem ribbon streaming behind. No wings, no motion lines, no prop. Both navy dot eyes visible, looking ahead. The leaf is still ONE recognizable teardrop body, with the same upper-half face.",
+    "reference": [
+      "/Users/hyuno/.codex/generated_images/01a135bf-2a0e-7cb3-b015-75f1f2cf236c/exec-9fe76488-dfbc-4bed-9848-e0bafda8ab7f.png"
+    ],
+    "generatedFile": "/Users/hyuno/.codex/generated_images/01a135bf-2a0e-7cb3-b015-75f1f2cf236c/exec-4ccdaed3-dfe5-41a9-9e90-4134ac049e52.png",
+    "original": "design/guide-character/v1/originals/looking.png",
+    "actualTool": "image_gen.imagegen",
+    "generatedAt": "2026-10-13",
+    "dimensions": {
+      "source": {
+        "width": 512,
+        "height": 512
+      },
+      "public": {
+        "width": 384,
+        "height": 384
+      }
+    },
+    "originalDimensions": {
+      "width": 1254,
+      "height": 1254
+    },
+    "originalSha256": "b64059e4dc22efb6bbc9be023b839db72c954fc0b4757fd6a6529c81c27086c4",
+    "sourceSha256": "7ec2267cbb5b69c6a12a74ca52563ab9fd7eca6a7272bd79b6512ff55888bd4b",
+    "publicSha256": "8f8d60af13a1f4824b885f357fe20ffacf0624a46c87edd890ffd6c01b35ac79",
+    "bytes": {
+      "original": 425579,
+      "source": 82961,
+      "public": 36256
+    },
+    "output": {
+      "source": "design/guide-character/v1/looking.png",
+      "public": "frontend/public/brand/guide/looking.webp"
+    },
+    "edits": [
+      "Copied the selected generator PNG byte-for-byte to the originals folder; the original is untouched.",
+      "Used the existing real alpha channel; no background removal was needed.",
+      "Resized the whole 1254x1254 square canvas to 512x512 with Pillow LANCZOS and saved an optimized RGBA PNG, preserving aspect ratio and margins.",
+      "Resized the same original whole canvas directly to 384x384 with Pillow LANCZOS and encoded lossless WebP with alpha (method 6, exact enabled).",
+      "Reopened all outputs and computed actual dimensions, byte counts and SHA-256 hashes; verified transparent pixels and alpha channels. No crop, redraw or palette correction was applied."
+    ],
+    "visualReviewStatus": "unreviewed",
+    "rightsReviewStatus": "not-performed",
+    "alphaVerification": {
+      "original": {
+        "mode": "RGBA",
+        "alphaMin": 0,
+        "alphaMax": 255,
+        "fullyTransparentPixels": 1264374,
+        "partiallyTransparentPixels": 307244,
+        "fullyOpaquePixels": 898,
+        "allBorderPixelsTransparent": true,
+        "visibleBoundsAtAlpha32": [
+          251,
+          219,
+          999,
+          1001
+        ]
+      },
+      "source": {
+        "mode": "RGBA",
+        "alphaMin": 0,
+        "alphaMax": 255,
+        "fullyTransparentPixels": 210080,
+        "partiallyTransparentPixels": 51253,
+        "fullyOpaquePixels": 811,
+        "allBorderPixelsTransparent": true,
+        "visibleBoundsAtAlpha32": [
+          102,
+          89,
+          408,
+          409
+        ]
+      },
+      "public": {
+        "mode": "RGBA",
+        "alphaMin": 0,
+        "alphaMax": 255,
+        "fullyTransparentPixels": 117857,
+        "partiallyTransparentPixels": 28973,
+        "fullyOpaquePixels": 626,
+        "allBorderPixelsTransparent": true,
+        "visibleBoundsAtAlpha32": [
+          77,
+          67,
+          306,
+          307
+        ]
+      }
+    },
+    "aiVisualReviewNotes": [
+      "Generated colors differ from the exact requested HEX palette.",
+      "Subtle raster color variation/texture remains despite flat-fill prompts.",
+      "Cheeks read as pale pink filled ovals rather than clearly low-opacity coral over green.",
+      "The centre vein is a relatively broad tapered stripe rather than a fine line.",
+      "No additional pose-specific deviation observed."
+    ],
+    "sourceStyleReferences": [
+      "/Users/hyuno/orca/workspaces/hanjeok/dev/design/brand/source/mascot-v2/reference-board.png",
+      "/Users/hyuno/orca/workspaces/hanjeok/dev/design/brand/source/mascot-v2/searching.png"
+    ]
+  },
+  {
+    "key": "found",
+    "prompt": "Input image 1: the selected WAITING identity reference of 잎새. Generate a different pose of precisely this same character; retain its teardrop single leaf body, proportions, face identity, outline weight, centre vein, tiny limbs and bottom-stem ribbon. Keep the same scale of leaf body as the reference, not larger or smaller; allow the pose to change the total bounding box. Same square framing and balanced margins. Requested 512x512 transparent PNG.\nUse clean flat solid fills, no texture and no gradients: green #009C75, navy #172033, coral ribbon #F04B3E, subtle low-opacity coral cheeks. A card, only if required, is warm white #FFFDF8 with navy outline and one small gold #F2B84B dot; gold nowhere else.\nONE single rounded elongated teardrop leaf forms head AND body, top curling to a side; no separate torso or head. One lighter centre vein. Face on upper half: two navy dot eyes, small navy mouth. Tiny stubby green arms and legs with navy outlines. Exactly one coral ribbon tied at BOTTOM STEM (not neck) with trailing tails. Keep ribbon visible. Flat soft friendly sticker-like illustration. True transparent alpha background, no painted checkerboard or white rectangle. No sun rays, no backpack, no round/gold body, no scenery, no ground shadow, no extra characters, NO TEXT OR LETTERS OR SYMBOLS.\n\nPose found: standing, holding exactly ONE warm white card out toward the viewer with BOTH tiny hands, pleased small closed smile, two navy DOT eyes. The card is blank apart from exactly one small gold dot; navy outline. Keep the bottom-stem ribbon visible below the card. No symbols or marks on the card besides one dot.",
+    "reference": [
+      "/Users/hyuno/.codex/generated_images/01a135bf-2a0e-7cb3-b015-75f1f2cf236c/exec-9fe76488-dfbc-4bed-9848-e0bafda8ab7f.png"
+    ],
+    "generatedFile": "/Users/hyuno/.codex/generated_images/01a135bf-2a0e-7cb3-b015-75f1f2cf236c/exec-19d99e7a-9986-4208-aac0-35dcdb88b497.png",
+    "original": "design/guide-character/v1/originals/found.png",
+    "actualTool": "image_gen.imagegen",
+    "generatedAt": "2026-10-13",
+    "dimensions": {
+      "source": {
+        "width": 512,
+        "height": 512
+      },
+      "public": {
+        "width": 384,
+        "height": 384
+      }
+    },
+    "originalDimensions": {
+      "width": 1254,
+      "height": 1254
+    },
+    "originalSha256": "1ed0998d7e7b7c4e5ce58f9dbd03b70f83496ac40627598ae95ca1a37fdb137c",
+    "sourceSha256": "321e2146e11f07d402b1faefac07c929f852f41799da3aaf31d95dbac7b8e988",
+    "publicSha256": "b4d59cc3e3e2702d51f265e9f1ea027043364c92fba0fee9f43796db9875abf4",
+    "bytes": {
+      "original": 514380,
+      "source": 103749,
+      "public": 45364
+    },
+    "output": {
+      "source": "design/guide-character/v1/found.png",
+      "public": "frontend/public/brand/guide/found.webp"
+    },
+    "edits": [
+      "Copied the selected generator PNG byte-for-byte to the originals folder; the original is untouched.",
+      "Used the existing real alpha channel; no background removal was needed.",
+      "Resized the whole 1254x1254 square canvas to 512x512 with Pillow LANCZOS and saved an optimized RGBA PNG, preserving aspect ratio and margins.",
+      "Resized the same original whole canvas directly to 384x384 with Pillow LANCZOS and encoded lossless WebP with alpha (method 6, exact enabled).",
+      "Reopened all outputs and computed actual dimensions, byte counts and SHA-256 hashes; verified transparent pixels and alpha channels. No crop, redraw or palette correction was applied."
+    ],
+    "visualReviewStatus": "unreviewed",
+    "rightsReviewStatus": "not-performed",
+    "alphaVerification": {
+      "original": {
+        "mode": "RGBA",
+        "alphaMin": 0,
+        "alphaMax": 255,
+        "fullyTransparentPixels": 1180007,
+        "partiallyTransparentPixels": 391484,
+        "fullyOpaquePixels": 1025,
+        "allBorderPixelsTransparent": true,
+        "visibleBoundsAtAlpha32": [
+          335,
+          164,
+          935,
+          1107
+        ]
+      },
+      "source": {
+        "mode": "RGBA",
+        "alphaMin": 0,
+        "alphaMax": 255,
+        "fullyTransparentPixels": 195899,
+        "partiallyTransparentPixels": 65351,
+        "fullyOpaquePixels": 894,
+        "allBorderPixelsTransparent": true,
+        "visibleBoundsAtAlpha32": [
+          136,
+          67,
+          382,
+          452
+        ]
+      },
+      "public": {
+        "mode": "RGBA",
+        "alphaMin": 0,
+        "alphaMax": 255,
+        "fullyTransparentPixels": 109834,
+        "partiallyTransparentPixels": 36940,
+        "fullyOpaquePixels": 682,
+        "allBorderPixelsTransparent": true,
+        "visibleBoundsAtAlpha32": [
+          102,
+          50,
+          287,
+          339
+        ]
+      }
+    },
+    "aiVisualReviewNotes": [
+      "Generated colors differ from the exact requested HEX palette.",
+      "Subtle raster color variation/texture remains despite flat-fill prompts.",
+      "Cheeks read as pale pink filled ovals rather than clearly low-opacity coral over green.",
+      "The centre vein is a relatively broad tapered stripe rather than a fine line.",
+      "No additional pose-specific deviation observed; one card and one gold dot."
+    ],
+    "sourceStyleReferences": [
+      "/Users/hyuno/orca/workspaces/hanjeok/dev/design/brand/source/mascot-v2/reference-board.png",
+      "/Users/hyuno/orca/workspaces/hanjeok/dev/design/brand/source/mascot-v2/searching.png"
+    ]
+  },
+  {
+    "key": "choose",
+    "prompt": "Input image 1: the selected WAITING identity reference of 잎새. Generate a different pose of precisely this same character; retain its teardrop single leaf body, proportions, face identity, outline weight, centre vein, tiny limbs and bottom-stem ribbon. Keep the same scale of leaf body as the reference, not larger or smaller; allow the pose to change the total bounding box. Same square framing and balanced margins. Requested 512x512 transparent PNG.\nUse clean flat solid fills, no texture and no gradients: green #009C75, navy #172033, coral ribbon #F04B3E, subtle low-opacity coral cheeks. A card, only if required, is warm white #FFFDF8 with navy outline and one small gold #F2B84B dot; gold nowhere else.\nONE single rounded elongated teardrop leaf forms head AND body, top curling to a side; no separate torso or head. One lighter centre vein. Face on upper half: two navy dot eyes, small navy mouth. Tiny stubby green arms and legs with navy outlines. Exactly one coral ribbon tied at BOTTOM STEM (not neck) with trailing tails. Keep ribbon visible. Flat soft friendly sticker-like illustration. True transparent alpha background, no painted checkerboard or white rectangle. No sun rays, no backpack, no round/gold body, no scenery, no ground shadow, no extra characters, NO TEXT OR LETTERS OR SYMBOLS.\n\nPose choose: standing, exactly ONE card in EACH hand held apart at the sides (TWO cards total), leaf tip tilted, curious small mouth, two navy DOT eyes. Each card warm white #FFFDF8, thick navy outline and exactly ONE small gold #F2B84B dot, otherwise blank. Bottom-stem ribbon fully visible, no extra objects.",
+    "reference": [
+      "/Users/hyuno/.codex/generated_images/01a135bf-2a0e-7cb3-b015-75f1f2cf236c/exec-9fe76488-dfbc-4bed-9848-e0bafda8ab7f.png"
+    ],
+    "generatedFile": "/Users/hyuno/.codex/generated_images/01a135bf-2a0e-7cb3-b015-75f1f2cf236c/exec-55e858fe-8790-486a-8eff-0ce7c6908cc9.png",
+    "original": "design/guide-character/v1/originals/choose.png",
+    "actualTool": "image_gen.imagegen",
+    "generatedAt": "2026-10-13",
+    "dimensions": {
+      "source": {
+        "width": 512,
+        "height": 512
+      },
+      "public": {
+        "width": 384,
+        "height": 384
+      }
+    },
+    "originalDimensions": {
+      "width": 1254,
+      "height": 1254
+    },
+    "originalSha256": "617ff4d68898ce1c9c768becaf314cecafcfa5762575b3a2bd8692d74da668c2",
+    "sourceSha256": "497c2aa146c9dea17be82ca2673ef0a0cef24aba3a85eecac29bf67efe7cf549",
+    "publicSha256": "f2d1ac875be89007214f717444ba8f5076a6161187dc5bd5e9db8bcb9c7c1fba",
+    "bytes": {
+      "original": 577577,
+      "source": 114058,
+      "public": 49744
+    },
+    "output": {
+      "source": "design/guide-character/v1/choose.png",
+      "public": "frontend/public/brand/guide/choose.webp"
+    },
+    "edits": [
+      "Copied the selected generator PNG byte-for-byte to the originals folder; the original is untouched.",
+      "Used the existing real alpha channel; no background removal was needed.",
+      "Resized the whole 1254x1254 square canvas to 512x512 with Pillow LANCZOS and saved an optimized RGBA PNG, preserving aspect ratio and margins.",
+      "Resized the same original whole canvas directly to 384x384 with Pillow LANCZOS and encoded lossless WebP with alpha (method 6, exact enabled).",
+      "Reopened all outputs and computed actual dimensions, byte counts and SHA-256 hashes; verified transparent pixels and alpha channels. No crop, redraw or palette correction was applied."
+    ],
+    "visualReviewStatus": "unreviewed",
+    "rightsReviewStatus": "not-performed",
+    "alphaVerification": {
+      "original": {
+        "mode": "RGBA",
+        "alphaMin": 0,
+        "alphaMax": 255,
+        "fullyTransparentPixels": 1131034,
+        "partiallyTransparentPixels": 440233,
+        "fullyOpaquePixels": 1249,
+        "allBorderPixelsTransparent": true,
+        "visibleBoundsAtAlpha32": [
+          191,
+          179,
+          1092,
+          1107
+        ]
+      },
+      "source": {
+        "mode": "RGBA",
+        "alphaMin": 0,
+        "alphaMax": 255,
+        "fullyTransparentPixels": 187571,
+        "partiallyTransparentPixels": 73441,
+        "fullyOpaquePixels": 1132,
+        "allBorderPixelsTransparent": true,
+        "visibleBoundsAtAlpha32": [
+          78,
+          73,
+          446,
+          452
+        ]
+      },
+      "public": {
+        "mode": "RGBA",
+        "alphaMin": 0,
+        "alphaMax": 255,
+        "fullyTransparentPixels": 105095,
+        "partiallyTransparentPixels": 41483,
+        "fullyOpaquePixels": 878,
+        "allBorderPixelsTransparent": true,
+        "visibleBoundsAtAlpha32": [
+          58,
+          54,
+          335,
+          339
+        ]
+      }
+    },
+    "aiVisualReviewNotes": [
+      "Generated colors differ from the exact requested HEX palette.",
+      "Subtle raster color variation/texture remains despite flat-fill prompts.",
+      "Cheeks read as pale pink filled ovals rather than clearly low-opacity coral over green.",
+      "The centre vein is a relatively broad tapered stripe rather than a fine line.",
+      "Tip tilt is subtle; two cards each have one gold dot."
+    ],
+    "sourceStyleReferences": [
+      "/Users/hyuno/orca/workspaces/hanjeok/dev/design/brand/source/mascot-v2/reference-board.png",
+      "/Users/hyuno/orca/workspaces/hanjeok/dev/design/brand/source/mascot-v2/searching.png"
+    ]
+  },
+  {
+    "key": "no-data",
+    "prompt": "Edit ONLY the facial placement of reference image 2, the no-data pose. Image 1 is the waiting identity reference. Keep no-data's single leaf silhouette, stubby open empty palms, two standing feet, fine centre vein, bottom-stem coral ribbon with tails, scale, outline thickness and transparent background unchanged. Move the ENTIRE FACE upward by about 110 pixels on this 1254 square canvas: both navy dot eyes, the tiny neutral round mouth and subtle coral cheeks. ALL facial marks must be wholly in the UPPER HALF of the leaf, with eyes near the upper 32% and mouth near the upper 42% of leaf height. Mild curiosity, not sadness. Keep palms EMPTY, leaf inclined slightly to inspect palms. No extra details, no text or letters, no symbols, no props, no gold. Flat green #009C75, navy #172033, coral ribbon #F04B3E, one pale green vein, subtle translucent coral cheeks. No gradients, no shadow, no backdrop. Same character and framing, real alpha transparency, requested 512x512 PNG.",
+    "reference": [
+      "/Users/hyuno/.codex/generated_images/01a135bf-2a0e-7cb3-b015-75f1f2cf236c/exec-9fe76488-dfbc-4bed-9848-e0bafda8ab7f.png",
+      "/Users/hyuno/.codex/generated_images/01a135bf-2a0e-7cb3-b015-75f1f2cf236c/exec-0ef1ec86-fb24-4ab8-a1e7-2df6dafc293c.png"
+    ],
+    "generatedFile": "/Users/hyuno/.codex/generated_images/01a135bf-2a0e-7cb3-b015-75f1f2cf236c/exec-4f31a98e-47cb-4aba-9e6a-02f53bcce535.png",
+    "original": "design/guide-character/v1/originals/no-data.png",
+    "actualTool": "image_gen.imagegen",
+    "generatedAt": "2026-10-13",
+    "dimensions": {
+      "source": {
+        "width": 512,
+        "height": 512
+      },
+      "public": {
+        "width": 384,
+        "height": 384
+      }
+    },
+    "originalDimensions": {
+      "width": 1254,
+      "height": 1254
+    },
+    "originalSha256": "9a6d3d60dc0f938e158d95413e8cd9c47a75c1f13b010919a856adcbf57bfdb9",
+    "sourceSha256": "803f5a2bab27f12fe452fee0225f0fdd4caaba1b4e01ae0d227b380f9f08ccb4",
+    "publicSha256": "0fc7f2198d990ce2a7900e1b0bbdfbde0329e7bf4d389e022d3c4174a5b6cd63",
+    "bytes": {
+      "original": 503366,
+      "source": 99850,
+      "public": 43860
+    },
+    "output": {
+      "source": "design/guide-character/v1/no-data.png",
+      "public": "frontend/public/brand/guide/no-data.webp"
+    },
+    "edits": [
+      "Copied the selected generator PNG byte-for-byte to the originals folder; the original is untouched.",
+      "Used the existing real alpha channel; no background removal was needed.",
+      "Resized the whole 1254x1254 square canvas to 512x512 with Pillow LANCZOS and saved an optimized RGBA PNG, preserving aspect ratio and margins.",
+      "Resized the same original whole canvas directly to 384x384 with Pillow LANCZOS and encoded lossless WebP with alpha (method 6, exact enabled).",
+      "Reopened all outputs and computed actual dimensions, byte counts and SHA-256 hashes; verified transparent pixels and alpha channels. No crop, redraw or palette correction was applied."
+    ],
+    "visualReviewStatus": "unreviewed",
+    "rightsReviewStatus": "not-performed",
+    "alphaVerification": {
+      "original": {
+        "mode": "RGBA",
+        "alphaMin": 0,
+        "alphaMax": 255,
+        "fullyTransparentPixels": 1193900,
+        "partiallyTransparentPixels": 377604,
+        "fullyOpaquePixels": 1012,
+        "allBorderPixelsTransparent": true,
+        "visibleBoundsAtAlpha32": [
+          354,
+          173,
+          931,
+          1102
+        ]
+      },
+      "source": {
+        "mode": "RGBA",
+        "alphaMin": 0,
+        "alphaMax": 255,
+        "fullyTransparentPixels": 198144,
+        "partiallyTransparentPixels": 63071,
+        "fullyOpaquePixels": 929,
+        "allBorderPixelsTransparent": true,
+        "visibleBoundsAtAlpha32": [
+          144,
+          70,
+          380,
+          450
+        ]
+      },
+      "public": {
+        "mode": "RGBA",
+        "alphaMin": 0,
+        "alphaMax": 255,
+        "fullyTransparentPixels": 111095,
+        "partiallyTransparentPixels": 35657,
+        "fullyOpaquePixels": 704,
+        "allBorderPixelsTransparent": true,
+        "visibleBoundsAtAlpha32": [
+          108,
+          53,
+          285,
+          338
+        ]
+      }
+    },
+    "aiVisualReviewNotes": [
+      "Generated colors differ from the exact requested HEX palette.",
+      "Subtle raster color variation/texture remains despite flat-fill prompts.",
+      "Cheeks read as pale pink filled ovals rather than clearly low-opacity coral over green.",
+      "The centre vein is a relatively broad tapered stripe rather than a fine line.",
+      "Downward gaze toward the palms is weak with dot eyes; the expression is mildly puzzled and both hands are empty."
+    ],
+    "sourceStyleReferences": [
+      "/Users/hyuno/orca/workspaces/hanjeok/dev/design/brand/source/mascot-v2/reference-board.png",
+      "/Users/hyuno/orca/workspaces/hanjeok/dev/design/brand/source/mascot-v2/searching.png"
+    ]
+  },
+  {
+    "key": "failed",
+    "prompt": "Edit ONLY facial placement of reference image 2, the failed pose. Image 1 is the waiting identity reference. Preserve failed's sitting legs out, hands held near its lower body, its TOP LEAF TIP DROOPED FORWARD, single teardrop leaf head/body, bottom-stem coral ribbon and trailing tails, centre vein, framing and scale. Move the ENTIRE FACE upward about 130 pixels on this 1254 square canvas: BOTH navy dot eyes, small apologetic mouth and subtle coral cheeks. Eyes around the upper 30% and mouth upper 42% of leaf height, so EVERY facial mark is wholly in the UPPER HALF of the leaf. Small apologetic mouth, no tears. One single green #009C75 leaf forms the head and body, no separate torso. Navy #172033 bold consistent rounded outlines, coral #F04B3E bottom-stem ribbon, fine lighter centre vein, subtle coral cheeks. No gold, backpack, sun rays, separate head, extra characters, props, symbols, lettering, background, scenery, shadow or gradients. Genuine transparent alpha background, square canvas with generous margin, requested 512x512 PNG.",
+    "reference": [
+      "/Users/hyuno/.codex/generated_images/01a135bf-2a0e-7cb3-b015-75f1f2cf236c/exec-9fe76488-dfbc-4bed-9848-e0bafda8ab7f.png",
+      "/Users/hyuno/.codex/generated_images/01a135bf-2a0e-7cb3-b015-75f1f2cf236c/exec-01a33c68-ec2e-4867-9ce7-a3a47b621fab.png"
+    ],
+    "generatedFile": "/Users/hyuno/.codex/generated_images/01a135bf-2a0e-7cb3-b015-75f1f2cf236c/exec-e9bb0f31-c903-47ca-9a0c-f33b4df52fbd.png",
+    "original": "design/guide-character/v1/originals/failed.png",
+    "actualTool": "image_gen.imagegen",
+    "generatedAt": "2026-10-13",
+    "dimensions": {
+      "source": {
+        "width": 512,
+        "height": 512
+      },
+      "public": {
+        "width": 384,
+        "height": 384
+      }
+    },
+    "originalDimensions": {
+      "width": 1254,
+      "height": 1254
+    },
+    "originalSha256": "9d37d45a92b4e2a0c0d2c98e46501f81566a6d8c043e2ad6c8c6907c2a0f18d6",
+    "sourceSha256": "968aef4ced7173f383fc7ae0b717b55dac38bd0e73e05132a5cb7d5f9c125e3d",
+    "publicSha256": "a7656efa56174ca487407c6dc30d4f6f00643a3fbcb4ffb1d9a97e5d0f437bbf",
+    "bytes": {
+      "original": 529322,
+      "source": 102716,
+      "public": 44508
+    },
+    "output": {
+      "source": "design/guide-character/v1/failed.png",
+      "public": "frontend/public/brand/guide/failed.webp"
+    },
+    "edits": [
+      "Copied the selected generator PNG byte-for-byte to the originals folder; the original is untouched.",
+      "Used the existing real alpha channel; no background removal was needed.",
+      "Resized the whole 1254x1254 square canvas to 512x512 with Pillow LANCZOS and saved an optimized RGBA PNG, preserving aspect ratio and margins.",
+      "Resized the same original whole canvas directly to 384x384 with Pillow LANCZOS and encoded lossless WebP with alpha (method 6, exact enabled).",
+      "Reopened all outputs and computed actual dimensions, byte counts and SHA-256 hashes; verified transparent pixels and alpha channels. No crop, redraw or palette correction was applied."
+    ],
+    "visualReviewStatus": "unreviewed",
+    "rightsReviewStatus": "not-performed",
+    "alphaVerification": {
+      "original": {
+        "mode": "RGBA",
+        "alphaMin": 0,
+        "alphaMax": 255,
+        "fullyTransparentPixels": 1169045,
+        "partiallyTransparentPixels": 402489,
+        "fullyOpaquePixels": 982,
+        "allBorderPixelsTransparent": false,
+        "visibleBoundsAtAlpha32": [
+          352,
+          194,
+          956,
+          1093
+        ]
+      },
+      "source": {
+        "mode": "RGBA",
+        "alphaMin": 0,
+        "alphaMax": 255,
+        "fullyTransparentPixels": 194009,
+        "partiallyTransparentPixels": 67246,
+        "fullyOpaquePixels": 889,
+        "allBorderPixelsTransparent": true,
+        "visibleBoundsAtAlpha32": [
+          144,
+          79,
+          391,
+          447
+        ]
+      },
+      "public": {
+        "mode": "RGBA",
+        "alphaMin": 0,
+        "alphaMax": 255,
+        "fullyTransparentPixels": 108756,
+        "partiallyTransparentPixels": 38008,
+        "fullyOpaquePixels": 692,
+        "allBorderPixelsTransparent": true,
+        "visibleBoundsAtAlpha32": [
+          108,
+          59,
+          293,
+          335
+        ]
+      }
+    },
+    "aiVisualReviewNotes": [
+      "Generated colors differ from the exact requested HEX palette.",
+      "Subtle raster color variation/texture remains despite flat-fill prompts.",
+      "Cheeks read as pale pink filled ovals rather than clearly low-opacity coral over green.",
+      "The centre vein is a relatively broad tapered stripe rather than a fine line.",
+      "Apologetic expression reads somewhat sad; drooped leaf tip, seated pose and ribbon are present."
+    ],
+    "sourceStyleReferences": [
+      "/Users/hyuno/orca/workspaces/hanjeok/dev/design/brand/source/mascot-v2/reference-board.png",
+      "/Users/hyuno/orca/workspaces/hanjeok/dev/design/brand/source/mascot-v2/searching.png"
+    ]
+  }
+]

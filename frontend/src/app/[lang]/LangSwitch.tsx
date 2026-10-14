@@ -24,7 +24,7 @@ export function LangSwitch({ lang, label }: { lang: Lang; label: string }) {
       // 언어 이름은 화면 언어를 따라가지 않는다. 읽을 수 있는 언어를 찾는 사람에게
       // 보여야 하므로 그 언어로 적혀 있어야 한다 — hreflang 이 그 사실을 기계에도 알린다.
       hrefLang={other}
-      className="ml-auto opacity-70 hover:opacity-100"
+      className="ml-auto text-ink-muted hover:text-ink-title"
     >
       {label}
     </Link>

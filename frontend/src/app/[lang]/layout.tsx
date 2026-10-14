@@ -5,9 +5,16 @@ import { dict, isLang, LANGS } from '@/lib/i18n'
 import { LangSwitch } from './LangSwitch'
 import '../globals.css'
 
-export const metadata: Metadata = {
-  title: 'Hermes Agent',
-  description: '설명이 어디에서 왔는지 눌러서 확인할 수 있는 여행 컨텍스트 에이전트',
+/**
+ * 탭 제목은 화면 위의 이름과 같은 사전에서 온다. 따로 적어 두면 한쪽만 바뀐다 —
+ * 이름을 "Hermes Agent" 에서 바꿀 때 실제로 두 곳이었다.
+ */
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params
+  return {
+    title: dict(isLang(lang) ? lang : 'ko').nav.brand,
+    description: '한적의 장소와 혼잡 예보를 묻고, 답이 어디에서 왔는지 단계마다 확인하는 안내 에이전트',
+  }
 }
 
 /**
@@ -35,12 +42,21 @@ export default async function RootLayout({
   return (
     <html lang={lang}>
       <body className="min-h-screen antialiased">
-        <header className="border-b border-black/10 dark:border-white/10">
-          <nav className="mx-auto flex max-w-3xl items-baseline gap-6 px-6 py-4 text-sm">
+        <header className="border-b border-line-normal">
+          <nav className="mx-auto flex max-w-3xl flex-wrap items-baseline gap-x-6 gap-y-2 px-6 py-4 text-body">
             <Link href={`/${lang}`} className="font-semibold">
               {t.nav.brand}
             </Link>
-            <Link href={`/${lang}/evidence`} className="opacity-70 hover:opacity-100">
+            <Link href={`/${lang}/ask`} className="text-ink-muted hover:text-ink-title">
+              {t.guide.navLabel}
+            </Link>
+            <Link href={`/${lang}/graph`} className="text-ink-muted hover:text-ink-title">
+              {t.graph.navLabel}
+            </Link>
+            <Link href={`/${lang}/eval`} className="text-ink-muted hover:text-ink-title">
+              {t.evalPage.navLabel}
+            </Link>
+            <Link href={`/${lang}/evidence`} className="text-ink-muted hover:text-ink-title">
               {t.nav.evidence}
             </Link>
             <LangSwitch lang={lang} label={t.nav.switchTo} />

@@ -51,7 +51,7 @@ export function CitationSheet({
     // aria-hidden 도 여기 붙이면 안 된다 — 시트가 이 안에 있으므로 스크린 리더에서
     // 대화상자째로 사라진다. 처음 그렇게 썼고 테스트가 잡았다.
     <div
-      className="fixed inset-0 z-10 flex items-end justify-center bg-black/40"
+      className="fixed inset-0 z-10 flex items-end justify-center bg-surface-scrim"
       onClick={onClose}
     >
       <div
@@ -62,25 +62,25 @@ export function CitationSheet({
         onClick={(event) => event.stopPropagation()}
       >
         <div className="mb-4 flex items-baseline justify-between gap-4">
-          <h2 className="font-mono text-sm">{path}</h2>
+          <h2 className="font-mono text-body">{path}</h2>
           <button
             ref={closeButton}
             type="button"
             onClick={onClose}
-            className="text-sm opacity-60 hover:opacity-100"
+            className="text-body text-ink-muted hover:text-ink-title"
           >
             {t.close}
           </button>
         </div>
 
-        {state === null && <p className="text-sm opacity-60">{t.loading}</p>}
+        {state === null && <p className="text-body text-ink-muted">{t.loading}</p>}
         {state?.kind === 'unavailable' && (
           // 빈 시트를 띄우면 "문서에 내용이 없다"로 읽힌다. 번들에 없다는 것은
           // 인용이 잘못되었다는 뜻이라 그 자체가 알려야 할 정보다.
-          <p className="text-sm opacity-70">{t.notInBundle(state.status)}</p>
+          <p className="text-body text-ink-muted">{t.notInBundle(state.status)}</p>
         )}
         {state?.kind === 'loaded' && (
-          <pre className="overflow-x-auto whitespace-pre-wrap font-mono text-xs leading-relaxed">
+          <pre className="overflow-x-auto whitespace-pre-wrap font-mono text-caption leading-relaxed">
             {state.value}
           </pre>
         )}

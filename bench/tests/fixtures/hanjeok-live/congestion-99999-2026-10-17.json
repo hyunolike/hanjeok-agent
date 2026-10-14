@@ -1,0 +1,12 @@
+{
+ "status": 404,
+ "fetched_at": "2026-10-13T14:20:05Z",
+ "body": {
+  "success": false,
+  "data": null,
+  "error": {
+   "code": "ATTRACTION_NOT_FOUND",
+   "message": "관광지를 찾을 수 없습니다"
+  }
+ }
+}

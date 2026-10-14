@@ -1,3 +1,5 @@
+import { guideEn, guideKo } from './i18n-guide'
+
 /**
  * 화면 문구 사전.
  *
@@ -35,7 +37,7 @@ const REPO = 'https://github.com/hyunolike/hanjeok-agent'
  */
 const ko = {
   nav: {
-    brand: 'Hermes Agent',
+    brand: '한적 에이전트',
     evidence: '근거 문서',
     /** 반대편 언어 화면으로 가는 링크. 그 언어로 쓴다. */
     switchTo: 'English',
@@ -148,6 +150,7 @@ const ko = {
     listFailTitle: '근거 문서를 불러오지 못했습니다',
     listFailBody: (status: number) => `에이전트 서버가 번들 목록을 주지 않았습니다(${status}).`,
   },
+  ...guideKo,
 }
 
 /** `ko` 를 그대로 모양으로 삼는다. 영어가 여기서 벗어나면 타입 검사가 잡는다. */
@@ -155,7 +158,7 @@ export type Dict = typeof ko
 
 const en: Dict = {
   nav: {
-    brand: 'Hermes Agent',
+    brand: 'Hanjeok Agent',
     evidence: 'Evidence',
     switchTo: '한국어',
   },
@@ -262,6 +265,7 @@ const en: Dict = {
     listFailBody: (status: number) =>
       `The agent server did not return the bundle listing (${status}).`,
   },
+  ...guideEn,
 }
 
 const DICTS: Record<Lang, Dict> = { ko, en }

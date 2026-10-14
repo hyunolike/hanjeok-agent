@@ -1,0 +1,23 @@
+{
+  "format_version": 1,
+  "exported_at": "2026-10-13T02:00:00Z",
+  "source": "hanjeok-synthetic",
+  "files": {
+    "places.jsonl": {
+      "rows": 40,
+      "sha256": "b4d45c9ff152d8f69c3034e59ee4fdd68dae06cd583b9d9c6f0f90695c6a81c6"
+    },
+    "related.jsonl": {
+      "rows": 54,
+      "sha256": "2398aaa8ee1ee973c5c16a0e0351de1847176ae1d2aa3625d6564960cf1c4e62"
+    },
+    "festivals.jsonl": {
+      "rows": 3,
+      "sha256": "3313ca5e8e39252ef5ca6814ba7c1d312d82bdd7bc603a65e1190902ee6bf45b"
+    },
+    "exhibitions.jsonl": {
+      "rows": 2,
+      "sha256": "7a459857a4297c94785cdf1a6930fb6f9e91f3b3d1eb56aed61039df7be7b547"
+    }
+  }
+}

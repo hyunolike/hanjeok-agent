@@ -1,0 +1,38 @@
+{
+ "status": 200,
+ "fetched_at": "2026-10-13T14:20:05Z",
+ "body": {
+  "success": true,
+  "data": {
+   "hasCongestionData": true,
+   "attraction": {
+    "id": 118,
+    "name": "솔내 한옥마을",
+    "imageUrl": "https://img.invalid/118.jpg"
+   },
+   "diagnosis": {
+    "date": "2026-10-18",
+    "concentration": 75.0,
+    "percentile": 79.0,
+    "grade": "CROWDED",
+    "message": "녹화한 응답"
+   },
+   "dailyForecasts": [],
+   "betterDates": [
+    {
+     "date": "2026-10-20",
+     "concentration": 31.0,
+     "grade": "RELAXED",
+     "weather": null
+    }
+   ],
+   "nearbyFestivals": [],
+   "feltCongestion": {
+    "moreCrowded": 3,
+    "asForecast": 5,
+    "lessCrowded": 1
+   }
+  },
+  "error": null
+ }
+}

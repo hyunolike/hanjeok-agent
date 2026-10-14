@@ -1,0 +1,209 @@
+{
+ "report_id": "r1",
+ "question_id": "q09",
+ "kind": "multi_place",
+ "question": "가람궁과 이어진 장소 중 솔내구에 있는 곳은 어디야?",
+ "strategies": {
+  "vector": {
+   "outcome": "answered",
+   "cause": null,
+   "answer": "가진 근거로 답합니다.",
+   "citations": [
+    "hanjeok:place/101"
+   ],
+   "steps": [
+    {
+     "index": 0,
+     "kind": "scope",
+     "inputs": {},
+     "status": "ok",
+     "reason": null,
+     "produced": [],
+     "summary": "장소 1곳, 날짜 없음(으)로 읽었습니다",
+     "as_of": null
+    },
+    {
+     "index": 1,
+     "kind": "resolve",
+     "inputs": {
+      "names": [
+       "가람궁"
+      ]
+     },
+     "status": "ok",
+     "reason": null,
+     "produced": [
+      "hanjeok:place/101"
+     ],
+     "summary": "가람궁 (한빛시 가람구)",
+     "as_of": "2026-10-13T02:00:00Z"
+    }
+   ],
+   "passages": [
+    {
+     "id": "hanjeok:place/101",
+     "text": "가람궁 · 한빛시 가람구 · 역사 고궁 · place_id 101 · 혼잡 예보 대상\n한빛시 한가운데 있는 옛 궁궐. 주말 낮에는 정문 앞마당부터 사람이 찬다."
+    }
+   ],
+   "scores": {
+    "faithfulness": {
+     "value": 0.5,
+     "status": "ok",
+     "reason": null
+    },
+    "answer_relevancy": {
+     "value": 0.5,
+     "status": "ok",
+     "reason": null
+    },
+    "context_precision": {
+     "value": 0.5,
+     "status": "ok",
+     "reason": null
+    },
+    "context_recall": {
+     "value": null,
+     "status": "unavailable",
+     "reason": "판정 모델 호출이 실패했거나 쓸 수 없는 값을 돌려주었습니다."
+    },
+    "id_precision": {
+     "value": 0.0,
+     "status": "ok",
+     "reason": null
+    },
+    "id_recall": {
+     "value": 0.0,
+     "status": "ok",
+     "reason": null
+    }
+   },
+   "forbidden": []
+  },
+  "graph": {
+   "outcome": "answered",
+   "cause": null,
+   "answer": "가진 근거로 답합니다.",
+   "citations": [
+    "hanjeok:place/101",
+    "hanjeok:place/118",
+    "hanjeok:place/124"
+   ],
+   "steps": [
+    {
+     "index": 0,
+     "kind": "scope",
+     "inputs": {},
+     "status": "ok",
+     "reason": null,
+     "produced": [],
+     "summary": "장소 1곳, 날짜 없음(으)로 읽었습니다",
+     "as_of": null
+    },
+    {
+     "index": 1,
+     "kind": "resolve",
+     "inputs": {
+      "names": [
+       "가람궁"
+      ]
+     },
+     "status": "ok",
+     "reason": null,
+     "produced": [
+      "hanjeok:place/101"
+     ],
+     "summary": "가람궁 (한빛시 가람구)",
+     "as_of": "2026-10-13T02:00:00Z"
+    },
+    {
+     "index": 2,
+     "kind": "related_places",
+     "inputs": {
+      "place_id": 101,
+      "limit": 5
+     },
+     "status": "ok",
+     "reason": null,
+     "produced": [
+      "hanjeok:related/101",
+      "hanjeok:place/118",
+      "hanjeok:place/124",
+      "hanjeok:place/131",
+      "hanjeok:place/166",
+      "hanjeok:place/160",
+      "wiki:concepts/alternative-scoring.md"
+     ],
+     "summary": "가람궁와(과) 이어진 5곳",
+     "as_of": "2026-10-13T02:00:00Z"
+    }
+   ],
+   "passages": [
+    {
+     "id": "hanjeok:place/101",
+     "text": "가람궁 · 한빛시 가람구 · 역사 고궁 · place_id 101 · 혼잡 예보 대상\n한빛시 한가운데 있는 옛 궁궐. 주말 낮에는 정문 앞마당부터 사람이 찬다."
+    },
+    {
+     "id": "hanjeok:place/118",
+     "text": "솔내 한옥마을 · 한빛시 가람구 · 역사 전통마을 · place_id 118 · 혼잡 예보 대상\n가람궁 동쪽 담을 따라 이어지는 한옥 골목. 사람이 사는 동네라 조용히 걷는 곳이다."
+    },
+    {
+     "id": "hanjeok:place/124",
+     "text": "물빛 서원 · 한빛시 솔내구 · 역사 서원 · place_id 124 · 혼잡 예보 대상\n개울을 끼고 앉은 서원. 마루에 앉으면 물소리가 들린다."
+    },
+    {
+     "id": "hanjeok:place/131",
+     "text": "달맞이 숲길 · 한빛시 솔내구 · 자연 숲길 · place_id 131 · 혼잡 예보 대상\n서원 뒤편 언덕으로 오르는 2km 남짓한 숲길."
+    },
+    {
+     "id": "hanjeok:place/166",
+     "text": "옛 성곽길 · 한빛시 가람구 · 역사 성곽 · place_id 166 · 혼잡 예보 대상\n성곽을 따라 한 시간쯤 걷는 길. 계단이 많다."
+    },
+    {
+     "id": "hanjeok:place/160",
+     "text": "가람 시립미술관 · 한빛시 가람구 · 문화 미술관 · place_id 160 · 혼잡 예보 대상\n옛 법원 건물을 고쳐 쓴 미술관. 평일 오전이 한가하다."
+    },
+    {
+     "id": "hanjeok:related/101",
+     "text": "가람궁와(과) 이어진 장소. 순서는 한적이 정한 순위다.\n1. 솔내 한옥마을 (한빛시 가람구, place_id 118)\n2. 물빛 서원 (한빛시 솔내구, place_id 124)\n3. 달맞이 숲길 (한빛시 솔내구, place_id 131)\n4. 옛 성곽길 (한빛시 가람구, place_id 166)\n5. 가람 시립미술관 (한빛시 가람구, place_id 160)"
+    },
+    {
+     "id": "wiki:concepts/alternative-scoring.md",
+     "text": "대안 점수는 연관도, 한적함, 거리를 더한 값이고 순서는 서비스가 정한다."
+    }
+   ],
+   "scores": {
+    "faithfulness": {
+     "value": 0.5,
+     "status": "ok",
+     "reason": null
+    },
+    "answer_relevancy": {
+     "value": 0.5,
+     "status": "ok",
+     "reason": null
+    },
+    "context_precision": {
+     "value": 0.5,
+     "status": "ok",
+     "reason": null
+    },
+    "context_recall": {
+     "value": null,
+     "status": "unavailable",
+     "reason": "판정 모델 호출이 실패했거나 쓸 수 없는 값을 돌려주었습니다."
+    },
+    "id_precision": {
+     "value": 0.375,
+     "status": "ok",
+     "reason": null
+    },
+    "id_recall": {
+     "value": 1.0,
+     "status": "ok",
+     "reason": null
+    }
+   },
+   "forbidden": []
+  }
+ }
+}
