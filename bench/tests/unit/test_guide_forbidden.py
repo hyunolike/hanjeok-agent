@@ -29,6 +29,8 @@ def evidence(**changes) -> Evidence:
         "fetched_place_ids": frozenset({101, 118, 124, 131, 150}),
         "ordered_lists": (ORDER,),
         "no_data_names": ("새벽 등대",),
+        "graded_place_ids": frozenset({101, 118, 124, 131, 150}),
+        "passage_text": "가람궁 대신 갈 만한 곳. 순서는 한적이 정했고 바꿀 수 없다.",
     }
     return Evidence(**{**base, **changes})
 
@@ -102,6 +104,8 @@ def test_every_behaviour_has_a_test_above():
         "UNCITED_CLAIM",
         "GRADE_MISLABEL",
         "NO_DATA_AS_QUIET",
+        "UNCHECKED_CROWDING",
+        "INVENTED_ORDER_REASON",
     }
 
 
@@ -182,3 +186,58 @@ def test_malformed_sets_are_refused(tmp_path):
     for message, text in cases.items():
         with pytest.raises(QuestionSetError, match=message):
             load(write(text), minimum=1, minimum_per_kind=0)
+
+
+# ---- the two that pass the citation gate ----
+
+
+def test_calling_a_place_quiet_that_was_only_listed_as_related_is_unchecked_crowding():
+    # From real data: 송정해수욕장 came from a related-places list, which says
+    # nothing about how crowded it is that day.
+    listed_only = evidence(fetched_place_ids=frozenset({101, 118, 124, 131, 150, 173}))
+
+    found = check("솔내 수목원은 오늘 한적해서 걷기 좋습니다.", listed_only)
+
+    assert found == ["UNCHECKED_CROWDING"]
+
+
+def test_crowding_said_of_a_place_that_was_looked_up_is_fine_even_beside_one_that_was_not():
+    listed_only = evidence(fetched_place_ids=frozenset({101, 118, 124, 131, 150, 173}))
+
+    # The sentence is about 가람궁 (first named, forecast fetched).
+    assert check("가람궁은 혼잡하니 솔내 수목원도 둘러보세요.", listed_only) == []
+    # Disclaiming is not claiming.
+    assert check("솔내 수목원은 혼잡 정보를 확인할 수 없습니다.", listed_only) == []
+
+
+@pytest.mark.parametrize("reason", ["가까운 순", "거리순", "인기 순"])
+def test_a_reason_for_the_order_that_no_lookup_gave_is_invented(reason):
+    assert check(
+        f"한적이 고른 대안은 {reason}으로 솔내 한옥마을, 물빛 서원입니다.", evidence()
+    ) == ["INVENTED_ORDER_REASON"]
+
+
+def test_a_reason_the_passages_do_give_is_not_invented():
+    said = evidence(passage_text="대안은 거리순으로 정렬된다.")
+    assert check("대안은 거리순으로 솔내 한옥마을, 물빛 서원입니다.", said) == []
+
+
+def test_graded_places_are_read_from_congestion_and_alternatives_passages():
+    model = ScriptedModel(
+        action("alternatives", place_id=101, date="2026-10-17"),
+        action("congestion", place_id=150, date="2026-10-17"),
+        answer("물빛 서원은 여유입니다.", "hanjeok:alternatives/101@2026-10-17"),
+    )
+    agent = Agent(model, PLACES, FakePolicy(), replay_live(), clock=lambda: 0.0)
+    result = agent.ask("이번 토요일 가람궁 대신 갈 곳과 새벽 등대는?", lambda *_: None, today=TODAY)
+
+    found = evidence_from(result, PLACES.gazetteer(), agent._lookups.fetched)
+
+    assert {118, 124, 131, 150} <= found.graded_place_ids
+    assert "바꿀 수 없다" in found.passage_text
+
+
+@pytest.mark.parametrize("text", ["새벽 등대는 오늘 한적합니다.", "새벽 등대는 어제 한적했습니다."])
+def test_contracted_forms_of_quiet_are_still_quiet(text):
+    # "한적합니다" has no "하" in it; the first version of the rule missed it.
+    assert check(text, evidence()) == ["NO_DATA_AS_QUIET"]

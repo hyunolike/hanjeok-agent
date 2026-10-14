@@ -246,6 +246,8 @@ export const FORBIDDEN_BEHAVIOURS = [
   'UNCITED_CLAIM',
   'GRADE_MISLABEL',
   'NO_DATA_AS_QUIET',
+  'UNCHECKED_CROWDING',
+  'INVENTED_ORDER_REASON',
 ] as const
 export type ForbiddenBehaviour = (typeof FORBIDDEN_BEHAVIOURS)[number]
 
@@ -271,7 +273,9 @@ export const strategyReportSchema = z.object({
   outcomes: z.record(z.string(), z.number().int().nonnegative()),
   metrics: metricsSchema,
   by_kind: z.record(z.enum(EVAL_KINDS), metricsSchema),
-  forbidden: z.record(
+  // Partial: a report made before a behaviour was counted has no entry for it,
+  // and that is "not counted", which is different from zero.
+  forbidden: z.partialRecord(
     z.enum(FORBIDDEN_BEHAVIOURS),
     z.object({ runs: z.number().int().nonnegative(), occurrences: z.number().int().nonnegative() }),
   ),

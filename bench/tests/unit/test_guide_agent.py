@@ -516,3 +516,36 @@ def test_tracing_callbacks_see_the_graph_run():
     agent.ask(QUESTION, lambda *_: None, today=TODAY)
 
     assert {"scope", "act", "verify"} <= set(seen.names)
+
+
+def test_crowding_said_of_an_unchecked_place_is_sent_back_once():
+    model = ScriptedModel(
+        action("related_places", place_id=101),
+        answer("달맞이 숲길은 오늘 한적합니다.", "hanjeok:related/101"),
+        answer(
+            "가람궁과 이어진 곳은 솔내 한옥마을, 물빛 서원, 달맞이 숲길입니다.",
+            "hanjeok:related/101",
+        ),
+    )
+
+    result, events = run(model, "가람궁과 이어진 곳 알려줘")
+
+    assert result.outcome == "answered"
+    assert (
+        "달맞이 숲길" in model.calls[-1]["user"]
+        and "예보를 조회하지 않은" in model.calls[-1]["user"]
+    )
+    assert "오늘 한적합니다" not in repr(events)
+
+
+def test_an_invented_order_reason_twice_is_not_shown():
+    model = ScriptedModel(
+        action("alternatives", place_id=101, date="2026-10-17"),
+        answer("가까운 순으로 솔내 한옥마을, 물빛 서원입니다.", ALTERNATIVES),
+        answer("거리순으로 솔내 한옥마을입니다.", ALTERNATIVES),
+    )
+
+    result, events = run(model)
+
+    assert (result.outcome, result.cause) == ("failed", "invalid_citations")
+    assert "answer" not in names(events)
