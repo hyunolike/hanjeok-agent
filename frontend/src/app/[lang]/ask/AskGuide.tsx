@@ -133,7 +133,7 @@ export function AskGuide({
           </Character>
           <p className="mt-5 mb-2 text-caption text-ink-muted">{t.examplesLabel}</p>
           <ul className="flex flex-col gap-2">
-            {t.examples.map((example) => (
+            {(isReplay ? t.examples : t.examplesLive).map((example) => (
               <li key={example}>
                 <Chip onClick={() => submit(example)}>{example}</Chip>
               </li>
@@ -278,7 +278,9 @@ export function AskGuide({
           value={draft}
           maxLength={500}
           disabled={busy}
-          placeholder={turns.length === 0 ? t.fieldPlaceholder : t.followUpPlaceholder}
+          placeholder={
+            turns.length > 0 ? t.followUpPlaceholder : isReplay ? t.fieldPlaceholder : t.fieldPlaceholderLive
+          }
           onChange={(event) => setDraft(event.target.value)}
         />
         <Button type="submit" disabled={busy || draft.trim() === ''}>

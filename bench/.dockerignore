@@ -1,0 +1,16 @@
+# Everything is ignored unless named below, so that neither a local .env nor an
+# export of real data can end up in an image by accident.
+*
+!pyproject.toml
+!uv.lock
+!.python-version
+!README.md
+!src
+!deploy
+!reports/guide
+!tests/fixtures/hanjeok-export
+!tests/fixtures/hanjeok-live
+# Opt-in at build time with --build-arg; see the Dockerfile.
+!.cache/exports
+!.cache/guide-embeddings.sqlite
+**/__pycache__

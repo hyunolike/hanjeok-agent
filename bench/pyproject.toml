@@ -26,6 +26,9 @@ dependencies = [
     # Revisit when ragas stops importing from the sunset package.
     "langchain-community<0.4",
     "sentence-transformers>=6.1.0",
+    # Named only so the source below can apply to it; sentence-transformers
+    # would bring it anyway.
+    "torch>=2.4",
     "httpx>=0.27",
     "neo4j-graphrag>=1.0",
     "mcp>=1.2",
@@ -36,6 +39,17 @@ dependencies = [
 [project.scripts]
 bench = "bench.cli:main"
 guide = "guide.cli:main"
+
+# On Linux, torch from PyPI drags in some forty NVIDIA packages, several
+# gigabytes of GPU libraries. Everything here runs on a CPU — the laptop, the CI
+# runner, the deployed container — so Linux takes the CPU-only build instead.
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
 
 [dependency-groups]
 dev = [

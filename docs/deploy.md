@@ -208,3 +208,82 @@ HERMES_DEMO_COURSES="129efdef-41ec-4044-ac87-303abe4ccdde|덕수궁, e66302c6-b4
 | `HERMES_RETRIEVAL_AUTH_MODE` | `cloud-run-iam`; 기존 attached identity의 ID token 사용 |
 
 로컬 모드만 `loopback-test`와 `HERMES_RETRIEVAL_LOCAL_TOKEN`을 사용하며 K_SERVICE가 있으면 거부합니다. 실제 비밀 값은 저장하거나 출력하지 않습니다. FULL에서는 검색 HTTP/metadata token 호출이 없습니다. API 장애·핀 불일치에는 검증된 FULL로 복구하고, 원본 FULL이 손상됐으면 기동에서 실패합니다.
+
+## 한적 에이전트 (guide) — Cloud Run 서비스 하나 더
+
+위의 `hermes-agent`(Kotlin)와 별개로, 질문에 답하는 파이썬 서비스가 같은 프로젝트와 리전에
+`hanjeok-guide`라는 이름으로 올라가 있다. **2026-10-14에 실제로 실행한 명령**이고, 그날의
+측정값을 함께 적는다.
+
+이 서비스는 상태가 없지 않다. 이미지 안에 Neo4j와 그 그래프가 들어 있다 — 그래프는 내보내기
+파일과 위키에서 다시 만들 수 있는 파생물이라, 이미지를 새로 지으면 통째로 바뀐다.
+
+### 1. 데이터
+
+```bash
+# 한적 운영 서버에서 (한적 저장소의 scripts/guide-agent-export.sh)
+./guide-agent-export.sh                       # 읽기 전용, 1.7초, hanjeok-export-YYYYMMDD/
+# 내려받아 bench/.cache/exports/ 에 두고
+cd bench
+uv run guide refresh --export .cache/exports/hanjeok-export-20261014 --check
+uv run guide refresh --export .cache/exports/hanjeok-export-20261014   # 임베딩까지. CPU 로 40분
+```
+
+관광지 13,403곳의 임베딩은 로컬에서 한 번 계산해 `.cache/guide-embeddings.sqlite`에 남긴다.
+이미지 빌드는 그 파일을 받아 쓰므로 다시 계산하지 않는다. `.cache/`는 git 에 올라가지 않는다.
+
+### 2. 이미지
+
+```bash
+cd bench
+gcloud builds submit --config cloudbuild.yaml --substitutions \
+  _IMAGE=asia-northeast3-docker.pkg.dev/$PROJECT/hermes/hanjeok-guide:real-20261014,\
+_EXPORT_DIR=.cache/exports/hanjeok-export-20261014,\
+_EMBEDDING_CACHE=.cache/guide-embeddings.sqlite
+```
+
+12분 걸렸다. 빌드가 이미지 안에서 Neo4j 를 띄워 위키와 장소를 올리고 깨끗이 내린다(그래프
+738MB). 올라가는 파일은 `.gcloudignore`의 허용 목록뿐이다 — `.env`와 가상환경은 나가지 않는다.
+
+### 3. 키와 배포
+
+```bash
+# 한 번만. 값은 화면에 찍지 않는다
+grep -E '^NVIDIA_API_KEY=' .env | cut -d= -f2- | tr -d '\n' | \
+  gcloud secrets create HANJEOK_GUIDE_NVIDIA_API_KEY --replication-policy=automatic --data-file=-
+gcloud secrets add-iam-policy-binding HANJEOK_GUIDE_NVIDIA_API_KEY \
+  --member="serviceAccount:<Cloud Run 서비스 계정>" --role=roles/secretmanager.secretAccessor
+
+gcloud run deploy hanjeok-guide \
+  --image asia-northeast3-docker.pkg.dev/$PROJECT/hermes/hanjeok-guide:real-20261014 \
+  --region asia-northeast3 --allow-unauthenticated \
+  --memory 8Gi --cpu 2 --min-instances 0 --max-instances 1 --concurrency 20 \
+  --timeout 300 --port 7860 --execution-environment gen2 --cpu-boost \
+  --startup-probe "tcpSocket.port=7860,periodSeconds=10,failureThreshold=30,timeoutSeconds=5" \
+  --set-env-vars "^@^GUIDE_CORS_ALLOWED_ORIGINS=https://agent.hanjeok.com,<미리보기 도메인>@GUIDE_LIVE_MODE=live@HANJEOK_BASE_URL=https://api.hanjeok.com" \
+  --set-secrets "NVIDIA_API_KEY=HANJEOK_GUIDE_NVIDIA_API_KEY:latest"
+```
+
+- **`--max-instances 1`은 선택이 아니다.** 방문 기록과 사용 한도가 프로세스 메모리에 있다.
+  인스턴스가 둘이면 「어느 곳인가요?」에 대한 답이 질문을 받은 적 없는 인스턴스로 갈 수 있다.
+- **메모리 8Gi**는 임베딩 모델과 Neo4j 를 함께 올리기 위한 넉넉한 값이다. 실제 사용량은 재지
+  않았다. 줄일 수 있는지는 재 보고 정한다.
+- **깨어나는 데 약 30초**(Neo4j 19초 + 서버 10초, 실측). `--min-instances 0`이라 한동안 요청이
+  없던 뒤의 첫 질문은 그만큼 기다린다.
+- `GUIDE_LIVE_MODE=live`는 한적의 `/attractions/{id}/congestion`과 `/alternatives`를 실제로
+  부른다. 둘 다 읽기 전용이고 조회수를 남기지 않는다.
+
+### 4. 화면
+
+Vercel 프로젝트의 **Production** 환경 변수 `NEXT_PUBLIC_GUIDE_BASE_URL`에 서비스 주소를 넣는다.
+비어 있으면 화면은 녹화본을 재생한다. 값은 빌드할 때 박히므로 넣은 뒤 다시 배포해야 반영된다.
+
+### 확인
+
+```bash
+BASE=$(gcloud run services describe hanjeok-guide --region asia-northeast3 --format='value(status.url)')
+curl -s "$BASE/guide/status"            # ready: true, 장소 수, 내보낸 시각
+curl -sN "$BASE/guide/ask" -H 'content-type: application/json' \
+  -d '{"question":"이번 토요일 경복궁 대신 조용한 곳 있어?"}'
+```
+

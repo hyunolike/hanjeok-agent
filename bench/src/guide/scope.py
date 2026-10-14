@@ -115,6 +115,9 @@ class Candidate:
     place_id: int
     name: str
     region: str
+    covered: bool = True
+    """Whether Hanjeok forecasts congestion here. Used only to read a question:
+    it never reaches the visitor as a fact about the place."""
 
 
 @dataclass(frozen=True, slots=True)
@@ -195,6 +198,57 @@ def parse_dates(question: str, today: date) -> list[date]:
     return list(dict.fromkeys(ordered))
 
 
+# What may follow a place name inside one word of a question.
+_PARTICLES = (
+    "",
+    "은",
+    "는",
+    "이",
+    "가",
+    "을",
+    "를",
+    "에",
+    "의",
+    "도",
+    "와",
+    "과",
+    "로",
+    "으로",
+    "에서",
+    "랑",
+    "이랑",
+    "만",
+    "까지",
+    "부터",
+    "이나",
+    "나",
+    "에는",
+    "에도",
+    "은요",
+    "는요",
+)
+
+
+def _short_names_as_words(question: str, gazetteer: dict[str, Sequence[Candidate]]) -> set[str]:
+    """Two-character names that the question uses as a word of their own.
+
+    Real data has about two hundred two-character place names. Some are islands
+    called 지도 or 태도; most are restaurants called 마당 or 모습. Matched as
+    plain substrings they turn "붐비는 모습이 궁금해" into a question about a
+    restaurant. So a two-character name counts only when it stands as its own
+    word, optionally with a particle, **and** names a place Hanjeok forecasts —
+    which is what a question about crowding can be about.
+    """
+    found: set[str] = set()
+    for word in question.split():
+        word = word.strip("?!.,~\"'()[]")
+        key = word[:2]
+        candidates = gazetteer.get(key) if len(key) == 2 else None
+        if candidates and word[2:] in _PARTICLES and any(c.covered for c in candidates):
+            found.add(key)
+    return found
+
+
 def find_names(
     question: str, gazetteer: dict[str, Sequence[Candidate]]
 ) -> list[tuple[str, Sequence[Candidate]]]:
@@ -205,9 +259,10 @@ def find_names(
     not also match a shorter place called "가람".
     """
     text = "".join(question.split())
+    words = _short_names_as_words(question, gazetteer)
     hits: list[tuple[int, int, str]] = []
     for key in gazetteer:
-        if len(key) < 2:
+        if len(key) < 2 or (len(key) == 2 and key not in words):
             continue
         start = text.find(key)
         while start >= 0:
@@ -283,6 +338,17 @@ def read_question(
         settled = [c for c in candidates if c.place_id in earlier]
         if len(settled) == 1:
             place_ids.append(settled[0].place_id)
+            continue
+        # The palace and a restaurant that borrowed its name. Only one of them
+        # can be asked about crowding, so that is the one meant. Said in the
+        # step, so the reader can see a choice was made and on what ground.
+        forecast = [c for c in candidates if c.covered]
+        if len(forecast) == 1:
+            place_ids.append(forecast[0].place_id)
+            notes.append(
+                f"'{forecast[0].name}'은(는) 이름이 같은 {len(candidates)}곳 중 혼잡 예보가 있는 "
+                f"{forecast[0].region} 쪽으로 읽었습니다"
+            )
             continue
         return Scope(
             "ask_user",

@@ -123,7 +123,7 @@ class ExportPlaces:
         grouped: dict[str, list[Candidate]] = {}
         for place in sorted(self._export.places, key=lambda p: (not p.has_congestion_data, p.id)):
             grouped.setdefault("".join(place.name.split()), []).append(
-                Candidate(place.id, place.name, place.region_label or "")
+                Candidate(place.id, place.name, place.region_label or "", place.has_congestion_data)
             )
         return grouped
 

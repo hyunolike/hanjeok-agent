@@ -1,0 +1,29 @@
+# Builds the guide's image on Cloud Build. Run from the bench directory:
+#
+#   gcloud builds submit --config cloudbuild.yaml \
+#     --substitutions _IMAGE=asia-northeast3-docker.pkg.dev/<project>/hermes/hanjeok-guide:<tag>
+#
+# The defaults build the synthetic export. For a real one, also pass
+# _EXPORT_DIR and _EMBEDDING_CACHE (paths under .cache/).
+substitutions:
+  _EXPORT_DIR: tests/fixtures/hanjeok-export
+  _EMBEDDING_CACHE: deploy/empty-cache
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - --build-arg
+      - EXPORT_DIR=${_EXPORT_DIR}
+      - --build-arg
+      - EMBEDDING_CACHE=${_EMBEDDING_CACHE}
+      - -t
+      - ${_IMAGE}
+      - .
+images:
+  - ${_IMAGE}
+# The image holds torch, the embedding model and a built graph: several
+# gigabytes, and the default machine and timeout are sized for less.
+timeout: 3600s
+options:
+  machineType: E2_HIGHCPU_8
+  diskSizeGb: 100

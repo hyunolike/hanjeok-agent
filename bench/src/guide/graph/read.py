@@ -139,8 +139,10 @@ def cypher_retriever(
     `_embedding_node_property` but `VectorCypherRetriever` looks for it under
     `_node_embedding_property`, which therefore stays `None`, and any filtered
     search stops with "Vector Search with filters requires: …". The plain
-    `VectorRetriever` uses the first name and works. Until that is fixed
-    upstream the value is copied across here; `test_guide_graph.py` fails if a
+    `VectorRetriever` uses the first name and works. Reported upstream as
+    neo4j/neo4j-graphrag-python#540 with a fix proposed in #541, both still
+    open on 2026-10-14 and the mismatch still on `main`. Until that is merged
+    the value is copied across here; `test_guide_graph.py` fails if a
     later version makes this unnecessary in a way that breaks it.
     """
     retriever = VectorCypherRetriever(
@@ -243,14 +245,15 @@ def events(
     return [EventRow(**row) for row in rows]
 
 
-def gazetteer(driver: Driver, generation: str) -> list[tuple[int, str, str, str | None]]:
+def gazetteer(driver: Driver, generation: str) -> list[tuple[int, str, str, str | None, bool]]:
     """Every place's id, name, name key and region. Names are matched against a
     question before any model is called, so this is read once per generation
     and held in memory by the caller."""
     with session(driver) as s:
         rows = s.run(
             "MATCH (p:Place {generation: $generation}) "
-            "RETURN p.id AS id, p.name AS name, p.name_key AS key, p.region_label AS region "
+            "RETURN p.id AS id, p.name AS name, p.name_key AS key, p.region_label AS region, "
+            "p.has_congestion_data AS covered "
             "ORDER BY p.has_congestion_data DESC, p.id",
             generation=generation,
         ).values()

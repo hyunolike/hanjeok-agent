@@ -113,9 +113,9 @@ def test_embeddings_are_reused_when_the_text_has_not_changed(driver, corpus, emb
         driver, EXPORT, embedder, corpus=corpus, model_id="fake-b", cache_path=cache
     )
 
-    assert (first.embedded, first.reused) == (40, 0)
-    assert (second.embedded, second.reused) == (0, 40)
-    assert (other_model.embedded, other_model.reused) == (40, 0), "a different model shares nothing"
+    assert (first.embedded, first.reused) == (41, 0)
+    assert (second.embedded, second.reused) == (0, 41)
+    assert (other_model.embedded, other_model.reused) == (41, 0), "a different model shares nothing"
 
 
 def test_related_places_come_back_in_hanjeoks_order(driver, corpus, embedder):
@@ -189,14 +189,14 @@ def test_search_reads_one_generation_while_two_are_in_the_index(driver, corpus, 
 
     def look(new_generation):
         vector = embedder.embed_query("가람궁 옛 궁궐")
-        seen["old"] = [p.id for p, _ in read.search(driver, first, vector, limit=40)]
-        seen["new"] = [p.id for p, _ in read.search(driver, new_generation, vector, limit=40)]
+        seen["old"] = [p.id for p, _ in read.search(driver, first, vector, limit=41)]
+        seen["new"] = [p.id for p, _ in read.search(driver, new_generation, vector, limit=41)]
 
     refresh(driver, EXPORT, embedder, corpus=corpus, before_activate=look)
 
     # Every place exists twice in the index at that moment. Each generation
     # still returns each of its places once.
-    assert len(seen["old"]) == len(set(seen["old"])) == 40
+    assert len(seen["old"]) == len(set(seen["old"])) == 41
     assert sorted(seen["new"]) == sorted(seen["old"])
 
 

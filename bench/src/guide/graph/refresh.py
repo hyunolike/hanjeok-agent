@@ -30,6 +30,7 @@ from guide.graph.schema import LABELS, ensure_schema
 from guide.loader import CORPUS, place_text
 
 BATCH = 500
+EMBED_BATCH = 64
 
 
 class RefreshError(Exception):
@@ -98,6 +99,10 @@ class EmbeddingCache:
             (self.key(text), array("f", vector).tobytes()),
         )
 
+    def commit(self) -> None:
+        if self._db is not None:
+            self._db.commit()
+
     def close(self) -> None:
         if self._db is not None:
             self._db.commit()
@@ -123,8 +128,7 @@ def _embed(
         else:
             vectors[place_id] = cached
     reused = len(vectors)
-    # Batched so a crash partway through keeps what was already embedded.
-    for batch in _batches(missing, 64):
+    for batch in _batches(missing, EMBED_BATCH):
         embedded = embedder.embed([texts[place_id] for place_id in batch])
         if len(embedded) != len(batch):
             raise RefreshError(
@@ -138,6 +142,9 @@ def _embed(
                 )
             vectors[place_id] = list(vector)
             cache.put(texts[place_id], vector)
+        # Written per batch. Thirteen thousand places take the better part of an
+        # hour on a CPU, and an interrupted refresh should not have to start over.
+        cache.commit()
     return vectors, len(missing), reused
 
 

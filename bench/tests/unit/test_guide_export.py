@@ -43,7 +43,7 @@ def cause_of(directory: Path) -> str:
 def test_the_synthetic_export_reads_and_counts_match_its_manifest():
     export = read_export(GOOD)
 
-    assert export.counts == {"places": 40, "related": 54, "events": 5, "regions": 2}
+    assert export.counts == {"places": 41, "related": 55, "events": 5, "regions": 2}
     assert export.exported_at == "2026-10-13T02:00:00Z"
     assert len(export.sha256) == 64
     assert export.regions == {"11110": "한빛시 가람구", "11140": "한빛시 솔내구"}
@@ -97,7 +97,7 @@ def test_a_missing_file(export_dir: Path):
 
 def test_a_row_count_that_disagrees_with_the_manifest(export_dir: Path):
     manifest = json.loads((export_dir / "manifest.json").read_text("utf-8"))
-    manifest["files"]["places.jsonl"]["rows"] = 41
+    manifest["files"]["places.jsonl"]["rows"] = 42
     (export_dir / "manifest.json").write_text(json.dumps(manifest), "utf-8")
     assert cause_of(export_dir) == "row_count_mismatch"
 
