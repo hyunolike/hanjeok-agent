@@ -1,0 +1,337 @@
+{
+ "status": 200,
+ "fetched_at": "2026-10-14T04:51:10.694907Z",
+ "body": {
+  "success": true,
+  "data": {
+   "hasCongestionData": true,
+   "attraction": {
+    "id": 3443,
+    "name": "덕수궁",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/44/3584644_image2_1.jpg"
+   },
+   "diagnosis": {
+    "date": "2026-10-16",
+    "concentration": 76.53,
+    "percentile": 92,
+    "grade": "VERY_CROWDED",
+    "message": "덕수궁은 이날 매우 붐빌 것으로 보여요. 다른 날이나 다른 장소를 권해요."
+   },
+   "dailyForecasts": [
+    {
+     "date": "2026-10-13",
+     "concentration": 82.47,
+     "grade": "VERY_CROWDED",
+     "weather": {
+      "sky": "CLOUDY",
+      "precipitation": "RAIN",
+      "rainProbability": 60,
+      "minTemp": 18,
+      "maxTemp": 26
+     }
+    },
+    {
+     "date": "2026-10-14",
+     "concentration": 84.03,
+     "grade": "VERY_CROWDED",
+     "weather": {
+      "sky": "PARTLY_CLOUDY",
+      "precipitation": "NONE",
+      "rainProbability": 20,
+      "minTemp": 11,
+      "maxTemp": 20
+     }
+    },
+    {
+     "date": "2026-10-15",
+     "concentration": 84.48,
+     "grade": "VERY_CROWDED",
+     "weather": {
+      "sky": "CLEAR",
+      "precipitation": "NONE",
+      "rainProbability": 10,
+      "minTemp": 9,
+      "maxTemp": 21
+     }
+    },
+    {
+     "date": "2026-10-16",
+     "concentration": 76.53,
+     "grade": "VERY_CROWDED",
+     "weather": {
+      "sky": "CLEAR",
+      "precipitation": "NONE",
+      "rainProbability": 10,
+      "minTemp": 11,
+      "maxTemp": 23
+     }
+    },
+    {
+     "date": "2026-10-17",
+     "concentration": 94.31,
+     "grade": "CROWDED",
+     "weather": {
+      "sky": "PARTLY_CLOUDY",
+      "precipitation": "NONE",
+      "rainProbability": 20,
+      "minTemp": 14,
+      "maxTemp": 25
+     }
+    },
+    {
+     "date": "2026-10-18",
+     "concentration": 92.46,
+     "grade": "CROWDED",
+     "weather": {
+      "sky": "CLOUDY",
+      "precipitation": "RAIN",
+      "rainProbability": 60,
+      "minTemp": 17,
+      "maxTemp": 22
+     }
+    },
+    {
+     "date": "2026-10-19",
+     "concentration": 64.41,
+     "grade": "VERY_CROWDED",
+     "weather": {
+      "sky": "PARTLY_CLOUDY",
+      "precipitation": "NONE",
+      "rainProbability": 30,
+      "minTemp": 14,
+      "maxTemp": 20
+     }
+    },
+    {
+     "date": "2026-10-20",
+     "concentration": 77.82,
+     "grade": "VERY_CROWDED",
+     "weather": {
+      "sky": "PARTLY_CLOUDY",
+      "precipitation": "NONE",
+      "rainProbability": 20,
+      "minTemp": 10,
+      "maxTemp": 18
+     }
+    },
+    {
+     "date": "2026-10-21",
+     "concentration": 78.41,
+     "grade": "VERY_CROWDED",
+     "weather": {
+      "sky": "CLEAR",
+      "precipitation": "NONE",
+      "rainProbability": 10,
+      "minTemp": 9,
+      "maxTemp": 19
+     }
+    },
+    {
+     "date": "2026-10-22",
+     "concentration": 82.73,
+     "grade": "VERY_CROWDED",
+     "weather": {
+      "sky": "CLEAR",
+      "precipitation": "NONE",
+      "rainProbability": 10,
+      "minTemp": 7,
+      "maxTemp": 16
+     }
+    },
+    {
+     "date": "2026-10-23",
+     "concentration": 84.67,
+     "grade": "VERY_CROWDED",
+     "weather": {
+      "sky": "CLEAR",
+      "precipitation": "NONE",
+      "rainProbability": 10,
+      "minTemp": 7,
+      "maxTemp": 17
+     }
+    },
+    {
+     "date": "2026-10-24",
+     "concentration": 95.83,
+     "grade": "CROWDED",
+     "weather": {
+      "sky": "CLEAR",
+      "precipitation": "NONE",
+      "rainProbability": 10,
+      "minTemp": 7,
+      "maxTemp": 17
+     }
+    },
+    {
+     "date": "2026-10-25",
+     "concentration": 88.48,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-10-26",
+     "concentration": 64.86,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-10-27",
+     "concentration": 87.57,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-10-28",
+     "concentration": 90.68,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-10-29",
+     "concentration": 86.33,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-10-30",
+     "concentration": 88.1,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-10-31",
+     "concentration": 97.41,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-01",
+     "concentration": 87.05,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-02",
+     "concentration": 72.57,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-03",
+     "concentration": 81.4,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-04",
+     "concentration": 78.03,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-05",
+     "concentration": 77.05,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-06",
+     "concentration": 83.35,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-07",
+     "concentration": 98.06,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-08",
+     "concentration": 80.68,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-09",
+     "concentration": 67.97,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-10",
+     "concentration": 78.77,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-11",
+     "concentration": 81.39,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    }
+   ],
+   "betterDates": [
+    {
+     "date": "2026-10-19",
+     "concentration": 64.41,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-10-26",
+     "concentration": 64.86,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-09",
+     "concentration": 67.97,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    }
+   ],
+   "nearbyFestivals": [
+    {
+     "id": 938,
+     "contentId": "2756396",
+     "name": "덕수궁 밤의 석조전",
+     "startDate": "2026-09-09",
+     "endDate": "2026-10-18",
+     "distanceKm": 0.0,
+     "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/10/4102010_image2_1.jpg"
+    },
+    {
+     "id": 28,
+     "contentId": "292961",
+     "name": "서울 왕궁수문장 교대의식",
+     "startDate": "2026-01-01",
+     "endDate": "2026-12-31",
+     "distanceKm": 0.0,
+     "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/79/4039379_image2_1.jpg"
+    },
+    {
+     "id": 27,
+     "contentId": "2598331",
+     "name": "문화가 흐르는 서울광장",
+     "startDate": "2026-05-06",
+     "endDate": "2026-12-31",
+     "distanceKm": 0.2,
+     "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/68/4059668_image2_1.jpg"
+    }
+   ],
+   "ongoingExhibitions": [],
+   "feltCongestion": {
+    "moreCrowded": 0,
+    "asForecast": 0,
+    "lessCrowded": 0
+   },
+   "usual": {
+    "baseline": 82.93,
+    "days": 30,
+    "delta": -6.4
+   }
+  },
+  "error": null
+ }
+}

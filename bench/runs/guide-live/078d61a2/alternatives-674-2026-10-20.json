@@ -1,0 +1,215 @@
+{
+ "status": 200,
+ "fetched_at": "2026-10-14T04:41:32.020401Z",
+ "body": {
+  "success": true,
+  "data": [
+   {
+    "attractionId": 1298,
+    "name": "춘원당한의약박물관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/26/2022426_image2_1.jpg",
+    "latitude": 37.5714382045468,
+    "longitude": 126.99020905241,
+    "grade": "RELAXED",
+    "concentration": 15.53,
+    "distanceKm": 0.85,
+    "relationScore": 0,
+    "score": 0.5265466666666667,
+    "summary": "2008년에 개관한 춘원당 한방 박물관은 한의학의 살아있는 역사와 전통을 느낄 수 있는 한방 복합문화공간으로 한의학에 관련된 다양한 유물을 수…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "80",
+       "origin": "광장시장"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "광장시장에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 1290,
+    "name": "청와대 앞길",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/93/3525393_image2_1.jpg",
+    "latitude": 37.5834864376289,
+    "longitude": 126.973751980892,
+    "grade": "NORMAL",
+    "concentration": 46.01,
+    "distanceKm": 2.726,
+    "relationScore": 0.26,
+    "score": 0.48361333333333334,
+    "summary": "청와대 앞길은 종로구 팔판동 162번지(삼청동길)에서 청와대 앞을 거쳐 궁정동 98-6번지(효자로)에 이르는 길이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "40",
+       "origin": "광장시장"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "광장시장에서 차로 약 22분 예상돼요.",
+      "evidence": {
+       "minutes": "22"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 22,
+    "rating": null
+   },
+   {
+    "attractionId": 1055,
+    "name": "아르코예술극장",
+    "imageUrl": null,
+    "latitude": 37.5812120534,
+    "longitude": 127.0029733998,
+    "grade": "RELAXED",
+    "concentration": 25.64,
+    "distanceKm": 1.261,
+    "relationScore": 0,
+    "score": 0.48062666666666676,
+    "summary": "아르코예술극장은 1981년 개관 이래 새로운 가치와 시각을 제시하는 다양한 공연예술작품을 개발, 지원하고 수준 높은 서비스를 제공하여 예술적…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "67",
+       "origin": "광장시장"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "광장시장에서 차로 약 3분 예상돼요.",
+      "evidence": {
+       "minutes": "3"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 3,
+    "rating": null
+   },
+   {
+    "attractionId": 694,
+    "name": "국립어린이과학관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/12/2545812_image2_1.jpg",
+    "latitude": 37.5817737323,
+    "longitude": 126.9967839632,
+    "grade": "RELAXED",
+    "concentration": 32.63,
+    "distanceKm": 1.317,
+    "relationScore": 0,
+    "score": 0.45192,
+    "summary": "국내 최초의 어린이 전용 국립과학관은 미래사회를 이끌 창의 융합형 인재 양성을 목표로 2017년 12월 개관하였다.",
+    "recommendReasons": [
+     {
+      "kind": "REST_DAY",
+      "text": "이 날은 쉬는 날이에요 (매주 월요일 (단, 월요일이 공휴일인 경우 개관하며, 화요일에 대체 휴관) / 1월 1일 / 설·추석 당일).",
+      "evidence": {
+       "restDate": "매주 월요일 (단, 월요일이 공휴일인 경우 개관하며, 화요일에 대체 휴관) / 1월 1일 / 설·추석 당일"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "58",
+       "origin": "광장시장"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "광장시장에서 차로 약 3분 예상돼요.",
+      "evidence": {
+       "minutes": "3"
+      }
+     }
+    ],
+    "recommendReason": "이 날은 쉬는 날이에요 (매주 월요일 (단, 월요일이 공휴일인 경우 개관하며, 화요일에 대체 휴관) / 1월 1일 / 설·추석 당일).",
+    "travelMinutes": 3,
+    "rating": null
+   },
+   {
+    "attractionId": 923,
+    "name": "산마루 놀이터",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/98/4002298_image2_1.jpg",
+    "latitude": 37.57569326491641,
+    "longitude": 127.012346723113,
+    "grade": "NORMAL",
+    "concentration": 37.43,
+    "distanceKm": 1.271,
+    "relationScore": 0,
+    "score": 0.43333333333333335,
+    "summary": "창신숭인 도시재생지역 누리공간사업 일환으로 조성된 산마루 놀이터는 기존의 획일화된 놀이터에서 탈피하여 봉제산업의 메카인 창신동의 지역적 의미를…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "51",
+       "origin": "광장시장"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "광장시장에서 차로 약 3분 예상돼요.",
+      "evidence": {
+       "minutes": "3"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 3,
+    "rating": null
+   },
+   {
+    "attractionId": 727,
+    "name": "낙산공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/28/3506728_image2_1.jpg",
+    "latitude": 37.5805179476871,
+    "longitude": 127.006496092905,
+    "grade": "NORMAL",
+    "concentration": 46.45,
+    "distanceKm": 1.297,
+    "relationScore": 0,
+    "score": 0.3969066666666667,
+    "summary": "낙산공원은 대학로와 동대문으로부터 이어지며 역사와 문화를 함께 즐길 수 있는 공원이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "40",
+       "origin": "광장시장"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "광장시장에서 차로 약 3분 예상돼요.",
+      "evidence": {
+       "minutes": "3"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 3,
+    "rating": null
+   }
+  ],
+  "error": null
+ }
+}

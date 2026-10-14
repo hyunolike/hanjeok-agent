@@ -1,0 +1,398 @@
+{
+ "status": 200,
+ "fetched_at": "2026-10-14T04:27:37.479149Z",
+ "body": {
+  "success": true,
+  "data": [
+   {
+    "attractionId": 803,
+    "name": "동십자각",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/91/4092691_image2_1.jpg",
+    "latitude": 37.5760791102,
+    "longitude": 126.9794210836,
+    "grade": "RELAXED",
+    "concentration": 40.6,
+    "distanceKm": 0.238,
+    "relationScore": 0,
+    "score": 0.4344266666666667,
+    "summary": "동십자각은 광화문에서 연결되어, 경복궁 외궁성이 건춘문을 향하여 꺾이는 부분에 세운 망루이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "59",
+       "origin": "경복궁"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "경복궁에서 차로 약 1분 예상돼요.",
+      "evidence": {
+       "minutes": "1"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 1,
+    "rating": null
+   },
+   {
+    "attractionId": 847,
+    "name": "무궁화동산",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/24/3399924_image2_1.JPG",
+    "latitude": 37.5843076223,
+    "longitude": 126.9721572068,
+    "grade": "RELAXED",
+    "concentration": 38.84,
+    "distanceKm": 1.004,
+    "relationScore": 0,
+    "score": 0.4312533333333333,
+    "summary": "무궁화동산은 옛 중앙정보부의 궁정동 안전가옥 터에 마련된 시민휴식공원이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "61",
+       "origin": "경복궁"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "경복궁에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 3702,
+    "name": "서울도시건축전시관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/92/2639292_image2_1.jpg",
+    "latitude": 37.566882960193,
+    "longitude": 126.976702166851,
+    "grade": "RELAXED",
+    "concentration": 42.43,
+    "distanceKm": 1.017,
+    "relationScore": 0,
+    "score": 0.41672000000000003,
+    "summary": "서울도시건축전시관은 서울시가 2015년 광복 70주년을 맞아 일제강점기의 잔재였던 옛 국세청 별관 건물을 철거하고 그 자리의 역사적 가치를 회…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "57",
+       "origin": "경복궁"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "경복궁에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 659,
+    "name": "경희궁",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/37/3482237_image2_1.jpg",
+    "latitude": 37.5703879399457,
+    "longitude": 126.968491756842,
+    "grade": "RELAXED",
+    "concentration": 43.93,
+    "distanceKm": 0.959,
+    "relationScore": 0,
+    "score": 0.4114933333333334,
+    "summary": "사적으로 지정된 경희궁은 조선 후기의 대표적인 이궁이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "56",
+       "origin": "경복궁"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "경복궁에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 954,
+    "name": "서울 종로 낙지볶음 골목",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/46/3478546_image2_1.jpg",
+    "latitude": 37.5708982096,
+    "longitude": 126.9799374337,
+    "grade": "NORMAL",
+    "concentration": 71.94,
+    "distanceKm": 0.637,
+    "relationScore": 0,
+    "score": 0.3037466666666667,
+    "summary": "서울 종로 낙지볶음 골목은 청계천 청계광장 인근 무교동 사거리에서 종로구청으로 이어지는 일대를 말한다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "경복궁에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "28",
+       "origin": "경복궁"
+      }
+     }
+    ],
+    "recommendReason": "경복궁에서 차로 약 2분 예상돼요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 970,
+    "name": "서울역사박물관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/87/2661487_image2_1.JPG",
+    "latitude": 37.5698981615,
+    "longitude": 126.9707771853,
+    "grade": "NORMAL",
+    "concentration": 76.36,
+    "distanceKm": 0.86,
+    "relationScore": 0,
+    "score": 0.28309333333333336,
+    "summary": "세계도시로 성장한 서울이 어떻게 탄생했으며 어떻게 변해서 오늘에 이르렀는지를 배우고 앞으로 어떻게 바뀔 것인지를 가늠해 보는 곳이 서울역사박물…",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "경복궁에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "23",
+       "origin": "경복궁"
+      }
+     }
+    ],
+    "recommendReason": "경복궁에서 차로 약 2분 예상돼요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 4097,
+    "name": "하이커 그라운드",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/95/4061495_image2_1.jpg",
+    "latitude": 37.5685272932,
+    "longitude": 126.9816266395,
+    "grade": "NORMAL",
+    "concentration": 76.83,
+    "distanceKm": 0.94,
+    "relationScore": 0,
+    "score": 0.28014666666666665,
+    "summary": "한국관광공사 서울센터에 개관한 ‘하이커 그라운드’는 K-POP 체험과 미디어 아트 관람을 동시에 할 수 있는 한국 관광 홍보관이다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "경복궁에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "23",
+       "origin": "경복궁"
+      }
+     }
+    ],
+    "recommendReason": "경복궁에서 차로 약 2분 예상돼요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 875,
+    "name": "보성사터",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/61/3518361_image2_1.jpg",
+    "latitude": 37.5739784579,
+    "longitude": 126.9827509785,
+    "grade": "NORMAL",
+    "concentration": 79.95,
+    "distanceKm": 0.578,
+    "relationScore": 0,
+    "score": 0.27249333333333337,
+    "summary": "보성사는 1910년 말 창신사와 보성학원 소속 보성사 인쇄소를 합병하여 만든 천도교 계통의 인쇄소이다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "경복궁에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "20",
+       "origin": "경복궁"
+      }
+     }
+    ],
+    "recommendReason": "경복궁에서 차로 약 2분 예상돼요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 876,
+    "name": "보신각터",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/23/3568323_image2_1.jpg",
+    "latitude": 37.5698150675,
+    "longitude": 126.9835760212,
+    "grade": "NORMAL",
+    "concentration": 79.4,
+    "distanceKm": 0.918,
+    "relationScore": 0,
+    "score": 0.27016,
+    "summary": "보신각터는 도성 안팎에 시간을 알리는 종루 보신각이 있던 곳이다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "경복궁에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "20",
+       "origin": "경복궁"
+      }
+     }
+    ],
+    "recommendReason": "경복궁에서 차로 약 2분 예상돼요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 3941,
+    "name": "정동1928 아트센터",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/85/3510485_image2_1.jpg",
+    "latitude": 37.56805116373988,
+    "longitude": 126.97385599202785,
+    "grade": "NORMAL",
+    "concentration": 81.27,
+    "distanceKm": 0.923,
+    "relationScore": 0,
+    "score": 0.26261333333333337,
+    "summary": "정동1928 아트센터는 100년 역사를 지닌 구세군 중앙회관 건물이 2019년에 새롭게 리뉴얼되어 전시, 공연, 세미나, 강연, 기업행사, 하…",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "경복궁에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "18",
+       "origin": "경복궁"
+      }
+     }
+    ],
+    "recommendReason": "경복궁에서 차로 약 2분 예상돼요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 3685,
+    "name": "서울 구 러시아공사관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/15/4095915_image2_1.jpg",
+    "latitude": 37.5681,
+    "longitude": 126.9716,
+    "grade": "NORMAL",
+    "concentration": 83.72,
+    "distanceKm": 0.991,
+    "relationScore": 0,
+    "score": 0.25190666666666667,
+    "summary": "서울 구 러시아공사관은 조선말 한로수호조약이 비준된 1885년 직후에 착공되어 1890년에 준공되었다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "경복궁에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "16",
+       "origin": "경복궁"
+      }
+     }
+    ],
+    "recommendReason": "경복궁에서 차로 약 2분 예상돼요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 1229,
+    "name": "조계사(서울)",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/13/3533413_image2_1.jpg",
+    "latitude": 37.5739260534,
+    "longitude": 126.982736852,
+    "grade": "NORMAL",
+    "concentration": 86.13,
+    "distanceKm": 0.579,
+    "relationScore": 0,
+    "score": 0.24776000000000004,
+    "summary": "조계사는 대한불교조계종의 총본산 사찰이다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "경복궁에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     }
+    ],
+    "recommendReason": "경복궁에서 차로 약 2분 예상돼요.",
+    "travelMinutes": 2,
+    "rating": null
+   }
+  ],
+  "error": null
+ }
+}
