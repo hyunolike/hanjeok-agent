@@ -82,4 +82,12 @@ def test_every_command_the_parser_offers_is_handled():
     from guide.cli import parser
 
     choices = next(a for a in parser()._actions if a.dest == "command").choices
-    assert set(choices) == {"refresh", "eval", "rescore", "publish"}
+    assert set(choices) == {"refresh", "eval", "rescore", "publish", "mcp"}
+
+
+def test_mcp_is_a_command_and_defaults_to_stdio():
+    seen = []
+
+    status = main(["mcp"], run_mcp=lambda args: seen.append(args.transport) or 0)
+
+    assert (status, seen) == (0, ["stdio"])

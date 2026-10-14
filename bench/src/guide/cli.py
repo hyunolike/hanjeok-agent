@@ -56,6 +56,8 @@ def parser() -> argparse.ArgumentParser:
         "rescore", help="judge the answers of a stored run without asking again"
     )
     rescore.add_argument("--report", required=True)
+    mcp = commands.add_parser("mcp", help="serve the guide's tools over the Model Context Protocol")
+    mcp.add_argument("--transport", choices=("stdio", "streamable-http"), default="stdio")
     publish = commands.add_parser(
         "publish", help="make a stored report the one the evaluation page shows"
     )
@@ -137,6 +139,20 @@ def _rescore_from_env(args) -> dict:
     )
 
 
+def _mcp_from_env(args) -> int:
+    """Serve until the client goes away. Over stdio, standard output belongs to
+    the protocol, so nothing here prints."""
+    from guide.api import EnvRuntime
+    from guide.mcp_server import build_server
+
+    runtime = EnvRuntime()
+    try:
+        build_server(runtime).run(transport=args.transport)
+    finally:
+        runtime.close()
+    return 0
+
+
 def _summary(report: dict) -> dict:
     return {
         "ok": True,
@@ -178,14 +194,18 @@ def main(
     run_refresh=_refresh_from_env,
     run_eval=_eval_from_env,
     run_rescore=None,
+    run_mcp=None,
     store=None,
 ) -> int:
     args = parser().parse_args(argv)
     run_rescore = run_rescore or _rescore_from_env
+    run_mcp = run_mcp or _mcp_from_env
     try:
         if args.command == "eval":
             print(json.dumps(_summary(run_eval(args)), ensure_ascii=False))
             return 0
+        if args.command == "mcp":
+            return run_mcp(args)
         if args.command == "rescore":
             print(json.dumps(_summary(run_rescore(args)), ensure_ascii=False))
             return 0
