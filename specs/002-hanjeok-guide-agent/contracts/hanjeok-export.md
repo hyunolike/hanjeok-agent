@@ -105,11 +105,22 @@ are date-bound and the agent fetches them live (FR-011).
 
 ## Producing it
 
-A `psql \copy` script with the column lists above, following the two export
-precedents in the Hanjeok repository (`scripts/live-area-forecast-accuracy.sql`
-and `scripts/photo-orphan-files.sh`). It is a change to the Hanjeok repository
-and is made there, under that repository's rules, when the author asks for it.
-Nothing in this repository connects to the Hanjeok database.
+`scripts/guide-agent-export.sh` in the Hanjeok repository (branch
+`chore/guide-agent-export`, written 2026-10-14 at the author's request). It
+reads the four sources inside one read-only `REPEATABLE READ` transaction, so
+a batch replacing relatedness rows mid-export cannot leave a link whose end is
+missing from the places file. Each query names its columns one by one.
+
+It does not use `\copy`: COPY's text format escapes backslashes a second time
+and corrupts JSON strings. Rows are printed with `psql -At` and split into
+files on the client.
+
+Checked against a throwaway PostGIS container built from Hanjeok's own table
+definitions, with rows chosen to be awkward: quotes, a backslash, a newline and
+a tab in a description; a link Hanjeok left unranked; a place that is neither
+covered nor a related target; links to that place; an event already over. The
+output passed `guide refresh --check`. **It has not been run against the
+production database**, and nothing in this repository connects to it.
 
 ## Synthetic export
 

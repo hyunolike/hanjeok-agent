@@ -114,7 +114,7 @@ dependency between them.
 
 ## Phase 10: Real data, deployment and documents
 
-- [ ] T058 Hanjeok-side export script, in the Hanjeok repository, when the author asks for it; produce the first real export
+- [ ] T058 Hanjeok-side export script, in the Hanjeok repository, when the author asks for it; produce the first real export — script written and checked on a throwaway database (2026-10-14); the first real export is not produced yet
 - [ ] T059 `guide refresh` on the real export; record counts and timings; decide from them whether research decision 2 needs a cap
 - [ ] T060 Write `bench/questions/hanjeok-v1.yaml`: at least 60 questions, at least 8 of each kind, `needs` ids verified against the real generation (SC-005)
 - [ ] T061 Run and publish the evaluation; commit run records and the report
