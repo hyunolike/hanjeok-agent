@@ -49,7 +49,16 @@ export const guideKo = {
     ],
 
     fieldLabel: '질문',
+    // 서버에 연결됐을 때의 예시. 실제 한적 데이터에 있는 장소라야 한다 — 녹화본의
+    // 지어낸 장소를 실제 서버에 물으면 "그런 장소가 없다"가 첫인상이 된다.
+    examplesLive: [
+      '이번 토요일 경복궁 대신 조용한 곳 있어?',
+      '명동은 이번 주말에 얼마나 붐벼?',
+      '대안 장소는 어떤 기준으로 순서를 정해?',
+      '해운대해수욕장과 이어진 곳 알려줘',
+    ],
     fieldPlaceholder: '예: 이번 토요일 가람궁 대신 조용한 곳 있어?',
+    fieldPlaceholderLive: '예: 이번 토요일 경복궁 대신 조용한 곳 있어?',
     followUpPlaceholder: '이어서 물어보기',
     submit: '물어보기',
     retry: '다시 물어보기',
@@ -115,6 +124,7 @@ export const guideKo = {
     notReady: '안내 서버가 아직 데이터를 싣지 못했습니다. 잠시 뒤에 다시 열어 주세요.',
     searchLabel: '장소 이름',
     searchPlaceholder: '예: 가람궁',
+    searchPlaceholderLive: '예: 경복궁',
     search: '찾기',
     resultsTitle: (count: number) => `찾은 장소 ${count}곳`,
     noResults: (query: string) => `"${query}"(이)라는 이름의 장소를 찾지 못했습니다. 이름의 일부만 넣어 보세요.`,
@@ -262,7 +272,14 @@ export const guideEn: GuideDict = {
     ],
 
     fieldLabel: 'Question',
+    examplesLive: [
+      '이번 토요일 경복궁 대신 조용한 곳 있어?',
+      '명동은 이번 주말에 얼마나 붐벼?',
+      '대안 장소는 어떤 기준으로 순서를 정해?',
+      '해운대해수욕장과 이어진 곳 알려줘',
+    ],
     fieldPlaceholder: 'e.g. 이번 토요일 가람궁 대신 조용한 곳 있어?',
+    fieldPlaceholderLive: 'e.g. 이번 토요일 경복궁 대신 조용한 곳 있어?',
     followUpPlaceholder: 'Ask a follow-up',
     submit: 'Ask',
     retry: 'Ask again',
@@ -328,6 +345,7 @@ export const guideEn: GuideDict = {
     notReady: 'The guide server has not loaded its data yet. Please try again shortly.',
     searchLabel: 'Place name',
     searchPlaceholder: 'e.g. 가람궁',
+    searchPlaceholderLive: 'e.g. 경복궁',
     search: 'Find',
     resultsTitle: (count: number) => `${count} places found`,
     noResults: (query: string) => `No place is named "${query}". Try part of the name.`,

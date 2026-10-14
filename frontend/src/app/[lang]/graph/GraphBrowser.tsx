@@ -128,7 +128,7 @@ export function GraphBrowser({
           className="flex-1"
           value={draft}
           maxLength={50}
-          placeholder={t.searchPlaceholder}
+          placeholder={isReplay ? t.searchPlaceholder : t.searchPlaceholderLive}
           onChange={(event) => setDraft(event.target.value)}
         />
         <Button type="submit" disabled={searching || draft.trim() === ''}>
