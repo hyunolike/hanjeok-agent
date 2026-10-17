@@ -28,9 +28,9 @@
 
 <div align="center">
 
-<a href="docs/media/hanjeok-guide.mp4"><img src="docs/media/hanjeok-guide.gif" alt="在线上站点提出一个问题。步骤逐个出现,随后是带引用标签的回答、按排名排列的替代地点路径,以及评估表格。" width="760"></a>
+https://github.com/user-attachments/assets/26f0ab43-0959-49cb-a4f1-9dcf554d93a3
 
-<sub>20 秒,录自运行在真实 Hanjeok 数据上的线上站点。<b><a href="docs/media/hanjeok-guide.mp4">带声音观看 →</a></b></sub>
+<sub>20 秒,有声音,录自运行在真实 Hanjeok 数据上的线上站点。</sub>
 
 </div>
 
