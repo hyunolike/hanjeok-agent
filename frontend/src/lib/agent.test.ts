@@ -132,3 +132,31 @@ describe('서버가 아예 안 뜬 경우', () => {
     expect(await fetchContextDocument('a.md', stub)).toEqual({ kind: 'unavailable', status: 0 })
   })
 })
+
+
+it('읽기 요청은 무한 대기하지 않도록 시간 제한 신호를 보낸다', async () => {
+  const stub = vi.fn().mockResolvedValue(jsonResponse({ courseUuid: 'abc', facts: factsFixture }))
+  await fetchFacts('abc', stub)
+  expect(stub.mock.calls[0][1].signal).toBeInstanceOf(AbortSignal)
+})
+
+it('8초가 넘는 정상 설명 생성은 짧은 읽기 시간 제한 때문에 사라지지 않는다', async () => {
+  vi.useFakeTimers()
+  const timeout = vi.spyOn(AbortSignal, 'timeout').mockImplementation((ms) => {
+    const controller = new AbortController()
+    setTimeout(() => controller.abort(), ms)
+    return controller.signal
+  })
+  try {
+    const stub = vi.fn().mockImplementation((_url, init) => new Promise((resolve, reject) => {
+      init.signal.addEventListener('abort', () => reject(new Error('timed out')), { once: true })
+      setTimeout(() => resolve(jsonResponse({ facts: factsFixture, explanation: '설명', citations: [], generatedAt: '2026-10-18T00:00:00Z', model: 'test' })), 9000)
+    }))
+    const request = fetchExplanation('abc', stub)
+    await vi.advanceTimersByTimeAsync(9001)
+    expect((await request).kind).toBe('loaded')
+  } finally {
+    timeout.mockRestore()
+    vi.useRealTimers()
+  }
+})

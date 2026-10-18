@@ -1,0 +1,7 @@
+Existing Hanjeok brand asset, reused for the Hanjeok Agent home banner.
+Source repository: https://github.com/hyunolike/hanjeok
+Source revision: fc5cded10b2a776d23f7a75bb1bded3bf8f979aa
+Source file: frontend/public/assets/brand/scenes/v1/home-place/city-light.webp
+Copied unchanged. This is an illustration, not a photograph of a real destination.
+The leaf character is the existing /brand/guide/found.webp asset in this repository.
+The Korean wordmark is real HTML text, not text inside an image.

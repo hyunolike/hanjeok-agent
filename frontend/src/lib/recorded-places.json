@@ -1,0 +1,82 @@
+[
+  {
+    "id": 3443,
+    "contentId": "126509",
+    "name": "덕수궁",
+    "areaLabel": "서울 중구",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/44/3584644_image2_1.jpg",
+    "hasCongestionData": true,
+    "sourceUrl": "https://api.hanjeok.com/api/v1/attractions/search?keyword=%EB%8D%95%EC%88%98%EA%B6%81",
+    "capturedAt": "2026-10-18T14:37:09.126Z"
+  },
+  {
+    "id": 3919,
+    "contentId": "2762871",
+    "name": "이화여고100주년기념관",
+    "areaLabel": "서울 중구",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/47/3412247_image2_1.JPG",
+    "hasCongestionData": true,
+    "sourceUrl": "https://api.hanjeok.com/api/v1/attractions/search?keyword=%EC%9D%B4%ED%99%94%EC%97%AC%EA%B3%A0100%EC%A3%BC%EB%85%84%EA%B8%B0%EB%85%90%EA%B4%80",
+    "capturedAt": "2026-10-18T14:37:09.153Z"
+  },
+  {
+    "id": 6146,
+    "contentId": "130152",
+    "name": "서대문형무소역사관",
+    "areaLabel": "서울 서대문구",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/29/3520329_image2_1.jpg",
+    "hasCongestionData": true,
+    "sourceUrl": "https://api.hanjeok.com/api/v1/attractions/search?keyword=%EC%84%9C%EB%8C%80%EB%AC%B8%ED%98%95%EB%AC%B4%EC%86%8C%EC%97%AD%EC%82%AC%EA%B4%80",
+    "capturedAt": "2026-10-18T14:37:09.192Z"
+  },
+  {
+    "id": 653,
+    "contentId": "126508",
+    "name": "경복궁",
+    "areaLabel": "서울 종로구",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/98/3487598_image2_1.jpg",
+    "hasCongestionData": true,
+    "sourceUrl": "https://api.hanjeok.com/api/v1/attractions/search?keyword=%EA%B2%BD%EB%B3%B5%EA%B6%81",
+    "capturedAt": "2026-10-18T14:37:09.216Z"
+  },
+  {
+    "id": 1277,
+    "contentId": "127642",
+    "name": "창덕궁과 후원 [유네스코 세계유산]",
+    "areaLabel": "서울 종로구",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource_photo/09/3511909_image2_1.jpg",
+    "hasCongestionData": true,
+    "sourceUrl": "https://api.hanjeok.com/api/v1/attractions/search?keyword=%EC%B0%BD%EB%8D%95%EA%B6%81%EA%B3%BC%20%ED%9B%84%EC%9B%90",
+    "capturedAt": "2026-10-18T14:37:09.235Z"
+  },
+  {
+    "id": 905,
+    "contentId": "126537",
+    "name": "북촌한옥마을",
+    "areaLabel": "서울 종로구",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/04/3304404_image2_1.jpg",
+    "hasCongestionData": true,
+    "sourceUrl": "https://api.hanjeok.com/api/v1/attractions/search?keyword=%EB%B6%81%EC%B4%8C%ED%95%9C%EC%98%A5%EB%A7%88%EC%9D%84",
+    "capturedAt": "2026-10-18T14:37:09.252Z"
+  },
+  {
+    "id": 4163,
+    "contentId": "129703",
+    "name": "국립중앙박물관",
+    "areaLabel": "서울 용산구",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/12/3495012_image2_1.jpg",
+    "hasCongestionData": true,
+    "sourceUrl": "https://api.hanjeok.com/api/v1/attractions/search?keyword=%EA%B5%AD%EB%A6%BD%EC%A4%91%EC%95%99%EB%B0%95%EB%AC%BC%EA%B4%80",
+    "capturedAt": "2026-10-18T14:37:09.272Z"
+  },
+  {
+    "id": 4478,
+    "contentId": "970636",
+    "name": "이촌한강공원",
+    "areaLabel": "서울 용산구",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/62/4123162_image2_1.jpg",
+    "hasCongestionData": true,
+    "sourceUrl": "https://api.hanjeok.com/api/v1/attractions/search?keyword=%EC%9D%B4%EC%B4%8C%ED%95%9C%EA%B0%95%EA%B3%B5%EC%9B%90",
+    "capturedAt": "2026-10-18T14:37:09.289Z"
+  }
+]

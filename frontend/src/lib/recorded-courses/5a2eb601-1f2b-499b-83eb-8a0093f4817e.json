@@ -1,0 +1,145 @@
+{
+  "sourceUrl": "https://api.hanjeok.com/api/v1/courses/5a2eb601-1f2b-499b-83eb-8a0093f4817e",
+  "capturedAt": "2026-10-18T14:19:24.008Z",
+  "course": {
+    "uuid": "5a2eb601-1f2b-499b-83eb-8a0093f4817e",
+    "originAttractionId": 4163,
+    "targetDate": "2026-09-12",
+    "title": "많이 붐비는 국립중앙박물관을 피해 도는 하루",
+    "congestionReductionRate": 20,
+    "summary": "국립중앙박물관을 대신 이촌한강공원와 서대문형무소역사관을 묶었어요. 원래 가려던 곳만 갔을 때보다 하루 평균 혼잡도가 20% 낮아요.",
+    "recommendedDate": {
+      "date": "2026-09-24",
+      "congestionReductionRate": 32
+    },
+    "lunchAfterVisitOrder": 1,
+    "lunchSuggestions": [
+      {
+        "attractionId": 4236,
+        "name": "동빙고 본점",
+        "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/95/2849395_image2_1.jpg",
+        "distanceKm": 0.4
+      },
+      {
+        "attractionId": 4210,
+        "name": "니와",
+        "imageUrl": null,
+        "distanceKm": 0.4
+      },
+      {
+        "attractionId": 4359,
+        "name": "스즈란테이",
+        "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/48/2856448_image2_1.jpg",
+        "distanceKm": 0.4
+      }
+    ],
+    "items": [
+      {
+        "attractionId": 4163,
+        "name": "국립중앙박물관",
+        "visitOrder": 1,
+        "timeLabel": "오전 10:00",
+        "grade": "VERY_CROWDED",
+        "reason": "국립중앙박물관은 이 날 매우 붐벼요.",
+        "reasons": [
+          {
+            "kind": "CONGESTION_DELTA",
+            "text": "국립중앙박물관은 이 날 매우 붐벼요.",
+            "evidence": {
+              "fallback": "true"
+            }
+          }
+        ],
+        "overview": "국립중앙박물관은 용산으로 이전하여 2005년 개관한 이래 사람들에게 많은 관심과 사랑을 받은 곳이다. 시대와 주제별로 구성된 7개의 상설전시관, 다양한 내용을 선보이는 특별전시관, 관람의 이해를 돕는 전시해설 프로그램, 오감으로 즐기고 배우는 어린이박물관, 다채로운 교육 프로그램, 첨단기술을 활용한 실감콘텐츠 등을 마음껏 누리고 즐길 수 있다.\n상설전시관에는 9,884점의 유물을 전시하고 있으며, 전시물은 외부 전시 일정 및 유물의 보존 상태를 고려하여 주기적으로 교체하고 있다. 또한 전시의 기본이 되는 소장품의 수집과 보존, 학술조사연구 등 여러 분야에서도 완성도를 높이기 위해 노력하고 있다.",
+        "latitude": 37.521116788705534,
+        "longitude": 126.97911242871115,
+        "imageUrls": [
+          "https://tong.visitkorea.or.kr/cms/resource/12/3495012_image2_1.jpg",
+          "https://tong.visitkorea.or.kr/cms/resource/61/3365661_image2_1.jpg",
+          "https://tong.visitkorea.or.kr/cms/resource/62/3365662_image2_1.jpg"
+        ],
+        "travelMinutesFromPrev": null,
+        "isCustom": false
+      },
+      {
+        "attractionId": 4478,
+        "name": "이촌한강공원",
+        "visitOrder": 2,
+        "timeLabel": "오후 12:38",
+        "grade": "NORMAL",
+        "reason": "낮 28도 맑음, 걷기 좋은 날이에요.",
+        "reasons": [
+          {
+            "kind": "WEATHER_FIT",
+            "text": "낮 28도 맑음, 걷기 좋은 날이에요.",
+            "evidence": {
+              "precipitation": "NONE",
+              "rainProbability": "10",
+              "outdoorness": "OUTDOOR"
+            }
+          },
+          {
+            "kind": "TRAVEL",
+            "text": "앞 장소에서 8분 거리예요.",
+            "evidence": {
+              "minutes": "8"
+            }
+          },
+          {
+            "kind": "CONGESTION_DELTA",
+            "text": "국립중앙박물관보다 집중률이 26% 낮아요.",
+            "evidence": {
+              "delta": "26",
+              "origin": "국립중앙박물관"
+            }
+          }
+        ],
+        "overview": "이촌한강공원은 금호동의 중랑천교와 이촌동의 원효대교 사이 강변 북단에 위치해 있다. 가을이 되면 호안가 주변을 따라 갈대와 억새, 코스모스가 피어나 시민들의 산책과 조깅코스로 자주 이용된다. 청소년을 위한 청소년광장과 X-게임장, 국제규모의 인라인스케이트장, 농구장, 테니스장, 게이트볼장 등의 운동경기장 등이 여가 및 레포츠 공간으로 유용하게 활용되고 있다. 또한 한강도하체험장이 생겨 개인, 직장, 학교 등 단체생활의 팀워크훈련장으로 이용되고 있다.\n\n◎ 한류의 매력을 만나는 여행 정보 - 드라마 \n드라마 에서 서해(박신혜 분)가 아빠와의 추억을 떠올리며 슬픔에 잠긴 공원이다. 부지가 넓어 산책, 피크닉, 문화활동 등 다양한 여가 활동을 즐길 수 있다.",
+        "latitude": 37.5178205563,
+        "longitude": 126.9708511614,
+        "imageUrls": [
+          "https://tong.visitkorea.or.kr/cms/resource/62/4123162_image2_1.jpg",
+          "https://tong.visitkorea.or.kr/cms/resource/16/3413116_image2_1.png",
+          "https://tong.visitkorea.or.kr/cms/resource/17/3413117_image2_1.png"
+        ],
+        "travelMinutesFromPrev": 8,
+        "isCustom": false
+      },
+      {
+        "attractionId": 6146,
+        "name": "서대문형무소역사관",
+        "visitOrder": 3,
+        "timeLabel": "오후 2:21",
+        "grade": "NORMAL",
+        "reason": "국립중앙박물관보다 집중률이 33% 낮아요.",
+        "reasons": [
+          {
+            "kind": "CONGESTION_DELTA",
+            "text": "국립중앙박물관보다 집중률이 33% 낮아요.",
+            "evidence": {
+              "delta": "33",
+              "origin": "국립중앙박물관"
+            }
+          },
+          {
+            "kind": "TRAVEL",
+            "text": "앞 장소에서 13분 거리예요.",
+            "evidence": {
+              "minutes": "13"
+            }
+          }
+        ],
+        "overview": "서대문형무소는 대한제국 말 일제의 강압으로 세워진 이래, 80여 년간 격동의 근현대 수난사를 간직한 현장이자 대표적인 일제 탄압기관이었다. 1908년 10월 21일 경성감옥이라는 이름으로 문을 연 뒤 일제에 국권을 빼앗기자, 이에 항거하는 민족독립운동이 전국에서 거세게 일어났고 일제는 수많은 애국지사를 체포·투옥했다. 수용 인원이 늘어나자 마포 공덕동에 새 감옥을 지으면서, 기존 감옥은 1912년 9월 3일 서대문감옥으로 명칭이 바뀌었다. 이후 수많은 민족 수난의 역사를 거쳐 1992년 8월 15일 현재의 서대문독립공원으로 개원하였다.\n서대문구에서는 1995년부터 서대문독립공원 사적지에 대한 성역화 사업을 추진하였다. 조국 독립을 위해 일제에 맞서다 투옥되어 모진 고문과 탄압 끝에 순국하신 애국선열들의 넋을 기리고, 후손들에게 자주독립 정신을 일깨워 주는 역사의 산 교육장으로 삼고자 이곳을 새롭게 단장하여 서대문형무소역사관으로 개관하였다.",
+        "latitude": 37.574303895,
+        "longitude": 126.9555345762,
+        "imageUrls": [
+          "https://tong.visitkorea.or.kr/cms/resource/29/3520329_image2_1.jpg",
+          "https://tong.visitkorea.or.kr/cms/resource/56/3509056_image2_1.jpg",
+          "https://tong.visitkorea.or.kr/cms/resource/57/3509057_image2_1.jpg"
+        ],
+        "travelMinutesFromPrev": 13,
+        "isCustom": false
+      }
+    ]
+  }
+}

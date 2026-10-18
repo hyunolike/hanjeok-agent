@@ -30,15 +30,15 @@ const renderHome = async (lang: 'ko' | 'en') =>
 afterEach(() => vi.restoreAllMocks())
 
 describe('홈 브리핑', () => {
-  it('코스 목록보다 규칙이 먼저 온다', async () => {
+  it('한적 배너의 브랜드와 규칙 설명을 읽을 수 있다', async () => {
     // 규칙을 모르면 코스 화면의 인용 칩이 왜 거기 있는지 알 수 없고, 누를 이유도 없다.
     vi.spyOn(agent, 'fetchContextList').mockResolvedValue({ kind: 'loaded', value: listing })
 
     await renderHome('ko')
 
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
-      dict('ko').home.ruleTitle,
-    )
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('한적')
+    expect(screen.getByRole('heading', { name: dict('ko').home.ruleTitle })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: '예시 코스 둘러보기' })).toHaveAttribute('href', '#demo-courses')
   })
 
   it('번들 숫자를 백엔드에서 받아 적는다', async () => {

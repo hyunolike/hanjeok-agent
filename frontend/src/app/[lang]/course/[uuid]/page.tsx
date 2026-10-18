@@ -6,6 +6,11 @@
 export const dynamic = 'force-dynamic'
 
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
+import { EXCLUDED_DEMO_UUIDS } from '@/lib/demo-courses'
+import { recordedCourse } from '@/lib/recorded-courses'
+import { DemoCourseView } from '@/components/course/DemoCourseView'
+import { RetryCourse } from './RetryCourse'
 import { fetchFacts } from '@/lib/agent'
 import { dict, isLang } from '@/lib/i18n'
 import { CourseView } from './CourseView'
@@ -27,13 +32,21 @@ export default async function CoursePage({
   if (!isLang(lang)) notFound()
   const t = dict(lang)
 
+  if (EXCLUDED_DEMO_UUIDS.has(uuid)) notFound()
+  const snapshot = recordedCourse(uuid)
+  if (snapshot) return <DemoCourseView snapshot={snapshot} lang={lang} />
+
   const facts = await fetchFacts(uuid)
 
   if (facts.kind === 'unavailable') {
     return (
-      <div className="space-y-2">
+      <div className="space-y-4" role="status">
         <h1 className="text-title-2 font-semibold">{t.course.loadFailTitle}</h1>
         <p className="text-body text-ink-muted">{t.course.loadFailBody(facts.status)}</p>
+        <div className="flex flex-wrap items-center gap-4">
+          <RetryCourse lang={lang} />
+          <Link href={`/${lang}`} className="inline-flex min-h-control-sm items-center text-brand-primary underline underline-offset-4">{lang === 'ko' ? '홈으로 돌아가기' : 'Back to home'}</Link>
+        </div>
       </div>
     )
   }
