@@ -5,3 +5,7 @@ Source file: frontend/public/assets/brand/scenes/v1/home-place/city-light.webp
 Copied unchanged. This is an illustration, not a photograph of a real destination.
 The leaf character is the existing /brand/guide/found.webp asset in this repository.
 The Korean wordmark is real HTML text, not text inside an image.
+
+guide-in-hanjeok.webp
+Generated for this repository with Codex image generation, using the leaf character as reference.
+Original, prompt and record: design/home-intro/v1/ (provenance.json, generation-job.json).

@@ -44,6 +44,84 @@ const ko = {
   },
 
   home: {
+    // 홈은 이 사이트가 한적의 어디에 들어가는 무엇인지부터 말한다. 예전 홈은 앞서 만든
+    // 코스 설명기를 소개하고 있어서, 지금 에이전트와 맞지 않는 숫자와 규칙이 남아 있었다.
+    bannerEyebrow: '한적 에이전트',
+    bannerTitle: ['붐비는지 묻고,', '대신 갈 곳을 들어 보세요.'],
+    bannerBody:
+      '한적의 장소 화면과 코스 화면에서 부르는 안내 기능입니다. 이 사이트에서 따로 떼어 써 볼 수 있습니다.',
+    bannerCta: '한적에게 물어보기',
+    bannerSecondary: '예시 코스 보기',
+
+    roleTitle: '한적 안에서 하는 일',
+    roleLead:
+      '한적이 이미 가진 혼잡 예보와 추천을 질문 하나로 꺼내 주는 것이 이 에이전트의 일입니다. 장소를 새로 고르거나 점수를 매기지 않습니다.',
+    roles: [
+      {
+        title: '보고 있는 화면에서 이어 묻습니다',
+        body: '장소나 코스 화면에서 "여기 토요일에 붐벼?"라고 물으면 그 화면의 장소와 날짜로 알아듣습니다. 질문에 다른 장소나 날짜를 적으면 그쪽을 따릅니다.',
+      },
+      {
+        title: '한적의 데이터를 읽기만 합니다',
+        body: '장소와 연관 관계는 한적이 내보낸 공개 관광 데이터에서 읽습니다. 혼잡 예보와 대안은 질문할 때 한적의 읽기 전용 API로 가져옵니다. 한적 데이터베이스에는 접속하지 않습니다.',
+      },
+      {
+        title: '순위는 한적이 정합니다',
+        body: '대신 갈 곳은 한적이 정한 순서 그대로 전합니다. 모델은 정해 둔 조회 일곱 가지 중 무엇을 부를지 고르고 답을 쓸 뿐입니다. 장소를 고르거나 순서를 바꾸지 않습니다.',
+      },
+    ],
+    scopeYesLabel: '물어볼 수 있는 것',
+    scopeYes: '날짜별 혼잡 예보, 대신 갈 곳, 이어진 장소와 행사, 한적이 혼잡과 추천을 다루는 방식',
+    scopeNoLabel: '답하지 않는 것',
+    scopeNo: '입장료, 영업시간, 예약, 길 찾기, 순위를 바꿔 달라는 요청',
+    stageNote:
+      '아직 한적 앱 화면에 붙이기 전이라 이 사이트에서 따로 띄워 둔 데모입니다. 한적 백엔드가 같은 기능을 부를 수 있도록 MCP 입구도 열어 두었습니다.',
+
+    ruleLimit:
+      '인용 검사는 인용한 레코드가 진짜인지만 봅니다. 레코드보다 더 나간 주장은 아래 금지 행동 규칙으로 따로 셉니다.',
+
+    metricsTitle: '실데이터 질문으로 잰 숫자',
+    metricsLead: (count: number, exportDate: string) =>
+      `${exportDate}에 내보낸 한적 데이터로 질문 ${count}개를 풀게 한 결과입니다. 지금 서비스가 쓰는 "연관 링크까지" 방식의 값이고, 모델 없이 센 숫자만 적었습니다.`,
+    metricsUnavailable: '평가 보고서를 불러오지 못했습니다. 평가 화면에서 다시 확인해 주세요.',
+    recall: {
+      value: (pct: string) => `필요한 레코드 ${pct} 확보`,
+      label: (n: number, other: string) =>
+        `답할 수 있는 ${n}문항 기준입니다. 연관 링크 없이 글 유사도만 쓰면 ${other}입니다.`,
+    },
+    abstention: {
+      value: (correct: number, total: number) => `${total}문항 중 ${correct}문항 거절`,
+      label: '입장료나 영업시간처럼 한적에 없는 정보, 순위를 바꿔 달라는 요청에는 답하지 않아야 합니다.',
+    },
+    forbidden: {
+      value: (count: number) => `금지 행동 ${count}건`,
+      label: (runs: number, kinds: number) =>
+        `답 ${runs}개에서 규칙 ${kinds}가지로 센 건수입니다. 목표는 0건이고 아직 닿지 못했습니다.`,
+    },
+    metricsCta: '평가 보고서 보기',
+
+    demoHeading: '코스 화면에서 이어 묻기',
+    demoLead:
+      '한적에서 만든 코스 화면입니다. 코스 아래에서 "왜 이 순서예요?"처럼 이 코스에 대해 물어볼 수 있습니다.',
+    demoSavedNote: '2026년 9월 12일에 저장된 예시예요. 혼잡도는 저장 당시 값이며 현재 예보가 아니에요.',
+    // 설명 실패는 블록이 조용히 사라지는 것으로 나타난다(스펙 §6.1). 그 빈자리를
+    // 만나기 전에 여기서 말한다.
+    silentFailure:
+      '코스 아래 설명 문단은 앞서 만든 코스 설명기가 씁니다. 정해 둔 문서 묶음 안에서만 인용하고, 설명을 만들지 못하면 사과문 대신 빈자리로 둡니다.',
+
+    emptyTitle: '데모 코스가 아직 설정되지 않았습니다.',
+    emptyBody: (missing: string) =>
+      `한적에 코스를 만들고 uuid를 src/lib/demo-courses.ts에 넣으면 여기에 뜹니다. 아직 채워지지 않은 종류: ${missing}`,
+
+    openAnySummary: '개발용: 코스 uuid로 직접 열기',
+    openAnyNote:
+      '위 목록은 종류별로 고른 예시입니다. 서버는 데모 uuid를 특별 취급하지 않으므로 한적에 있는 코스라면 어느 것이든 열립니다.',
+
+    // 한국어 화면에서는 할 필요가 없는 말이다. 영어 화면에서만 뜬다.
+    generatedLanguageNote: null as string | null,
+  },
+
+  explainer: {
     ruleTitle: '순위는 백엔드가 정합니다. LLM은 설명만 씁니다.',
     ruleBody:
       '어디를 언제 갈지 고르는 것은 한적 백엔드입니다. 모델이 하는 일은 그 결과를 문장으로 옮기는 것뿐이고, 근거로 쓸 수 있는 문서는 미리 정해 둔 번들 안에만 있습니다.',
@@ -74,22 +152,6 @@ const ko = {
       cta: '검증 방식 보기',
       href: `${REPO}/blob/main/docs/explainer/README.ko.md#2-인용-검증--테스트가-아니라-런타임-방어선`,
     },
-
-    demoTitle: '데모 코스',
-    demoIntro:
-      '다섯 코스는 각각 다른 상황을 겁니다. 설명이 없는 말을 지어내기 쉬운 자리를 하나씩 골라 둔 것입니다.',
-    provesLabel: '확인할 것',
-
-    emptyTitle: '데모 코스가 아직 설정되지 않았습니다.',
-    emptyBody: (missing: string) =>
-      `한적에 코스를 만들고 uuid를 src/lib/demo-courses.ts에 넣으면 여기에 뜹니다. 아직 채워지지 않은 종류: ${missing}`,
-
-    openAnySummary: '코스 uuid로 직접 열기',
-    openAnyNote:
-      '위 목록은 종류별로 고른 예시입니다. 서버는 데모 uuid를 특별 취급하지 않으므로 한적에 있는 코스라면 어느 것이든 열립니다.',
-
-    // 한국어 화면에서는 할 필요가 없는 말이다. 영어 화면에서만 뜬다.
-    generatedLanguageNote: null as string | null,
   },
 
   openAny: {
@@ -164,6 +226,80 @@ const en: Dict = {
   },
 
   home: {
+    bannerEyebrow: 'Hanjeok Agent',
+    bannerTitle: ['Ask if it is crowded.', 'Hear where to go instead.'],
+    bannerBody:
+      'The guide that Hanjeok’s place and course screens call on. This site lets you try it on its own.',
+    bannerCta: 'Ask Hanjeok',
+    bannerSecondary: 'See example courses',
+
+    roleTitle: 'What it does inside Hanjeok',
+    roleLead:
+      'Its job is to bring out, in answer to one question, the congestion forecasts and recommendations Hanjeok already has. It does not pick places or score them.',
+    roles: [
+      {
+        title: 'It picks up from the screen you are on',
+        body: 'Ask “is it crowded here on Saturday?” from a place or course screen and it takes that screen’s place and day. Name another place or day in the question and it follows the question.',
+      },
+      {
+        title: 'It only reads Hanjeok’s data',
+        body: 'Places and their links come from public tourism data Hanjeok exports. Forecasts and alternatives are fetched at question time from Hanjeok’s read-only APIs. It never connects to Hanjeok’s database.',
+      },
+      {
+        title: 'Hanjeok decides the ranking',
+        body: 'Places to go instead arrive in the order Hanjeok gave them. The model only chooses which of seven fixed lookups to call and writes the answer. It does not choose places or reorder them.',
+      },
+    ],
+    scopeYesLabel: 'You can ask about',
+    scopeYes: 'congestion forecasts by date, places to go instead, linked places and events, how Hanjeok treats crowding and recommendations',
+    scopeNoLabel: 'It will not answer',
+    scopeNo: 'admission fees, opening hours, bookings, directions, or requests to change the ranking',
+    stageNote:
+      'It is not yet wired into the Hanjeok app’s screens, so this site runs it as a separate demo. An MCP entry point is open so Hanjeok’s backend can call the same guide.',
+
+    ruleLimit:
+      'The citation check only confirms that a cited record is real. Claims that go further than the record are counted separately by the forbidden-behaviour rules below.',
+
+    metricsTitle: 'Measured on questions over real data',
+    metricsLead: (count: number, exportDate: string) =>
+      `${count} questions answered over Hanjeok data exported on ${exportDate}. Values are for “plus relatedness links”, the method the service uses, and only counts made without a model are shown.`,
+    metricsUnavailable: 'Could not load the evaluation report. Check the evaluation page instead.',
+    recall: {
+      value: (pct: string) => `${pct} of needed records fetched`,
+      label: (n: number, other: string) =>
+        `Over the ${n} answerable questions. With text similarity alone and no links, it is ${other}.`,
+    },
+    abstention: {
+      value: (correct: number, total: number) => `Declined ${correct} of ${total}`,
+      label: 'Questions it must not answer: information Hanjeok does not have, like fees and opening hours, or requests to change the ranking.',
+    },
+    forbidden: {
+      value: (count: number) => `${count} forbidden behaviours`,
+      label: (runs: number, kinds: number) =>
+        `Counted by ${kinds} rules over ${runs} answers. The goal is zero, and it is not there yet.`,
+    },
+    metricsCta: 'Read the evaluation',
+
+    demoHeading: 'Ask from a course screen',
+    demoLead:
+      'Course screens made in Hanjeok. Below each course you can ask about it, such as “why this order?”.',
+    demoSavedNote: 'Saved examples for September 12, 2026. Grades are historical values, not current forecasts.',
+    silentFailure:
+      'The explanation under each course is written by the course explainer built earlier. It cites only a fixed set of documents, and when it cannot produce an explanation it leaves a gap rather than an apology.',
+
+    emptyTitle: 'No demo courses are configured yet.',
+    emptyBody: (missing: string) =>
+      `Create a course in hanjeok and put its uuid in src/lib/demo-courses.ts. Kinds still missing: ${missing}`,
+
+    openAnySummary: 'For developers: open a course by uuid',
+    openAnyNote:
+      'The list above is one example per kind. The server gives demo uuids no special treatment, so any course that exists in hanjeok will open.',
+
+    generatedLanguageNote:
+      'Course data, citations and the explanation itself are generated in Korean — only this interface is translated.',
+  },
+
+  explainer: {
     ruleTitle: 'The backend decides the ranking. The LLM only writes the explanation.',
     ruleBody:
       'Where to go and when is decided by the hanjeok backend. All the model does is put that result into sentences, and the only documents it may cite live in a bundle fixed ahead of time.',
@@ -192,22 +328,6 @@ const en: Dict = {
       cta: 'See how it is checked',
       href: `${REPO}/blob/main/docs/explainer/README.md#2-citation-validation--a-runtime-guard-not-a-test`,
     },
-
-    demoTitle: 'Demo courses',
-    demoIntro:
-      'Each of the five sets up a different situation — one spot per course where an explanation would find it easy to make something up.',
-    provesLabel: 'What to watch',
-
-    emptyTitle: 'No demo courses are configured yet.',
-    emptyBody: (missing: string) =>
-      `Create a course in hanjeok and put its uuid in src/lib/demo-courses.ts. Kinds still missing: ${missing}`,
-
-    openAnySummary: 'Open a course by uuid',
-    openAnyNote:
-      'The list above is one example per kind. The server gives demo uuids no special treatment, so any course that exists in hanjeok will open.',
-
-    generatedLanguageNote:
-      'Course data, citations and the explanation itself are generated in Korean — only this interface is translated.',
   },
 
   openAny: {

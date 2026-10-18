@@ -1,6 +1,6 @@
 """Things an answer must never do, counted by rule.
 
-Six behaviours, each decided from the answer's text and from what the question
+Eight behaviours, each decided from the answer's text and from what the question
 actually fetched. No model judges these: the judge and the answering model are
 the same model here, and a count that cannot be argued with is worth more than
 a score that can (research.md, decision 15).
