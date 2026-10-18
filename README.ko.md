@@ -195,7 +195,7 @@
 | [`bench/src/guide/`](bench/src/guide/) | 에이전트 본체. 범위 규칙, 조회, LangGraph 루프, 인용 검증, API, MCP 서버, 평가 |
 | [`bench/tests/`](bench/tests/) | 단위, 계약, Neo4j 통합 테스트와 지어낸 장소로 만든 가상 내보내기 파일 |
 | [`bench/Dockerfile`](bench/Dockerfile) · [`bench/deploy/`](bench/deploy/) | 서비스와 Neo4j, 미리 만든 그래프를 담는 이미지 |
-| [`frontend/`](frontend/) | 화면 네 개 |
+| [`frontend/`](frontend/) | 화면 네 개와, 움직이는 구조도로 에이전트를 소개하는 홈 |
 | [`specs/002-hanjeok-guide-agent/`](specs/002-hanjeok-guide-agent/) | 명세, 조사한 결정, 데이터 모델, 계약, 작업 목록 |
 | [`docs/prd/`](docs/prd/hanjeok-guide-agent.md) | 제품 요구사항 |
 | [`docs/deploy.md`](docs/deploy.md) | 배포 방법과 실제로 실행한 명령 |
@@ -245,7 +245,8 @@ uv run guide mcp                 # 같은 에이전트를 MCP로 (stdio)
 - **모델 키를 다른 프로젝트와 같이 씁니다.** 요청 한도에 걸리면 질문이 느려지거나 실패합니다.
 - **두 글자 장소 이름은 보수적으로 읽습니다.** 그래도 "지도에서 가까운 곳"의 "지도"는 섬 지도로 읽힙니다.
 - **방문 기록과 사용 한도는 메모리에 있습니다.** 그래서 서비스를 인스턴스 하나로 돌립니다.
-- **안내 캐릭터 이미지**는 Codex 이미지 생성으로 만들었습니다. 상표 검토와 AI 생성 이미지 저작권 검토를 하지 않았고, 작성자가 2026-10-14에 공개를 결정했습니다. 기록은 [`provenance.json`](design/guide-character/v1/provenance.json)에 있습니다.
+- **안내 캐릭터 이미지**는 Codex 이미지 생성으로 만들었습니다. 상표 검토와 AI 생성 이미지 저작권 검토를 하지 않았고, 작성자가 2026-10-14에 공개를 결정했습니다. 기록은 [`provenance.json`](design/guide-character/v1/provenance.json)에 있습니다. 홈의 소개 그림과 구조도에서 움직이는 잎새 그림 두 장도 같은 방법으로 만들었고 역시 검토하지 않았습니다. 기록은 [`design/home-intro/v1/`](design/home-intro/v1/)와 [`design/agent-flow/v1/`](design/agent-flow/v1/)에 있습니다.
+- **구조도의 기술 로고**는 각 회사의 상표입니다. 어디서 무엇이 도는지 보여 주려고 [simple-icons](https://simple-icons.org)(CC0)의 공식 마크를 바꾸지 않고 썼습니다.
 
 <br/>
 

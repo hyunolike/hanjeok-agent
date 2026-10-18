@@ -189,7 +189,7 @@ Most of the forbidden counts are uncited claims (6 and 3). Record precision is 0
 | [`bench/src/guide/`](bench/src/guide/) | The agent: scope rules, lookups, LangGraph loop, citation gate, API, MCP server, evaluation |
 | [`bench/tests/`](bench/tests/) | Unit, contract and Neo4j integration tests; a synthetic export of invented places |
 | [`bench/Dockerfile`](bench/Dockerfile) · [`bench/deploy/`](bench/deploy/) | The image that carries the service, Neo4j and a pre-built graph |
-| [`frontend/`](frontend/) | The four screens |
+| [`frontend/`](frontend/) | The four screens, plus a home page that introduces the guide with an animated architecture diagram |
 | [`specs/002-hanjeok-guide-agent/`](specs/002-hanjeok-guide-agent/) | Specification, research decisions, data model, contracts, tasks |
 | [`docs/prd/`](docs/prd/hanjeok-guide-agent.md) | Product requirements (Korean) |
 | [`docs/deploy.md`](docs/deploy.md) | How it was deployed, with the commands that were run |
@@ -239,7 +239,8 @@ Then point the screens at it: `NEXT_PUBLIC_GUIDE_BASE_URL=http://localhost:8090 
 - **The model key is shared with other projects.** A rate limit slows a question or fails it.
 - **Two-character place names are matched conservatively.** "지도" (also an island) in "show me on the map" still reads as the island.
 - **Visits and usage limits live in memory.** The service runs as one instance for that reason.
-- **The guide character's images** were generated with Codex image generation. Trademark and AI-copyright review was not performed; the author released them on 2026-10-14. See [`provenance.json`](design/guide-character/v1/provenance.json).
+- **The guide character's images** were generated with Codex image generation. Trademark and AI-copyright review was not performed; the author released them on 2026-10-14. See [`provenance.json`](design/guide-character/v1/provenance.json). The home illustration and the two leaf pictures that move through the architecture diagram were made the same way and have not been reviewed either; records are in [`design/home-intro/v1/`](design/home-intro/v1/) and [`design/agent-flow/v1/`](design/agent-flow/v1/).
+- **The technology logos in the diagram** are trademarks of their owners. They are the official marks from [simple-icons](https://simple-icons.org) (CC0), used unaltered to show what runs where.
 
 <br/>
 

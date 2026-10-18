@@ -191,7 +191,7 @@
 | [`bench/src/guide/`](bench/src/guide/) | エージェント本体。スコープの規則、照会、LangGraph のループ、引用ゲート、API、MCP サーバー、評価 |
 | [`bench/tests/`](bench/tests/) | 単体・契約・Neo4j 統合テストと、架空の場所で作った合成エクスポート |
 | [`bench/Dockerfile`](bench/Dockerfile) · [`bench/deploy/`](bench/deploy/) | サービス、Neo4j、構築済みグラフを収めるイメージ |
-| [`frontend/`](frontend/) | 四つの画面 |
+| [`frontend/`](frontend/) | 四つの画面と、動く構成図でエージェントを紹介するホーム |
 | [`specs/002-hanjeok-guide-agent/`](specs/002-hanjeok-guide-agent/) | 仕様、調査した決定、データモデル、契約、タスク |
 | [`docs/prd/`](docs/prd/hanjeok-guide-agent.md) | 製品要件(韓国語) |
 | [`docs/deploy.md`](docs/deploy.md) | デプロイ方法と実際に実行したコマンド(韓国語) |
@@ -241,7 +241,8 @@ uv run guide mcp                 # 同じエージェントを MCP で(stdio)
 - **モデルキーをほかのプロジェクトと共有しています。** レート制限にかかると質問が遅くなるか失敗します。
 - **二文字の地名は控えめに照合します。** それでも「地図で近い場所」の「지도(地図)」は、同名の島として読まれます。
 - **訪問の記録と利用上限はメモリ上にあります。** そのためサービスは一つのインスタンスで動かしています。
-- **案内キャラクターの画像**は Codex の画像生成で作りました。商標と AI 生成画像の著作権の確認は行っておらず、作者が 2026-10-14 に公開を決めました。記録は [`provenance.json`](design/guide-character/v1/provenance.json) にあります。
+- **案内キャラクターの画像**は Codex の画像生成で作りました。商標と AI 生成画像の著作権の確認は行っておらず、作者が 2026-10-14 に公開を決めました。記録は [`provenance.json`](design/guide-character/v1/provenance.json) にあります。ホームの紹介イラストと、構成図の中を動く葉っぱの絵二枚も同じ方法で作り、同じく確認していません。記録は [`design/home-intro/v1/`](design/home-intro/v1/) と [`design/agent-flow/v1/`](design/agent-flow/v1/) にあります。
+- **構成図の技術ロゴ**は各社の商標です。どこで何が動くかを示すために、[simple-icons](https://simple-icons.org)(CC0)の公式マークを変更せずに使っています。
 
 <br/>
 
