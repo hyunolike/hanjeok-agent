@@ -1,0 +1,48 @@
+{
+  "assetId": "agent-flow-carriers",
+  "version": "1.0.0",
+  "status": "released",
+  "use": "홈의 「질문 한 번이 답이 되기까지」 구조도에서 요청 경로를 따라 움직이는 잎새 그림. 질문을 들고 가는 모습과 찾은 것을 카드에 담아 오는 모습 두 장. 장식이며 aria-hidden 이다.",
+  "authoringMethod": "Codex built-in image generation (image_gen.imagegen) via `codex exec`, with design/guide-character/v1 looking.png and found.png as identity references. Pillow only cropped the transparent margin to a square, resized and encoded to WebP.",
+  "aiExplorationUsed": true,
+  "generationJobs": "design/agent-flow/v1/generation-jobs.json",
+  "files": {
+    "carry-question": {
+      "original": "design/agent-flow/v1/originals/carry-question.png",
+      "originalSha256": "edaa9061f9fd011ea13613dc966bab08f283842f3f8cefc2a51c800dc7c93f45",
+      "crop": [
+        144,
+        102,
+        1169,
+        1127
+      ],
+      "public": "frontend/public/brand/guide/flow/carry-question.webp",
+      "width": 192,
+      "height": 192,
+      "publicSha256": "f51adcf88e24609ada1cf1169dba8c6d016de1a32ae1a2cd30102f5d3ee385f8"
+    },
+    "carry-answer": {
+      "original": "design/agent-flow/v1/originals/carry-answer.png",
+      "originalSha256": "939574c52b4557093bca42ca003f0e1e688fc543c13b681df08b9ab084ff2b49",
+      "crop": [
+        148,
+        117,
+        1154,
+        1123
+      ],
+      "public": "frontend/public/brand/guide/flow/carry-answer.webp",
+      "width": 192,
+      "height": 192,
+      "publicSha256": "2dad7fa196500b912b309f2433df9771a579472ce21346347f32da895c7bbc9f"
+    }
+  },
+  "generatedAt": "2026-10-19",
+  "humanRedraw": false,
+  "reviewer": "Claude (AI 육안 확인). 사람의 디자인 검수는 받지 않았다.",
+  "rightsReviewStatus": "not-performed",
+  "inputRights": "이 저장소의 잎새 캐릭터를 정체성 참고로 사용. 그 캐릭터의 권리 상태를 그대로 물려받는다.",
+  "notes": [
+    "Codex 보고: 요청한 1024 대신 1254x1254로 나왔고 미세한 색 변화가 남아 있다.",
+    "글자, 숫자, 로고가 없고 캐릭터가 하나인지 밝은 바탕에서 확인했다."
+  ]
+}
