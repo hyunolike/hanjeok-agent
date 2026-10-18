@@ -1,0 +1,133 @@
+{
+  "sourceUrl": "https://api.hanjeok.com/api/v1/courses/129efdef-41ec-4044-ac87-303abe4ccdde",
+  "capturedAt": "2026-10-18T14:19:23.381Z",
+  "course": {
+    "uuid": "129efdef-41ec-4044-ac87-303abe4ccdde",
+    "originAttractionId": 3443,
+    "targetDate": "2026-09-12",
+    "title": "매우 붐비는 덕수궁을 피하는 하루",
+    "congestionReductionRate": 39,
+    "summary": "덕수궁을 대신 이화여고100주년기념관와 서대문형무소역사관을 묶었어요. 원래 가려던 곳만 갔을 때보다 하루 평균 혼잡도가 39% 낮아요.",
+    "recommendedDate": null,
+    "lunchAfterVisitOrder": 1,
+    "lunchSuggestions": [
+      {
+        "attractionId": 3538,
+        "name": "마이시크릿덴",
+        "imageUrl": null,
+        "distanceKm": 0
+      },
+      {
+        "attractionId": 3933,
+        "name": "장안삼계탕",
+        "imageUrl": null,
+        "distanceKm": 0.2
+      },
+      {
+        "attractionId": 4003,
+        "name": "컨퍼런스하우스달개비 정동점",
+        "imageUrl": null,
+        "distanceKm": 0.2
+      }
+    ],
+    "items": [
+      {
+        "attractionId": 3443,
+        "name": "덕수궁",
+        "visitOrder": 1,
+        "timeLabel": "오전 10:00",
+        "grade": "VERY_CROWDED",
+        "reason": "덕수궁은 이 날 매우 붐벼요.",
+        "reasons": [
+          {
+            "kind": "CONGESTION_DELTA",
+            "text": "덕수궁은 이 날 매우 붐벼요.",
+            "evidence": {
+              "fallback": "true"
+            }
+          }
+        ],
+        "overview": "덕수궁은 1897년에 선포된 황제국, 대한제국의 황궁으로 옛 이름은 경운궁이다. 덕수궁은 원래 조선 제 9대 성종의 형인 월산대군의 사저였고, 그 후에도 월산대군의 후손이 살던 곳이었다. 1592년(선조 25) 임진왜란으로 도성의 궁들이 모두 소실되자 1593년(선조 26)부터 임시 궁궐로 사용하여 정릉동 행궁(貞陵洞 行宮)이라 불렸다.\n이후 1611년(광해군 3) 경운궁(慶運宮)으로 이름이 정해지면서 정식 궁궐이 되었다가, 창덕궁이 중건되면서 다시 별궁으로 남게 되었다. 그러다가 1897년(광무 1) 고종이 대한제국을 선포하고 황제의 자리에 오르자 대한제국의 황궁으로 사용하였다. 이후 황궁에 맞게 규모를 확장하고 격식을 높였으며, 궁궐 내 서양식 건물을 짓기 시작하여 전통 건축물과 서양식 건축물이 조화를 이루게 되었다. 그러나 1904년(광무 8) 대화재로 많은 건물이 소실되었고, 1907년 일제에 의해 고종이 황위에서 물러나자 궁의 이름이 덕수궁으로 바뀌게 되었다. 일제 강점기 이후에는 덕수궁의 규모가 대폭 축소되어 대부분의 건물들이 철거되었다. 동시에 공원화가 진행되어 궁궐로서의 면모를 잃게 되었다. 1946~47년에는 덕수궁 석조전에서 제1·2차 미소공동위원회를 개최하기도 하였다. 이후 덕수궁의 복원이 꾸준히 이루어져 현재의 모습이 되었다.",
+        "latitude": 37.5650549194,
+        "longitude": 126.9765746344,
+        "imageUrls": [
+          "https://tong.visitkorea.or.kr/cms/resource/44/3584644_image2_1.jpg",
+          "https://tong.visitkorea.or.kr/cms/resource/39/3584639_image2_1.jpg",
+          "https://tong.visitkorea.or.kr/cms/resource/40/3584640_image2_1.jpg"
+        ],
+        "travelMinutesFromPrev": null,
+        "isCustom": false
+      },
+      {
+        "attractionId": 3919,
+        "name": "이화여고100주년기념관",
+        "visitOrder": 2,
+        "timeLabel": "오후 12:34",
+        "grade": "RELAXED",
+        "reason": "덕수궁보다 집중률이 84% 낮아요.",
+        "reasons": [
+          {
+            "kind": "CONGESTION_DELTA",
+            "text": "덕수궁보다 집중률이 84% 낮아요.",
+            "evidence": {
+              "delta": "84",
+              "origin": "덕수궁"
+            }
+          },
+          {
+            "kind": "TRAVEL",
+            "text": "앞 장소에서 4분 거리예요.",
+            "evidence": {
+              "minutes": "4"
+            }
+          }
+        ],
+        "overview": "이화여고 100주년 기념관은 1975년의 화재로 철거된 프라이홀 자리에 건립한 교육관으로 서울 중구 정동길 이화여고 동문 옆에 있다. 화재로 철거되기 전까지 프라이홀은 구 손탁호텔을 대신하여 기숙사와 실험실, 교실 등으로 활용되었다. 프라이홀의 복원을 위한 졸업생들의 오랜 노력 끝에 2004년 이화여고 100주년 기념관이 준공되었다. 지하 1층, 지상 5층의 멀티미디어 교육관으로 갤러리, 카페, 음악실, 개인 연습실, 시청각실, 공동작업실, 교사연구실 등의 다양한 시설들을 갖추고 있다. 1층과 2층의 화암홀은 공연에 적합한 최신 시설과 장비를 갖추고 있어 뮤지컬, 콘서트 등 다채로운 공연과 교육 행사 장소로 이용되고 있다.",
+        "latitude": 37.566233245,
+        "longitude": 126.9706974573,
+        "imageUrls": [
+          "https://tong.visitkorea.or.kr/cms/resource/47/3412247_image2_1.JPG",
+          "https://tong.visitkorea.or.kr/cms/resource/41/3412241_image2_1.JPG",
+          "https://tong.visitkorea.or.kr/cms/resource/44/3412244_image2_1.JPG"
+        ],
+        "travelMinutesFromPrev": 4,
+        "isCustom": false
+      },
+      {
+        "attractionId": 6146,
+        "name": "서대문형무소역사관",
+        "visitOrder": 3,
+        "timeLabel": "오후 2:08",
+        "grade": "NORMAL",
+        "reason": "덕수궁보다 집중률이 33% 낮아요.",
+        "reasons": [
+          {
+            "kind": "CONGESTION_DELTA",
+            "text": "덕수궁보다 집중률이 33% 낮아요.",
+            "evidence": {
+              "delta": "33",
+              "origin": "덕수궁"
+            }
+          },
+          {
+            "kind": "TRAVEL",
+            "text": "앞 장소에서 4분 거리예요.",
+            "evidence": {
+              "minutes": "4"
+            }
+          }
+        ],
+        "overview": "서대문형무소는 대한제국 말 일제의 강압으로 세워진 이래, 80여 년간 격동의 근현대 수난사를 간직한 현장이자 대표적인 일제 탄압기관이었다. 1908년 10월 21일 경성감옥이라는 이름으로 문을 연 뒤 일제에 국권을 빼앗기자, 이에 항거하는 민족독립운동이 전국에서 거세게 일어났고 일제는 수많은 애국지사를 체포·투옥했다. 수용 인원이 늘어나자 마포 공덕동에 새 감옥을 지으면서, 기존 감옥은 1912년 9월 3일 서대문감옥으로 명칭이 바뀌었다. 이후 수많은 민족 수난의 역사를 거쳐 1992년 8월 15일 현재의 서대문독립공원으로 개원하였다.\n서대문구에서는 1995년부터 서대문독립공원 사적지에 대한 성역화 사업을 추진하였다. 조국 독립을 위해 일제에 맞서다 투옥되어 모진 고문과 탄압 끝에 순국하신 애국선열들의 넋을 기리고, 후손들에게 자주독립 정신을 일깨워 주는 역사의 산 교육장으로 삼고자 이곳을 새롭게 단장하여 서대문형무소역사관으로 개관하였다.",
+        "latitude": 37.574303895,
+        "longitude": 126.9555345762,
+        "imageUrls": [
+          "https://tong.visitkorea.or.kr/cms/resource/29/3520329_image2_1.jpg",
+          "https://tong.visitkorea.or.kr/cms/resource/56/3509056_image2_1.jpg",
+          "https://tong.visitkorea.or.kr/cms/resource/57/3509057_image2_1.jpg"
+        ],
+        "travelMinutesFromPrev": 4,
+        "isCustom": false
+      }
+    ]
+  }
+}

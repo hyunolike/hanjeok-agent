@@ -101,7 +101,7 @@ const ko = {
   course: {
     loadFailTitle: '코스를 불러오지 못했습니다',
     loadFailBody: (status: number) =>
-      `한적에서 사실을 받지 못했습니다(${status}). 코스가 삭제되었거나 백엔드가 내려가 있습니다.`,
+      `한적에서 사실을 받지 못했습니다(${status}). 코스가 삭제되었거나, 예보 날짜 범위를 벗어났거나, 서버에 연결할 수 없어요.`,
     noForecast: '예보 없음',
     travelMinutes: (minutes: number) => `이동 ${minutes}분`,
     reductionRate: (rate: number) => `혼잡도 ${rate}% 낮음`,
@@ -219,7 +219,7 @@ const en: Dict = {
   course: {
     loadFailTitle: 'Could not load this course',
     loadFailBody: (status: number) =>
-      `No facts came back from hanjeok (${status}). The course was deleted, or the backend is down.`,
+      `No facts came back from hanjeok (${status}). The course may be missing, its forecast date may be out of range, or the service may be unavailable.`,
     noForecast: 'no forecast',
     travelMinutes: (minutes: number) => `${minutes} min away`,
     reductionRate: (rate: number) => `${rate}% less crowded`,

@@ -51,7 +51,8 @@ export function fetchFacts(courseUuid: string, fetchImpl?: Fetch): Promise<Resul
   return get(
     `/agent/facts/${encodeURIComponent(courseUuid)}`,
     (raw) => factsResponseSchema.parse(raw).facts,
-    { cache: 'no-store', fetchImpl },
+    // Facts need two upstream rounds; each backend request can take up to 5 seconds.
+    { cache: 'no-store', fetchImpl, signal: AbortSignal.timeout(15000) },
   )
 }
 
@@ -65,6 +66,8 @@ export function fetchExplanation(
     body: JSON.stringify({ courseUuid }),
     cache: 'no-store',
     fetchImpl,
+    // Generation is slower than a read; a healthy uncached answer may exceed 8 seconds.
+    signal: AbortSignal.timeout(60000),
   })
 }
 
@@ -72,7 +75,7 @@ export function fetchExplanation(
 export type AskTurn = { question: string; answer: string }
 
 export function fetchContextList(fetchImpl?: Fetch): Promise<Result<ContextListing>> {
-  return get('/agent/context', (raw) => contextListingSchema.parse(raw), { fetchImpl })
+  return get('/agent/context', (raw) => contextListingSchema.parse(raw), { fetchImpl, signal: AbortSignal.timeout(3000) })
 }
 
 export type AskStreamEvent =

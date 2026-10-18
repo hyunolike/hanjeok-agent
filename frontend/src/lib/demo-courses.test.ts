@@ -2,11 +2,11 @@ import { describe, expect, it } from 'vitest'
 import { DEMO_COURSES, missingKinds } from './demo-courses'
 
 describe('데모 코스', () => {
-  it('세 종류가 모두 있다', () => {
+  it('검증된 서울 여행 코스 네 개를 제공한다', () => {
     // 개수가 아니라 종류가 기준이다. 셋은 각각 번들의 다른 문서를 인용하게 되므로,
     // 인용 검증이 실제로 작동하는지가 데모에서 드러난다.
     expect(missingKinds()).toEqual([])
-    expect(DEMO_COURSES).toHaveLength(5)
+    expect(DEMO_COURSES).toHaveLength(4)
   })
 
   it('uuid 가 서로 다르다', () => {
@@ -15,13 +15,12 @@ describe('데모 코스', () => {
   })
 
   it('빠진 종류를 센다', () => {
-    expect(missingKinds([])).toHaveLength(5)
+    expect(missingKinds([])).toHaveLength(4)
     expect(
       missingKinds([
         { uuid: 'a', label: 'a', kind: 'crowded-with-alternatives' },
         { uuid: 'b', label: 'b', kind: 'no-alternatives' },
         { uuid: 'c', label: 'c', kind: 'better-date' },
-        { uuid: 'd', label: 'd', kind: 'no-forecast' },
         { uuid: 'e', label: 'e', kind: 'four-stops' },
       ]),
     ).toEqual([])
@@ -36,6 +35,10 @@ describe('데모 코스', () => {
       kind: 'better-date' as const,
     }))
 
-    expect(missingKinds(sameKind)).toHaveLength(4)
+    expect(missingKinds(sameKind)).toHaveLength(3)
   })
+})
+
+it('울산 동명 장소가 섞인 코스는 데모 목록에서 제외한다', () => {
+  expect(DEMO_COURSES.some(course => course.uuid === 'b0719488-c2c7-4256-bc83-e8b2cf5734cd')).toBe(false)
 })

@@ -298,3 +298,19 @@ body {
     transform: translateY(-6px);
   }
 }
+
+/* Existing Hanjeok city illustration and a real text wordmark share a quiet banner. */
+.home-banner { min-height: 350px; }
+.home-banner-city { object-position: right bottom; }
+.home-banner-character { width: 88px; height: 88px; }
+a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible {
+  outline: 3px solid var(--brand-primary);
+  outline-offset: 4px;
+}
+@media (max-width: 639px) {
+  .home-banner { min-height: 410px; }
+  .home-banner-city { top: auto; height: 205px; object-fit: cover; }
+  .home-banner-character { top: auto; bottom: 20px; width: 72px; height: 72px; left: 16px; }
+}
+
+.place-description[open] .place-preview { display: none; }
