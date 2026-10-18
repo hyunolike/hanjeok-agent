@@ -37,7 +37,7 @@ describe('홈 브리핑', () => {
     await renderHome('ko')
 
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('한적')
-    expect(screen.getByRole('heading', { name: dict('ko').home.ruleTitle })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: dict('ko').home.ruleTitle, hidden: true })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: '예시 코스 둘러보기' })).toHaveAttribute('href', '#demo-courses')
   })
 
@@ -104,4 +104,12 @@ describe('홈 브리핑', () => {
 
     expect(screen.getByText(dict('en').home.generatedLanguageNote!)).toBeInTheDocument()
   })
+})
+
+it('처음 온 방문자에게 에이전트 역할과 설명용 요청 흐름을 소개한다', async () => {
+  vi.spyOn(agent, 'fetchContextList').mockResolvedValue({ kind: 'unavailable', status: 0 })
+  await renderHome('ko')
+  expect(screen.getByRole('heading', { name: '질문 한 번이 답이 되기까지' })).toBeInTheDocument()
+  expect(screen.getByText(/실제 요청이나 서버 상태를 표시하지 않아요/)).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: '재생' })).toBeInTheDocument()
 })

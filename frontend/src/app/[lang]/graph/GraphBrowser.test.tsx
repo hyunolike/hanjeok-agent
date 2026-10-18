@@ -46,7 +46,7 @@ describe('GraphBrowser', () => {
     render(<GraphBrowser lang="ko" initialPlaceId={101} api={recorded} />)
     const panel = await screen.findByTestId('place-panel')
     expect(within(panel).getByText('혼잡 예보 대상')).toBeInTheDocument()
-    expect(within(panel).getByRole('link', { name: '이 장소에 대해 물어보기' })).toHaveAttribute('href', '/ko/ask')
+    expect(within(panel).getByRole('link', { name: '이 장소에 대해 물어보기' })).toHaveAttribute('href', '/ko/ask?place=101')
     expect(panel).not.toHaveTextContent(/매우혼잡|여유|상위 \d+%/)
   })
 
@@ -108,4 +108,27 @@ describe('neighbourhoodPath', () => {
     const ids = new Set(path.nodes.map((n) => n.id))
     for (const edge of path.edges) expect(ids.has(edge.from) && ids.has(edge.to)).toBe(true)
   })
+})
+
+it('검색 중 진행 상태와 스켈레톤을 보여 주고 중복 제출을 막는다', async () => {
+  let finish: (value: Awaited<ReturnType<typeof fetchPlaces>>) => void = () => {}
+  const waiting = vi.fn<typeof fetchPlaces>(() => new Promise(resolve => { finish = resolve }))
+  render(<GraphBrowser lang="ko" api={{ ...recorded, fetchPlaces: waiting }} />)
+  await search('가람')
+  expect(screen.getByRole('region', { name: '장소를 찾고 있어요' })).toHaveTextContent('장소를 찾고 있어요')
+  expect(screen.getByLabelText('장소 이름')).toBeDisabled()
+  expect(screen.getByRole('button', { name: '찾는 중' })).toBeDisabled()
+  await userEvent.click(screen.getByRole('button', { name: '찾는 중' }))
+  expect(waiting).toHaveBeenCalledTimes(1)
+  finish(await recorded.fetchPlaces('가람'))
+  expect(await screen.findByRole('heading', { name: /찾은 장소/ })).toBeInTheDocument()
+  expect(screen.queryByText('장소를 찾고 있어요')).not.toBeInTheDocument()
+})
+it('검색 실패나 예외 후 로딩을 종료하고 같은 검색을 재시도한다', async () => {
+  const request = vi.fn<typeof fetchPlaces>().mockRejectedValueOnce(new Error('network')).mockImplementation(recorded.fetchPlaces)
+  render(<GraphBrowser lang="ko" api={{ ...recorded, fetchPlaces: request }} />)
+  await search('가람')
+  await userEvent.click(await screen.findByRole('button', { name: '검색 다시 시도' }))
+  expect(await screen.findByRole('heading', { name: /찾은 장소/ })).toBeInTheDocument()
+  expect(screen.queryByText('장소를 찾고 있어요')).not.toBeInTheDocument()
 })
