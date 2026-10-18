@@ -45,6 +45,8 @@ export type AskRequest = {
   visitId: string | null
   /** `ask_user` 에 대한 답. 서버가 내놓은 후보 중 하나여야 한다. */
   choice?: number | null
+  /** The calling screen's verified selection; explicit places in the question win. */
+  context?: { place_id: number }
 }
 
 export type AskOptions = {
@@ -120,9 +122,10 @@ async function stream(
       question: request.question,
       visit_id: request.visitId,
       choice: request.choice ?? null,
+      context: request.context,
     }),
     cache: 'no-store',
-    signal: options.signal,
+    signal: options.signal ? AbortSignal.any([options.signal, AbortSignal.timeout(90000)]) : AbortSignal.timeout(90000),
   })
 
   if (response.status === 429) {
@@ -191,7 +194,7 @@ async function read<T>(
     const response = await (options.fetchImpl ?? fetch)(`${baseUrl}${path}`, {
       headers: { Accept: 'application/json' },
       cache: 'no-store',
-      signal: options.signal,
+      signal: options.signal ?? AbortSignal.timeout(15000),
     })
     if (response.status === 404) return { ok: false, cause: 'not_found' }
     if (!response.ok) return { ok: false, cause: 'unavailable' }

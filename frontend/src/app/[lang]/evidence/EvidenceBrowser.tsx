@@ -1,5 +1,7 @@
 'use client'
 
+import { LoadingPanel } from '@/components/ui/LoadingPanel'
+import { Button } from '@/components/ui/Button'
 import { useEffect, useState } from 'react'
 import { fetchContextDocument, type Result } from '@/lib/agent'
 import { dict, type Lang } from '@/lib/i18n'
@@ -23,6 +25,7 @@ export function EvidenceBrowser({
   lang: Lang
 }) {
   const t = dict(lang).evidence
+  const [attempt, setAttempt] = useState(0)
   const [selected, setSelected] = useState(entries[0]?.path ?? null)
   const [body, setBody] = useState<Result<string> | null>(null)
 
@@ -36,7 +39,7 @@ export function EvidenceBrowser({
     return () => {
       alive = false
     }
-  }, [selected])
+  }, [selected, attempt])
 
   const totalBytes = entries.reduce((sum, entry) => sum + entry.bytes, 0)
 
@@ -73,9 +76,10 @@ export function EvidenceBrowser({
         </ul>
 
         <div className="min-w-0">
-          {body === null && <p className="text-body text-ink-muted">{t.loading}</p>}
+          {selected === null && <p role="status" className="text-body text-ink-muted">{lang === 'ko' ? '아직 공개된 근거 문서가 없어요.' : 'No source documents have been published yet.'}</p>}
+          {body === null && selected !== null && <div aria-busy="true"><LoadingPanel compact title={lang === 'ko' ? '근거 문서를 불러오고 있어요' : 'Loading the source document'} /></div>}
           {body?.kind === 'unavailable' && (
-            <p className="text-body text-ink-muted">{t.loadFailBody(body.status)}</p>
+            <div className="space-y-3"><p className="text-body text-ink-muted">{t.loadFailBody(body.status)}</p><Button variant="secondary" size="sm" onClick={() => setAttempt(value => value + 1)}>{lang === 'ko' ? '문서 다시 불러오기' : 'Reload document'}</Button></div>
           )}
           {body?.kind === 'loaded' && (
             <pre className="overflow-x-auto whitespace-pre-wrap font-mono text-caption leading-relaxed">

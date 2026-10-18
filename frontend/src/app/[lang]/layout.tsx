@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import { Suspense } from 'react'
+import { PendingLink } from '@/components/ui/PendingLink'
 import { notFound } from 'next/navigation'
 import { dict, isLang, LANGS } from '@/lib/i18n'
 import { LangSwitch } from './LangSwitch'
@@ -44,22 +45,22 @@ export default async function RootLayout({
       <body className="min-h-screen antialiased">
         <header className="border-b border-line-normal">
           <nav className="mx-auto flex max-w-3xl flex-wrap items-baseline gap-x-6 gap-y-2 px-6 py-4 text-body">
-            <Link href={`/${lang}`} className="font-semibold">
+            <PendingLink pendingLabel={lang === 'ko' ? '화면을 열고 있어요' : 'Opening this page'} href={`/${lang}`} className="font-semibold">
               {t.nav.brand}
-            </Link>
-            <Link href={`/${lang}/ask`} className="text-ink-muted hover:text-ink-title">
+            </PendingLink>
+            <PendingLink pendingLabel={lang === 'ko' ? '화면을 열고 있어요' : 'Opening this page'} href={`/${lang}/ask`} className="text-ink-muted hover:text-ink-title">
               {t.guide.navLabel}
-            </Link>
-            <Link href={`/${lang}/graph`} className="text-ink-muted hover:text-ink-title">
+            </PendingLink>
+            <PendingLink pendingLabel={lang === 'ko' ? '화면을 열고 있어요' : 'Opening this page'} href={`/${lang}/graph`} className="text-ink-muted hover:text-ink-title">
               {t.graph.navLabel}
-            </Link>
-            <Link href={`/${lang}/eval`} className="text-ink-muted hover:text-ink-title">
+            </PendingLink>
+            <PendingLink pendingLabel={lang === 'ko' ? '화면을 열고 있어요' : 'Opening this page'} href={`/${lang}/eval`} className="text-ink-muted hover:text-ink-title">
               {t.evalPage.navLabel}
-            </Link>
-            <Link href={`/${lang}/evidence`} className="text-ink-muted hover:text-ink-title">
+            </PendingLink>
+            <PendingLink pendingLabel={lang === 'ko' ? '화면을 열고 있어요' : 'Opening this page'} href={`/${lang}/evidence`} className="text-ink-muted hover:text-ink-title">
               {t.nav.evidence}
-            </Link>
-            <LangSwitch lang={lang} label={t.nav.switchTo} />
+            </PendingLink>
+            <Suspense fallback={<span className="ml-auto text-ink-muted" aria-busy="true">{t.nav.switchTo}</span>}><LangSwitch lang={lang} label={t.nav.switchTo} /></Suspense>
           </nav>
         </header>
         <main className="mx-auto max-w-3xl px-6 py-10">{children}</main>

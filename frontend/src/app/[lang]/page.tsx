@@ -6,6 +6,8 @@ import { DEMO_COURSES, DEMO_PROVES, missingKinds } from '@/lib/demo-courses'
 import { recordedCourse, tourismPhotos } from '@/lib/recorded-courses'
 import { PlacePhoto } from '@/components/course/PlacePhoto'
 import { dict, isLang } from '@/lib/i18n'
+import { AgentFlow } from '@/components/intro/AgentFlow'
+import { PendingLink } from '@/components/ui/PendingLink'
 import { OpenAnyCourse } from './OpenAnyCourse'
 
 export default async function Home({ params }: { params: Promise<{ lang: string }> }) {
@@ -28,10 +30,16 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
       <img src="/brand/guide/found.webp" alt="" width={112} height={112} className="home-banner-character pointer-events-none absolute right-6 top-5" />
     </section>
 
-    <Link href={`/${lang}/ask`} className="flex items-center justify-between gap-4 rounded-card border border-line-normal bg-surface-panel px-5 py-4 hover:border-brand-primary">
+    <PendingLink href={`/${lang}/ask`} pendingLabel={ko ? '질문 화면을 열고 있어요' : 'Opening the question screen'} className="flex items-center justify-between gap-4 rounded-card border border-line-normal bg-surface-panel px-5 py-4 hover:border-brand-primary">
       <span className="flex flex-col gap-1"><span className="text-title-2 text-ink-title">{t.guide.title}</span><span className="text-caption text-ink-muted">{t.guide.lead}</span></span>
       <span aria-hidden="true" className="text-title-2 text-brand-primary">→</span>
-    </Link>
+    </PendingLink>
+
+    <section className="space-y-3" aria-label={ko ? '한적 에이전트 소개' : 'About the Hanjeok agent'}>
+      <h2 className="text-title-1">{ko ? '여행 질문에, 출처가 있는 답을' : 'Travel answers with sources'}</h2>
+      <p className="text-body leading-relaxed text-ink-body">{ko ? '한적 에이전트는 장소와 정책을 찾고, 필요한 날짜의 혼잡 예보와 대안을 조회해 여행 질문에 답해요. 답을 뒷받침한 근거와 장소 사이의 관계도 함께 확인할 수 있어요.' : 'The Hanjeok agent finds places and policies, checks dated forecasts and alternatives when needed, and answers travel questions with sources and place relationships you can inspect.'}</p>
+    </section>
+    <AgentFlow lang={lang} />
 
     <section id="demo-courses" className="scroll-mt-6 space-y-4" aria-labelledby="demo-heading">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -47,7 +55,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
             const items = snapshot?.course.items ?? []
             const first = items[0]
             return <li key={course.uuid} className="min-w-0">
-              <Link href={`/${lang}/course/${course.uuid}`} className="block h-full overflow-hidden rounded-card border border-line-normal bg-surface-panel hover:border-brand-primary">
+              <PendingLink href={`/${lang}/course/${course.uuid}`} pendingLabel={ko ? '코스를 열고 있어요' : 'Opening the course'} className="block h-full overflow-hidden rounded-card border border-line-normal bg-surface-panel hover:border-brand-primary">
                 <PlacePhoto urls={tourismPhotos(first?.imageUrls ?? [])} name={first?.name ?? course.label} lang={lang} />
                 <div className="space-y-2 p-5">
                   <p className="text-caption text-brand-primary">{ko ? `예시 코스 · 서울 · ${items.length}곳` : `Example course · Seoul · ${items.length} stops`}</p>
@@ -56,14 +64,17 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
                   <p className="text-caption leading-relaxed text-ink-muted">{items.map(item => item.name).join(' → ')}</p>
                   <span className="inline-flex min-h-control-sm items-center text-caption font-semibold text-brand-primary">{ko ? '코스 자세히 보기' : 'View course'} <span aria-hidden="true" className="ml-2">→</span></span>
                 </div>
-              </Link>
+              </PendingLink>
             </li>
           })}
         </ul>}
       <p className="text-caption text-ink-muted">{ko ? '장소 정보와 사진: ⓒ한국관광공사 TourAPI' : 'Place information and photos: © Korea Tourism Organization, TourAPI'}</p>
     </section>
 
-    <section className="space-y-4 border-t border-line-normal pt-6">
+    <details className="space-y-4 border-t border-line-normal pt-6">
+      <summary className="cursor-pointer py-3 text-body text-ink-muted">{ko ? '기존 코스 설명기의 규칙과 검증 기록' : 'Rules and verification of the original course explainer'}</summary>
+      <p className="text-caption text-ink-muted">{ko ? '아래는 저장된 코스를 설명하던 기존 기능의 기록이에요. 위 질문 에이전트의 검색 범위나 성능 수치를 뜻하지 않아요.' : 'These records describe the original saved-course explainer, rather than the scope or performance of the question agent above.'}</p>
+    <section className="space-y-4">
       <h2 className="text-title-2">{t.home.ruleTitle}</h2>
       <p className="text-body leading-relaxed text-ink-body">{t.home.ruleBody}</p>
       <p className="border-l-2 border-line-strong pl-4 text-body leading-relaxed">{t.home.ruleConsequence}</p>
@@ -78,6 +89,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
         <Metric value={t.home.citationGuard.value} label={t.home.citationGuard.label} cta={t.home.citationGuard.cta} href={t.home.citationGuard.href} external />
       </ul>
     </section>
+    </details>
     <section className="border-t border-line-normal pt-6">
       <details><summary className="cursor-pointer py-3 text-body text-ink-muted">{t.home.openAnySummary}</summary><div className="mt-3 space-y-3"><OpenAnyCourse lang={lang} /><p className="text-caption leading-relaxed text-ink-muted">{t.home.openAnyNote}</p></div></details>
     </section>

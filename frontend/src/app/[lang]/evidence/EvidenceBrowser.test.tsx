@@ -44,3 +44,18 @@ describe('근거 열람', () => {
     expect(screen.getByText(/문서 0개 · 0바이트/)).toBeInTheDocument()
   })
 })
+
+it('본문 실패 후 같은 문서를 재시도하고 로딩을 끝낸다', async () => {
+  vi.spyOn(agent, 'fetchContextDocument').mockResolvedValueOnce({ kind: 'unavailable', status: 503 }).mockResolvedValueOnce({ kind: 'loaded', value: '복구된 본문' })
+  render(<EvidenceBrowser entries={entries} systemTextBytes={3600} lang="ko" />)
+  await userEvent.click(await screen.findByRole('button', { name: '문서 다시 불러오기' }))
+  expect(await screen.findByText('복구된 본문')).toBeInTheDocument()
+})
+
+
+it('공개 문서가 없을 때 빈 상태를 말하고 요청을 만들지 않는다', () => {
+  const request = vi.spyOn(agent, 'fetchContextDocument')
+  render(<EvidenceBrowser entries={[]} systemTextBytes={0} lang="ko" />)
+  expect(screen.getByRole('status')).toHaveTextContent('아직 공개된 근거 문서가 없어요.')
+  expect(request).not.toHaveBeenCalled()
+})

@@ -194,7 +194,7 @@ export async function fetchContextDocument(
 ): Promise<Result<string>> {
   let response: Response
   try {
-    response = await fetchImpl(`${AGENT_BASE_URL}/agent/context/${path}`)
+    response = await fetchImpl(`${AGENT_BASE_URL}/agent/context/${path}`, { signal: AbortSignal.timeout(15000) })
   } catch {
     return { kind: 'unavailable', status: 0 }
   }

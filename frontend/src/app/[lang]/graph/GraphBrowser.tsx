@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
+import { LoadingPanel } from '@/components/ui/LoadingPanel'
 import { Character } from '@/components/guide/Character'
 import { PathDrawing } from '@/components/guide/PathView'
 import { layoutPath } from '@/components/guide/path-layout'
@@ -66,14 +67,21 @@ export function GraphBrowser({
   const [selection, setSelection] = useState<Selection | null>(null)
   // 늦게 온 응답이 그 뒤에 고른 장소를 덮지 않게, 가장 최근 요청만 받아들인다.
   const latest = useRef(0)
+  const searchLock = useRef(false)
+  const loadingPlace = useRef<number | null>(null)
+  const ko = lang === 'ko'
 
   const open = useCallback(
     (placeId: number) => {
+      if (loadingPlace.current === placeId) return
+      loadingPlace.current = placeId
       const ticket = ++latest.current
       setSelection({ placeId, result: null })
       void api.fetchPlace(placeId).then((result) => {
         if (latest.current === ticket) setSelection({ placeId, result })
-      })
+      }).catch(() => {
+        if (latest.current === ticket) setSelection({ placeId, result: { ok: false, cause: 'unavailable' } })
+      }).finally(() => { if (latest.current === ticket) loadingPlace.current = null })
     },
     [api],
   )
@@ -90,14 +98,23 @@ export function GraphBrowser({
     if (initialPlaceId !== undefined) open(initialPlaceId)
   }, [initialPlaceId, open])
 
-  const onSearch = async (event: FormEvent) => {
-    event.preventDefault()
-    const query = draft.trim()
-    if (query === '' || searching) return
+  const runSearch = async (query: string) => {
+    if (query === '' || searchLock.current) return
+    searchLock.current = true
     setSearching(true)
-    const result = await api.fetchPlaces(query)
-    setSearch({ query, result })
-    setSearching(false)
+    setSearch(null)
+    try {
+      setSearch({ query, result: await api.fetchPlaces(query) })
+    } catch {
+      setSearch({ query, result: { ok: false, cause: 'unavailable' } })
+    } finally {
+      searchLock.current = false
+      setSearching(false)
+    }
+  }
+  const onSearch = (event: FormEvent) => {
+    event.preventDefault()
+    void runSearch(draft.trim())
   }
 
   const detail = selection?.result?.ok ? selection.result.data : null
@@ -121,22 +138,24 @@ export function GraphBrowser({
       )}
       {status?.ok && !status.data.ready && <Notice tone="warning">{t.notReady}</Notice>}
 
-      <form onSubmit={onSearch} className="flex flex-col gap-3 sm:flex-row sm:items-end">
+      <form onSubmit={onSearch} aria-busy={searching} className="flex flex-col gap-3 sm:flex-row sm:items-end">
         <Field
           id="place-query"
           label={t.searchLabel}
           className="flex-1"
+          disabled={searching}
           value={draft}
           maxLength={50}
           placeholder={isReplay ? t.searchPlaceholder : t.searchPlaceholderLive}
           onChange={(event) => setDraft(event.target.value)}
         />
         <Button type="submit" disabled={searching || draft.trim() === ''}>
-          {t.search}
+          {searching ? ko ? '찾는 중' : 'Searching' : t.search}
         </Button>
       </form>
 
-      {search && !search.result.ok && <Notice tone="danger">{t.searchFailed}</Notice>}
+      {searching && <LoadingPanel compact title={ko ? '장소를 찾고 있어요' : 'Finding places'} />}
+      {search && !search.result.ok && <Notice tone="danger"><p>{t.searchFailed}</p><Button variant="secondary" size="sm" onClick={() => void runSearch(search.query)}>{ko ? '검색 다시 시도' : 'Retry search'}</Button></Notice>}
       {search?.result.ok && search.result.data.places.length === 0 && (
         <Notice tone="warning">{t.noResults(search.query)}</Notice>
       )}
@@ -146,7 +165,7 @@ export function GraphBrowser({
           <ul className="flex flex-col gap-2">
             {search.result.data.places.map((place) => (
               <li key={place.place_id}>
-                <Chip aria-pressed={selection?.placeId === place.place_id} onClick={() => open(place.place_id)}>
+                <Chip aria-pressed={selection?.placeId === place.place_id} disabled={selection?.placeId === place.place_id && selection.result === null} onClick={() => open(place.place_id)}>
                   {place.name} · {place.region}
                 </Chip>
               </li>
@@ -156,9 +175,7 @@ export function GraphBrowser({
       )}
 
       {selection && selection.result === null && (
-        <p role="status" className="text-body text-ink-muted">
-          {t.loading}
-        </p>
+        <div aria-busy="true"><LoadingPanel title={ko ? '장소 정보를 불러오고 있어요' : 'Loading place details'} /></div>
       )}
 
       {/* 못 찾았거나 못 불러왔을 때는 글만 낸다. 빈 그림을 그리면 "이웃이 없는 장소"로 읽힌다. */}
@@ -202,7 +219,7 @@ export function GraphBrowser({
               {detail.place.has_congestion_data ? t.coveredNote : t.notCoveredNote}
             </p>
             {detail.place.has_congestion_data && (
-              <Link href={`/${lang}/ask`} className="text-body-strong text-brand-primary underline-offset-4 hover:underline">
+              <Link href={`/${lang}/ask?place=${detail.place.place_id}`} className="text-body-strong text-brand-primary underline-offset-4 hover:underline">
                 {t.askAbout}
               </Link>
             )}

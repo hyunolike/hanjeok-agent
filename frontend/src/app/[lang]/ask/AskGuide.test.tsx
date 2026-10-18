@@ -231,3 +231,34 @@ describe('AskGuide', () => {
     })
   })
 })
+
+
+it('예상 밖 전송 예외도 종료 상태로 바꾸고 재시도를 허용한다', async () => {
+  const ask = vi.fn<typeof askGuide>().mockRejectedValueOnce(new TypeError('offline')).mockImplementation(instant)
+  render(<AskGuide lang="ko" ask={ask} />)
+  await askFirstExample()
+  expect(await screen.findByText('연결이 끊겼습니다')).toBeInTheDocument()
+  await userEvent.click(screen.getByRole('button', { name: '다시 물어보기' }))
+  expect(await screen.findByTestId('answer-text')).toBeInTheDocument()
+  expect(ask).toHaveBeenCalledTimes(2)
+})
+
+it('선택 장소는 자동 전송하지 않고 제출·재시도 요청의 context로 보낸다', async () => {
+  const bodies: Record<string, unknown>[] = []
+  const send: typeof askGuide = (request, onEvent, options) => askGuide(request, onEvent, {
+    ...options, baseUrl: 'https://fixture.invalid', fetchImpl: async (_input, init) => {
+      bodies.push(JSON.parse(String(init?.body)))
+      return new Response('', { status: 503 })
+    },
+  })
+  render(<AskGuide lang="ko" place={{place_id:653,name:'경복궁',region:'서울 종로구'}} ask={send} />)
+  expect(bodies).toEqual([])
+  await userEvent.clear(screen.getByLabelText('질문'))
+  await userEvent.type(screen.getByLabelText('질문'),'이곳은 어떤 곳이야?')
+  await userEvent.click(screen.getByRole('button',{name:'물어보기'}))
+  await screen.findByText('연결이 끊겼습니다')
+  expect(bodies[0]).toMatchObject({question:'이곳은 어떤 곳이야?',context:{place_id:653}})
+  await userEvent.click(screen.getByRole('button',{name:'다시 물어보기'}))
+  expect(bodies).toHaveLength(2)
+  expect(bodies[1]).toMatchObject({context:{place_id:653}})
+})
