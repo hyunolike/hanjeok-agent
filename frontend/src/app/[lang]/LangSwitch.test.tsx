@@ -1,9 +1,11 @@
 import { render, screen } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { LangSwitch } from './LangSwitch'
 
 const pathname = vi.fn()
-vi.mock('next/navigation', () => ({ usePathname: () => pathname() }))
+const query = vi.fn().mockReturnValue(new URLSearchParams())
+afterEach(() => query.mockReturnValue(new URLSearchParams()))
+vi.mock('next/navigation', () => ({ usePathname: () => pathname(), useSearchParams: () => query() }))
 
 const href = () => screen.getByRole('link').getAttribute('href')
 
@@ -44,4 +46,11 @@ describe('언어 전환', () => {
     expect(screen.getByRole('link')).toHaveAttribute('hreflang', 'en')
     expect(screen.getByRole('link')).toHaveTextContent('English')
   })
+})
+
+it('선택한 장소와 설명용 데모를 언어 전환 뒤에도 유지한다', () => {
+  pathname.mockReturnValue('/ko/ask')
+  query.mockReturnValue(new URLSearchParams('place=653&demo=answered'))
+  render(<LangSwitch lang="ko" label="English" />)
+  expect(href()).toBe('/en/ask?place=653&demo=answered')
 })

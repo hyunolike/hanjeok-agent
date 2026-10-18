@@ -26,6 +26,8 @@ export function isLang(value: string): value is Lang {
 /** 반대편 언어. 토글은 상태가 아니라 두 URL 사이의 이동이다. */
 export const OTHER_LANG: Record<Lang, Lang> = { ko: 'en', en: 'ko' }
 
+const REPO = 'https://github.com/hyunolike/hanjeok-agent'
+
 /**
  * 한국어가 원본이다. `Dict` 를 이 객체에서 파생시키므로 영어에서 키 하나만 빠져도
  * 컴파일이 깨진다 — 사전이 갈라지는 것을 배포가 아니라 타입 검사에서 잡는다.
@@ -75,11 +77,6 @@ const ko = {
     stageNote:
       '아직 한적 앱 화면에 붙이기 전이라 이 사이트에서 따로 띄워 둔 데모입니다. 한적 백엔드가 같은 기능을 부를 수 있도록 MCP 입구도 열어 두었습니다.',
 
-    ruleTitle: '답이 화면에 나오기까지',
-    ruleBody:
-      '모델은 데이터베이스 쿼리를 쓰지 않습니다. 정해 둔 조회 중 하나를 고르면 코드가 입력을 검사하고 정해진 읽기만 실행합니다. 한 질문에 조회는 세 번, 시간은 60초까지입니다.',
-    ruleConsequence:
-      '답은 이번 질문에서 실제로 가져온 한적 레코드와 정책 문서만 인용할 수 있습니다. 가져오지 않은 것을 인용하면 한 번 고쳐 쓰게 하고, 그래도 통과하지 못하면 화면에 한 글자도 내보내지 않습니다.',
     ruleLimit:
       '인용 검사는 인용한 레코드가 진짜인지만 봅니다. 레코드보다 더 나간 주장은 아래 금지 행동 규칙으로 따로 셉니다.',
 
@@ -122,6 +119,39 @@ const ko = {
 
     // 한국어 화면에서는 할 필요가 없는 말이다. 영어 화면에서만 뜬다.
     generatedLanguageNote: null as string | null,
+  },
+
+  explainer: {
+    ruleTitle: '순위는 백엔드가 정합니다. LLM은 설명만 씁니다.',
+    ruleBody:
+      '어디를 언제 갈지 고르는 것은 한적 백엔드입니다. 모델이 하는 일은 그 결과를 문장으로 옮기는 것뿐이고, 근거로 쓸 수 있는 문서는 미리 정해 둔 번들 안에만 있습니다.',
+    ruleConsequence:
+      '번들에 없는 문서를 인용하면 그 설명은 통째로 버려집니다. 틀린 문장만 골라 지우지 않습니다.',
+    // 설명이 실패하면 블록이 조용히 사라진다(스펙 §6.1). 제품으로는 옳지만 처음 보는
+    // 사람에게는 아무 일도 없었던 것처럼 보인다. 그 빈자리를 만나기 전에 여기서 말한다.
+    silentFailure:
+      '그래서 설명을 만들지 못한 코스에는 사과문 대신 빈자리가 남습니다. 장소와 혼잡도 등급은 그대로 있고 설명 문단만 없습니다.',
+
+    metricsTitle: '화면에 적힌 숫자는 전부 실측입니다',
+    bundle: {
+      value: (docs: number, bytes: string) => `문서 ${docs}개 · ${bytes}바이트`,
+      /** 번들 목록을 못 받았을 때. 숫자를 지어내는 대신 못 받았다고 적는다. */
+      unavailable: '번들 목록을 불러오지 못했습니다',
+      label: '모델이 매 요청 보는 근거의 전부입니다. 검색도 색인도 없습니다.',
+      cta: '문서 열어 보기',
+    },
+    forbidden: {
+      value: '위반율 0%',
+      label: '금지 행동 8종을 매 실행마다 셉니다. 후보 모델 둘 다 여덟 항목에서 0%였습니다.',
+      cta: '금지 행동 8종 보기',
+      href: `${REPO}/blob/main/docs/explainer/README.ko.md#-금지-행동-8종`,
+    },
+    citationGuard: {
+      value: '5회 중 5회 차단',
+      label: '첫 실제 실행에서, 지어낸 인용이 답 전체를 막았습니다.',
+      cta: '검증 방식 보기',
+      href: `${REPO}/blob/main/docs/explainer/README.ko.md#2-인용-검증--테스트가-아니라-런타임-방어선`,
+    },
   },
 
   openAny: {
@@ -227,11 +257,6 @@ const en: Dict = {
     stageNote:
       'It is not yet wired into the Hanjeok app’s screens, so this site runs it as a separate demo. An MCP entry point is open so Hanjeok’s backend can call the same guide.',
 
-    ruleTitle: 'Before an answer reaches the screen',
-    ruleBody:
-      'The model writes no database queries. It picks one of the fixed lookups; code checks the input and runs a fixed read. One question gets three lookups and 60 seconds.',
-    ruleConsequence:
-      'An answer may cite only the Hanjeok records and policy documents fetched for this question. Cite anything else and it is sent back once; if it still fails, not a word reaches the screen.',
     ruleLimit:
       'The citation check only confirms that a cited record is real. Claims that go further than the record are counted separately by the forbidden-behaviour rules below.',
 
@@ -272,6 +297,37 @@ const en: Dict = {
 
     generatedLanguageNote:
       'Course data, citations and the explanation itself are generated in Korean — only this interface is translated.',
+  },
+
+  explainer: {
+    ruleTitle: 'The backend decides the ranking. The LLM only writes the explanation.',
+    ruleBody:
+      'Where to go and when is decided by the hanjeok backend. All the model does is put that result into sentences, and the only documents it may cite live in a bundle fixed ahead of time.',
+    ruleConsequence:
+      'Cite a document that is not in the bundle and the whole explanation is thrown away. It is not edited down to the parts that were fine.',
+    silentFailure:
+      'So a course whose explanation could not be produced is left with a gap rather than an apology. The stops and congestion grades stay; only the explanation is missing.',
+
+    metricsTitle: 'Every number on this site is measured',
+    bundle: {
+      value: (docs: number, bytes: string) => `${docs} documents · ${bytes} bytes`,
+      unavailable: 'Could not load the bundle listing',
+      label: 'This is everything the model sees on every request. No retrieval, no index.',
+      cta: 'Open the documents',
+    },
+    forbidden: {
+      value: '0% violations',
+      label:
+        'Eight forbidden behaviours, counted on every run. Both candidate models scored 0% on all eight.',
+      cta: 'See the eight',
+      href: `${REPO}/blob/main/docs/explainer/README.md#-the-eight-forbidden-behaviours`,
+    },
+    citationGuard: {
+      value: 'Blocked 5 of 5',
+      label: 'On the first real run, a fabricated citation stopped the entire answer.',
+      cta: 'See how it is checked',
+      href: `${REPO}/blob/main/docs/explainer/README.md#2-citation-validation--a-runtime-guard-not-a-test`,
+    },
   },
 
   openAny: {

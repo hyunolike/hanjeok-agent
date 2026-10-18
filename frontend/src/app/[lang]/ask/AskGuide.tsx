@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
+import Link from 'next/link'
 import { Character } from '@/components/guide/Character'
 import { CitationChip } from '@/components/guide/CitationChip'
 import { PathView } from '@/components/guide/PathView'
@@ -12,9 +13,10 @@ import { Notice } from '@/components/ui/Notice'
 import { Sheet } from '@/components/ui/Sheet'
 import { StepList } from '@/components/ui/StepList'
 import { formatSeoul } from '@/lib/format'
+import { LoadingPanel } from '@/components/ui/LoadingPanel'
 import { askGuide, isReplay, type AskOptions } from '@/lib/guide'
 import type { DemoKey } from '@/lib/guide-fixtures'
-import type { Citation, GuideEvent, GuidePath, Step } from '@/lib/guide-schema'
+import { isTerminal, type Citation, type GuideEvent, type GuidePath, type Step, type PlaceHit } from '@/lib/guide-schema'
 import { dict, type Lang } from '@/lib/i18n'
 
 type Ending = Extract<GuideEvent, { type: 'done' | 'ask_user' | 'stopped' | 'limited' | 'cut' }>
@@ -64,16 +66,19 @@ function applyEvent(turn: Turn, event: GuideEvent): Turn {
 export function AskGuide({
   lang,
   demo,
+  place,
   ask = askGuide,
 }: {
   lang: Lang
   demo?: DemoKey
+  place?: Pick<PlaceHit, 'place_id' | 'name' | 'region'>
   /** 테스트가 스트림을 한 사건씩 밀어 넣을 수 있게 한다. */
   ask?: typeof askGuide
 }) {
   const t = dict(lang).guide
   const [turns, setTurns] = useState<Turn[]>([])
-  const [draft, setDraft] = useState('')
+  const [draft, setDraft] = useState(place ? lang === 'ko' ? '이 장소의 특징과 주변에 갈 만한 곳을 알려줘.' : 'Tell me about this place and related places nearby.' : '')
+  const inFlight = useRef(false)
   const [visitId, setVisitId] = useState<string | null>(null)
   const [exportAsOf, setExportAsOf] = useState<string | null>(null)
   const [opened, setOpened] = useState<{ citation: Citation; turn: Turn } | null>(null)
@@ -99,7 +104,8 @@ export function AskGuide({
   const submit = useCallback(
     (question: string, choice?: number) => {
       const text = question.trim()
-      if (text === '' || busy) return
+      if (text === '' || busy || inFlight.current) return
+      inFlight.current = true
       const id = nextId.current++
       setTurns((prev) => [...prev, { id, question: text, steps: [], answer: null, path: null, ending: null, connected: false }])
       setDraft('')
@@ -110,8 +116,9 @@ export function AskGuide({
       abort.current = controller
       const options: AskOptions = { demo, signal: controller.signal }
       void ask(
-        { question: text, visitId, choice },
+        { question: text, visitId, choice, ...(place ? { context: { place_id: place.place_id } } : {}) },
         (event) => {
+          if (isTerminal(event)) inFlight.current = false
           if (event.type === 'visit') {
             setVisitId(event.visit_id)
             setExportAsOf(event.as_of.export)
@@ -119,9 +126,12 @@ export function AskGuide({
           setTurns((prev) => prev.map((turn) => (turn.id === id ? applyEvent(turn, event) : turn)))
         },
         options,
-      )
+      ).catch(() => {
+        inFlight.current = false
+        setTurns(prev => prev.map(turn => turn.id === id && turn.ending === null ? applyEvent(turn, { type: 'cut' }) : turn))
+      })
     },
-    [ask, busy, demo, visitId],
+    [ask, busy, demo, visitId, place],
   )
 
   const onSubmit = (event: FormEvent) => {
@@ -136,6 +146,13 @@ export function AskGuide({
         <p className="text-body text-ink-body">{t.lead}</p>
         {exportAsOf && <p className="text-caption text-ink-muted">{t.asOf(formatSeoul(exportAsOf, lang))}</p>}
       </header>
+
+      {place && <section aria-label={lang === 'ko' ? '선택한 장소' : 'Selected place'} className="space-y-2 rounded-card border border-brand-primary bg-brand-soft p-4">
+        <p className="text-caption font-semibold text-brand-primary">{lang === 'ko' ? '선택한 장소' : 'Selected place'}</p>
+        <p className="text-title-2">{place.name} · {place.region}</p>
+        <p className="text-caption leading-relaxed text-ink-body">{lang === 'ko' ? '질문을 고쳐서 보내세요. 이 장소를 함께 전달하며, 질문에서 다른 장소를 직접 말하면 그 장소를 우선해요.' : 'Edit the question before sending. This place is included as context; a place explicitly named in your question takes priority.'}</p>
+        <Link href={`/${lang}/ask`} className="inline-flex min-h-control-sm items-center text-caption text-brand-primary underline underline-offset-4">{lang === 'ko' ? '장소 선택 해제' : 'Clear selected place'}</Link>
+      </section>}
 
       {isReplay && (
         <Notice tone="info" title={t.replayTitle}>
@@ -166,7 +183,7 @@ export function AskGuide({
           </p>
 
           {turn.ending === null && (
-            <Character state="looking" title={t.lookingTitle} size="sm">
+            <div className="space-y-3"><LoadingPanel compact title={t.lookingTitle} />
               {/* 한동안 쓰이지 않은 서버는 잠들어 있다. 깨어나는 30초 남짓 동안 화면이
                   멈춘 것처럼 보이면 방문자는 고장으로 읽는다. */}
               {slow === turn.id && !turn.connected && (
@@ -174,7 +191,7 @@ export function AskGuide({
                   {t.wakingBody}
                 </p>
               )}
-            </Character>
+            </div>
           )}
 
           {turn.steps.length > 0 &&
@@ -296,7 +313,7 @@ export function AskGuide({
         </article>
       ))}
 
-      <form onSubmit={onSubmit} className="flex flex-col gap-3 sm:flex-row sm:items-end">
+      <form onSubmit={onSubmit} aria-busy={busy} className="flex flex-col gap-3 sm:flex-row sm:items-end">
         <Field
           id="guide-question"
           label={t.fieldLabel}
@@ -311,7 +328,7 @@ export function AskGuide({
           onChange={(event) => setDraft(event.target.value)}
         />
         <Button type="submit" disabled={busy || draft.trim() === ''}>
-          {t.submit}
+          {busy ? lang === 'ko' ? '답을 찾는 중' : 'Finding an answer' : t.submit}
         </Button>
       </form>
 

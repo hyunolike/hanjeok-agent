@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import * as agent from '@/lib/agent'
 import * as guide from '@/lib/guide'
 import { DEMO_COURSES, DEMO_PROVES } from '@/lib/demo-courses'
 import { RECORDED_EVAL_REPORT } from '@/lib/guide-data-fixtures'
@@ -16,7 +17,11 @@ vi.mock('next/navigation', () => ({
 }))
 
 const report = evalReportSchema.parse(RECORDED_EVAL_REPORT)
-const loaded = () => vi.spyOn(guide, 'fetchEvalReport').mockResolvedValue({ ok: true, data: report })
+const loaded = () => {
+  // 코스 설명기 기록(접힌 영역)이 번들 목록을 읽는다. 홈 숫자와는 상관없다.
+  vi.spyOn(agent, 'fetchContextList').mockResolvedValue({ kind: 'unavailable', status: 0 })
+  return vi.spyOn(guide, 'fetchEvalReport').mockResolvedValue({ ok: true, data: report })
+}
 
 /** 서버 컴포넌트다. 기다린 결과를 그린다. */
 const renderHome = async (lang: 'ko' | 'en') =>
@@ -49,12 +54,11 @@ describe('홈 브리핑', () => {
     expect(screen.getByText(`${graph.abstention.unanswerable_total}문항 중 ${graph.abstention.unanswerable_correct}문항 거절`)).toBeInTheDocument()
     const total = Object.values(graph.forbidden).reduce((sum, entry) => sum + (entry?.occurrences ?? 0), 0)
     expect(screen.getByText(`금지 행동 ${total}건`)).toBeInTheDocument()
-    // 코스 설명기 시절의 숫자가 돌아오면 안 된다.
-    expect(screen.queryByText('위반율 0%')).not.toBeInTheDocument()
   })
 
   it('보고서를 못 받아도 소개는 읽을 수 있다', async () => {
     // 숫자를 지어내지 않고, 못 받았다고 적는다.
+    vi.spyOn(agent, 'fetchContextList').mockResolvedValue({ kind: 'unavailable', status: 0 })
     vi.spyOn(guide, 'fetchEvalReport').mockResolvedValue({ ok: false, cause: 'unavailable' })
 
     await renderHome('ko')
@@ -102,5 +106,21 @@ describe('홈 브리핑', () => {
     await renderHome('en')
 
     expect(screen.getByText(dict('en').home.generatedLanguageNote!)).toBeInTheDocument()
+  })
+
+  it('질문이 답이 되는 흐름을 설명용이라고 밝히고 보여 준다', async () => {
+    loaded()
+    await renderHome('ko')
+    expect(screen.getByRole('heading', { name: '질문 한 번이 답이 되기까지' })).toBeInTheDocument()
+    expect(screen.getByText(/실제 요청이나 서버 상태를 표시하지 않아요/)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '재생' })).toBeInTheDocument()
+  })
+
+  it('코스 설명기의 옛 숫자는 접힌 기록 안에만 있다', async () => {
+    // 에이전트의 성적으로 읽히면 안 된다. 접힌 영역의 제목이 그것이 무엇인지 말한다.
+    loaded()
+    await renderHome('ko')
+    const summary = screen.getByText('기존 코스 설명기의 규칙과 검증 기록')
+    expect(summary.closest('details')).toContainElement(screen.getByText(dict('ko').explainer.forbidden.value))
   })
 })

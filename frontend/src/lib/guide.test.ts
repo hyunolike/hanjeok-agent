@@ -201,3 +201,21 @@ describe('녹화한 평가 보고서', () => {
     expect(await fetchEvalSample(report.data.report_id, 'q99', { baseUrl: '' })).toEqual({ ok: false, cause: 'not_found' })
   })
 })
+
+it('응답이 멈춘 조회와 질문도 제한된 대기 뒤 종료할 신호를 전달한다', async () => {
+  const controller = new AbortController()
+  const deadline = vi.spyOn(AbortSignal, 'timeout').mockReturnValue(controller.signal)
+  const waiting: typeof fetch = async (_input, options) => new Promise((_resolve, reject) => {
+    options?.signal?.addEventListener('abort', () => reject(new DOMException('timeout', 'AbortError')), { once: true })
+  })
+  try {
+    const read = fetchPlaces('없는 장소', { baseUrl: 'https://fixture.invalid', fetchImpl: waiting })
+    const events: GuideEvent[] = []
+    const ask = askGuide({ question: '검증용 질문', visitId: null }, event => events.push(event), { baseUrl: 'https://fixture.invalid', fetchImpl: waiting, signal: new AbortController().signal })
+    expect(deadline.mock.calls.map(call => call[0])).toEqual([15000, 90000])
+    controller.abort()
+    expect(await read).toEqual({ ok: false, cause: 'unavailable' })
+    await ask
+    expect(events).toEqual([{ type: 'cut' }])
+  } finally { deadline.mockRestore() }
+})

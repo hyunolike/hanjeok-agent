@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import { dict, type Lang } from '@/lib/i18n'
 
 /**
@@ -14,6 +14,7 @@ import { dict, type Lang } from '@/lib/i18n'
 export function OpenAnyCourse({ lang }: { lang: Lang }) {
   const router = useRouter()
   const [value, setValue] = useState('')
+  const [pending, startTransition] = useTransition()
   const t = dict(lang).openAny
 
   const uuid = value.trim()
@@ -22,8 +23,9 @@ export function OpenAnyCourse({ lang }: { lang: Lang }) {
     <form
       onSubmit={(event) => {
         event.preventDefault()
-        if (uuid) router.push(`/${lang}/course/${encodeURIComponent(uuid)}`)
+        if (uuid && !pending) startTransition(() => router.push(`/${lang}/course/${encodeURIComponent(uuid)}`))
       }}
+      aria-busy={pending}
       className="flex flex-wrap items-center gap-2"
     >
       <label htmlFor="course-uuid" className="text-body text-ink-muted">
@@ -32,6 +34,7 @@ export function OpenAnyCourse({ lang }: { lang: Lang }) {
       <input
         id="course-uuid"
         value={value}
+        disabled={pending}
         onChange={(event) => setValue(event.target.value)}
         placeholder={t.placeholder}
         spellCheck={false}
@@ -39,11 +42,12 @@ export function OpenAnyCourse({ lang }: { lang: Lang }) {
       />
       <button
         type="submit"
-        disabled={uuid.length === 0}
+        disabled={pending || uuid.length === 0}
         className="rounded-control border border-line-strong px-3 py-1.5 text-body disabled:text-ink-disabled"
       >
-        {t.submit}
+        {pending ? lang === 'ko' ? '여는 중' : 'Opening' : t.submit}
       </button>
+      {pending && <span role="status" className="w-full text-caption text-ink-muted">{lang === 'ko' ? '코스를 열고 있어요.' : 'Opening your course.'}</span>}
     </form>
   )
 }

@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { OTHER_LANG, type Lang } from '@/lib/i18n'
 
 /**
@@ -17,10 +17,11 @@ export function LangSwitch({ lang, label }: { lang: Lang; label: string }) {
   const pathname = usePathname() ?? `/${lang}`
   const other = OTHER_LANG[lang]
   const rest = pathname.split('/').slice(2).join('/')
+  const query = useSearchParams()?.toString()
 
   return (
     <Link
-      href={`/${other}${rest ? `/${rest}` : ''}`}
+      href={`/${other}${rest ? `/${rest}` : ''}${query ? `?${query}` : ''}`}
       // 언어 이름은 화면 언어를 따라가지 않는다. 읽을 수 있는 언어를 찾는 사람에게
       // 보여야 하므로 그 언어로 적혀 있어야 한다 — hreflang 이 그 사실을 기계에도 알린다.
       hrefLang={other}
