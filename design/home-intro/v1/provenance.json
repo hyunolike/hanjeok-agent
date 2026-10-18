@@ -1,0 +1,40 @@
+{
+  "assetId": "home-guide-in-hanjeok",
+  "version": "1.0.0",
+  "status": "released",
+  "use": "홈 화면 '한적 안에서 하는 일' 섹션의 장식 그림. 설명은 옆의 HTML 글이 전하고 그림은 alt를 비워 둔다.",
+  "authoringMethod": "Codex built-in image generation (image_gen.imagegen), called through `codex exec` with the leaf character poses as identity and style references. Pillow only cropped the transparent margin, resized and encoded to WebP.",
+  "aiExplorationUsed": true,
+  "sourceInputs": [
+    "design/guide-character/v1/found.png",
+    "design/guide-character/v1/looking.png"
+  ],
+  "inputRights": "이 저장소의 잎새 캐릭터(design/guide-character/v1)를 정체성 참고로 사용. 그 캐릭터의 권리 상태를 그대로 물려받는다.",
+  "humanRedraw": false,
+  "generationJob": "design/home-intro/v1/generation-job.json",
+  "original": {
+    "path": "design/home-intro/v1/originals/guide-in-hanjeok.png",
+    "width": 1536,
+    "height": 1024,
+    "sha256": "c60424ed873ad1aaa65be4e5cb745d4be7919c715efb669dcd8bd5048835243a"
+  },
+  "public": {
+    "path": "frontend/public/brand/home/guide-in-hanjeok.webp",
+    "width": 960,
+    "height": 434,
+    "sha256": "f33bba5d83a2e04d2d43f333e6601d4a8e1a5aab75ec2ac27970c6132e345263",
+    "crop": [
+      40,
+      187,
+      1516,
+      855
+    ]
+  },
+  "generatedAt": "2026-10-19",
+  "reviewer": "Claude (AI 육안 확인). 사람의 디자인 검수는 받지 않았다.",
+  "rightsReviewStatus": "not-performed",
+  "notes": [
+    "글자, 숫자, 로고가 없는지 밝은 바탕과 어두운 바탕에 얹어 확인했다.",
+    "반투명 픽셀은 전체의 약 2%로 윤곽선 안티앨리어싱에 해당한다."
+  ]
+}

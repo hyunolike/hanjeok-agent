@@ -148,19 +148,22 @@ Small, and stated as such.
 | **Waking from zero** | about 30 seconds (Neo4j 19 s, server 10 s) |
 | **One question, once awake** | 6 to 9 seconds; up to 56 seconds when the model provider rate-limits |
 
-The published evaluation is **twelve questions over a synthetic export of forty invented places**, without the RAGAS judge:
+The published evaluation is **sixty questions over Hanjeok's real data** (the 2026-10-14 export), ten of each of six kinds, without the RAGAS judge. Hanjeok's forecasts and alternatives were recorded once and replayed. Each strategy answered 41, declined 12 and failed on 7.
 
 | | Text similarity only | Plus relatedness links |
 | :-- | :-: | :-: |
-| Share of needed records fetched, run 1 | 0.75 (10 questions) | 0.92 (10 questions) |
-| Share of needed records fetched, run 2 | 0.75 (10 questions) | 0.82 (10 questions) |
-| Unanswerable questions declined | 2 of 2 | 2 of 2 |
+| Share of needed records fetched | 0.725 (50 questions) | 0.86 (50 questions) |
+| Same, for questions about two or more linked places | 0.025 (10 questions) | 0.60 (10 questions) |
+| Unanswerable questions declined | 10 of 10 | 10 of 10 |
+| Forbidden behaviours counted, over 60 answers | 9 | 4 |
+
+Most of the forbidden counts are uncited claims (6 and 3). Record precision is 0.23 and 0.27; it is low by construction, since the place records and policy documents fetched alongside also count, and it is only meant to compare the two. The earlier twelve questions over invented places stay in the repository for tests.
 
 > [!NOTE]
-> **Not done yet.** A sixty-question set over real data, and RAGAS scores. The judge ran once on the shared model key and got an answer to 1 of 72 requests; the rest were rate-limited. The page shows those cells as "Not scored".
+> **Not done yet: RAGAS scores.** The judge ran once on the shared model key and got an answer to 1 of 72 requests; the rest were rate-limited. The page shows those cells as "Not scored".
 
 > [!WARNING]
-> **Wrong answers have passed the citation check.** On real data the agent once said alternatives were listed "nearest first" (they are in Hanjeok's score order) and once called a beach "quiet today" without having fetched its forecast. Both cited records that were really fetched; the claims went beyond them. Prompt rules were added. Neither case is counted by the six forbidden-behaviour rules yet.
+> **Wrong answers have passed the citation check.** On real data the agent once said alternatives were listed "nearest first" (they are in Hanjeok's score order) and once called a beach "quiet today" without having fetched its forecast. Both cited records that were really fetched; the claims went beyond them. Two forbidden-behaviour rules now catch these cases, and the agent sends such an answer back to be rewritten once. In the sixty-question run both rules counted 0.
 
 <br/>
 
@@ -172,7 +175,7 @@ The published evaluation is **twelve questions over a synthetic export of forty 
 | Graph and search | Neo4j 5.26 · neo4j-graphrag `VectorCypherRetriever` · multilingual-e5-large (1024-d, local) |
 | Model | NVIDIA NIM nemotron, structured output |
 | Other programs | MCP server, four read-only tools |
-| Evaluation | RAGAS · id-based precision and recall · six rule-based forbidden-behaviour counters |
+| Evaluation | RAGAS · id-based precision and recall · eight rule-based forbidden-behaviour counters |
 | Screens | Next.js 16 · React 19 · Tailwind 4 |
 | Deployment | Cloud Run (service and Neo4j in one container) · Vercel · Cloud Build |
 | Tracing | Langfuse, off unless its keys are set |
@@ -199,7 +202,7 @@ The published evaluation is **twelve questions over a synthetic export of forty 
 - [`agent.py`](bench/src/guide/agent.py) — the LangGraph loop, the pause, the budgets
 - [`citations.py`](bench/src/guide/citations.py) — the gate
 - [`export.py`](bench/src/guide/export.py) — refusing an export that is not what its manifest says
-- [`forbidden.py`](bench/src/guide/forbidden.py) — six behaviours counted by rule
+- [`forbidden.py`](bench/src/guide/forbidden.py) — eight behaviours counted by rule
 
 <br/>
 
