@@ -191,7 +191,7 @@
 | [`bench/src/guide/`](bench/src/guide/) | 智能体本体:范围规则、查询、LangGraph 循环、引用关卡、API、MCP 服务器、评估 |
 | [`bench/tests/`](bench/tests/) | 单元、契约与 Neo4j 集成测试,以及用虚构地点制作的合成导出文件 |
 | [`bench/Dockerfile`](bench/Dockerfile) · [`bench/deploy/`](bench/deploy/) | 装有服务、Neo4j 和预构建图的镜像 |
-| [`frontend/`](frontend/) | 四个界面 |
+| [`frontend/`](frontend/) | 四个界面,以及用动态架构图介绍代理的首页 |
 | [`specs/002-hanjeok-guide-agent/`](specs/002-hanjeok-guide-agent/) | 规格、调研决策、数据模型、契约、任务 |
 | [`docs/prd/`](docs/prd/hanjeok-guide-agent.md) | 产品需求(韩语) |
 | [`docs/deploy.md`](docs/deploy.md) | 部署方式及实际执行的命令(韩语) |
@@ -241,7 +241,8 @@ uv run guide mcp                 # 以 MCP 方式提供同一个智能体(stdio)
 - **模型密钥与其他项目共用。** 遇到限流时,提问会变慢或失败。
 - **两个字的地名采用保守匹配。** 即便如此,"在地图上离得近的地方"里的"지도(地图)"仍会被读成同名的岛屿。
 - **访问记录和用量上限保存在内存中。** 因此服务只运行一个实例。
-- **导览角色的图片**由 Codex 图像生成制作。未进行商标和 AI 生成图像的版权审查,作者于 2026-10-14 决定公开。记录见 [`provenance.json`](design/guide-character/v1/provenance.json)。
+- **导览角色的图片**由 Codex 图像生成制作。未进行商标和 AI 生成图像的版权审查,作者于 2026-10-14 决定公开。记录见 [`provenance.json`](design/guide-character/v1/provenance.json)。首页的介绍插图和架构图中移动的两张叶子图片也以同样方式制作,同样未经审查,记录见 [`design/home-intro/v1/`](design/home-intro/v1/) 和 [`design/agent-flow/v1/`](design/agent-flow/v1/)。
+- **架构图中的技术标志**是各公司的商标。为了说明各部分在哪里运行,原样使用了 [simple-icons](https://simple-icons.org)(CC0)的官方标志。
 
 <br/>
 
