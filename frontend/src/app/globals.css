@@ -1,8 +1,6 @@
 /* 두 글꼴 모두 unicode-range 로 쪼갠 subset 을 self-host 한다 — 실제로 쓰인 글자
    범위만 내려받고, 외부 CDN 에 기대지 않는다. Pretendard 는 본문과 UI,
    Wanted Sans 는 큰 제목 전용이다. 한적 본 서비스와 같은 조합이다. */
-@import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
-@import 'wanted-sans/fonts/webfonts/variable/split/WantedSansVariable.css';
 @import 'tailwindcss';
 
 /*

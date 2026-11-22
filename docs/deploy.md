@@ -1,6 +1,69 @@
 # 배포
 
-서버는 Cloud Run, 화면은 Vercel. 상태도 DB도 없어서 0으로 스케일다운된다.
+현재 화면은 Cloudflare Pages Free에 배포한다. 2026-11-22 Vercel Hobby 팀의
+Edge Config 읽기 한도 초과 정지로 이전했다. 아래의 Vercel 절은 이전 배포 기록이다.
+Kotlin 서버와 Python guide는 Cloud Run에 남아 있지만 GCP 프로젝트의
+`billingEnabled=false`로 현재 두 서비스 모두 공개 요청에 500을 반환한다.
+프론트 이전은 실시간 질문 API 복구를 포함하지 않는다.
+
+## 현재 프론트 배포 — Cloudflare Pages Free
+
+| 항목 | 값 |
+| --- | --- |
+| 계정 | `96dc7e6d07c8cb414af597acfec30146` (Workers Free US$0, 대시보드 확인) |
+| 프로젝트 / 운영 브랜치 | `hanjeok-agent` / `main` |
+| 기본 주소 | `https://hanjeok-agent.pages.dev` |
+| 최초 배포 | `https://90c8195c.hanjeok-agent.pages.dev` |
+| 사용자 도메인 | `agent.hanjeok.com` — Cloudflare에 등록하고 가비아 CNAME을 `hanjeok-agent.pages.dev.`로 변경, TTL 3600 |
+| 구현 | vinext App Router → 단일 ESM Pages Worker + 정적 자산 |
+| 설정 | `deployment/cloudflare-pages/wrangler.jsonc`, `frontend/cloudflare.config.ts` |
+
+사용자 도메인 인증서와 Cloudflare 도메인 검증은 모두 active다. HTTPS로 주요
+경로와 한국어/영어 저장 코스를 실제 확인했다.
+
+`frontend/.env.production.local`에 공개 API 주소를 넣는다. 두 값은 브라우저로
+내려가는 공개 주소이며 API 키가 아니다. 기존 운영값을 유지한 것이므로 API가
+중단된 현재에도 녹화본으로 조용히 바뀌지 않는다.
+
+```dotenv
+NEXT_PUBLIC_AGENT_BASE_URL=https://hermes-agent-508380543987.asia-northeast3.run.app
+NEXT_PUBLIC_GUIDE_BASE_URL=https://hanjeok-guide-508380543987.asia-northeast3.run.app
+```
+
+```bash
+cd frontend
+pnpm install --frozen-lockfile
+pnpm test
+pnpm typecheck
+pnpm build:pages
+pnpm preview:pages --port 4184
+# 별도 셸에서 화면과 폰트를 확인한 뒤 운영 배포
+CLOUDFLARE_ACCOUNT_ID=96dc7e6d07c8cb414af597acfec30146 pnpm deploy:pages --branch main
+```
+
+`build:pages`는 Cloudflare Vite 빌드를 만들고 `scripts/prepare-pages.mjs`가
+Pages 고급 모드 출력으로 묶는다. 서버는 `_worker.js` 한 파일로 묶어 Pages의
+미들웨어가 SSR의 순환 import 경로를 바꾸는 문제를 피한다. 배포는 `--no-bundle`로
+검증한 파일을 그대로 올린다. `.cloudflare/pages`와 `.wrangler`는 생성물이다.
+Next.js와 vinext는 `.next/types/routes.d.ts`를 함께 생성하므로 두 빌드는 동시에
+실행하지 않는다. 한쪽 빌드가 끝난 뒤 다른 빌드를 실행한다.
+
+폰트 CSS는 layout에서 직접 import한다. globals.css의 @import로 합치면 Vite에서
+상대 폰트 경로를 잃는다. 최초 이전 검증에서는 생성 CSS의 폰트 URL 184개가 모두
+존재했고, 실제 Pages 주소에서도 폰트와 배너 이미지가 200으로 내려왔다.
+`_routes.json`은 정적 자산을 함수 실행에서 제외한다. KV/R2/Images 바인딩은 없고
+Workers 무료 일일 요청 수와 요청별 CPU 한도는 적용된다.
+
+새 `pages.dev` 오리진으로 실시간 API를 사용하려면 백엔드 CORS 허용도 필요하다.
+기존 `agent.hanjeok.com`은 이미 허용된 오리진이다. API 복구는 GCP 결제 상태와
+Cloud Run 응답을 확인한 뒤 별도로 검증한다. GCP 결제를 임의로 활성화하지 않는다.
+
+### 기존 주소로 되돌리기
+
+이전 CNAME은 `cname.vercel-dns.com.`이다. 가비아의 `agent` 레코드만 바꾸며 다른
+도메인 레코드는 변경하지 않는다. Vercel 팀 차단이 남아 있으면 되돌려도 402다.
+현재 무료 배포 명세와 검증 기록은 [이전 설계](superpowers/specs/2026-11-21-cloudflare-free-deployment-design.md)와
+[작업 기록](superpowers/plans/2026-11-21-cloudflare-free-deployment.md)을 참고한다.
 
 **이 문서는 사람이 실행한다.** GCP 프로젝트, Vercel 팀, Secret Manager에 키를 넣는 일은
 승인이 필요한 행위다. 저장소에 있는 것은 그 승인이 떨어지면 그대로 도는 산출물이다 —
@@ -167,7 +230,7 @@ CI가 매번 확인한다.
 | 프로바이더 | `openai` / `gpt-4o` |
 | 시크릿 | `hermes-openai-key` — 런타임 서비스 계정에 **그 시크릿에만** accessor 부여 |
 | 인스턴스 | 최소 0, 최대 3, 1Gi |
-| 화면 | `https://agent.hanjeok.com` (Vercel, 프로젝트 `hermes-agent`) |
+| 화면 | `https://agent.hanjeok.com` (현재 Cloudflare Pages `hanjeok-agent`; 이전 Vercel 기록은 위 절 참고) |
 | CORS | `agent.hanjeok.com`, `hermes-agent-olive-beta.vercel.app`, `localhost:3000` |
 
 배포하며 막힌 것 셋: Cloud Run·Cloud Build API 미활성화, Artifact Registry `hermes`
