@@ -4,6 +4,9 @@ import { PendingLink } from '@/components/ui/PendingLink'
 import { notFound } from 'next/navigation'
 import { dict, isLang, LANGS } from '@/lib/i18n'
 import { LangSwitch } from './LangSwitch'
+// Import fonts directly so both bundlers rebase and emit their relative font files.
+import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css'
+import 'wanted-sans/fonts/webfonts/variable/split/WantedSansVariable.css'
 import '../globals.css'
 
 /**

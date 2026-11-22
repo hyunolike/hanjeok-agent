@@ -7,17 +7,28 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "dev:vinext": "vite dev --port 3001",
+    "build:vinext": "vite build",
+    "start:vinext": "vite preview",
+    "deploy:vinext": "vinext-cloudflare deploy",
+    "build:pages": "pnpm build:vinext && node scripts/prepare-pages.mjs",
+    "preview:pages": "wrangler pages dev --cwd ../deployment/cloudflare-pages",
+    "deploy:pages": "wrangler pages deploy --cwd ../deployment/cloudflare-pages --no-bundle"
   },
   "dependencies": {
+    "@vinext/cloudflare": "1.4.0",
     "next": "^16.0.0",
     "pretendard": "^1.3.9",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-server-dom-webpack": "19.3.1",
+    "vinext": "1.4.6",
     "wanted-sans": "^1.0.3",
     "zod": "^4.0.0"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "2.0.0-rc.3",
     "@tailwindcss/postcss": "^4.0.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.0",
@@ -27,9 +38,15 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^5.0.0",
+    "@vitejs/plugin-rsc": "0.5.39",
+    "cf": "1.0.0-rc.2",
+    "esbuild": "0.28.2",
     "jsdom": "^26.0.0",
     "tailwindcss": "^4.0.0",
     "typescript": "^5.7.0",
-    "vitest": "^3.0.0"
-  }
+    "vite": "8.3.0",
+    "vitest": "5.1.1",
+    "wrangler": "4.166.0"
+  },
+  "type": "module"
 }
