@@ -26,9 +26,9 @@ and answers citing only what it fetched for your question.
 
 <div align="center">
 
-<a href="docs/media/hanjeok-guide.mp4"><img src="docs/media/hanjeok-guide.gif" alt="A question is asked on the live site. Steps appear one by one, then an answer with a citation chip, then the path of ranked alternatives, then the evaluation table." width="760"></a>
+https://github.com/user-attachments/assets/26f0ab43-0959-49cb-a4f1-9dcf554d93a3
 
-<sub>20 seconds, captured from the live site on real Hanjeok data. <b><a href="docs/media/hanjeok-guide.mp4">Watch with sound →</a></b></sub>
+<sub>20 seconds with sound, captured from the live site on real Hanjeok data.</sub>
 
 </div>
 

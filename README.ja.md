@@ -28,9 +28,9 @@
 
 <div align="center">
 
-<a href="docs/media/hanjeok-guide.mp4"><img src="docs/media/hanjeok-guide.gif" alt="公開サイトで質問する。手順が一つずつ現れ、引用チップ付きの答え、順位どおりに並んだ代替地の経路、評価の表が続く。" width="760"></a>
+https://github.com/user-attachments/assets/26f0ab43-0959-49cb-a4f1-9dcf554d93a3
 
-<sub>20秒。実際の Hanjeok データで動く公開サイトを撮影したものです。<b><a href="docs/media/hanjeok-guide.mp4">音声付きで見る →</a></b></sub>
+<sub>20秒、音声あり。実際の Hanjeok データで動く公開サイトを撮影したものです。</sub>
 
 </div>
 

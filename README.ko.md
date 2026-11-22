@@ -26,9 +26,9 @@
 
 <div align="center">
 
-<a href="docs/media/hanjeok-guide.mp4"><img src="docs/media/hanjeok-guide.gif" alt="공개 사이트에서 질문을 한다. 단계가 하나씩 나타나고, 인용 칩이 붙은 답이 나오고, 순위대로 놓인 대안의 경로와 평가 표가 이어진다." width="760"></a>
+https://github.com/user-attachments/assets/26f0ab43-0959-49cb-a4f1-9dcf554d93a3
 
-<sub>20초. 실제 한적 데이터로 도는 공개 사이트를 캡처했습니다. <b><a href="docs/media/hanjeok-guide.mp4">소리와 함께 보기 →</a></b></sub>
+<sub>20초, 소리 있음. 실제 한적 데이터로 도는 공개 사이트를 캡처했습니다.</sub>
 
 </div>
 
