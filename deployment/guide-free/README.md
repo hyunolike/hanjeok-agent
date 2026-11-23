@@ -13,6 +13,8 @@ Python HTTP API만 실행하는 배포 구성이다. Neo4j와 임베딩 모델�
   최초 후보인 llama-3.2 엔드포인트는 공식 카탈로그의 deprecated 공지를 확인해 제외했다.
   [현재 모델 API](https://docs.api.nvidia.com/nim/reference/nvidia-nemotron-3_5-embed-1b-infer)
 - 기존 LangGraph 루프, 고정 조회 7개, 서비스 순위, 인용 검사, 수정 1회와 SSE 계약을 유지한다.
+- 답변 기본 모델은 `nvidia/nemotron-3.5-super-vl-120b-a12b`다. 이전 3-Super는
+  실제 요청에서 HTTP 410을 반환해 교체했다. 같은 NVIDIA 키와 strict JSON 계약을 사용한다.
 - 로컬 모드는 기존처럼 `GUIDE_EMBEDDING_PROVIDER=local`이며 E5 모델을 사용한다.
   기존 `bench/Dockerfile`과 `uv.lock`은 로컬 모델 실행을 계속 지원한다.
 
@@ -134,6 +136,7 @@ Dockerfile/context와 환경 변수를 사용하고 인스턴스 수를 1로 유
 | --- | --- |
 | `GUIDE_CORS_ALLOWED_ORIGINS` | 필수. `https://agent.hanjeok.com` 등 정확한 오리진 |
 | `NVIDIA_API_KEY` | 필수. 기존 답변 생성과 새 임베딩에 사용 |
+| `BENCH_ANSWER_MODEL` | `nvidia/nemotron-3.5-super-vl-120b-a12b`; 실행 중 모델 폴백 없음 |
 | `BENCH_NEO4J_URI`, `BENCH_NEO4J_USER`, `BENCH_NEO4J_PASSWORD` | 외부 DB 접속값 |
 | `GUIDE_EMBEDDING_PROVIDER` | API 이미지 기본값 `nvidia`; 오타 시 시작 실패 |
 | `GUIDE_LIVE_MODE`, `HANJEOK_BASE_URL` | 운영값 `live`, `https://api.hanjeok.com` |
@@ -202,8 +205,9 @@ Render/Koyeb의 무료 절전과 요청 자원 제한도 적용된다.
 [Render](https://render.com/docs/free), [Koyeb](https://www.koyeb.com/docs/reference/instances),
 [AuraDB](https://neo4j.com/docs/aura/quotas-and-limits/).
 
-2026-11-23 로컬 검증은 amd64 이미지(ARM64 호스트 에뮬레이션)에서 50회 반복을
-통과했고, 512MiB 제한에서 20ms 간격으로 관측한 최대 메모리는 332.9MiB였다.
-[결과 JSON](../../bench/reports/runtime/512mb-fixture-amd64.json)과
+2026-11-23 최종 답변 모델/인용 schema 코드의 amd64 이미지(ARM64 호스트 에뮬레이션)는
+50회 반복을 통과했고, 512MiB 제한에서 20ms 간격으로 관측한 최대 메모리는 332.5MiB였다.
+[최종 결과 JSON](../../bench/reports/runtime/512mb-fixture-amd64-final-model.json)과
 [검토/검증 기록](../../docs/superpowers/reviews/2026-11-23-guide-512mb-review.md)을 참고한다.
+종료된 답변 모델 교체와 실제 SSE 확인은 [호환성 검토](../../docs/superpowers/reviews/2026-11-23-guide-answer-compat-review.md)에 있다.
 실제 제공자 지연이나 Render/Koyeb 네이티브 호스트의 성능 수치가 아니다.

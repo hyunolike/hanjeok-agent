@@ -35,7 +35,7 @@ def test_ragas_uses_nvidia_json_transport_and_preserves_provider_usage():
                 "id": "nvidia",
                 "object": "chat.completion",
                 "created": 0,
-                "model": "nvidia/nemotron-3-super-120b-a12b",
+                "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
                 "choices": [
                     {
                         "index": 0,

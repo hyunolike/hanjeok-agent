@@ -142,7 +142,9 @@ class State(TypedDict, total=False):
     route: str
 
 
-def _schema(actions: tuple[str, ...], dates: tuple[str, ...] = ()) -> dict:
+def _schema(
+    actions: tuple[str, ...], dates: tuple[str, ...] = (), *, citation_ids: tuple[str, ...] = ()
+) -> dict:
     """One flat object. Every field is required and nullable because that is
     what strict structured output accepts; `action` is the only one that
     decides anything.
@@ -156,6 +158,8 @@ def _schema(actions: tuple[str, ...], dates: tuple[str, ...] = ()) -> dict:
     `1000…` until the output ran out, on every multi-place question it tried.
     `dates` are the screen's: told the date in words, the model still looked up
     today and was refused, which cost the visitor a second model call.
+    Citation choices are exact fetched IDs: the hosted model otherwise copied
+    the display brackets into its JSON, including on its one repair attempt.
     """
     nullable = lambda kind: {"type": [kind, "null"]}  # noqa: E731
     properties = {"action": {"type": "string", "enum": list(actions)}}
@@ -169,7 +173,12 @@ def _schema(actions: tuple[str, ...], dates: tuple[str, ...] = ()) -> dict:
         }
     properties |= {
         "answer": nullable("string"),
-        "citations": {"type": "array", "items": {"type": "string"}},
+        "citations": {
+            "type": "array",
+            "items": {"type": "string", "enum": list(citation_ids)}
+            if citation_ids else {"type": "string"},
+            **({} if citation_ids else {"maxItems": 0}),
+        },
     }
     return {
         "title": "next_action",
@@ -461,7 +470,10 @@ class Agent:
         self.result.model_calls += 1
         self.result.prompts.append({"system": SYSTEM, "user": user, "actions": list(actions)})
         return self.model.decide(
-            SYSTEM, user, _schema(actions, self._lookups.screen_dates), timeout=self._remaining()
+            SYSTEM, user,
+            _schema(actions, self._lookups.screen_dates,
+                    citation_ids=tuple(dict.fromkeys(p.id for p in self._lookups.fetched.passages))),
+            timeout=self._remaining(),
         )
 
     def _act(self, state: State) -> State:

@@ -1,0 +1,25 @@
+{
+  "checked_at": "2026-11-23T07:31:26.980754+00:00",
+  "scope": "provider availability and exact citation-format compatibility; not full quality acceptance or public deployment",
+  "old_answer_model": "nvidia/nemotron-3-super-120b-a12b",
+  "old_model_http_status": 410,
+  "old_model_eol": "2026-10-03T09:00:00Z",
+  "eol_run": "guide-20261123-070050",
+  "new_answer_model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+  "strict_json_probe_http_status": 200,
+  "strict_json_probe_finish_reason": "stop",
+  "strict_json_probe_valid": true,
+  "pre_citation_fix_run": "guide-20261123-071452",
+  "pre_citation_fix_interrupted": true,
+  "pre_citation_fix_completed_runs": 62,
+  "pre_citation_fix_outcomes": {
+    "failed": 43,
+    "answered": 19
+  },
+  "reproduced_invalid_citation": "[hanjeok:congestion/10000028@2026-11-25]",
+  "fixed_same_prompt_citation": "hanjeok:congestion/10000028@2026-11-25",
+  "citation_gate_unchanged": true,
+  "independent_review": "docs/superpowers/reviews/2026-11-23-guide-answer-compat-review.md",
+  "final_quality_run": "guide-20261123-072954",
+  "final_quality_pending": true
+}

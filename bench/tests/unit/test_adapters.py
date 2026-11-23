@@ -212,7 +212,7 @@ def test_default_answer_uses_only_nvidia_endpoint_and_key(monkeypatch):
                 "id": "nvidia",
                 "object": "chat.completion",
                 "created": 0,
-                "model": "nvidia/nemotron-3-super-120b-a12b",
+                "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
                 "choices": [
                     {
                         "index": 0,
@@ -238,7 +238,7 @@ def test_default_answer_uses_only_nvidia_endpoint_and_key(monkeypatch):
     reply = model.complete("system", "user")
     assert json.loads(reply.text)["answer"] == "fact"
     assert model.settings["provider"] == "nvidia"
-    assert bodies[0]["model"] == "nvidia/nemotron-3-super-120b-a12b"
+    assert bodies[0]["model"] == "nvidia/nemotron-3.5-super-vl-120b-a12b"
     assert bodies[0]["chat_template_kwargs"]["enable_thinking"] is False
     assert "nvidia-fake" not in json.dumps(model.settings)
 

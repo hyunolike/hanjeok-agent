@@ -89,6 +89,35 @@ def test_answered_steps_then_answer_then_path_then_done():
     assert result.model_calls == 3
 
 
+def test_citation_choices_follow_only_this_questions_fetched_records():
+    model = ScriptedModel(*LOOK_BOTH, GOOD)
+    result, _ = run(model)
+    assert result.outcome == "answered"
+    first = model.calls[0]["schema"]["properties"]["citations"]["items"]["enum"]
+    final = model.calls[-1]["schema"]["properties"]["citations"]["items"]["enum"]
+    assert "hanjeok:place/101" in first
+    assert ALTERNATIVES not in first
+    assert CONGESTION in final and ALTERNATIVES in final
+    assert f"[{CONGESTION}]" not in final
+    assert "hanjeok:place/999999" not in final
+
+
+def test_model_ignoring_schema_cannot_bypass_citation_gate_with_brackets():
+    malformed = answer("가람궁은 매우혼잡 예보입니다.", f"[{CONGESTION}]")
+    result, events = run(ScriptedModel(action("congestion", place_id=101,
+                                         date="2026-10-17"), malformed, malformed))
+    assert (result.outcome, result.cause) == ("failed", "invalid_citations")
+    assert "answer" not in names(events)
+
+
+def test_policy_without_fetched_evidence_can_only_return_empty_citations():
+    model = ScriptedModel(action("policy", text="혼잡 등급"),
+                          answer("혼잡 등급은 전국 분포 기준입니다.",
+                                 "wiki:concepts/congestion-diagnosis.md"))
+    run(model, question="혼잡 등급은 어떻게 정해?")
+    assert model.calls[0]["schema"]["properties"]["citations"]["maxItems"] == 0
+
+
 def test_scope_and_resolve_are_emitted_before_the_model_is_asked_anything():
     seen_before_first_call: list[str] = []
     events: list[tuple[str, dict]] = []
