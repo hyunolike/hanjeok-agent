@@ -1,0 +1,142 @@
+{
+ "status": 200,
+ "fetched_at": "2026-11-23T21:59:53.351080Z",
+ "body": {
+  "success": true,
+  "data": [
+   {
+    "attractionId": 10000222,
+    "name": "무궁화동산",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/24/3399924_image2_1.JPG",
+    "latitude": 37.5842529817,
+    "longitude": 126.9721410051,
+    "grade": "RELAXED",
+    "concentration": 33.15,
+    "distanceKm": 0.999,
+    "relationScore": 0,
+    "score": 0.45408000000000004,
+    "summary": "무궁화동산은 옛 중앙정보부의 궁정동 안전가옥 터에 마련된 시민 휴식공원이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "62",
+       "origin": "경복궁"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "경복궁에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 10000178,
+    "name": "동십자각",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/91/4092691_image2_1.jpg",
+    "latitude": 37.5760791102,
+    "longitude": 126.9794210836,
+    "grade": "NORMAL",
+    "concentration": 40.06,
+    "distanceKm": 0.238,
+    "relationScore": 0,
+    "score": 0.4365866666666667,
+    "summary": "동십자각은 광화문에서 연결되어, 경복궁 외궁성이 건춘문을 향하여 꺾이는 부분에 세운 망루이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "55",
+       "origin": "경복궁"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "경복궁에서 차로 약 1분 예상돼요.",
+      "evidence": {
+       "minutes": "1"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 1,
+    "rating": null
+   },
+   {
+    "attractionId": 10000036,
+    "name": "경희궁",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/37/3482237_image2_1.jpg",
+    "latitude": 37.5703879399,
+    "longitude": 126.9684917568,
+    "grade": "NORMAL",
+    "concentration": 46.31,
+    "distanceKm": 0.959,
+    "relationScore": 0,
+    "score": 0.4019733333333333,
+    "summary": "경희궁은 광해군 때 지은 궁궐로, 조선 후기 여러 임금이 이궁으로 사용했다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "47",
+       "origin": "경복궁"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "경복궁에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 10000377,
+    "name": "세종문화회관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/87/3082687_image2_1.png",
+    "latitude": 37.5720098878,
+    "longitude": 126.9763070647,
+    "grade": "NORMAL",
+    "concentration": 52.02,
+    "distanceKm": 0.449,
+    "relationScore": 0,
+    "score": 0.38593333333333335,
+    "summary": "세종문화회관은 서울특별시가 설립한 기관으로 서울의 대표적인 문화 예술 기관이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "41",
+       "origin": "경복궁"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "경복궁에서 차로 약 1분 예상돼요.",
+      "evidence": {
+       "minutes": "1"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 1,
+    "rating": null
+   }
+  ],
+  "error": null
+ }
+}

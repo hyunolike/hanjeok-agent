@@ -39,7 +39,7 @@
   "validation_gates_unchanged": true,
   "auto_model_fallback": false,
   "previous_quality_scores_reused": false,
-  "full_60_question_evaluation_run": false,
+  "full_60_question_evaluation_run": true,
   "public_deployment_performed": false,
   "source_hashes": {
     "bench/src/bench/provider.py": "85ccbcd3dedf5f5313bd8663d676ba380d0b05d41cf8c87cc4719f7746acf3ce",
@@ -47,5 +47,28 @@
     "bench/src/guide/embeddings.py": "3b1b5dbae332c84663c52f6ba38d50e2f42ff47e32d5386d82c8621c3e11acd1"
   },
   "model_api": "https://docs.api.nvidia.com/nim/reference/nvidia-nemotron-3-ultra-550b-a55b-infer",
-  "free_access_reference": "https://docs.api.nvidia.com/nim/docs/run-anywhere"
+  "free_access_reference": "https://docs.api.nvidia.com/nim/docs/run-anywhere",
+  "full_evaluation": {
+    "report_id": "guide-ultra-20261124-215604",
+    "report": "../guide/guide-ultra-20261124-215604.json",
+    "audit": "ultra-currentdata-evaluation-audit.json",
+    "question_count": 60,
+    "execution_count": 120,
+    "outcomes": {
+      "vector": {
+        "answered": 42,
+        "failed": 6,
+        "declined": 12
+      },
+      "graph": {
+        "answered": 45,
+        "failed": 3,
+        "declined": 12
+      }
+    },
+    "judge_run": false,
+    "all_questions_succeeded": false,
+    "report_published": false,
+    "verification_environment": "local external Neo4j Community 5.26, actual NVIDIA Ultra and live Hanjeok; not Aura/Render"
+  }
 }

@@ -1,0 +1,1061 @@
+{
+  "report_id": "guide-ultra-20261124-215604",
+  "status": "completed",
+  "timestamp": "2026-11-23T22:27:28.847817Z",
+  "question_set": "hanjeok-prod-20261123",
+  "question_set_revision": "f9ccb49973ff",
+  "question_count": 60,
+  "answer_model": "nvidia/nemotron-3-ultra-550b-a55b",
+  "judge_model": "(돌리지 않음)",
+  "generation": "4ed37bca-d2d1-4fd9-bfc8-27c03fca23a4",
+  "export_sha256": "9d82fb933020cf680d445d51f64b6e5c8ce79e1f5671f746f371dccb0d349849",
+  "export_as_of": "2026-11-23T02:04:18.244Z",
+  "live_recorded_at": "2026-11-23T21:56:24.786926Z",
+  "strategies": {
+    "vector": {
+      "attempted": 60,
+      "outcomes": {
+        "answered": 42,
+        "failed": 6,
+        "declined": 12
+      },
+      "metrics": {
+        "faithfulness": {
+          "value": null,
+          "n": 0,
+          "total": 50,
+          "status": "unavailable",
+          "reason": "판정 모델을 돌리지 않은 평가입니다."
+        },
+        "answer_relevancy": {
+          "value": null,
+          "n": 0,
+          "total": 50,
+          "status": "unavailable",
+          "reason": "판정 모델을 돌리지 않은 평가입니다."
+        },
+        "context_precision": {
+          "value": null,
+          "n": 0,
+          "total": 50,
+          "status": "unavailable",
+          "reason": "판정 모델을 돌리지 않은 평가입니다."
+        },
+        "context_recall": {
+          "value": null,
+          "n": 0,
+          "total": 50,
+          "status": "unavailable",
+          "reason": "판정 모델을 돌리지 않은 평가입니다."
+        },
+        "id_precision": {
+          "value": 0.1758,
+          "n": 48,
+          "total": 50,
+          "status": "ok",
+          "reason": null
+        },
+        "id_recall": {
+          "value": 0.488,
+          "n": 50,
+          "total": 50,
+          "status": "ok",
+          "reason": null
+        }
+      },
+      "by_kind": {
+        "place_lookup": {
+          "faithfulness": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "answer_relevancy": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "context_precision": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "context_recall": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "id_precision": {
+            "value": 0.2952,
+            "n": 10,
+            "total": 10,
+            "status": "ok",
+            "reason": null
+          },
+          "id_recall": {
+            "value": 1.0,
+            "n": 10,
+            "total": 10,
+            "status": "ok",
+            "reason": null
+          }
+        },
+        "alternatives": {
+          "faithfulness": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "answer_relevancy": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "context_precision": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "context_recall": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "id_precision": {
+            "value": 0.0,
+            "n": 10,
+            "total": 10,
+            "status": "ok",
+            "reason": null
+          },
+          "id_recall": {
+            "value": 0.0,
+            "n": 10,
+            "total": 10,
+            "status": "ok",
+            "reason": null
+          }
+        },
+        "date_comparison": {
+          "faithfulness": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "answer_relevancy": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "context_precision": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "context_recall": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "id_precision": {
+            "value": 0.381,
+            "n": 10,
+            "total": 10,
+            "status": "ok",
+            "reason": null
+          },
+          "id_recall": {
+            "value": 0.85,
+            "n": 10,
+            "total": 10,
+            "status": "ok",
+            "reason": null
+          }
+        },
+        "policy": {
+          "faithfulness": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "answer_relevancy": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "context_precision": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "context_recall": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "id_precision": {
+            "value": 0.1562,
+            "n": 8,
+            "total": 10,
+            "status": "ok",
+            "reason": null
+          },
+          "id_recall": {
+            "value": 0.5,
+            "n": 10,
+            "total": 10,
+            "status": "ok",
+            "reason": null
+          }
+        },
+        "multi_place": {
+          "faithfulness": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "answer_relevancy": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "context_precision": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "context_recall": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "id_precision": {
+            "value": 0.0424,
+            "n": 10,
+            "total": 10,
+            "status": "ok",
+            "reason": null
+          },
+          "id_recall": {
+            "value": 0.09,
+            "n": 10,
+            "total": 10,
+            "status": "ok",
+            "reason": null
+          }
+        },
+        "unsupported": {
+          "faithfulness": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "not_applicable",
+            "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+          },
+          "answer_relevancy": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "not_applicable",
+            "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+          },
+          "context_precision": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "not_applicable",
+            "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+          },
+          "context_recall": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "not_applicable",
+            "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+          },
+          "id_precision": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "not_applicable",
+            "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+          },
+          "id_recall": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "not_applicable",
+            "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+          }
+        }
+      },
+      "forbidden": {
+        "INVENTED_PLACE": {
+          "runs": 60,
+          "occurrences": 1
+        },
+        "ALTERED_ORDER": {
+          "runs": 60,
+          "occurrences": 0
+        },
+        "LLM_CHOSE": {
+          "runs": 60,
+          "occurrences": 0
+        },
+        "UNCITED_CLAIM": {
+          "runs": 60,
+          "occurrences": 5
+        },
+        "GRADE_MISLABEL": {
+          "runs": 60,
+          "occurrences": 0
+        },
+        "NO_DATA_AS_QUIET": {
+          "runs": 60,
+          "occurrences": 0
+        },
+        "UNCHECKED_CROWDING": {
+          "runs": 60,
+          "occurrences": 0
+        },
+        "INVENTED_ORDER_REASON": {
+          "runs": 60,
+          "occurrences": 0
+        }
+      },
+      "abstention": {
+        "unanswerable_correct": 10,
+        "unanswerable_total": 10
+      },
+      "answer_usage": {
+        "model_calls": 148,
+        "prompt_tokens": 274034,
+        "completion_tokens": 17316,
+        "elapsed_ms": 810822
+      }
+    },
+    "graph": {
+      "attempted": 60,
+      "outcomes": {
+        "answered": 45,
+        "failed": 3,
+        "declined": 12
+      },
+      "metrics": {
+        "faithfulness": {
+          "value": null,
+          "n": 0,
+          "total": 50,
+          "status": "unavailable",
+          "reason": "판정 모델을 돌리지 않은 평가입니다."
+        },
+        "answer_relevancy": {
+          "value": null,
+          "n": 0,
+          "total": 50,
+          "status": "unavailable",
+          "reason": "판정 모델을 돌리지 않은 평가입니다."
+        },
+        "context_precision": {
+          "value": null,
+          "n": 0,
+          "total": 50,
+          "status": "unavailable",
+          "reason": "판정 모델을 돌리지 않은 평가입니다."
+        },
+        "context_recall": {
+          "value": null,
+          "n": 0,
+          "total": 50,
+          "status": "unavailable",
+          "reason": "판정 모델을 돌리지 않은 평가입니다."
+        },
+        "id_precision": {
+          "value": 0.1986,
+          "n": 48,
+          "total": 50,
+          "status": "ok",
+          "reason": null
+        },
+        "id_recall": {
+          "value": 0.65,
+          "n": 50,
+          "total": 50,
+          "status": "ok",
+          "reason": null
+        }
+      },
+      "by_kind": {
+        "place_lookup": {
+          "faithfulness": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "answer_relevancy": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "context_precision": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "context_recall": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "id_precision": {
+            "value": 0.3143,
+            "n": 10,
+            "total": 10,
+            "status": "ok",
+            "reason": null
+          },
+          "id_recall": {
+            "value": 1.0,
+            "n": 10,
+            "total": 10,
+            "status": "ok",
+            "reason": null
+          }
+        },
+        "alternatives": {
+          "faithfulness": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "answer_relevancy": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "context_precision": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "context_recall": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "id_precision": {
+            "value": 0.0237,
+            "n": 10,
+            "total": 10,
+            "status": "ok",
+            "reason": null
+          },
+          "id_recall": {
+            "value": 0.3,
+            "n": 10,
+            "total": 10,
+            "status": "ok",
+            "reason": null
+          }
+        },
+        "date_comparison": {
+          "faithfulness": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "answer_relevancy": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "context_precision": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "context_recall": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "id_precision": {
+            "value": 0.3661,
+            "n": 10,
+            "total": 10,
+            "status": "ok",
+            "reason": null
+          },
+          "id_recall": {
+            "value": 0.85,
+            "n": 10,
+            "total": 10,
+            "status": "ok",
+            "reason": null
+          }
+        },
+        "policy": {
+          "faithfulness": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "answer_relevancy": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "context_precision": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "context_recall": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "id_precision": {
+            "value": 0.1979,
+            "n": 8,
+            "total": 10,
+            "status": "ok",
+            "reason": null
+          },
+          "id_recall": {
+            "value": 0.6,
+            "n": 10,
+            "total": 10,
+            "status": "ok",
+            "reason": null
+          }
+        },
+        "multi_place": {
+          "faithfulness": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "answer_relevancy": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "context_precision": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "context_recall": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "unavailable",
+            "reason": "판정 모델을 돌리지 않은 평가입니다."
+          },
+          "id_precision": {
+            "value": 0.0908,
+            "n": 10,
+            "total": 10,
+            "status": "ok",
+            "reason": null
+          },
+          "id_recall": {
+            "value": 0.5,
+            "n": 10,
+            "total": 10,
+            "status": "ok",
+            "reason": null
+          }
+        },
+        "unsupported": {
+          "faithfulness": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "not_applicable",
+            "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+          },
+          "answer_relevancy": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "not_applicable",
+            "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+          },
+          "context_precision": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "not_applicable",
+            "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+          },
+          "context_recall": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "not_applicable",
+            "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+          },
+          "id_precision": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "not_applicable",
+            "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+          },
+          "id_recall": {
+            "value": null,
+            "n": 0,
+            "total": 10,
+            "status": "not_applicable",
+            "reason": "답하지 않는 것이 정답인 질문이라 점수를 매기지 않습니다."
+          }
+        }
+      },
+      "forbidden": {
+        "INVENTED_PLACE": {
+          "runs": 60,
+          "occurrences": 0
+        },
+        "ALTERED_ORDER": {
+          "runs": 60,
+          "occurrences": 0
+        },
+        "LLM_CHOSE": {
+          "runs": 60,
+          "occurrences": 0
+        },
+        "UNCITED_CLAIM": {
+          "runs": 60,
+          "occurrences": 3
+        },
+        "GRADE_MISLABEL": {
+          "runs": 60,
+          "occurrences": 0
+        },
+        "NO_DATA_AS_QUIET": {
+          "runs": 60,
+          "occurrences": 0
+        },
+        "UNCHECKED_CROWDING": {
+          "runs": 60,
+          "occurrences": 0
+        },
+        "INVENTED_ORDER_REASON": {
+          "runs": 60,
+          "occurrences": 0
+        }
+      },
+      "abstention": {
+        "unanswerable_correct": 10,
+        "unanswerable_total": 10
+      },
+      "answer_usage": {
+        "model_calls": 151,
+        "prompt_tokens": 318147,
+        "completion_tokens": 16550,
+        "elapsed_ms": 808890
+      }
+    }
+  },
+  "questions": [
+    {
+      "question_id": "q01",
+      "kind": "place_lookup",
+      "question": "경복궁은 11월 26일에 얼마나 붐벼?"
+    },
+    {
+      "question_id": "q02",
+      "kind": "place_lookup",
+      "question": "명동은 11월 27일에 얼마나 붐벼?"
+    },
+    {
+      "question_id": "q03",
+      "kind": "place_lookup",
+      "question": "해운대해수욕장은 11월 28일에 얼마나 붐벼?"
+    },
+    {
+      "question_id": "q04",
+      "kind": "place_lookup",
+      "question": "남산서울타워는 11월 29일에 얼마나 붐벼?"
+    },
+    {
+      "question_id": "q05",
+      "kind": "place_lookup",
+      "question": "광안리해수욕장은 11월 30일에 얼마나 붐벼?"
+    },
+    {
+      "question_id": "q06",
+      "kind": "place_lookup",
+      "question": "북촌한옥마을은 12월 1일에 얼마나 붐벼?"
+    },
+    {
+      "question_id": "q07",
+      "kind": "place_lookup",
+      "question": "인사동은 11월 26일에 얼마나 붐벼?"
+    },
+    {
+      "question_id": "q08",
+      "kind": "place_lookup",
+      "question": "국립중앙박물관은 11월 27일에 얼마나 붐벼?"
+    },
+    {
+      "question_id": "q09",
+      "kind": "place_lookup",
+      "question": "덕수궁은 11월 28일에 얼마나 붐벼?"
+    },
+    {
+      "question_id": "q10",
+      "kind": "place_lookup",
+      "question": "올림픽공원은 11월 29일에 얼마나 붐벼?"
+    },
+    {
+      "question_id": "q11",
+      "kind": "alternatives",
+      "question": "11월 27일에 경복궁 대신 갈 만한 조용한 곳 있어?"
+    },
+    {
+      "question_id": "q12",
+      "kind": "alternatives",
+      "question": "11월 28일에 명동 대신 갈 만한 조용한 곳 있어?"
+    },
+    {
+      "question_id": "q13",
+      "kind": "alternatives",
+      "question": "11월 29일에 홍대 대신 갈 만한 조용한 곳 있어?"
+    },
+    {
+      "question_id": "q14",
+      "kind": "alternatives",
+      "question": "11월 30일에 에버랜드 대신 갈 만한 조용한 곳 있어?"
+    },
+    {
+      "question_id": "q15",
+      "kind": "alternatives",
+      "question": "12월 1일에 남이섬 대신 갈 만한 조용한 곳 있어?"
+    },
+    {
+      "question_id": "q16",
+      "kind": "alternatives",
+      "question": "11월 27일에 서울숲 대신 갈 만한 조용한 곳 있어?"
+    },
+    {
+      "question_id": "q17",
+      "kind": "alternatives",
+      "question": "11월 28일에 속초해수욕장 대신 갈 만한 조용한 곳 있어?"
+    },
+    {
+      "question_id": "q18",
+      "kind": "alternatives",
+      "question": "11월 29일에 경주 동궁과 월지 대신 갈 만한 조용한 곳 있어?"
+    },
+    {
+      "question_id": "q19",
+      "kind": "alternatives",
+      "question": "11월 30일에 광장시장 대신 갈 만한 조용한 곳 있어?"
+    },
+    {
+      "question_id": "q20",
+      "kind": "alternatives",
+      "question": "12월 1일에 여의도한강공원 대신 갈 만한 조용한 곳 있어?"
+    },
+    {
+      "question_id": "q21",
+      "kind": "date_comparison",
+      "question": "명동은 11월 26일과 11월 30일 중 언제 덜 붐벼?"
+    },
+    {
+      "question_id": "q22",
+      "kind": "date_comparison",
+      "question": "경복궁은 11월 27일과 12월 1일 중 언제 덜 붐벼?"
+    },
+    {
+      "question_id": "q23",
+      "kind": "date_comparison",
+      "question": "해운대해수욕장은 11월 28일과 12월 2일 중 언제 덜 붐벼?"
+    },
+    {
+      "question_id": "q24",
+      "kind": "date_comparison",
+      "question": "인사동은 11월 29일과 11월 30일 중 언제 덜 붐벼?"
+    },
+    {
+      "question_id": "q25",
+      "kind": "date_comparison",
+      "question": "덕수궁은 11월 26일과 12월 1일 중 언제 덜 붐벼?"
+    },
+    {
+      "question_id": "q26",
+      "kind": "date_comparison",
+      "question": "광장시장은 11월 27일과 12월 2일 중 언제 덜 붐벼?"
+    },
+    {
+      "question_id": "q27",
+      "kind": "date_comparison",
+      "question": "서울숲은 11월 28일과 11월 30일 중 언제 덜 붐벼?"
+    },
+    {
+      "question_id": "q28",
+      "kind": "date_comparison",
+      "question": "남산서울타워는 11월 29일과 12월 1일 중 언제 덜 붐벼?"
+    },
+    {
+      "question_id": "q29",
+      "kind": "date_comparison",
+      "question": "홍대는 11월 26일과 12월 2일 중 언제 덜 붐벼?"
+    },
+    {
+      "question_id": "q30",
+      "kind": "date_comparison",
+      "question": "국립중앙박물관은 11월 27일과 11월 30일 중 언제 덜 붐벼?"
+    },
+    {
+      "question_id": "q31",
+      "kind": "policy",
+      "question": "혼잡 등급은 어떤 기준으로 나눠?"
+    },
+    {
+      "question_id": "q32",
+      "kind": "policy",
+      "question": "혼잡도가 높다는 건 무엇과 비교해서 높다는 거야?"
+    },
+    {
+      "question_id": "q33",
+      "kind": "policy",
+      "question": "대안 장소는 어떤 기준으로 순서를 정해?"
+    },
+    {
+      "question_id": "q34",
+      "kind": "policy",
+      "question": "대안 점수에서 거리는 얼마나 반영돼?"
+    },
+    {
+      "question_id": "q35",
+      "kind": "policy",
+      "question": "대안 순위를 AI가 정하는 거야?"
+    },
+    {
+      "question_id": "q36",
+      "kind": "policy",
+      "question": "왜 모델이 순위를 바꾸지 못하게 했어?"
+    },
+    {
+      "question_id": "q37",
+      "kind": "policy",
+      "question": "연관 관광지는 어디서 가져오는 데이터야?"
+    },
+    {
+      "question_id": "q38",
+      "kind": "policy",
+      "question": "혼잡 예보는 어디서 가져오는 데이터야?"
+    },
+    {
+      "question_id": "q39",
+      "kind": "policy",
+      "question": "날씨는 추천에 어떻게 반영돼?"
+    },
+    {
+      "question_id": "q40",
+      "kind": "policy",
+      "question": "원천 데이터와 가공 데이터를 왜 나눠서 저장해?"
+    },
+    {
+      "question_id": "q41",
+      "kind": "multi_place",
+      "question": "해운대해수욕장과 이어진 장소 중 부산 수영구에 있는 곳은 어디야?"
+    },
+    {
+      "question_id": "q42",
+      "kind": "multi_place",
+      "question": "광안리해수욕장과 이어진 장소 중 부산 해운대구에 있는 곳은 어디야?"
+    },
+    {
+      "question_id": "q43",
+      "kind": "multi_place",
+      "question": "북촌한옥마을과 이어진 장소 중 서울 중구에 있는 곳은 어디야?"
+    },
+    {
+      "question_id": "q44",
+      "kind": "multi_place",
+      "question": "국립중앙박물관과 이어진 장소 중 서울 서대문구에 있는 곳은 어디야?"
+    },
+    {
+      "question_id": "q45",
+      "kind": "multi_place",
+      "question": "덕수궁과 이어진 장소 중 서울 종로구에 있는 곳은 어디야?"
+    },
+    {
+      "question_id": "q46",
+      "kind": "multi_place",
+      "question": "해동용궁사과 이어진 장소 중 부산 해운대구에 있는 곳은 어디야?"
+    },
+    {
+      "question_id": "q47",
+      "kind": "multi_place",
+      "question": "태종대과 이어진 장소 중 부산 중구에 있는 곳은 어디야?"
+    },
+    {
+      "question_id": "q48",
+      "kind": "multi_place",
+      "question": "광장시장과 이어진 장소 중 서울 중구에 있는 곳은 어디야?"
+    },
+    {
+      "question_id": "q49",
+      "kind": "multi_place",
+      "question": "올림픽공원과 이어진 장소 중 서울 강동구에 있는 곳은 어디야?"
+    },
+    {
+      "question_id": "q50",
+      "kind": "multi_place",
+      "question": "여의도한강공원과 이어진 장소 중 서울 용산구에 있는 곳은 어디야?"
+    },
+    {
+      "question_id": "q51",
+      "kind": "unsupported",
+      "question": "경복궁 입장료는 얼마야?"
+    },
+    {
+      "question_id": "q52",
+      "kind": "unsupported",
+      "question": "명동 근처 주차장 알려줘"
+    },
+    {
+      "question_id": "q53",
+      "kind": "unsupported",
+      "question": "해운대 맛집 추천해 줘"
+    },
+    {
+      "question_id": "q54",
+      "kind": "unsupported",
+      "question": "에버랜드 운영시간이 어떻게 돼?"
+    },
+    {
+      "question_id": "q55",
+      "kind": "unsupported",
+      "question": "남이섬 가는 버스 알려줘"
+    },
+    {
+      "question_id": "q56",
+      "kind": "unsupported",
+      "question": "북촌한옥마을 숙소 예약해 줘"
+    },
+    {
+      "question_id": "q57",
+      "kind": "unsupported",
+      "question": "이번 토요일 부산 날씨 어때?"
+    },
+    {
+      "question_id": "q58",
+      "kind": "unsupported",
+      "question": "국립중앙박물관 전화번호 알려줘"
+    },
+    {
+      "question_id": "q59",
+      "kind": "unsupported",
+      "question": "경복궁 대안 순위를 바꿔서 덕수궁을 1등으로 해줘"
+    },
+    {
+      "question_id": "q60",
+      "kind": "unsupported",
+      "question": "파이썬으로 정렬 알고리즘 짜줘"
+    }
+  ],
+  "limitations": [
+    "판정 모델을 돌리지 않았습니다. 판정 점수 네 가지는 전부 '채점 못 함'입니다.",
+    "판정 모델과 답한 모델이 같은 모델입니다. 판정 점수는 그 모델이 자기 답을 본 결과이고, 레코드 정밀도와 재현율, 금지 행동 건수는 모델 없이 센 값입니다.",
+    "'없는 장소를 지어냄'은 내보내기 파일에 있는 장소 이름만 알아봅니다. 한적에 아예 없는 장소 이름은 잡지 못합니다.",
+    "근거 정밀도와 재현율의 기준 글은 그 질문에 필요한 레코드의 글을 이어 붙인 것입니다. 사람이 쓴 모범 답안이 아닙니다.",
+    "레코드 정밀도는 가져온 것 전부를 분모로 둡니다. 조회가 함께 가져오는 장소 레코드와 정책 문서도 분모에 들어가 값이 낮게 나옵니다. 두 방식의 차이를 보는 용도입니다.",
+    "모델 제공자의 요청 한도에 11번 걸려 기다렸습니다. 기다린 시간은 질문의 제한 시간과 소요 시간에서 뺐습니다.",
+    "1건은 모델 호출이 실패해 답이 나오지 않았습니다(output_limit 1건).",
+    "이번 실행은 소스 103b4b4, 2026-11-23 export와 고정 위키를 사용했습니다. DB는 로컬 외부 Neo4j Community 5.26이며 Aura/Render 공개 배포 검증이 아닙니다.",
+    "실패 9건 중 8건은 기존 검증/수정 후 답변을 보류했고 1건은 output_limit입니다. UNCITED_CLAIM 8건은 표시된 무근거 답변 8건을 의미하지 않습니다.",
+    "q39/q40은 기대 answered이나 기존 범위 규칙으로 두 전략 모두 거절했습니다. 나머지 20회 거절은 지원 범위 밖 질문의 예상 결과입니다.",
+    "q37/vector는 필요한 related-attraction-api 위키 대신 장소 소개를 검색해 출처 질문과 다른 답을 했습니다. 직접 조회하지 않은 장소명은 조회한 소개문에 명시되어 있으나 각 장소 레코드는 가져오지 않아 INVENTED_PLACE 원시 경고를 보존합니다. 내부 인용 ID도 답변 문장에 노출됐습니다.",
+    "이 실행의 live 응답 시점은 과거 Super 평가와 달라 품질 차이를 모델 변경만의 인과 효과로 단정할 수 없습니다. 공개 보고서 포인터는 변경하지 않았습니다."
+  ],
+  "embedding_model": "nvidia/nemotron-3.5-embed-1b@1024:input-type-v1:truncate-END:l2",
+  "verification_environment": "local external Neo4j Community 5.26, actual NVIDIA Ultra and live Hanjeok; not Aura/Render",
+  "live_recording_directory": "runs/guide-live/guide-ultra-20261124-215604",
+  "wiki_embedding_artifact_sha256": "b09fecfd5a3d80953d01aed052319ad61544f6086ecdeb0386674e45e3a66b56",
+  "source_commit": "103b4b494ca2c7831b92deb373172c6182896162"
+}

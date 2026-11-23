@@ -1,0 +1,225 @@
+{
+  "report_id": "guide-ultra-20261124-215604",
+  "model": "nvidia/nemotron-3-ultra-550b-a55b",
+  "source_commit": "103b4b494ca2c7831b92deb373172c6182896162",
+  "source_tree_unchanged_from_103b4b4": true,
+  "question_count": 60,
+  "execution_count": 120,
+  "judge_run": false,
+  "recording_directory": "runs/guide-live/guide-ultra-20261124-215604",
+  "verification_environment": "local external Neo4j Community 5.26, actual NVIDIA Ultra and live Hanjeok; not Aura/Render",
+  "corpus_export_sha256": "9d82fb933020cf680d445d51f64b6e5c8ce79e1f5671f746f371dccb0d349849",
+  "wiki_artifact_sha256": "b09fecfd5a3d80953d01aed052319ad61544f6086ecdeb0386674e45e3a66b56",
+  "outcomes": {
+    "vector": {
+      "answered": 42,
+      "failed": 6,
+      "declined": 12
+    },
+    "graph": {
+      "answered": 45,
+      "failed": 3,
+      "declined": 12
+    }
+  },
+  "metrics": {
+    "vector": {
+      "faithfulness": null,
+      "answer_relevancy": null,
+      "context_precision": null,
+      "context_recall": null,
+      "id_precision": 0.1758,
+      "id_recall": 0.488
+    },
+    "graph": {
+      "faithfulness": null,
+      "answer_relevancy": null,
+      "context_precision": null,
+      "context_recall": null,
+      "id_precision": 0.1986,
+      "id_recall": 0.65
+    }
+  },
+  "raw_flags": {
+    "UNCITED_CLAIM": 8,
+    "INVENTED_PLACE": 1
+  },
+  "flags_on_shown_answers": [
+    {
+      "question_id": "q37",
+      "strategy": "vector",
+      "flags": [
+        "INVENTED_PLACE"
+      ]
+    }
+  ],
+  "failed_runs": [
+    {
+      "question_id": "q12",
+      "strategy": "vector",
+      "cause": "invalid_citations",
+      "model_failure": null,
+      "answer_shown": false,
+      "rejections": [
+        "혼잡 예보를 조회하지 않은 명동, 인사동의 혼잡을 말했습니다. 그 장소의 예보를 조회하지 않았다면 혼잡에 대해 말하지 마세요.",
+        "혼잡 예보를 조회하지 않은 삼청공원의 혼잡을 말했습니다. 그 장소의 예보를 조회하지 않았다면 혼잡에 대해 말하지 마세요."
+      ]
+    },
+    {
+      "question_id": "q12",
+      "strategy": "graph",
+      "cause": "invalid_citations",
+      "model_failure": null,
+      "answer_shown": false,
+      "rejections": [
+        "혼잡 예보를 조회하지 않은 명동의 혼잡을 말했습니다. 그 장소의 예보를 조회하지 않았다면 혼잡에 대해 말하지 마세요.",
+        "혼잡 예보를 조회하지 않은 명동의 혼잡을 말했습니다. 그 장소의 예보를 조회하지 않았다면 혼잡에 대해 말하지 마세요."
+      ]
+    },
+    {
+      "question_id": "q13",
+      "strategy": "graph",
+      "cause": "invalid_citations",
+      "model_failure": null,
+      "answer_shown": false,
+      "rejections": [
+        "혼잡 예보를 조회하지 않은 청담근린공원의 혼잡을 말했습니다. 그 장소의 예보를 조회하지 않았다면 혼잡에 대해 말하지 마세요.",
+        "혼잡 예보를 조회하지 않은 홍대의 혼잡을 말했습니다. 그 장소의 예보를 조회하지 않았다면 혼잡에 대해 말하지 마세요."
+      ]
+    },
+    {
+      "question_id": "q14",
+      "strategy": "vector",
+      "cause": "invalid_citations",
+      "model_failure": null,
+      "answer_shown": false,
+      "rejections": [
+        "혼잡 예보를 조회하지 않은 용인곤충테마파크의 혼잡을 말했습니다. 그 장소의 예보를 조회하지 않았다면 혼잡에 대해 말하지 마세요.",
+        "혼잡 예보를 조회하지 않은 처인성의 혼잡을 말했습니다. 그 장소의 예보를 조회하지 않았다면 혼잡에 대해 말하지 마세요."
+      ]
+    },
+    {
+      "question_id": "q14",
+      "strategy": "graph",
+      "cause": "invalid_citations",
+      "model_failure": null,
+      "answer_shown": false,
+      "rejections": [
+        "혼잡 예보를 조회하지 않은 에버랜드의 혼잡을 말했습니다. 그 장소의 예보를 조회하지 않았다면 혼잡에 대해 말하지 마세요.",
+        "혼잡 예보를 조회하지 않은 에버랜드의 혼잡을 말했습니다. 그 장소의 예보를 조회하지 않았다면 혼잡에 대해 말하지 마세요."
+      ]
+    },
+    {
+      "question_id": "q16",
+      "strategy": "vector",
+      "cause": "invalid_citations",
+      "model_failure": null,
+      "answer_shown": false,
+      "rejections": [
+        "혼잡 예보를 조회하지 않은 살곶이체육공원, 서울숲의 혼잡을 말했습니다. 그 장소의 예보를 조회하지 않았다면 혼잡에 대해 말하지 마세요.",
+        "혼잡 예보를 조회하지 않은 서울숲의 혼잡을 말했습니다. 그 장소의 예보를 조회하지 않았다면 혼잡에 대해 말하지 마세요."
+      ]
+    },
+    {
+      "question_id": "q17",
+      "strategy": "vector",
+      "cause": "invalid_citations",
+      "model_failure": null,
+      "answer_shown": false,
+      "rejections": [
+        "혼잡 예보를 조회하지 않은 속초해수욕장의 혼잡을 말했습니다. 그 장소의 예보를 조회하지 않았다면 혼잡에 대해 말하지 마세요.",
+        "혼잡 예보를 조회하지 않은 속초해수욕장의 혼잡을 말했습니다. 그 장소의 예보를 조회하지 않았다면 혼잡에 대해 말하지 마세요."
+      ]
+    },
+    {
+      "question_id": "q31",
+      "strategy": "vector",
+      "cause": "model_failed",
+      "model_failure": "output_limit",
+      "answer_shown": false,
+      "rejections": [
+        "혼잡 등급 표기가 잘못됐습니다. 여유, 보통, 혼잡, 매우혼잡만 쓰세요."
+      ]
+    },
+    {
+      "question_id": "q33",
+      "strategy": "vector",
+      "cause": "invalid_citations",
+      "model_failure": null,
+      "answer_shown": false,
+      "rejections": [
+        "답에 인용이 없습니다. 조회해서 받은 id 를 하나 이상 인용해야 합니다.",
+        "목록 순서의 이유를 '가까운 순'(이)라고 했지만 조회한 것에 그런 말이 없습니다. 순서는 한적이 정했다고만 말하세요."
+      ]
+    }
+  ],
+  "scope_misses": [
+    {
+      "question_id": "q39",
+      "strategy": "vector",
+      "cause": "unsupported_topic"
+    },
+    {
+      "question_id": "q39",
+      "strategy": "graph",
+      "cause": "unsupported_topic"
+    },
+    {
+      "question_id": "q40",
+      "strategy": "vector",
+      "cause": "off_topic"
+    },
+    {
+      "question_id": "q40",
+      "strategy": "graph",
+      "cause": "off_topic"
+    }
+  ],
+  "withheld_count": 8,
+  "model_failure_counts": {
+    "output_limit": 1
+  },
+  "repair_count": 15,
+  "rate_limit_waits": 11,
+  "raw_run_sha256": "ed993f286d76d5959bc4a98bd53ec9b5f6342bf8faa8395a0a1e993d82c48647",
+  "report_sha256": "eababdbd56fa525d4bee860a1e81ef19708ec1811168519a7db41b8353f8c15f",
+  "manual_flag_audit_complete": true,
+  "report_published": false,
+  "aura_loaded": false,
+  "render_deployed": false,
+  "limitations": [
+    "local external Neo4j Community, not Aura/Render",
+    "judge metrics not run",
+    "UNCITED_CLAIM also counts withheld drafts; it does not prove an erroneous answer was shown",
+    "automatic string detectors may produce false positives; shown flags require manual audit",
+    "이번 실행은 소스 103b4b4, 2026-11-23 export와 고정 위키를 사용했습니다. DB는 로컬 외부 Neo4j Community 5.26이며 Aura/Render 공개 배포 검증이 아닙니다.",
+    "실패 9건 중 8건은 기존 검증/수정 후 답변을 보류했고 1건은 output_limit입니다. UNCITED_CLAIM 8건은 표시된 무근거 답변 8건을 의미하지 않습니다.",
+    "q39/q40은 기대 answered이나 기존 범위 규칙으로 두 전략 모두 거절했습니다. 나머지 20회 거절은 지원 범위 밖 질문의 예상 결과입니다.",
+    "q37/vector는 필요한 related-attraction-api 위키 대신 장소 소개를 검색해 출처 질문과 다른 답을 했습니다. 직접 조회하지 않은 장소명은 조회한 소개문에 명시되어 있으나 각 장소 레코드는 가져오지 않아 INVENTED_PLACE 원시 경고를 보존합니다. 내부 인용 ID도 답변 문장에 노출됐습니다.",
+    "이 실행의 live 응답 시점은 과거 Super 평가와 달라 품질 차이를 모델 변경만의 인과 효과로 단정할 수 없습니다. 공개 보고서 포인터는 변경하지 않았습니다."
+  ],
+  "manual_shown_flag_audit": [
+    {
+      "question_id": "q37",
+      "strategy": "vector",
+      "raw_flag": "INVENTED_PLACE",
+      "raw_flag_preserved": true,
+      "expected_policy_id": "wiki:entities/related-attraction-api.md",
+      "expected_policy_fetched": false,
+      "retrieval_action": "search_places",
+      "fetched_place_count": 5,
+      "indirectly_supported_names_without_direct_records": [
+        "묵호항",
+        "까막바위",
+        "백제문화단지",
+        "낙화암",
+        "국립낙동강생물자원관"
+      ],
+      "names_found_in_fetched_overview_text": true,
+      "assessment": "Wrong policy intent/retrieval answer; flagged names are indirectly grounded in fetched overview text but their own records were not fetched. Do not treat as proven fabricated venues or the historical Super whitespace false positive.",
+      "inline_internal_citation_ids_shown": true
+    }
+  ],
+  "expected_out_of_scope_declines": 20,
+  "corpus_snapshot_date": "2026-11-23"
+}

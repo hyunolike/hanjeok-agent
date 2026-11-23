@@ -1,0 +1,36 @@
+{
+  "ok": true,
+  "report_id": "guide-ultra-20261124-215604",
+  "question_count": 60,
+  "strategies": {
+    "vector": {
+      "outcomes": {
+        "answered": 42,
+        "failed": 6,
+        "declined": 12
+      },
+      "id_recall": 0.488,
+      "faithfulness": null,
+      "forbidden": {
+        "INVENTED_PLACE": 1,
+        "UNCITED_CLAIM": 5
+      }
+    },
+    "graph": {
+      "outcomes": {
+        "answered": 45,
+        "failed": 3,
+        "declined": 12
+      },
+      "id_recall": 0.65,
+      "faithfulness": null,
+      "forbidden": {
+        "UNCITED_CLAIM": 3
+      }
+    }
+  },
+  "verification_environment": "local external Neo4j Community 5.26, actual NVIDIA Ultra and live Hanjeok; not Aura/Render",
+  "judge_run": false,
+  "report_published": false,
+  "live_recording_directory": "runs/guide-live/guide-ultra-20261124-215604"
+}
