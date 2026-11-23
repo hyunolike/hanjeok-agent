@@ -1,0 +1,47 @@
+{
+  "checked_at": "2026-11-23T02:34:15.451243+00:00",
+  "model_id": "nvidia/nemotron-3.5-embed-1b@1024:input-type-v1:truncate-END:l2",
+  "dimensions": 1024,
+  "export_sha256": "9d82fb933020cf680d445d51f64b6e5c8ce79e1f5671f746f371dccb0d349849",
+  "wiki_revision": "7fc19c0",
+  "wiki_documents": 18,
+  "sets": {
+    "places": {
+      "records": 12106,
+      "unique_texts": 12101,
+      "cached": 12106,
+      "missing": 0,
+      "invalid": 0,
+      "norm_min": 0.9999999846021026,
+      "norm_max": 1.000000016000497
+    },
+    "wiki": {
+      "records": 83,
+      "unique_texts": 83,
+      "cached": 7,
+      "missing": 76,
+      "invalid": 0,
+      "norm_min": 0.9999999984440854,
+      "norm_max": 1.0000000030262737
+    }
+  },
+  "database_loaded": false,
+  "render_deployed": false,
+  "quality_evaluation_run": false,
+  "wiki_provider_blocker": {
+    "http_status": 422,
+    "message": "input rejected by content safety screening",
+    "first_rejected_chunk": "concepts/congestion-diagnosis.md#2",
+    "unchanged_text_single_item_result": 422,
+    "explicit_text_modality_result": 422,
+    "later_unattempted_chunks": 75,
+    "action": "No source rewrite, safety-setting change, model fallback or partial DB load performed.",
+    "document_metadata_context_result": 422
+  },
+  "credential_blocker": {
+    "mac_screen_locked": true,
+    "downloads_filesystem_access": "denied by macOS",
+    "browser_downloads_surface": "blocked by browser URL policy; no workaround allowed",
+    "credential_file_available": false
+  }
+}

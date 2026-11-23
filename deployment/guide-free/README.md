@@ -58,6 +58,12 @@ uv run guide refresh --export .cache/exports/hanjeok-export-20261123 \
 [새 평가 세트 점검](../../bench/reports/runtime/production-question-preflight.json)에
 외부 적재/배포/평가의 실행 여부를 구분해 기록했다.
 
+현재 외부 사전 검증에서 장소 12,106곳의 벡터는 모두 준비됐으나 위키는 7/83개
+청크까지만 저장됐다. NVIDIA가 `concepts/congestion-diagnosis.md#2`를 콘텐츠 검사로
+거절했다(422). 단일 청크와 명시적 `modality=text` 요청도 동일했다. 원문을 누락하거나
+검사를 끄는 처리는 하지 않았다. [임베딩 사전 검증](../../bench/reports/runtime/production-embedding-preflight.json)에
+입력 범위와 미실행 항목을 기록했으며, 이 상태를 운영 배포 완료로 간주하면 안 된다.
+
 적재 캐시의 키에도 같은 식별자가 들어가므로 옛 E5 캐시와 섞이지 않는다.
 `guide eval`은 선택한 임베딩으로 두 검색 전략을 비교하고 보고서/실행 기록에
 식별자를 남긴다. 기존 E5 모델의 60문항 평가를 새 모델의 품질 근거로 재사용하지 않는다.
