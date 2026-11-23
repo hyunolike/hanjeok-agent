@@ -1,0 +1,915 @@
+{
+ "status": 200,
+ "fetched_at": "2026-11-23T07:53:38.607675Z",
+ "body": {
+  "success": true,
+  "data": [
+   {
+    "attractionId": 10028007,
+    "name": "플라이스테이션",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/15/4090115_image2_1.jpg",
+    "latitude": 37.2808916408,
+    "longitude": 127.1992079491,
+    "grade": "RELAXED",
+    "concentration": 17.22,
+    "distanceKm": 1.488,
+    "relationScore": 0,
+    "score": 0.5112800000000001,
+    "summary": "수직형 윈드터널에서 강한 상승기류를 이용해 실내스카이다이빙을 체험하는 항공레저스포츠 시설이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "81",
+       "origin": "에버랜드"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 3분 예상돼요.",
+      "evidence": {
+       "minutes": "3"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 3,
+    "rating": null
+   },
+   {
+    "attractionId": 10023861,
+    "name": "대광사(성남)",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/49/3400849_image2_1.JPG",
+    "latitude": 37.3467458289,
+    "longitude": 127.1276437368,
+    "grade": "RELAXED",
+    "concentration": 9.23,
+    "distanceKm": 8.814,
+    "relationScore": 0,
+    "score": 0.44556,
+    "summary": "불곡산 중턱에 자리한 대광사는 대한불교 천태종의 수도권 대표 사찰로 동양 최대 규모의 미륵보전과 국내 최고 높이의 미륵불 좌상을 보유하고 있다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "90",
+       "origin": "에버랜드"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 18분 예상돼요.",
+      "evidence": {
+       "minutes": "18"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 18,
+    "rating": null
+   },
+   {
+    "attractionId": 10028279,
+    "name": "한국미술관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/56/3068456_image2_1.jpg",
+    "latitude": 37.3088061501,
+    "longitude": 127.1314590915,
+    "grade": "RELAXED",
+    "concentration": 18.5,
+    "distanceKm": 6.462,
+    "relationScore": 0,
+    "score": 0.43984,
+    "summary": "칼빈대학교 부근에  있는 한국미술관은 김윤순(1931~2017)이 설립한  전문 사립미술관이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "79",
+       "origin": "에버랜드"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 13분 예상돼요.",
+      "evidence": {
+       "minutes": "13"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 13,
+    "rating": null
+   },
+   {
+    "attractionId": 10028221,
+    "name": "용인향교",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/60/3383560_image2_1.jpg",
+    "latitude": 37.2954824804,
+    "longitude": 127.1201764722,
+    "grade": "RELAXED",
+    "concentration": 22.53,
+    "distanceKm": 7.251,
+    "relationScore": 0,
+    "score": 0.4132,
+    "summary": "용인향교는 조선시대 지방민의 교육과 유교 성현에 대한 제사를 위해 세운 관립 교육기관이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "75",
+       "origin": "에버랜드"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 15분 예상돼요.",
+      "evidence": {
+       "minutes": "15"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 15,
+    "rating": null
+   },
+   {
+    "attractionId": 10028147,
+    "name": "보구정사",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/92/4130492_image2_1.jpg",
+    "latitude": 37.2636100439,
+    "longitude": 127.166679123,
+    "grade": "RELAXED",
+    "concentration": 32.15,
+    "distanceKm": 4.616,
+    "relationScore": 0,
+    "score": 0.4098533333333334,
+    "summary": "경기도 용인시 기흥구에 위치한 사찰이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "64",
+       "origin": "에버랜드"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 10분 예상돼요.",
+      "evidence": {
+       "minutes": "10"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 10,
+    "rating": null
+   },
+   {
+    "attractionId": 10030694,
+    "name": "용화선원(광주)",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/32/4124032_image2_1.jpg",
+    "latitude": 37.3617871297,
+    "longitude": 127.1949689469,
+    "grade": "RELAXED",
+    "concentration": 22.81,
+    "distanceKm": 7.557,
+    "relationScore": 0,
+    "score": 0.40800000000000003,
+    "summary": "경기도 광주시 오포읍 문형산 등산로 입구에 위치한 선원으로 대한불교조계종 소속이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "75",
+       "origin": "에버랜드"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 15분 예상돼요.",
+      "evidence": {
+       "minutes": "15"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 15,
+    "rating": null
+   },
+   {
+    "attractionId": 10027866,
+    "name": "삼성화재 모빌리티뮤지엄",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/67/4127067_image2_1.jpg",
+    "latitude": 37.3000443392,
+    "longitude": 127.2172568161,
+    "grade": "RELAXED",
+    "concentration": 44.44,
+    "distanceKm": 1.494,
+    "relationScore": 0,
+    "score": 0.40232000000000007,
+    "summary": "삼성화재 모빌리티뮤지엄은 재미있는 모빌리티 어트랙션을 체험하고 공간과 어우러진 아름다운 클래식카를 감상하며 푸르른 자연 속 여유로운 휴식도 함…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "50",
+       "origin": "에버랜드"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 3분 예상돼요.",
+      "evidence": {
+       "minutes": "3"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 3,
+    "rating": null
+   },
+   {
+    "attractionId": 10027880,
+    "name": "수풀로 영문리",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/63/3068763_image2_1.jpg",
+    "latitude": 37.273531,
+    "longitude": 127.210492,
+    "grade": "RELAXED",
+    "concentration": 42.44,
+    "distanceKm": 2.4,
+    "relationScore": 0,
+    "score": 0.39824000000000004,
+    "summary": "영문중학교 부근에 있는 수풀로 영문리는 한강수계 생태벨트를 체험 할 수 있는 생태공원이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "53",
+       "origin": "에버랜드"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 5분 예상돼요.",
+      "evidence": {
+       "minutes": "5"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 5,
+    "rating": null
+   },
+   {
+    "attractionId": 10028029,
+    "name": "화운사(용인)",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/68/3068568_image2_1.jpg",
+    "latitude": 37.2521329649,
+    "longitude": 127.162948548,
+    "grade": "RELAXED",
+    "concentration": 37.15,
+    "distanceKm": 5.81,
+    "relationScore": 0,
+    "score": 0.37393333333333334,
+    "summary": "멱조산 남쪽 자락에 있는 화운사는 비구니 사찰로, 대한불교조계종 제2 교구 본사인 용주사의 말사이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "59",
+       "origin": "에버랜드"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 12분 예상돼요.",
+      "evidence": {
+       "minutes": "12"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 12,
+    "rating": null
+   },
+   {
+    "attractionId": 10027829,
+    "name": "로만바스",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/74/4095974_image2_1.jpg",
+    "latitude": 37.2332629253,
+    "longitude": 127.1569357767,
+    "grade": "RELAXED",
+    "concentration": 32.45,
+    "distanceKm": 7.855,
+    "relationScore": 0,
+    "score": 0.36546666666666666,
+    "summary": "자연에서 즐기는 프리미엄 온천 스폿이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "64",
+       "origin": "에버랜드"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 16분 예상돼요.",
+      "evidence": {
+       "minutes": "16"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 16,
+    "rating": null
+   },
+   {
+    "attractionId": 10028026,
+    "name": "호암미술관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/93/3086393_image2_1.jpg",
+    "latitude": 37.2932642309,
+    "longitude": 127.1923280213,
+    "grade": "RELAXED",
+    "concentration": 57.8,
+    "distanceKm": 0.871,
+    "relationScore": 0,
+    "score": 0.3571866666666667,
+    "summary": "우리나라 최초의 사립미술관인 호암미술관은 삼성그룹의 창업주인［故 호암 湖巖 이병철 선생］이 30여 년에 걸쳐 수집한 한국미술품 1천2백여 점을…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "36",
+       "origin": "에버랜드"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 10028242,
+    "name": "지앤아트스페이스",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/25/4100525_image2_1.jpg",
+    "latitude": 37.2699120825,
+    "longitude": 127.1101250617,
+    "grade": "RELAXED",
+    "concentration": 37.03,
+    "distanceKm": 8.572,
+    "relationScore": 0,
+    "score": 0.3375866666666667,
+    "summary": "백남준아트센터 맞은편에 있는 지앤아트스페이스는 갤러리와 지앤숍, 도예 공방, 화원, 레스토랑, 카페가 있는 복합 공간이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "59",
+       "origin": "에버랜드"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 17분 예상돼요.",
+      "evidence": {
+       "minutes": "17"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 17,
+    "rating": null
+   },
+   {
+    "attractionId": 10030759,
+    "name": "태화산(경기)",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/96/4110696_image2_1.jpeg",
+    "latitude": 37.2939,
+    "longitude": 127.2886,
+    "grade": "RELAXED",
+    "concentration": 42.77,
+    "distanceKm": 7.649,
+    "relationScore": 0,
+    "score": 0.32693333333333335,
+    "summary": "태화산(664m)은 상당히 뾰족한 봉우리를 가진 아담한 산이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "52",
+       "origin": "에버랜드"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 15분 예상돼요.",
+      "evidence": {
+       "minutes": "15"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 15,
+    "rating": null
+   },
+   {
+    "attractionId": 10027912,
+    "name": "에버랜드스피드웨이",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/86/2798986_image2_1.jpg",
+    "latitude": 37.2892596096,
+    "longitude": 127.2149020311,
+    "grade": "NORMAL",
+    "concentration": 66.11,
+    "distanceKm": 1.25,
+    "relationScore": 0,
+    "score": 0.31889333333333336,
+    "summary": "에버랜드 스피드웨이는 한국 최초의 자동차 경주장이다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 3분 예상돼요.",
+      "evidence": {
+       "minutes": "3"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "26",
+       "origin": "에버랜드"
+      }
+     }
+    ],
+    "recommendReason": "에버랜드에서 차로 약 3분 예상돼요.",
+    "travelMinutes": 3,
+    "rating": null
+   },
+   {
+    "attractionId": 10028123,
+    "name": "만골근린공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/52/2738952_image2_1.jpg",
+    "latitude": 37.2861918235,
+    "longitude": 127.1135857087,
+    "grade": "RELAXED",
+    "concentration": 48.45,
+    "distanceKm": 7.882,
+    "relationScore": 0,
+    "score": 0.3011066666666667,
+    "summary": "신갈역 2번 출구에서 기흥도서관 방향으로 연결된다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "46",
+       "origin": "에버랜드"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 16분 예상돼요.",
+      "evidence": {
+       "minutes": "16"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 16,
+    "rating": null
+   },
+   {
+    "attractionId": 10027953,
+    "name": "용인중앙공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/86/3559786_image2_1.jpg",
+    "latitude": 37.2317120064,
+    "longitude": 127.2083831458,
+    "grade": "RELAXED",
+    "concentration": 53.51,
+    "distanceKm": 6.956,
+    "relationScore": 0,
+    "score": 0.2932133333333333,
+    "summary": "용인중앙공원은 다목적구장, 어린이놀이터, 향기원, 암석원, 맨발산책로, 자작나무길, 컬러풀정원, 수국산책로, 분수광장, 초화원 등의 공간으로…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "40",
+       "origin": "에버랜드"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 14분 예상돼요.",
+      "evidence": {
+       "minutes": "14"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 14,
+    "rating": null
+   },
+   {
+    "attractionId": 10027941,
+    "name": "용인미르스타디움(용인시민체육공원)",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/54/3566754_image2_1.jpg",
+    "latitude": 37.2496309759,
+    "longitude": 127.1651580363,
+    "grade": "RELAXED",
+    "concentration": 57.08,
+    "distanceKm": 5.926,
+    "relationScore": 0,
+    "score": 0.2926666666666667,
+    "summary": "천연잔디와 필드와 우레탄 트랙이 갖춰진 경기장으로 국내 유사 규모의 종합운동장 중 처음으로 순우리말 명칭 사용하였다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "36",
+       "origin": "에버랜드"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 12분 예상돼요.",
+      "evidence": {
+       "minutes": "12"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 12,
+    "rating": null
+   },
+   {
+    "attractionId": 10028085,
+    "name": "동백호수공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/47/3559747_image2_1.jpg",
+    "latitude": 37.2758,
+    "longitude": 127.1497,
+    "grade": "NORMAL",
+    "concentration": 60.27,
+    "distanceKm": 5.064,
+    "relationScore": 0,
+    "score": 0.2914,
+    "summary": "용인 동백호수공원은 공원 중심에 있는 호수를 보며 힐링을 할 수 있는 곳이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "33",
+       "origin": "에버랜드"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 10분 예상돼요.",
+      "evidence": {
+       "minutes": "10"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 10,
+    "rating": null
+   },
+   {
+    "attractionId": 10027858,
+    "name": "분당 어린이천문대",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/28/3383428_image2_1.jpg",
+    "latitude": 37.3232575141,
+    "longitude": 127.1550556298,
+    "grade": "NORMAL",
+    "concentration": 61.5,
+    "distanceKm": 5.279,
+    "relationScore": 0,
+    "score": 0.2836133333333334,
+    "summary": "분당 어린이천문대는 천체관측 시설과 천문연구활동을 중심으로 아이들에게 우주과학 및 자연과학에 대한 흥미와 관심을 고취시키며, 주어진 문제를 창…",
+    "recommendReasons": [
+     {
+      "kind": "REST_DAY",
+      "text": "이 날은 쉬는 날이에요 (매주 월요일, 일요일).",
+      "evidence": {
+       "restDate": "매주 월요일, 일요일"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "31",
+       "origin": "에버랜드"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 11분 예상돼요.",
+      "evidence": {
+       "minutes": "11"
+      }
+     }
+    ],
+    "recommendReason": "이 날은 쉬는 날이에요 (매주 월요일, 일요일).",
+    "travelMinutes": 11,
+    "rating": null
+   },
+   {
+    "attractionId": 10030683,
+    "name": "오포생활체육공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/22/4124022_image2_1.jpg",
+    "latitude": 37.3711695837,
+    "longitude": 127.243284982,
+    "grade": "RELAXED",
+    "concentration": 50.74,
+    "distanceKm": 9.314,
+    "relationScore": 0,
+    "score": 0.27285333333333334,
+    "summary": "경기도 광주시 오포대교와 양벌대교 사이 경안천 변에 위치한 생활체육공원이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "43",
+       "origin": "에버랜드"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 19분 예상돼요.",
+      "evidence": {
+       "minutes": "19"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 19,
+    "rating": null
+   },
+   {
+    "attractionId": 10028144,
+    "name": "법화산",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/59/3503159_image2_1.jpg",
+    "latitude": 37.3047,
+    "longitude": 127.1496,
+    "grade": "NORMAL",
+    "concentration": 67.25,
+    "distanceKm": 4.794,
+    "relationScore": 0,
+    "score": 0.26708,
+    "summary": "법화산(法華山)은 용인시 수지구 죽전동, 기흥구 마북동, 청덕동, 언남동과 처인구 모현면 오산리 등 3개 구 모두에 걸쳐있는 산이다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 10분 예상돼요.",
+      "evidence": {
+       "minutes": "10"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "25",
+       "origin": "에버랜드"
+      }
+     }
+    ],
+    "recommendReason": "에버랜드에서 차로 약 10분 예상돼요.",
+    "travelMinutes": 10,
+    "rating": null
+   },
+   {
+    "attractionId": 10028217,
+    "name": "용인시박물관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/86/3584786_image2_1.jpg",
+    "latitude": 37.27389681,
+    "longitude": 127.1571252752,
+    "grade": "NORMAL",
+    "concentration": 70.94,
+    "distanceKm": 4.57,
+    "relationScore": 0,
+    "score": 0.2553066666666667,
+    "summary": "용인시박물관은 400여 점의 자료와 영상, 사진 등을 통해 용인시 역사를 한눈에 볼 수 있는 박물관으로, 용인의 대표적인 역사 문화 체험공간이…",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 9분 예상돼요.",
+      "evidence": {
+       "minutes": "9"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "21",
+       "origin": "에버랜드"
+      }
+     }
+    ],
+    "recommendReason": "에버랜드에서 차로 약 9분 예상돼요.",
+    "travelMinutes": 9,
+    "rating": null
+   },
+   {
+    "attractionId": 10027906,
+    "name": "양지향교",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/50/3559650_image2_1.jpg",
+    "latitude": 37.2386043758,
+    "longitude": 127.2859323269,
+    "grade": "NORMAL",
+    "concentration": 59.31,
+    "distanceKm": 9.645,
+    "relationScore": 0,
+    "score": 0.23415999999999998,
+    "summary": "양지향교는 1523년에 세운 조선시대의 지방 교육기관이다.",
+    "recommendReasons": [
+     {
+      "kind": "REST_DAY",
+      "text": "이 날은 쉬는 날이에요 (매주 토요일~일요일 / 법정 공휴일).",
+      "evidence": {
+       "restDate": "매주 토요일~일요일 / 법정 공휴일"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "34",
+       "origin": "에버랜드"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 19분 예상돼요.",
+      "evidence": {
+       "minutes": "19"
+      }
+     }
+    ],
+    "recommendReason": "이 날은 쉬는 날이에요 (매주 토요일~일요일 / 법정 공휴일).",
+    "travelMinutes": 19,
+    "rating": null
+   },
+   {
+    "attractionId": 10030777,
+    "name": "풀짚공예박물관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/38/3527338_image2_1.jpg",
+    "latitude": 37.3641976055,
+    "longitude": 127.1651077672,
+    "grade": "NORMAL",
+    "concentration": 67.16,
+    "distanceKm": 8.457,
+    "relationScore": 0,
+    "score": 0.2186,
+    "summary": "풀짚공예박물관은 풀과 짚을 이용해서 만든 민속 생활 도구와 공예품을 수집하고 연구·전시와 교육을 하는 박물관이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "25",
+       "origin": "에버랜드"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 17분 예상돼요.",
+      "evidence": {
+       "minutes": "17"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 17,
+    "rating": null
+   },
+   {
+    "attractionId": 10028143,
+    "name": "백남준아트센터",
+    "imageUrl": null,
+    "latitude": 37.269143836,
+    "longitude": 127.1103281741,
+    "grade": "NORMAL",
+    "concentration": 75.37,
+    "distanceKm": 8.582,
+    "relationScore": 0,
+    "score": 0.18409333333333333,
+    "summary": "경기도박물관과 이웃하고 있는 백남준아트센터는 세계적인 비디오 아티스트 백남준(1932~2006)의 예술세계를 기리기 위해 세워진 경기도립미술관…",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 17분 예상돼요.",
+      "evidence": {
+       "minutes": "17"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "16",
+       "origin": "에버랜드"
+      }
+     }
+    ],
+    "recommendReason": "에버랜드에서 차로 약 17분 예상돼요.",
+    "travelMinutes": 17,
+    "rating": null
+   },
+   {
+    "attractionId": 10024011,
+    "name": "율동공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/47/4072047_image2_1.JPG",
+    "latitude": 37.3765557063,
+    "longitude": 127.152412248,
+    "grade": "NORMAL",
+    "concentration": 71.02,
+    "distanceKm": 10.171,
+    "relationScore": 0,
+    "score": 0.18030666666666673,
+    "summary": "성남 율동공원은 자연을 최대한 살려 조성한 자연호수공원으로, 잔디밭과 야산, 호수 등의 경치가 아름답다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "21",
+       "origin": "에버랜드"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 20분 예상돼요.",
+      "evidence": {
+       "minutes": "20"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 20,
+    "rating": null
+   },
+   {
+    "attractionId": 10028041,
+    "name": "경기도박물관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/25/4106425_image2_1.jpg",
+    "latitude": 37.2669161821,
+    "longitude": 127.1074175017,
+    "grade": "NORMAL",
+    "concentration": 75.42,
+    "distanceKm": 8.907,
+    "relationScore": 0,
+    "score": 0.17956000000000003,
+    "summary": "경기도어린이박물관과 이웃하고 있는 경기도박물관은 경기도의 역사와 전통문화를 계승하고 발전시키기 위해 1996년 6월 개관하였다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "에버랜드에서 차로 약 18분 예상돼요.",
+      "evidence": {
+       "minutes": "18"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "16",
+       "origin": "에버랜드"
+      }
+     }
+    ],
+    "recommendReason": "에버랜드에서 차로 약 18분 예상돼요.",
+    "travelMinutes": 18,
+    "rating": null
+   }
+  ],
+  "error": null
+ }
+}

@@ -1,0 +1,54 @@
+{
+  "report_id": "guide-20261123-075018",
+  "scope": "isolated local Neo4j; actual NVIDIA model and live Hanjeok; not Aura deployment",
+  "question_count": 60,
+  "execution_count": 120,
+  "judge_run": false,
+  "corpus_export_sha256": "9d82fb933020cf680d445d51f64b6e5c8ce79e1f5671f746f371dccb0d349849",
+  "wiki_artifact_sha256": "b09fecfd5a3d80953d01aed052319ad61544f6086ecdeb0386674e45e3a66b56",
+  "source_hashes": {
+    "bench/src/guide/agent.py": "f98d5a91dd0ea6d5e3fd821ca6aab55c3620fee16d64a46893f05ead8148d8a8",
+    "bench/src/bench/provider.py": "33fc759df81a912ee37cc6a563ac75d4372acfe82c118bc709bf47f1eae6eb7c"
+  },
+  "run_sha256": "dd676cba6d483de9588d49d50a8d7606adef025160bebe2c1006315bec353021",
+  "report_sha256": "3514e7952df410f03c68d3d102e03d5d4e6ee3aa555c26b434fee1c20564f72a",
+  "outcomes": {
+    "vector": {
+      "answered": 45,
+      "failed": 3,
+      "declined": 12
+    },
+    "graph": {
+      "answered": 47,
+      "failed": 1,
+      "declined": 12
+    }
+  },
+  "id_recall": {
+    "vector": 0.7847,
+    "graph": 0.94
+  },
+  "raw_flags": {
+    "UNCITED_CLAIM": 3,
+    "INVENTED_PLACE": 1
+  },
+  "withheld_answers": 3,
+  "provider_failure_count": 1,
+  "scope_missed_questions": [
+    "q39",
+    "q40"
+  ],
+  "manual_false_positive": {
+    "question_id": "q16",
+    "strategy": "graph",
+    "flag": "INVENTED_PLACE",
+    "answer_phrase": "홈페이지나 인스타그램",
+    "matched_place": "페이지나인",
+    "reason": "whitespace removal joins adjacent words"
+  },
+  "confirmed_shown_order_violations": 0,
+  "shown_grade_mislabels": 0,
+  "report_published": false,
+  "aura_loaded": false,
+  "render_deployed": false
+}

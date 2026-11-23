@@ -205,9 +205,19 @@ Render/Koyeb의 무료 절전과 요청 자원 제한도 적용된다.
 [Render](https://render.com/docs/free), [Koyeb](https://www.koyeb.com/docs/reference/instances),
 [AuraDB](https://neo4j.com/docs/aura/quotas-and-limits/).
 
-2026-11-23 최종 답변 모델/인용 schema 코드의 amd64 이미지(ARM64 호스트 에뮬레이션)는
-50회 반복을 통과했고, 512MiB 제한에서 20ms 간격으로 관측한 최대 메모리는 332.5MiB였다.
-[최종 결과 JSON](../../bench/reports/runtime/512mb-fixture-amd64-final-model.json)과
+2026-11-23 최종 순위/등급 검사 코드의 amd64 이미지(ARM64 호스트 에뮬레이션)는
+50회 fixture 반복을 통과했고, 512MiB 제한에서 관측한 최대 메모리는 331.6MiB였다.
+[최종 fixture JSON](../../bench/reports/runtime/512mb-fixture-amd64-final-guard.json)과
 [검토/검증 기록](../../docs/superpowers/reviews/2026-11-23-guide-512mb-review.md)을 참고한다.
 종료된 답변 모델 교체와 실제 SSE 확인은 [호환성 검토](../../docs/superpowers/reviews/2026-11-23-guide-answer-compat-review.md)에 있다.
 실제 제공자 지연이나 Render/Koyeb 네이티브 호스트의 성능 수치가 아니다.
+
+실제 장소 12,106개/위키 83청크와 NVIDIA·한적 API를 사용한 최종 컨테이너도
+512MiB/no-swap에서 예보, 정책, 대안 질문 세 건을 완료했다. 20ms 표본 최대는
+272.2MiB, OOM은 0이었다. [실데이터 메모리 JSON](../../bench/reports/runtime/512mb-realdata-final-guard-amd64.json).
+DB는 별도의 로컬 Neo4j이며, 세 질문은 장시간 부하 검사를 대신하지 않는다.
+
+현행 60문항을 두 전략으로 실행한 [평가 감사](../../bench/reports/runtime/currentdata-evaluation-audit.json)에는
+거절/실패와 오탐을 함께 기록했다. 판정 모델 지표는 미실행이고, 정책 두 문항의 범위
+거절 및 제공자 오류가 남아 있다. 이전 E5 점수나 수정 전 실행을 새 모델 점수로 재사용하지 않는다.
+Aura 접속 파일 미확보로 실제 Aura 적재, Render 생성과 프론트 URL 공개는 아직 미실행이다.

@@ -1,0 +1,578 @@
+{
+ "status": 200,
+ "fetched_at": "2026-11-23T07:53:23.596396Z",
+ "body": {
+  "success": true,
+  "data": [
+   {
+    "attractionId": 10007952,
+    "name": "백련사(서대문)",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/12/3401412_image2_1.JPG",
+    "latitude": 37.5863369068,
+    "longitude": 126.9273795751,
+    "grade": "RELAXED",
+    "concentration": 25.54,
+    "distanceKm": 3.505,
+    "relationScore": 0,
+    "score": 0.45110666666666666,
+    "summary": "서대문 백련산 자락에 있는 천년고찰 백련사는 신라 경덕왕 6년(747)에 진표율사가 창건하였다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "74",
+       "origin": "홍대"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "홍대에서 차로 약 7분 예상돼요.",
+      "evidence": {
+       "minutes": "7"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 7,
+    "rating": null
+   },
+   {
+    "attractionId": 10006140,
+    "name": "백범김구기념관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/98/3521598_image2_1.jpg",
+    "latitude": 37.5442779803,
+    "longitude": 126.9592530509,
+    "grade": "RELAXED",
+    "concentration": 27.01,
+    "distanceKm": 3.403,
+    "relationScore": 0,
+    "score": 0.4465866666666667,
+    "summary": "백범김구기념관은 세계에서 가장 아름답고 높은 문화를 가진 자주·민주·통일 조국을 건설하기 위해 일생을 분투하신 겨레의 큰 스승 백범 김구 선생…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "72",
+       "origin": "홍대"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "홍대에서 차로 약 7분 예상돼요.",
+      "evidence": {
+       "minutes": "7"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 7,
+    "rating": null
+   },
+   {
+    "attractionId": 10007955,
+    "name": "봉원사(서울)",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/22/3509922_image2_1.jpg",
+    "latitude": 37.571725389,
+    "longitude": 126.9472153032,
+    "grade": "RELAXED",
+    "concentration": 34.84,
+    "distanceKm": 2.824,
+    "relationScore": 0,
+    "score": 0.4229866666666666,
+    "summary": "천년고찰이자 전통사찰인 봉원사는 2011년 전통사찰로 등록되었으며, 2014년 7월에 아미타괘불도와 범종이 서울특별시 유형문화유산으로 등록되었…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "64",
+       "origin": "홍대"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "홍대에서 차로 약 6분 예상돼요.",
+      "evidence": {
+       "minutes": "6"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 6,
+    "rating": null
+   },
+   {
+    "attractionId": 10009387,
+    "name": "국회의사당",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/82/3573082_image2_1.jpg",
+    "latitude": 37.5293706796,
+    "longitude": 126.9166173251,
+    "grade": "RELAXED",
+    "concentration": 42.28,
+    "distanceKm": 2.907,
+    "relationScore": 0,
+    "score": 0.39212,
+    "summary": "국회의사당은 1975년 8월에 준공되었으며, 현대식 건물양식에 한국의 전통미를 가미하였다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "57",
+       "origin": "홍대"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "홍대에서 차로 약 6분 예상돼요.",
+      "evidence": {
+       "minutes": "6"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 6,
+    "rating": null
+   },
+   {
+    "attractionId": 10007966,
+    "name": "서대문자연사박물관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/76/3502776_image2_1.jpg",
+    "latitude": 37.5766949504,
+    "longitude": 126.9378362353,
+    "grade": "RELAXED",
+    "concentration": 46.88,
+    "distanceKm": 2.74,
+    "relationScore": 0,
+    "score": 0.37594666666666665,
+    "summary": "서대문자연사박물관은 서울 도심 속 안산 자락에 위치한 공공 자연사박물관으로, 2003년 7월 10일에 개관하였다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "52",
+       "origin": "홍대"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "홍대에서 차로 약 6분 예상돼요.",
+      "evidence": {
+       "minutes": "6"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 6,
+    "rating": null
+   },
+   {
+    "attractionId": 10007977,
+    "name": "신기한놀이터 떼굴떼굴",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/42/3565342_image2_1.jpg",
+    "latitude": 37.5856,
+    "longitude": 126.9385,
+    "grade": "RELAXED",
+    "concentration": 44.39,
+    "distanceKm": 3.663,
+    "relationScore": 0,
+    "score": 0.37360000000000004,
+    "summary": "놀이터 떼굴떼굴은 서울특별시 서대문구 주택가와 산자락 인근의 야외 공간에 조성된 자연 모래 놀이터이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "55",
+       "origin": "홍대"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "홍대에서 차로 약 8분 예상돼요.",
+      "evidence": {
+       "minutes": "8"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 8,
+    "rating": null
+   },
+   {
+    "attractionId": 10008261,
+    "name": "서울함공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/89/4126289_image2_1.jpg",
+    "latitude": 37.5534,
+    "longitude": 126.8977,
+    "grade": "RELAXED",
+    "concentration": 49.76,
+    "distanceKm": 2.246,
+    "relationScore": 0,
+    "score": 0.37101333333333336,
+    "summary": "서울함 공원은 30년간 해양 수호의 임무를 수행하고 퇴역한 서울함을 비롯하여, 참수리호, 잠수함 총 3척의 퇴역 군함을 이용하여 조성한 함상…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "49",
+       "origin": "홍대"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "홍대에서 차로 약 5분 예상돼요.",
+      "evidence": {
+       "minutes": "5"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 5,
+    "rating": null
+   },
+   {
+    "attractionId": 10008083,
+    "name": "광흥당",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/35/3393035_image2_1.JPG",
+    "latitude": 37.5485815467,
+    "longitude": 126.9286601533,
+    "grade": "RELAXED",
+    "concentration": 59.83,
+    "distanceKm": 0.866,
+    "relationScore": 0,
+    "score": 0.3491333333333334,
+    "summary": "마포 와우산 자락에 자리 잡고 있는 광흥당은 공민왕 사당 오른쪽에 있는 한옥 문화공간으로 전통문화의 소중함을 일깨우기 위해 다양한 프로그램을…",
+    "recommendReasons": [
+     {
+      "kind": "REST_DAY",
+      "text": "이 날은 쉬는 날이에요 (매주 토요일~일요일).",
+      "evidence": {
+       "restDate": "매주 토요일~일요일"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "39",
+       "origin": "홍대"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "홍대에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     }
+    ],
+    "recommendReason": "이 날은 쉬는 날이에요 (매주 토요일~일요일).",
+    "travelMinutes": 2,
+    "rating": null
+   },
+   {
+    "attractionId": 10008017,
+    "name": "우석뮤지엄",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/84/3502784_image2_1.jpg",
+    "latitude": 37.5566186049,
+    "longitude": 126.9403997739,
+    "grade": "NORMAL",
+    "concentration": 67.76,
+    "distanceKm": 1.536,
+    "relationScore": 0,
+    "score": 0.30848,
+    "summary": "우석뮤지엄은 전각가이자 서예가인 우석 최규명 선생(1919~1999)의 작고 15주기를 맞아 2014년 2월 우석의 서예작품을 만날 수 있는…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "31",
+       "origin": "홍대"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "홍대에서 차로 약 3분 예상돼요.",
+      "evidence": {
+       "minutes": "3"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 3,
+    "rating": null
+   },
+   {
+    "attractionId": 10009579,
+    "name": "양화한강공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource_photo/46/3551346_image2_1.jpg",
+    "latitude": 37.5382819489,
+    "longitude": 126.902365881,
+    "grade": "RELAXED",
+    "concentration": 64.53,
+    "distanceKm": 2.607,
+    "relationScore": 0,
+    "score": 0.30712000000000006,
+    "summary": "양화한강공원은 여의도 샛강 하구에서 강서구 가양대교까지로 한강남단에 위치하고 있다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "34",
+       "origin": "홍대"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "홍대에서 차로 약 6분 예상돼요.",
+      "evidence": {
+       "minutes": "6"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 6,
+    "rating": null
+   },
+   {
+    "attractionId": 10008025,
+    "name": "은가어린이공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/53/3509953_image2_1.jpg",
+    "latitude": 37.5827,
+    "longitude": 126.9195,
+    "grade": "RELAXED",
+    "concentration": 65,
+    "distanceKm": 3.096,
+    "relationScore": 0,
+    "score": 0.29872,
+    "summary": "은가어린이공원은 서울 서대문구 북가좌동의 주택가 중심에 위치한 소규모 공원이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "34",
+       "origin": "홍대"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "홍대에서 차로 약 7분 예상돼요.",
+      "evidence": {
+       "minutes": "7"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 7,
+    "rating": null
+   },
+   {
+    "attractionId": 10008257,
+    "name": "서울에너지드림센터",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/50/3350450_image2_1.jpg",
+    "latitude": 37.5630318918,
+    "longitude": 126.8914522626,
+    "grade": "NORMAL",
+    "concentration": 68.95,
+    "distanceKm": 2.929,
+    "relationScore": 0,
+    "score": 0.28514666666666666,
+    "summary": "에너지드림센터는 건물 자체가 기념비적인 건축물이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "30",
+       "origin": "홍대"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "홍대에서 차로 약 6분 예상돼요.",
+      "evidence": {
+       "minutes": "6"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 6,
+    "rating": null
+   },
+   {
+    "attractionId": 10008417,
+    "name": "절두산 순교성지",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/76/3571776_image2_1.jpg",
+    "latitude": 37.5445898728,
+    "longitude": 126.9118594003,
+    "grade": "NORMAL",
+    "concentration": 74.05,
+    "distanceKm": 1.524,
+    "relationScore": 0,
+    "score": 0.28348000000000007,
+    "summary": "절두산은 원래 누에의 머리와 비슷하다고 하여 잠두봉이라 불렀다고 한다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "홍대에서 차로 약 3분 예상돼요.",
+      "evidence": {
+       "minutes": "3"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "25",
+       "origin": "홍대"
+      }
+     }
+    ],
+    "recommendReason": "홍대에서 차로 약 3분 예상돼요.",
+    "travelMinutes": 3,
+    "rating": null
+   },
+   {
+    "attractionId": 10007861,
+    "name": "응암동 감자국 거리",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/38/3465038_image2_1.jpg",
+    "latitude": 37.5872150571,
+    "longitude": 126.9166998701,
+    "grade": "NORMAL",
+    "concentration": 72.37,
+    "distanceKm": 3.626,
+    "relationScore": 0,
+    "score": 0.26217333333333337,
+    "summary": "장충동에 족발이 있고 청진동엔 해장국이 있다면 응암동엔 감자탕이 있다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "홍대에서 차로 약 8분 예상돼요.",
+      "evidence": {
+       "minutes": "8"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "26",
+       "origin": "홍대"
+      }
+     }
+    ],
+    "recommendReason": "홍대에서 차로 약 8분 예상돼요.",
+    "travelMinutes": 8,
+    "rating": null
+   },
+   {
+    "attractionId": 10009594,
+    "name": "여의도한강공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/89/3544389_image2_1.jpg",
+    "latitude": 37.5263478533,
+    "longitude": 126.9335951931,
+    "grade": "NORMAL",
+    "concentration": 80.5,
+    "distanceKm": 3.318,
+    "relationScore": 0,
+    "score": 0.23376,
+    "summary": "여의도한강공원은 정치, 금융, 언론의 중심지인 여의도에 자리하고 있으며, 지하철, 버스 등 대중교통으로 접근성이 좋아 직장인과 일반 시민들이…",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "홍대에서 차로 약 7분 예상돼요.",
+      "evidence": {
+       "minutes": "7"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "18",
+       "origin": "홍대"
+      }
+     }
+    ],
+    "recommendReason": "홍대에서 차로 약 7분 예상돼요.",
+    "travelMinutes": 7,
+    "rating": null
+   },
+   {
+    "attractionId": 10009767,
+    "name": "KBS온",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/24/2784524_image2_1.jpg",
+    "latitude": 37.5260245145,
+    "longitude": 126.91674446,
+    "grade": "NORMAL",
+    "concentration": 80.99,
+    "distanceKm": 3.27,
+    "relationScore": 0,
+    "score": 0.23244000000000004,
+    "summary": "KBS는 견학을 원하는 이들을 위해 KBS온(on)을 운영하고 있다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "홍대에서 차로 약 7분 예상돼요.",
+      "evidence": {
+       "minutes": "7"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "17",
+       "origin": "홍대"
+      }
+     }
+    ],
+    "recommendReason": "홍대에서 차로 약 7분 예상돼요.",
+    "travelMinutes": 7,
+    "rating": null
+   },
+   {
+    "attractionId": 10009591,
+    "name": "여의도공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/19/3558719_image2_1.jpg",
+    "latitude": 37.5268060839,
+    "longitude": 126.9222787218,
+    "grade": "NORMAL",
+    "concentration": 82.29,
+    "distanceKm": 3.136,
+    "relationScore": 0,
+    "score": 0.22902666666666666,
+    "summary": "1971년 활주로가 있던 자리에 여의도 광장으로 문을 연 여의도공원은 다양한 국가 행사와 휴식의 여가를 담당하는 공간이다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "홍대에서 차로 약 7분 예상돼요.",
+      "evidence": {
+       "minutes": "7"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "16",
+       "origin": "홍대"
+      }
+     }
+    ],
+    "recommendReason": "홍대에서 차로 약 7분 예상돼요.",
+    "travelMinutes": 7,
+    "rating": null
+   }
+  ],
+  "error": null
+ }
+}

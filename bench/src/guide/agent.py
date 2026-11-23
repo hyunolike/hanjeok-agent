@@ -41,6 +41,7 @@ from langgraph.graph import END, START, StateGraph
 from langgraph.types import Command, interrupt
 
 from guide import citations as cite
+from guide.forbidden import check as forbidden_check
 from guide.forbidden import evidence_from, invented_order_reason, unchecked_crowding
 from guide.live import LiveClient
 from guide.lookups import DESCRIPTIONS, LIVE, RELATED_LIMITS, Lookups, Outcome
@@ -558,14 +559,15 @@ class Agent:
                 return self._stop("failed", "invalid_citations")
             return {"repaired": True, "repair": verdict.reason, "draft": None, "route": "answer"}
 
-        # Two claims the citation gate cannot see, because the citations are
-        # real: crowding said of a place nobody looked up, and a reason for an
-        # order that no lookup gave. Both were seen on real data. They get the
-        # same treatment as a bad citation: one repair, then nothing is shown.
+        # Valid citations do not make every claim valid. Observed violations
+        # share the citation gate's one repair, then nothing is shown.
         evidence = evidence_from(None, self.places.gazetteer(), fetched)
         unchecked = unchecked_crowding(draft["answer"], evidence)
         reasons = invented_order_reason(draft["answer"], evidence)
-        if unchecked or reasons:
+        behaviors = set(forbidden_check(draft["answer"], evidence)) & {
+            "ALTERED_ORDER", "GRADE_MISLABEL"
+        }
+        if unchecked or reasons or behaviors:
             problems = []
             if unchecked:
                 problems.append(
@@ -577,6 +579,11 @@ class Agent:
                     f"목록 순서의 이유를 '{reasons[0]}'(이)라고 했지만 조회한 것에 그런 말이 없습니다. "
                     "순서는 한적이 정했다고만 말하세요."
                 )
+            if "ALTERED_ORDER" in behaviors:
+                problems.append("대안이나 연관 장소를 조회한 목록과 다른 순서로 말했습니다. "
+                                "언급하는 장소의 순서는 조회한 목록 그대로 유지하세요.")
+            if "GRADE_MISLABEL" in behaviors:
+                problems.append("혼잡 등급 표기가 잘못됐습니다. 여유, 보통, 혼잡, 매우혼잡만 쓰세요.")
             self.result.rejections.append(" ".join(problems))
             if state["repaired"]:
                 return self._stop("failed", "invalid_citations")

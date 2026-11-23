@@ -225,6 +225,10 @@ new path so the code does not need revisiting when the old one is removed.
 
 ## Open Items Carried Into Planning
 
+2026-11-23 운영 검증에서 최초 3-Super 기본 모델이 HTTP 410으로 종료됐음을 확인했다.
+현재 기본값은 `nvidia/nemotron-3.5-super-vl-120b-a12b`이며, 위의 최초 모델 선택은
+당시 연구 기록으로 보존한다. 실제 변경과 검증은 512MB 안내 API 명세/검토를 참고한다.
+
 None. Every deferral the specification listed is resolved above. The
 `contradictions`-as-attribute decision and the two-corpus decision were settled
 in the specification's Assumptions and are not revisited here.

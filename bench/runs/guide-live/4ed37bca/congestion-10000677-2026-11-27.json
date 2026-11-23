@@ -1,0 +1,265 @@
+{
+ "status": 200,
+ "fetched_at": "2026-11-23T07:33:05.070727Z",
+ "body": {
+  "success": true,
+  "data": {
+   "hasCongestionData": true,
+   "attraction": {
+    "id": 10000677,
+    "name": "춘원당한의약박물관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/25/4153325_image2_1.jpg"
+   },
+   "diagnosis": {
+    "date": "2026-11-27",
+    "concentration": 42.39,
+    "percentile": 61,
+    "grade": "NORMAL",
+    "message": "춘원당한의약박물관, 붐비지 않는 편이라 둘러보기 무난해요."
+   },
+   "dailyForecasts": [
+    {
+     "date": "2026-11-22",
+     "concentration": 22.9,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-23",
+     "concentration": 15.58,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-24",
+     "concentration": 25,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-25",
+     "concentration": 34.56,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-11-26",
+     "concentration": 31.41,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-27",
+     "concentration": 42.39,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-11-28",
+     "concentration": 83.85,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-11-29",
+     "concentration": 34.27,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-30",
+     "concentration": 27.53,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-01",
+     "concentration": 74.56,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-02",
+     "concentration": 33.88,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-03",
+     "concentration": 22.05,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-04",
+     "concentration": 23.34,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-05",
+     "concentration": 73.82,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-06",
+     "concentration": 68.84,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-07",
+     "concentration": 27.69,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-08",
+     "concentration": 28.35,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-09",
+     "concentration": 17.62,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-10",
+     "concentration": 20.12,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-11",
+     "concentration": 30.44,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-12",
+     "concentration": 74.64,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-13",
+     "concentration": 57.33,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-14",
+     "concentration": 20.78,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-15",
+     "concentration": 18.65,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-16",
+     "concentration": 21.69,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-17",
+     "concentration": 15.86,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-18",
+     "concentration": 34.96,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-19",
+     "concentration": 75.31,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-20",
+     "concentration": 52.48,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-21",
+     "concentration": 15.25,
+     "grade": "RELAXED",
+     "weather": null
+    }
+   ],
+   "betterDates": [
+    {
+     "date": "2026-12-21",
+     "concentration": 15.25,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-17",
+     "concentration": 15.86,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-09",
+     "concentration": 17.62,
+     "grade": "RELAXED",
+     "weather": null
+    }
+   ],
+   "nearbyFestivals": [
+    {
+     "id": 4,
+     "contentId": "4060434",
+     "name": "국악공연 진연",
+     "startDate": "2026-01-01",
+     "endDate": "2026-12-31",
+     "distanceKm": 0.4,
+     "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/35/4060435_image2_1.jpg"
+    },
+    {
+     "id": 6,
+     "contentId": "2809535",
+     "name": "남산봉수의식 등 전통문화행사",
+     "startDate": "2026-01-01",
+     "endDate": "2026-12-31",
+     "distanceKm": 0.6,
+     "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/57/4001657_image2_1.jpg"
+    },
+    {
+     "id": 30,
+     "contentId": "2598331",
+     "name": "문화가 흐르는 서울광장",
+     "startDate": "2026-05-06",
+     "endDate": "2026-12-31",
+     "distanceKm": 1.2,
+     "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/68/4059668_image2_1.jpg"
+    }
+   ],
+   "ongoingExhibitions": [],
+   "feltCongestion": {
+    "moreCrowded": 0,
+    "asForecast": 0,
+    "lessCrowded": 0
+   },
+   "usual": {
+    "baseline": 37.505,
+    "days": 30,
+    "delta": 4.9
+   }
+  },
+  "error": null
+ }
+}

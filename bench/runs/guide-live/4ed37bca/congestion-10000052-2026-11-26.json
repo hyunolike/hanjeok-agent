@@ -1,0 +1,265 @@
+{
+ "status": 200,
+ "fetched_at": "2026-11-23T07:57:39.508767Z",
+ "body": {
+  "success": true,
+  "data": {
+   "hasCongestionData": true,
+   "attraction": {
+    "id": 10000052,
+    "name": "광장시장",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/46/4135946_image2_1.jpg"
+   },
+   "diagnosis": {
+    "date": "2026-11-26",
+    "concentration": 78.25,
+    "percentile": 95,
+    "grade": "VERY_CROWDED",
+    "message": "광장시장은 이날 매우 붐빌 것으로 보여요. 다른 날이나 다른 장소를 권해요."
+   },
+   "dailyForecasts": [
+    {
+     "date": "2026-11-22",
+     "concentration": 65.55,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-11-23",
+     "concentration": 67.8,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-24",
+     "concentration": 73.77,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-25",
+     "concentration": 73.01,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-26",
+     "concentration": 78.25,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-27",
+     "concentration": 81.04,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-28",
+     "concentration": 98.39,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-29",
+     "concentration": 68.78,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-11-30",
+     "concentration": 70.78,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-01",
+     "concentration": 72.73,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-02",
+     "concentration": 70.01,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-03",
+     "concentration": 74.53,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-04",
+     "concentration": 81.38,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-05",
+     "concentration": 93.42,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-06",
+     "concentration": 65.45,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-07",
+     "concentration": 65.21,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-08",
+     "concentration": 66.75,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-09",
+     "concentration": 75.26,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-10",
+     "concentration": 77.53,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-11",
+     "concentration": 81.87,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-12",
+     "concentration": 92.95,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-13",
+     "concentration": 73.6,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-14",
+     "concentration": 73.48,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-15",
+     "concentration": 78.34,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-16",
+     "concentration": 75.91,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-17",
+     "concentration": 77.07,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-18",
+     "concentration": 81.66,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-19",
+     "concentration": 92.77,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-20",
+     "concentration": 72.8,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-21",
+     "concentration": 73.18,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    }
+   ],
+   "betterDates": [
+    {
+     "date": "2026-12-07",
+     "concentration": 65.21,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-06",
+     "concentration": 65.45,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-08",
+     "concentration": 66.75,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    }
+   ],
+   "nearbyFestivals": [
+    {
+     "id": 56,
+     "contentId": "3473295",
+     "name": "DDP 건축투어",
+     "startDate": "2026-01-01",
+     "endDate": "2026-12-31",
+     "distanceKm": 1,
+     "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/09/4046009_image2_1.png"
+    },
+    {
+     "id": 27,
+     "contentId": "4127713",
+     "name": "《소장품, 시대의 장면들》",
+     "startDate": "2026-10-16",
+     "endDate": "2026-12-06",
+     "distanceKm": 1.2,
+     "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/18/4127718_image2_1.jpg"
+    },
+    {
+     "id": 20,
+     "contentId": "4115275",
+     "name": "쿼드, 연극의 질문들：〈화염〉",
+     "startDate": "2026-11-14",
+     "endDate": "2026-12-06",
+     "distanceKm": 1.5,
+     "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/01/4115301_image2_1.png"
+    }
+   ],
+   "ongoingExhibitions": [],
+   "feltCongestion": {
+    "moreCrowded": 0,
+    "asForecast": 0,
+    "lessCrowded": 0
+   },
+   "usual": {
+    "baseline": 76.4423,
+    "days": 30,
+    "delta": 1.8
+   }
+  },
+  "error": null
+ }
+}

@@ -1,0 +1,197 @@
+{
+ "status": 200,
+ "fetched_at": "2026-11-23T07:55:28.192311Z",
+ "body": {
+  "success": true,
+  "data": [
+   {
+    "attractionId": 10006034,
+    "name": "노들섬",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/07/4078207_image2_1.jpg",
+    "latitude": 37.5176638138,
+    "longitude": 126.9580364655,
+    "grade": "NORMAL",
+    "concentration": 38.04,
+    "distanceKm": 2.362,
+    "relationScore": 0.88,
+    "score": 0.7683466666666667,
+    "summary": "노들섬은 한강대교 중간에 위치한 타원형 모양의 땅으로 ‘백로가 놀던 돌’이라는 뜻의 ‘노돌’에서 이름이 유래한 것으로 알려져 있다.",
+    "recommendReasons": [
+     {
+      "kind": "REST_DAY",
+      "text": "이 날은 쉬는 날이에요 (매주 월요일 / 1월 1일 / 설·추석).",
+      "evidence": {
+       "restDate": "매주 월요일 / 1월 1일 / 설·추석"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "32",
+       "origin": "여의도한강공원"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "여의도한강공원에서 차로 약 6분 예상돼요.",
+      "evidence": {
+       "minutes": "6"
+      }
+     }
+    ],
+    "recommendReason": "이 날은 쉬는 날이에요 (매주 월요일 / 1월 1일 / 설·추석).",
+    "travelMinutes": 6,
+    "rating": null
+   },
+   {
+    "attractionId": 10009579,
+    "name": "양화한강공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource_photo/46/3551346_image2_1.jpg",
+    "latitude": 37.5382819489,
+    "longitude": 126.902365881,
+    "grade": "NORMAL",
+    "concentration": 44.59,
+    "distanceKm": 3.057,
+    "relationScore": 0.82,
+    "score": 0.7088800000000001,
+    "summary": "양화한강공원은 여의도 샛강 하구에서 강서구 가양대교까지로 한강남단에 위치하고 있다.",
+    "recommendReasons": [
+     {
+      "kind": "TRAVEL",
+      "text": "여의도한강공원에서 차로 약 6분 예상돼요.",
+      "evidence": {
+       "minutes": "6"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "20",
+       "origin": "여의도한강공원"
+      }
+     },
+     {
+      "kind": "RELATION_RANK",
+      "text": "여의도한강공원에 간 사람들이 함께 많이 찾는 곳 10위예요.",
+      "evidence": {
+       "rank": "10",
+       "origin": "여의도한강공원"
+      }
+     }
+    ],
+    "recommendReason": "여의도한강공원에서 차로 약 6분 예상돼요.",
+    "travelMinutes": 6,
+    "rating": null
+   },
+   {
+    "attractionId": 10005998,
+    "name": "국립중앙박물관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/12/3495012_image2_1.jpg",
+    "latitude": 37.5211167887,
+    "longitude": 126.9791124287,
+    "grade": "NORMAL",
+    "concentration": 41.41,
+    "distanceKm": 4.056,
+    "relationScore": 0.72,
+    "score": 0.6682800000000001,
+    "summary": "국립중앙박물관은 용산으로 이전하여 2005년 개관한 이래 사람들에게 많은 관심과 사랑을 받은 곳이다.",
+    "recommendReasons": [
+     {
+      "kind": "REST_DAY",
+      "text": "이 날은 쉬는 날이에요 ([휴관일]1월 1일 / 설·추석 당일[정기휴실일]매년 3월, 6월, 9월, 12월 첫 번째 월요일).",
+      "evidence": {
+       "restDate": "[휴관일]1월 1일 / 설·추석 당일[정기휴실일]매년 3월, 6월, 9월, 12월 첫 번째 월요일"
+      }
+     },
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "25",
+       "origin": "여의도한강공원"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "여의도한강공원에서 차로 약 13분 예상돼요.",
+      "evidence": {
+       "minutes": "13"
+      }
+     }
+    ],
+    "recommendReason": "이 날은 쉬는 날이에요 ([휴관일]1월 1일 / 설·추석 당일[정기휴실일]매년 3월, 6월, 9월, 12월 첫 번째 월요일).",
+    "travelMinutes": 13,
+    "rating": null
+   },
+   {
+    "attractionId": 10009533,
+    "name": "선유도공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/83/3512483_image2_1.jpg",
+    "latitude": 37.5422375454,
+    "longitude": 126.9024275677,
+    "grade": "RELAXED",
+    "concentration": 31.18,
+    "distanceKm": 3.267,
+    "relationScore": 0.34,
+    "score": 0.56772,
+    "summary": "한강 중심부에 자리한 작은 봉우리섬 선유도는 예로부터 빼어난 풍광을 지닌 곳으로 예술가와 묵객시인들의 사랑을 받은 곳이었다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "44",
+       "origin": "여의도한강공원"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "여의도한강공원에서 차로 약 7분 예상돼요.",
+      "evidence": {
+       "minutes": "7"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 7,
+    "rating": null
+   },
+   {
+    "attractionId": 10006848,
+    "name": "뚝섬한강공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/61/3534561_image2_1.jpg",
+    "latitude": 37.5293645661,
+    "longitude": 127.073978184,
+    "grade": "NORMAL",
+    "concentration": 43.69,
+    "distanceKm": 12.384,
+    "relationScore": 0.26,
+    "score": 0.36412000000000005,
+    "summary": "뚝섬한강공원은 한강공원으로 새 단장하기 이전부터 강변유원지로 유명했던 곳이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "21",
+       "origin": "여의도한강공원"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "여의도한강공원에서 차로 약 17분 예상돼요.",
+      "evidence": {
+       "minutes": "17"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 17,
+    "rating": null
+   }
+  ],
+  "error": null
+ }
+}

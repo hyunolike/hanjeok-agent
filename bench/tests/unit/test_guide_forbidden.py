@@ -114,6 +114,7 @@ def test_evidence_is_read_from_what_a_real_question_fetched():
         action("alternatives", place_id=101, date="2026-10-17"),
         action("congestion", place_id=150, date="2026-10-17"),
         answer("대안은 달맞이 숲길, 물빛 서원입니다.", "hanjeok:alternatives/101@2026-10-17"),
+        answer("대안은 물빛 서원, 달맞이 숲길입니다.", "hanjeok:alternatives/101@2026-10-17"),
     )
     agent = Agent(model, PLACES, FakePolicy(), replay_live(), clock=lambda: 0.0)
     result = agent.ask("이번 토요일 가람궁 대신 갈 곳과 새벽 등대는?", lambda *_: None, today=TODAY)
@@ -123,7 +124,9 @@ def test_evidence_is_read_from_what_a_real_question_fetched():
     assert found.ordered_lists == (ORDER,)
     assert found.no_data_names == ("새벽 등대",)
     assert {101, 118, 124, 131, 150} <= found.fetched_place_ids
-    assert check(result.answer, found) == ["ALTERED_ORDER"]
+    assert check("대안은 달맞이 숲길, 물빛 서원입니다.", found) == ["ALTERED_ORDER"]
+    assert check(result.answer, found) == []
+    assert len(result.rejections) == 1
 
 
 SET = "questions/hanjeok-synthetic-v1.yaml"

@@ -1,0 +1,141 @@
+{
+  "checked_at": "2026-11-23T10:17:09.456249+00:00",
+  "scope": "real production export/wiki and real NVIDIA/Hanjeok; local external Neo4j, not Aura/Render",
+  "questions": [
+    {
+      "http_status": 200,
+      "events": [
+        "visit",
+        "step",
+        "step",
+        "step",
+        "step",
+        "answer",
+        "path",
+        "done"
+      ],
+      "terminal": [
+        "done",
+        {
+          "outcome": "answered",
+          "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "elapsed_ms": 11305,
+          "generated_at": "2026-11-23T10:17:58.001431Z"
+        }
+      ],
+      "citations": [
+        [
+          {
+            "id": "hanjeok:congestion/10000028@2026-11-25",
+            "kind": "record",
+            "label": "경복궁 혼잡 예보 (11월 25일)"
+          }
+        ]
+      ],
+      "answered": true
+    },
+    {
+      "http_status": 200,
+      "events": [
+        "visit",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "answer",
+        "path",
+        "done"
+      ],
+      "terminal": [
+        "done",
+        {
+          "outcome": "answered",
+          "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "elapsed_ms": 16731,
+          "generated_at": "2026-11-23T10:18:14.972602Z"
+        }
+      ],
+      "citations": [
+        [
+          {
+            "id": "wiki:concepts/congestion-diagnosis.md",
+            "kind": "policy",
+            "label": "Congestion Diagnosis"
+          }
+        ]
+      ],
+      "answered": true
+    },
+    {
+      "http_status": 200,
+      "events": [
+        "visit",
+        "step",
+        "step",
+        "step",
+        "step",
+        "answer",
+        "path",
+        "done"
+      ],
+      "terminal": [
+        "done",
+        {
+          "outcome": "answered",
+          "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "elapsed_ms": 6052,
+          "generated_at": "2026-11-23T10:18:21.272811Z"
+        }
+      ],
+      "citations": [
+        [
+          {
+            "id": "hanjeok:alternatives/10009594@2026-11-30",
+            "kind": "record",
+            "label": "여의도한강공원 대안 (11월 30일)"
+          },
+          {
+            "id": "hanjeok:place/10009533",
+            "kind": "record",
+            "label": "선유도공원"
+          }
+        ]
+      ],
+      "answered": true
+    }
+  ],
+  "passed": true,
+  "export_sha256": "9d82fb933020cf680d445d51f64b6e5c8ce79e1f5671f746f371dccb0d349849",
+  "place_counts": {
+    "places": 12106,
+    "related": 43087,
+    "events": 209,
+    "regions": 229
+  },
+  "wiki_chunks": 83,
+  "wiki_artifact_sha256": "b09fecfd5a3d80953d01aed052319ad61544f6086ecdeb0386674e45e3a66b56",
+  "ready_http_status": 200,
+  "sampled_peak_bytes": 285437952,
+  "samples": 2911,
+  "sample_interval_ms": 20,
+  "memory_limit_bytes": 536870912,
+  "swap_limit_bytes": 0,
+  "memory_events": {
+    "low": 0,
+    "high": 0,
+    "max": 0,
+    "oom": 0,
+    "oom_kill": 0
+  },
+  "oom_killed": false,
+  "image": "sha256:cbdf6abcd418567f5c04064380cbb8a27a66c13f3767f0fae8df36c2c9434eec",
+  "architecture": "amd64",
+  "limitations": [
+    "amd64 emulation on ARM host",
+    "three actual questions only; not concurrency or long-duration load",
+    "20ms sampled cgroup peak includes separate sampler process",
+    "Neo4j is external local community 5.26, not Aura"
+  ],
+  "runtime_constraints_passed": true
+}

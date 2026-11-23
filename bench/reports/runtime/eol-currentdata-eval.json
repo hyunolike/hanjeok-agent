@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "report_id": "guide-20261123-070050",
+  "question_count": 60,
+  "strategies": {
+    "vector": {
+      "outcomes": {
+        "failed": 48,
+        "declined": 12
+      },
+      "id_recall": 0.0,
+      "faithfulness": null,
+      "forbidden": {}
+    },
+    "graph": {
+      "outcomes": {
+        "failed": 48,
+        "declined": 12
+      },
+      "id_recall": 0.0,
+      "faithfulness": null,
+      "forbidden": {}
+    }
+  }
+}

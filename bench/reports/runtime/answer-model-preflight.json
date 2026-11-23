@@ -20,6 +20,12 @@
   "fixed_same_prompt_citation": "hanjeok:congestion/10000028@2026-11-25",
   "citation_gate_unchanged": true,
   "independent_review": "docs/superpowers/reviews/2026-11-23-guide-answer-compat-review.md",
-  "final_quality_run": "guide-20261123-072954",
-  "final_quality_pending": true
+  "final_quality_run": "guide-20261123-075018",
+  "final_quality_pending": false,
+  "pre_order_guard_quality_run": "guide-20261123-072954",
+  "pre_order_guard_flags": {
+    "ALTERED_ORDER": 5,
+    "GRADE_MISLABEL": 1
+  },
+  "final_quality_audit": "bench/reports/runtime/currentdata-evaluation-audit.json"
 }

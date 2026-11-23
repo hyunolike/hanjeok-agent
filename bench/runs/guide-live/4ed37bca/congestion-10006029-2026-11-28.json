@@ -1,0 +1,265 @@
+{
+ "status": 200,
+ "fetched_at": "2026-11-23T07:51:10.844569Z",
+ "body": {
+  "success": true,
+  "data": {
+   "hasCongestionData": true,
+   "attraction": {
+    "id": 10006029,
+    "name": "남산서울타워",
+    "imageUrl": null
+   },
+   "diagnosis": {
+    "date": "2026-11-28",
+    "concentration": 99.57,
+    "percentile": 97,
+    "grade": "VERY_CROWDED",
+    "message": "남산서울타워는 이날 매우 붐빌 것으로 보여요. 다른 날이나 다른 장소를 권해요."
+   },
+   "dailyForecasts": [
+    {
+     "date": "2026-11-22",
+     "concentration": 99.17,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-23",
+     "concentration": 47.38,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-24",
+     "concentration": 45.26,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-11-25",
+     "concentration": 61.32,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-26",
+     "concentration": 66.09,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-27",
+     "concentration": 62.69,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-28",
+     "concentration": 99.57,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-29",
+     "concentration": 99.02,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-30",
+     "concentration": 68.24,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-01",
+     "concentration": 45.17,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-02",
+     "concentration": 50.7,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-03",
+     "concentration": 51.29,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-04",
+     "concentration": 56.2,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-05",
+     "concentration": 99.09,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-06",
+     "concentration": 89.37,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-07",
+     "concentration": 57.45,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-08",
+     "concentration": 57.32,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-09",
+     "concentration": 55.74,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-10",
+     "concentration": 57.65,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-11",
+     "concentration": 59.65,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-12",
+     "concentration": 99.39,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-13",
+     "concentration": 92.09,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-14",
+     "concentration": 58,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-15",
+     "concentration": 59.22,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-16",
+     "concentration": 58.8,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-17",
+     "concentration": 57.81,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-18",
+     "concentration": 56.77,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-19",
+     "concentration": 99.56,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-20",
+     "concentration": 95.55,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-21",
+     "concentration": 60.39,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    }
+   ],
+   "betterDates": [
+    {
+     "date": "2026-12-01",
+     "concentration": 45.17,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-02",
+     "concentration": 50.7,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-03",
+     "concentration": 51.29,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    }
+   ],
+   "nearbyFestivals": [
+    {
+     "id": 52,
+     "contentId": "3107059",
+     "name": "2026 숭례문 파수의식",
+     "startDate": "2026-01-01",
+     "endDate": "2026-12-31",
+     "distanceKm": 1.5,
+     "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/99/4001599_image2_1.jpg"
+    },
+    {
+     "id": 30,
+     "contentId": "2598331",
+     "name": "문화가 흐르는 서울광장",
+     "startDate": "2026-05-06",
+     "endDate": "2026-12-31",
+     "distanceKm": 1.8,
+     "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/68/4059668_image2_1.jpg"
+    },
+    {
+     "id": 31,
+     "contentId": "292961",
+     "name": "서울 왕궁수문장 교대의식",
+     "startDate": "2026-01-01",
+     "endDate": "2026-12-31",
+     "distanceKm": 1.8,
+     "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/79/4039379_image2_1.jpg"
+    }
+   ],
+   "ongoingExhibitions": [],
+   "feltCongestion": {
+    "moreCrowded": 0,
+    "asForecast": 0,
+    "lessCrowded": 0
+   },
+   "usual": {
+    "baseline": 68.865,
+    "days": 30,
+    "delta": 30.7
+   }
+  },
+  "error": null
+ }
+}

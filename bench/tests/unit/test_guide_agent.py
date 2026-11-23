@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import date
 
+import pytest
 from tests.guide_fakes import (
     TODAY,
     ExportPlaces,
@@ -116,6 +117,28 @@ def test_policy_without_fetched_evidence_can_only_return_empty_citations():
                                  "wiki:concepts/congestion-diagnosis.md"))
     run(model, question="혼잡 등급은 어떻게 정해?")
     assert model.calls[0]["schema"]["properties"]["citations"]["maxItems"] == 0
+
+
+@pytest.mark.parametrize('bad', [
+    answer('물빛 서원, 솔내 한옥마을, 달맞이 숲길 순으로 대안입니다.', ALTERNATIVES),
+    answer('가람궁은 VERY_CROWDED 예보입니다.', CONGESTION),
+])
+def test_rank_and_grade_violations_are_repaired_before_answer_event(bad):
+    result, events = run(ScriptedModel(*LOOK_BOTH, bad, GOOD))
+    assert result.answer == GOOD['answer']
+    assert len(result.rejections) == 1
+    assert [data['text'] for name, data in events if name == 'answer'] == [GOOD['answer']]
+
+
+@pytest.mark.parametrize('bad', [
+    answer('물빛 서원, 솔내 한옥마을, 달맞이 숲길 순으로 대안입니다.', ALTERNATIVES),
+    answer('가람궁은 VERY_CROWDED 예보입니다.', CONGESTION),
+])
+def test_repeated_rank_and_grade_violations_never_emit_answer(bad):
+    result, events = run(ScriptedModel(*LOOK_BOTH, bad, bad))
+    assert (result.outcome, result.cause) == ('failed', 'invalid_citations')
+    assert len(result.rejections) == 2
+    assert 'answer' not in names(events)
 
 
 def test_scope_and_resolve_are_emitted_before_the_model_is_asked_anything():
@@ -400,13 +423,13 @@ def test_the_prompt_never_shows_the_model_a_raw_grade_token():
 
 def test_internal_place_ids_are_removed_from_the_answer_text():
     reply = answer(
-        "달맞이 숲길(place_id 131)으로 가세요. 솔내 한옥마을, place_id 118 도 있습니다.",
+        "솔내 한옥마을(place_id 118)을 안내합니다. 달맞이 숲길, place_id 131 도 있습니다.",
         ALTERNATIVES,
     )
 
     _, events = run(ScriptedModel(action("alternatives", place_id=101, date="2026-10-17"), reply))
 
-    assert dict(events)["answer"]["text"] == "달맞이 숲길으로 가세요. 솔내 한옥마을 도 있습니다."
+    assert dict(events)["answer"]["text"] == "솔내 한옥마을을 안내합니다. 달맞이 숲길 도 있습니다."
 
 
 def test_the_kind_of_model_failure_and_gate_refusals_are_kept_for_the_record():

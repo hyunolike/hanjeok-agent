@@ -1,0 +1,76 @@
+{
+ "status": 200,
+ "fetched_at": "2026-11-23T07:53:08.048348Z",
+ "body": {
+  "success": true,
+  "data": [
+   {
+    "attractionId": 10000677,
+    "name": "춘원당한의약박물관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/25/4153325_image2_1.jpg",
+    "latitude": 37.5714382045,
+    "longitude": 126.9902090524,
+    "grade": "NORMAL",
+    "concentration": 42.39,
+    "distanceKm": 1.139,
+    "relationScore": 0,
+    "score": 0.41525333333333336,
+    "summary": "2008년에 개관한 춘원당 한방 박물관은 한의학의 살아있는 역사와 전통을 느낄 수 있는 한방 복합문화공간으로 한의학에 관련된 다양한 유물을 수…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "53",
+       "origin": "명동"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "명동에서 차로 약 3분 예상돼요.",
+      "evidence": {
+       "minutes": "3"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 3,
+    "rating": null
+   },
+   {
+    "attractionId": 10000377,
+    "name": "세종문화회관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/87/3082687_image2_1.png",
+    "latitude": 37.5720098878,
+    "longitude": 126.9763070647,
+    "grade": "NORMAL",
+    "concentration": 52.02,
+    "distanceKm": 1.337,
+    "relationScore": 0,
+    "score": 0.3740933333333334,
+    "summary": "세종문화회관은 서울특별시가 설립한 기관으로 서울의 대표적인 문화 예술 기관이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "42",
+       "origin": "명동"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "명동에서 차로 약 3분 예상돼요.",
+      "evidence": {
+       "minutes": "3"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 3,
+    "rating": null
+   }
+  ],
+  "error": null
+ }
+}

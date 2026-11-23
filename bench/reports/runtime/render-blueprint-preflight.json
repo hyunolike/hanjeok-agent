@@ -1,0 +1,12 @@
+{
+  "checked_at": "2026-11-23T07:45:37.205424+00:00",
+  "blueprint": "deployment/guide-free/render.yaml",
+  "valid": true,
+  "plan": "free",
+  "services": [
+    "hanjeok-guide"
+  ],
+  "total_actions": 1,
+  "service_created": false,
+  "credential_file_available": false
+}

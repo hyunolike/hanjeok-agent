@@ -1,0 +1,43 @@
+{
+ "status": 200,
+ "fetched_at": "2026-11-23T07:52:47.088503Z",
+ "body": {
+  "success": true,
+  "data": [
+   {
+    "attractionId": 10000222,
+    "name": "무궁화동산",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/24/3399924_image2_1.JPG",
+    "latitude": 37.5842529817,
+    "longitude": 126.9721410051,
+    "grade": "NORMAL",
+    "concentration": 35.65,
+    "distanceKm": 0.999,
+    "relationScore": 0,
+    "score": 0.44408000000000003,
+    "summary": "무궁화동산은 옛 중앙정보부의 궁정동 안전가옥 터에 마련된 시민 휴식공원이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "57",
+       "origin": "경복궁"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "경복궁에서 차로 약 2분 예상돼요.",
+      "evidence": {
+       "minutes": "2"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 2,
+    "rating": null
+   }
+  ],
+  "error": null
+ }
+}
