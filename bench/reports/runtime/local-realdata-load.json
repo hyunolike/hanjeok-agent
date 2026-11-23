@@ -1,0 +1,79 @@
+{
+  "scope": "isolated local Neo4j, not Aura or deployment",
+  "places": {
+    "corpus": "hanjeok",
+    "generation": "4ed37bca-d2d1-4fd9-bfc8-27c03fca23a4",
+    "counts": {
+      "places": 12106,
+      "related": 43087,
+      "events": 209,
+      "regions": 229
+    },
+    "exported_at": "2026-11-23T02:04:18.244Z",
+    "export_sha256": "9d82fb933020cf680d445d51f64b6e5c8ce79e1f5671f746f371dccb0d349849",
+    "embedded": 0,
+    "reused": 12106
+  },
+  "wiki": {
+    "name": "wiki",
+    "revision": "7fc19c0",
+    "docs": 18,
+    "chunks": 83,
+    "tags": 19,
+    "sources": 10,
+    "links": 69,
+    "cites": 41,
+    "dropped": []
+  },
+  "node_counts": [
+    {
+      "labels": [
+        "Place"
+      ],
+      "count": 12106
+    },
+    {
+      "labels": [
+        "Region"
+      ],
+      "count": 229
+    },
+    {
+      "labels": [
+        "Event"
+      ],
+      "count": 209
+    },
+    {
+      "labels": [
+        "Corpus"
+      ],
+      "count": 2
+    },
+    {
+      "labels": [
+        "Doc"
+      ],
+      "count": 18
+    },
+    {
+      "labels": [
+        "Tag"
+      ],
+      "count": 19
+    },
+    {
+      "labels": [
+        "Source"
+      ],
+      "count": 10
+    },
+    {
+      "labels": [
+        "Chunk"
+      ],
+      "count": 83
+    }
+  ],
+  "wiki_artifact_sha256": "b09fecfd5a3d80953d01aed052319ad61544f6086ecdeb0386674e45e3a66b56"
+}

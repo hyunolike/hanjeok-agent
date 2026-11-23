@@ -58,11 +58,67 @@ uv run guide refresh --export .cache/exports/hanjeok-export-20261123 \
 [새 평가 세트 점검](../../bench/reports/runtime/production-question-preflight.json)에
 외부 적재/배포/평가의 실행 여부를 구분해 기록했다.
 
-현재 외부 사전 검증에서 장소 12,106곳의 벡터는 모두 준비됐으나 위키는 7/83개
-청크까지만 저장됐다. NVIDIA가 `concepts/congestion-diagnosis.md#2`를 콘텐츠 검사로
+초기 외부 사전 검증에서 장소 12,106곳의 벡터는 모두 준비됐으나 위키는 7/83개
+청크까지만 hosted API에 저장됐다. NVIDIA가 `concepts/congestion-diagnosis.md#2`를 콘텐츠 검사로
 거절했다(422). 단일 청크와 명시적 `modality=text` 요청도 동일했다. 원문을 누락하거나
 검사를 끄는 처리는 하지 않았다. [임베딩 사전 검증](../../bench/reports/runtime/production-embedding-preflight.json)에
 입력 범위와 미실행 항목을 기록했으며, 이 상태를 운영 배포 완료로 간주하면 안 된다.
+
+### 위키의 동일 체크포인트 산출물 준비
+
+원문을 유지한 83개 후보는 동일 공식 BF16 체크포인트를 CPU float32로 실행해 만들었다.
+API의 온라인 질의는 hosted 모델을 계속 사용한다. 아래 도구는 별도 운영자 환경에서만
+실행하며 API 이미지에 torch나 체크포인트를 추가하지 않는다. 임의 모델의 같은 차원
+벡터를 허용하는 절차가 아니다.
+
+고정 revision은 `e24ca1e346bcc53572bd7bdc02b3e8ebf66c197c`다. 공식 모델 metadata는
+`https://huggingface.co/api/models/nvidia/Nemotron-3.5-Embed-1B-BF16/revision/`
+뒤에 해당 revision과 `?blobs=true`를 붙인 HTTPS URL에서 받는다. `hf download`도
+동일 revision으로 고정한다. model 디렉터리에는 공식 JSON, Jinja, safetensors와
+README만 두며 다운로드 캐시 외의 추가 파일은 거절된다.
+
+```bash
+cd bench
+# API용 환경과 분리한 Python 3.13 환경에 설치한다.
+uv pip install --python /path/to/operator/bin/python -r runtime/requirements.txt \
+  -r deploy/offline-wiki-requirements.txt
+PYTHONPATH=src:. /path/to/operator/bin/python deploy/prepare_wiki_offline.py build \
+  --model /path/to/pinned-model --metadata /path/to/official-model-metadata.json \
+  --wiki /path/to/pinned-wiki --export .cache/exports/hanjeok-export-20261123 \
+  --hosted-wiki .cache/wiki-nvidia-embeddings.sqlite \
+  --hosted-places .cache/guide-nvidia-embeddings.sqlite \
+  --candidate .cache/wiki-nvidia-reviewed-candidate.sqlite \
+  --anchors .cache/wiki-nvidia-reviewed-anchors.sqlite \
+  --manifest reports/runtime/offline-wiki-artifact-manifest.json
+```
+
+출력 파일은 새 경로여야 한다. 모델 파일 해시, 깨끗한 위키 full commit, 83개 원문과
+토큰 수를 확인하고 25개 hosted 참조와 비교한다. cosine 0.999 이상, 최대 성분 오차
+0.005 이하를 모두 통과해야 한다. 모든 벡터와 생성기 해시를 manifest에 기록하며
+이 단계의 `accepted_for_load`는 false다. 실제 producer identity를 별도로 보존한다.
+
+독립 검토 기록을 읽고 필요한 수정이 끝난 다음 같은 인자에 `prepare` 동작과 아래
+인자를 추가한다. `--export`는 prepare에서 생략할 수 있다.
+
+```text
+--target .cache/wiki-nvidia-prepared.sqlite
+--review ../docs/superpowers/reviews/2026-11-23-guide-512mb-review.md
+--report reports/runtime/offline-wiki-promotion.json
+```
+
+기존 hosted 위키 캐시는 보존하고 별도 파일에 7개 hosted 벡터와 76개 로컬 벡터를
+준비한다. 적재 직전 `deploy.wiki_artifact.verified_cache`로 manifest, 허용 기록과
+최종 캐시 해시를 다시 확인해야 한다. 검증된 캐시만 기존 wiki rebuild의 embedder에
+주입한다. 원문/벡터 누락, 식별자 완화와 자동 제공자 폴백은 허용하지 않는다.
+이 일회성 대응은 검색 품질을 보장하지 않는다. 정책 질의 사전 검사에서는 hosted
+임베딩 10/10 성공, 기대 페이지 상위 3개 포함은 8/10이었다. 실제 DB를 적재한 후
+60문항 평가와 공개 SSE 확인이 여전히 필요하다.
+
+2026-11-23 최종 산출물의 독립 검토와 `prepare` 실행이 끝났다.
+[원문/벡터 manifest](../../bench/reports/runtime/offline-wiki-artifact-manifest.json)와
+[적재 허용 기록](../../bench/reports/runtime/offline-wiki-promotion.json)에 정확한 해시,
+hosted 7개 보존과 offline 76개 추가를 기록했다. 원래 hosted 참조 캐시는 그대로
+보존했다. 이 기록만으로 Aura 적재나 공개 배포가 완료됐다는 뜻은 아니다.
 
 적재 캐시의 키에도 같은 식별자가 들어가므로 옛 E5 캐시와 섞이지 않는다.
 `guide eval`은 선택한 임베딩으로 두 검색 전략을 비교하고 보고서/실행 기록에

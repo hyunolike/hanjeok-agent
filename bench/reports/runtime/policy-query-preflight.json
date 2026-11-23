@@ -1,0 +1,161 @@
+{
+  "checked_at": "2026-11-23T06:35:18.338602+00:00",
+  "scope": "hosted query embedding and exact cosine component retrieval only; no Neo4j, LLM or SSE",
+  "dataset": "hanjeok-prod-20261123",
+  "api_model": "nvidia/nemotron-3.5-embed-1b@1024:input-type-v1:truncate-END:l2",
+  "candidate_not_yet_accepted": true,
+  "rows": [
+    {
+      "question_id": "q31",
+      "query_embedding_ok": true,
+      "dimensions": 1024,
+      "retrieved_pages": [
+        "concepts/alternative-scoring.md",
+        "concepts/congestion-diagnosis.md",
+        "concepts/course-generation-policy.md"
+      ],
+      "expected_pages": [
+        "concepts/congestion-diagnosis.md"
+      ],
+      "expected_in_top3": true,
+      "elapsed_s": 0.498
+    },
+    {
+      "question_id": "q32",
+      "query_embedding_ok": true,
+      "dimensions": 1024,
+      "retrieved_pages": [
+        "concepts/course-generation-policy.md",
+        "concepts/alternative-scoring.md",
+        "queries/why-this-place-today.md"
+      ],
+      "expected_pages": [
+        "concepts/congestion-diagnosis.md"
+      ],
+      "expected_in_top3": false,
+      "elapsed_s": 2.877
+    },
+    {
+      "question_id": "q33",
+      "query_embedding_ok": true,
+      "dimensions": 1024,
+      "retrieved_pages": [
+        "concepts/alternative-scoring.md",
+        "queries/why-this-place-today.md",
+        "concepts/course-generation-policy.md"
+      ],
+      "expected_pages": [
+        "concepts/alternative-scoring.md"
+      ],
+      "expected_in_top3": true,
+      "elapsed_s": 2.99
+    },
+    {
+      "question_id": "q34",
+      "query_embedding_ok": true,
+      "dimensions": 1024,
+      "retrieved_pages": [
+        "concepts/alternative-scoring.md",
+        "entities/related-attraction-api.md",
+        "decisions/keep-llm-out-of-ranking.md"
+      ],
+      "expected_pages": [
+        "concepts/alternative-scoring.md"
+      ],
+      "expected_in_top3": true,
+      "elapsed_s": 3.019
+    },
+    {
+      "question_id": "q35",
+      "query_embedding_ok": true,
+      "dimensions": 1024,
+      "retrieved_pages": [
+        "concepts/alternative-scoring.md",
+        "decisions/choose-explanation-model.md",
+        "decisions/keep-llm-out-of-ranking.md"
+      ],
+      "expected_pages": [
+        "decisions/keep-llm-out-of-ranking.md"
+      ],
+      "expected_in_top3": true,
+      "elapsed_s": 3.056
+    },
+    {
+      "question_id": "q36",
+      "query_embedding_ok": true,
+      "dimensions": 1024,
+      "retrieved_pages": [
+        "decisions/choose-explanation-model.md",
+        "concepts/alternative-scoring.md",
+        "decisions/bind-claims-to-source-versions.md"
+      ],
+      "expected_pages": [
+        "decisions/keep-llm-out-of-ranking.md"
+      ],
+      "expected_in_top3": false,
+      "elapsed_s": 2.838
+    },
+    {
+      "question_id": "q37",
+      "query_embedding_ok": true,
+      "dimensions": 1024,
+      "retrieved_pages": [
+        "entities/related-attraction-api.md",
+        "entities/air-quality-station-api.md",
+        "entities/tourapi-korservice2.md"
+      ],
+      "expected_pages": [
+        "entities/related-attraction-api.md"
+      ],
+      "expected_in_top3": true,
+      "elapsed_s": 3.099
+    },
+    {
+      "question_id": "q38",
+      "query_embedding_ok": true,
+      "dimensions": 1024,
+      "retrieved_pages": [
+        "entities/congestion-forecast-api.md",
+        "entities/tourapi-korservice2.md",
+        "entities/regional-visitor-api.md"
+      ],
+      "expected_pages": [
+        "entities/congestion-forecast-api.md"
+      ],
+      "expected_in_top3": true,
+      "elapsed_s": 3.004
+    },
+    {
+      "question_id": "q39",
+      "query_embedding_ok": true,
+      "dimensions": 1024,
+      "retrieved_pages": [
+        "concepts/weather-aware-travel-recommendation.md",
+        "entities/air-quality-station-api.md",
+        "entities/kma-short-term-forecast-api.md"
+      ],
+      "expected_pages": [
+        "concepts/weather-aware-travel-recommendation.md"
+      ],
+      "expected_in_top3": true,
+      "elapsed_s": 2.998
+    },
+    {
+      "question_id": "q40",
+      "query_embedding_ok": true,
+      "dimensions": 1024,
+      "retrieved_pages": [
+        "concepts/raw-derived-data-separation.md",
+        "concepts/project-artifact-linking.md",
+        "decisions/bind-claims-to-source-versions.md"
+      ],
+      "expected_pages": [
+        "concepts/raw-derived-data-separation.md"
+      ],
+      "expected_in_top3": true,
+      "elapsed_s": 2.986
+    }
+  ],
+  "query_success_count": 10,
+  "expected_in_top3_count": 8
+}

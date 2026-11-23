@@ -1,0 +1,13 @@
+{
+  "checked_at": "2026-11-23T04:53:16.869892+00:00",
+  "candidate": "nvidia/nemotron-3.5-embed-8b@1024:input-type-v1:truncate-END:l2",
+  "wiki_revision": "7fc19c0",
+  "docs": 18,
+  "chunks": 83,
+  "selected_for_deployment": false,
+  "original_text_preserved": true,
+  "ok": false,
+  "failure_category": "unavailable",
+  "last_http_status": 422,
+  "cached_chunks": 0
+}

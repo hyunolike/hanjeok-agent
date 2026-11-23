@@ -89,3 +89,27 @@ DB에서 모델을 바꾸는 인플레이스 이전을 안내하지 않는다. �
 
 실제 AuraDB의 1GB 저장공간/인덱스 호환성, NVIDIA 계정 한도, 실데이터 60문항 재평가는
 외부 리소스가 준비된 뒤 검증한다. 이 항목의 미실행을 테스트 통과로 기록하지 않는다.
+
+## 위키 적재용 동일 체크포인트 산출물
+
+2026-11-23 실제 API가 관광 예보 범위 설명 청크를 422로 거절했다. 원문을 제외하거나
+수정하지 않고, NVIDIA가 공개한 동일 BF16 체크포인트의 고정 revision으로 위키 벡터를
+컨테이너 밖에서 한 번 준비한다. 온라인 질의는 계속 hosted API를 사용하며 자동 폴백은 없다.
+
+- 체크포인트: `nvidia/Nemotron-3.5-Embed-1B-BF16`, revision
+  `e24ca1e346bcc53572bd7bdc02b3e8ebf66c197c`. 공식 HTTPS metadata와 실제 파일 해시를 대조한다.
+- 공식 passage 템플릿, attention-mask mean pooling, 앞 1024차원과 L2 정규화를 사용한다.
+  CPU float32 실행을 별도 producer identity로 기록한다. 모든 위키 입력이 hosted 한도
+  10,240 토큰 이내인지 확인한다. 길이 초과를 자르거나 무시하지 않고 중단한다.
+- 기존 hosted 위키 7개와 현행 장소 18개를 비교한다. 차원, 유한성, 단위 노름을 먼저
+  검사하고 최소 cosine 0.999, 최대 성분 오차 0.005를 모두 만족해야 한다.
+- 위키 full commit과 원문/토큰 수, 모델 파일, 생성기, 실행 버전, 비교 참조와 후보 벡터
+  해시를 하나의 manifest에 묶는다. 후보 83개 전체와 정확한 키 집합을 다시 검증한다.
+- 독립 검토 기록 뒤 단계별 복사본의 트랜잭션으로 기존 hosted 7개 바이트를 보존하고
+  누락 76개만 추가한다. 최종 집합과 해시 검증 뒤 교체한다. 실제 producer와 호환용
+  canonical identity의 대응을 기록하며, 다른 모델에 일반화한 별칭을 허용하지 않는다.
+- 준비 상태의 정확한 식별자 비교는 유지한다. 이 수치 비교는 실데이터 검색 평가,
+  Neo4j 적재, 실제 SSE 검증의 통과를 대신하지 않는다.
+
+근거: [NVIDIA hosted BF16 명세](https://docs.api.nvidia.com/nim/reference/nvidia-nemotron-3_5-embed-1b),
+[고정 체크포인트 사용법](https://huggingface.co/nvidia/Nemotron-3.5-Embed-1B-BF16/blob/e24ca1e346bcc53572bd7bdc02b3e8ebf66c197c/README.md).
