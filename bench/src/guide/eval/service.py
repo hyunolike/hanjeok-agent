@@ -44,6 +44,7 @@ def evaluate(
     allow_small: bool = False,
     report_id: str | None = None,
     patient: bool = False,
+    embedding_model: str | None = None,
 ) -> dict:
     place_ids = {c.place_id for candidates in places.gazetteer().values() for c in candidates}
     limits = {"minimum": 1, "minimum_per_kind": 0} if allow_small else {}
@@ -65,6 +66,7 @@ def evaluate(
                 "export_sha256": export_sha256,
                 "generation": generation,
                 "report_id": report_id,
+                **({"embedding_model": embedding_model} if embedding_model is not None else {}),
             }
             stream.write(json.dumps(stamped, ensure_ascii=False) + "\n")
             stream.flush()
@@ -132,6 +134,10 @@ def evaluate(
     )
     if set(report["strategies"]) != set(STRATEGIES):
         raise RuntimeError("an evaluation must cover both strategies")
+    if embedding_model is not None:
+        report["embedding_model"] = embedding_model
+    if judge is not None and "embedding" in judge.settings:
+        report["judge_embedding"] = dict(judge.settings["embedding"])
     store.put(report, samples)
     return report
 
@@ -172,5 +178,9 @@ def rescore(
         live_recorded_at=original["live_recorded_at"],
         limitations=kept,
     )
+    if original.get("embedding_model") is not None:
+        report["embedding_model"] = original["embedding_model"]
+    if "embedding" in judge.settings:
+        report["judge_embedding"] = dict(judge.settings["embedding"])
     store.put(report, samples)
     return report

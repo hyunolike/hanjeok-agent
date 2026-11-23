@@ -37,7 +37,10 @@ def driver_from_env() -> Driver:
     uri = os.environ.get("BENCH_NEO4J_URI", "bolt://localhost:7687")
     user = os.environ.get("BENCH_NEO4J_USER", "neo4j")
     password = os.environ.get("BENCH_NEO4J_PASSWORD", "benchbench")
-    return GraphDatabase.driver(uri, auth=(user, password))
+    return GraphDatabase.driver(
+        uri, auth=(user, password), max_connection_pool_size=4,
+        connection_timeout=5, connection_acquisition_timeout=5,
+    )
 
 
 @contextmanager
@@ -101,20 +104,25 @@ def drop_corpus(driver: Driver, corpus: str) -> None:
                     break
 
 
-def record_corpus(driver: Driver, name: str, revision: str, docs: int, chunks: int) -> CorpusRecord:
+def record_corpus(
+    driver: Driver, name: str, revision: str, docs: int, chunks: int,
+    *, embedding_model: str | None = None,
+) -> CorpusRecord:
     loaded_at = datetime.now(UTC).isoformat()
     generation = str(uuid4())
     with session(driver) as s:
         s.run(
             "MERGE (c:Corpus {name: $name}) "
             "SET c.revision = $revision, c.docs = $docs, c.chunks = $chunks, "
-            "    c.loaded_at = $loaded_at, c.generation = $generation",
+            "    c.loaded_at = $loaded_at, c.generation = $generation, "
+            "    c.embedding_model = $embedding_model",
             name=name,
             revision=revision,
             docs=docs,
             chunks=chunks,
             loaded_at=loaded_at,
             generation=generation,
+            embedding_model=embedding_model,
         )
     return CorpusRecord(name, revision, docs, chunks, loaded_at, generation)
 

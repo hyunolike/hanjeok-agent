@@ -108,6 +108,23 @@ def test_both_strategies_answer_every_question_and_the_report_is_stored(tmp_path
     assert json.loads(runs[0])["export_sha256"] == "a" * 64
 
 
+def test_remote_embedding_identity_is_kept_in_report_and_each_run(tmp_path):
+    report, store = do(tmp_path, embedding_model="nvidia/test@1024:preprocessing-v1")
+    assert report["embedding_model"] == "nvidia/test@1024:preprocessing-v1"
+    assert store.get("r1")["embedding_model"] == report["embedding_model"]
+    records = (tmp_path / "runs" / "r1.jsonl").read_text().splitlines()
+    assert all(json.loads(row)["embedding_model"] == report["embedding_model"] for row in records)
+
+
+def test_judge_embedding_is_distinct_from_the_retrieval_embedding(tmp_path):
+    class Judge(FakeJudge):
+        settings = {"name": "judge", "embedding": {"model_id": "judge-embedding@v1"}}
+
+    report, _ = do(tmp_path, judge=Judge(), embedding_model="retrieval-embedding@v2")
+    assert report["judge_embedding"] == {"model_id": "judge-embedding@v1"}
+    assert report["embedding_model"] == "retrieval-embedding@v2"
+
+
 def test_every_score_has_its_denominator_and_unanswerable_questions_are_left_out(tmp_path):
     report, _ = do(tmp_path, judge=FakeJudge())
 

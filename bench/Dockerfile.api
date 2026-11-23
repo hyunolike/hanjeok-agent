@@ -1,0 +1,24 @@
+# HTTP-only image; load the external graph separately before deploying it.
+FROM python:3.13-slim
+WORKDIR /app
+COPY runtime/requirements.txt /app/requirements.txt
+RUN pip install --require-hashes --no-cache-dir -r /app/requirements.txt \
+    && useradd --create-home --uid 10001 guide
+COPY src /app/src
+COPY reports/guide /app/reports/guide
+USER 10001
+ENV PYTHONPATH=/app/src \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    GUIDE_ENV=production \
+    GUIDE_EMBEDDING_PROVIDER=nvidia \
+    GUIDE_CHECKPOINT_DB=/tmp/guide/checkpoints.sqlite \
+    GUIDE_RESET_CHECKPOINTS=1 \
+    GUIDE_MAX_CONCURRENT=1 \
+    GUIDE_MAX_VISITS=128 \
+    OMP_NUM_THREADS=1 \
+    OPENBLAS_NUM_THREADS=1 \
+    MALLOC_ARENA_MAX=2 \
+    PORT=8000
+EXPOSE 8000
+CMD ["sh", "-c", "exec uvicorn guide.api:app --host 0.0.0.0 --port ${PORT} --workers 1 --no-access-log --no-proxy-headers"]

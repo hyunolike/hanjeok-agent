@@ -96,6 +96,13 @@ def test_the_usage_limit_applies_over_mcp_too():
     assert reply["cause"] == "usage_limit" and reply["retry_after_s"] > 0
 
 
+def test_visit_capacity_is_a_structured_usage_limit_over_mcp():
+    runtime = TestRuntime(visits=Visits(max_visits=1))
+    runtime.visits.open(None)
+    reply = call(runtime, "ask_guide", question="가람궁 입장료는 얼마야?")
+    assert reply["cause"] == "usage_limit" and reply["retry_after_s"] > 0
+
+
 def test_places_are_found_by_name_and_a_neighbourhood_is_in_rank_order():
     runtime = TestRuntime()
 

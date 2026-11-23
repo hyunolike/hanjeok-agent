@@ -13,6 +13,7 @@ import sys
 from dataclasses import asdict
 from pathlib import Path
 
+from guide.embeddings import EmbeddingFailure, compatible
 from guide.eval.questions import QuestionSetError
 from guide.export import ExportError, read_export
 from guide.graph.refresh import RefreshError
@@ -74,9 +75,9 @@ def _eval_from_env(args) -> dict:
     """The real evaluation. Spends model quota; never run in CI."""
     import os
 
-    from bench.embeddings import LocalEmbedder
     from bench.graph.query import document_paths
     from bench.graph.store import driver_from_env
+    from guide.embeddings import embedder_from_env
     from guide.eval.service import evaluate
     from guide.eval.store import ReportStore
     from guide.graph import read
@@ -89,7 +90,18 @@ def _eval_from_env(args) -> dict:
         active = read.active(driver)
         if active is None:
             raise RefreshError("not_ready", "no data is loaded; run `guide refresh` first")
-        embedder = LocalEmbedder()
+        embedder = embedder_from_env()
+        from bench.graph.store import session
+
+        with session(driver) as s:
+            wiki = s.run(
+                "MATCH (c:Corpus {name: $name}) RETURN c.embedding_model AS embedding_model",
+                name=WIKI_CORPUS,
+            ).single()
+        if not compatible(
+            embedder, active.embedding_model, wiki["embedding_model"] if wiki else None
+        ):
+            raise EmbeddingFailure("incompatible_corpus")
         if args.record_live:
             stamp = Path("runs") / "guide-live" / active.generation[:8]
             live = LiveClient(
@@ -122,6 +134,7 @@ def _eval_from_env(args) -> dict:
             export_source=active.source,
             wiki_paths=document_paths(driver, WIKI_CORPUS) or None,
             allow_small=args.allow_small,
+            embedding_model=embedder.model_id,
         )
     finally:
         driver.close()
@@ -129,12 +142,12 @@ def _eval_from_env(args) -> dict:
 
 def _rescore_from_env(args) -> dict:
     """Judging only. Spends judge quota; the answers are read from disk."""
-    from bench.embeddings import LocalEmbedder
+    from guide.embeddings import embedder_from_env
     from guide.eval.judge import patient_judge
     from guide.eval.service import rescore
     from guide.eval.store import ReportStore
 
-    judge, transport = patient_judge(LocalEmbedder())
+    judge, transport = patient_judge(embedder_from_env())
     return rescore(
         args.report,
         judge=judge,
@@ -165,12 +178,13 @@ def _embed_from_env(export, cache: Path) -> dict:
     here means the image carries the vectors, and starting the container only
     has to write them into the graph.
     """
-    from bench.embeddings import MODEL, REVISION, LocalEmbedder
+    from guide.embeddings import embedder_from_env
     from guide.graph.refresh import EmbeddingCache, _embed
 
-    store = EmbeddingCache(cache, f"{MODEL}@{REVISION}")
+    embedder = embedder_from_env()
+    store = EmbeddingCache(cache, embedder.model_id)
     try:
-        _, embedded, reused = _embed(export, LocalEmbedder(), store)
+        _, embedded, reused = _embed(export, embedder, store)
     finally:
         store.close()
     return {"embedded": embedded, "reused": reused, "cache": str(cache)}
@@ -198,14 +212,15 @@ def _summary(report: dict) -> dict:
 def _refresh_from_env(export, cache: Path):
     """The real thing: local Neo4j, local embedding model. Imported here so
     `--check` and the tests need neither."""
-    from bench.embeddings import MODEL, REVISION, LocalEmbedder
     from bench.graph.store import driver_from_env
+    from guide.embeddings import embedder_from_env
     from guide.graph.refresh import refresh
 
     driver = driver_from_env()
+    embedder = embedder_from_env()
     try:
         return refresh(
-            driver, export, LocalEmbedder(), model_id=f"{MODEL}@{REVISION}", cache_path=cache
+            driver, export, embedder, model_id=embedder.model_id, cache_path=cache
         )
     finally:
         driver.close()
@@ -273,6 +288,10 @@ def main(
             ),
             file=sys.stderr,
         )
+        return 1
+    except EmbeddingFailure as error:
+        print(json.dumps({"ok": False, "cause": "embedding_failed", "detail": str(error)}),
+              file=sys.stderr)
         return 1
     except (ExportError, RefreshError) as error:
         # The active copy is untouched in both cases; say so, since the next

@@ -6,6 +6,9 @@ Kotlin 서버와 Python guide는 Cloud Run에 남아 있지만 GCP 프로젝트�
 `billingEnabled=false`로 현재 두 서비스 모두 공개 요청에 500을 반환한다.
 프론트 이전은 실시간 질문 API 복구를 포함하지 않는다.
 
+512MiB용 Python API는 [외부 DB와 임베딩을 사용하는 배포 구성](../deployment/guide-free/README.md)을
+참고한다. 기존 운영 API가 이 구성으로 이전됐다는 의미는 아니다.
+
 ## 현재 프론트 배포 — Cloudflare Pages Free
 
 | 항목 | 값 |

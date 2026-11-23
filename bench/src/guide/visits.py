@@ -39,6 +39,11 @@ class Limit:
 @dataclass(slots=True)
 class _Visit:
     last_seen: float
+    active: int = 0
+
+
+class VisitCapacity(Exception):
+    """The bounded visit store has no free slot yet."""
 
 
 class Visits:
@@ -49,7 +54,11 @@ class Visits:
         per_day: int = 400,
         clock=time.monotonic,
         on_expire: Callable[[str], None] | None = None,
+        max_visits: int = 128,
     ) -> None:
+        if not 1 <= max_visits <= 10000:
+            raise ValueError("GUIDE_MAX_VISITS must be 1 to 10000")
+        self.max_visits = max_visits
         self.per_visitor, self.per_day, self._clock = per_visitor, per_day, clock
         # Called with a visit's id when it expires, so whatever holds that
         # visit's questions can forget them at the same moment.
@@ -60,7 +69,10 @@ class Visits:
         self._lock = Lock()
 
     def _sweep(self, now: float) -> None:
-        for key in [k for k, visit in self._visits.items() if now - visit.last_seen > VISIT_TTL_S]:
+        for key in [
+            k for k, visit in self._visits.items()
+            if not visit.active and now - visit.last_seen > VISIT_TTL_S
+        ]:
             del self._visits[key]
             if self.on_expire is not None:
                 self.on_expire(key)
@@ -72,16 +84,41 @@ class Visits:
             self._day.popleft()
 
     def open(self, visit_id: str | None) -> str:
+        return self.open_provisional(visit_id)[0]
+
+    def open_provisional(self, visit_id: str | None) -> tuple[str, bool]:
         """The visit to continue, or a new one. An unknown or expired id is not
         an error: someone coming back after a pause should not see a failure."""
         now = self._clock()
         with self._lock:
             self._sweep(now)
-            if visit_id is None or visit_id not in self._visits:
+            created = visit_id is None or visit_id not in self._visits
+            if created:
+                if len(self._visits) >= self.max_visits:
+                    raise VisitCapacity
                 visit_id = secrets.token_urlsafe(_ID_BYTES)
                 self._visits[visit_id] = _Visit(now)
             self._visits[visit_id].last_seen = now
-            return visit_id
+            return visit_id, created
+
+    def discard(self, visit_id: str) -> None:
+        """Roll back a new visit whose id was never delivered to its caller."""
+        with self._lock:
+            visit = self._visits.get(visit_id)
+            if visit is not None and not visit.active:
+                del self._visits[visit_id]
+                if self.on_expire is not None:
+                    self.on_expire(visit_id)
+
+    def pin(self, visit_id: str) -> None:
+        with self._lock:
+            self._visits[visit_id].active += 1
+
+    def unpin(self, visit_id: str) -> None:
+        with self._lock:
+            visit = self._visits[visit_id]
+            visit.active -= 1
+            visit.last_seen = self._clock()
 
     def admit(self, visit_id: str, address: str) -> Limit | None:
         """Count one question, or say when the next one may be asked.

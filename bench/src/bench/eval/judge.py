@@ -5,9 +5,12 @@ import os
 from importlib.metadata import version
 from threading import RLock
 
-from bench.embeddings import MODEL, REVISION
 from bench.provider import BASE_URL, EXTRA_BODY, RequestPacer, api_key, diagnostic, request_pacer
 from bench.provider import MODEL as CHAT_MODEL
+
+
+def embedding_settings(embedder) -> dict:
+    return dict(getattr(embedder, "settings", {"model_id": getattr(embedder, "model_id", None)}))
 
 
 class RagasJudge:
@@ -43,7 +46,7 @@ class RagasJudge:
             "structured_attempts": 1,
             "request_timeout_seconds": 90,
             "minimum_request_interval_seconds": pacer.interval,
-            "embedding": {"name": MODEL, "revision": REVISION, "prefix": "query: "},
+            "embedding": embedding_settings(embedder),
         }
         self.usage = {
             "model_calls": 0,
