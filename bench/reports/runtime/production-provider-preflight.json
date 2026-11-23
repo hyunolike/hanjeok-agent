@@ -1,0 +1,35 @@
+{
+  "checked_at": "2026-11-23T02:04:18.244Z",
+  "export_counts": {
+    "places.jsonl": 12106,
+    "related.jsonl": 43087,
+    "festivals.jsonl": 60,
+    "exhibitions.jsonl": 149
+  },
+  "source": "hanjeok",
+  "source_database_export": "repeatable read, read only; original public-column allowlist",
+  "old_id_probe": {
+    "place_id": 653,
+    "http_status": 404,
+    "code": "ATTRACTION_NOT_FOUND"
+  },
+  "current_id_probe": {
+    "place_id": 10000028,
+    "http_status": 200,
+    "congestion_shape_valid": true
+  },
+  "nvidia_embedding_probe": {
+    "http_status": 200,
+    "dimensions": 1024,
+    "model": "nvidia/nemotron-3.5-embed-1b"
+  },
+  "aura": {
+    "instance_id": "6632a294",
+    "name": "hanjeok-guide",
+    "tier": "AuraDB Free",
+    "console_status": "running",
+    "loaded": false
+  },
+  "render_deployed": false,
+  "public_frontend_updated": false
+}

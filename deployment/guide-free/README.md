@@ -40,9 +40,23 @@ export GUIDE_EMBEDDING_PROVIDER=nvidia
 # BENCH_NEO4J_URI, BENCH_NEO4J_USER, BENCH_NEO4J_PASSWORD,
 # BENCH_WIKI_ROOT, NVIDIA_API_KEY를 설정한 뒤 새 DB에 실행한다.
 uv run bench corpus load wiki
-uv run guide refresh --export .cache/exports/hanjeok-export-20261014 \
+uv run guide refresh --export .cache/exports/hanjeok-export-20261123 \
   --cache .cache/guide-nvidia-embeddings.sqlite
 ```
+
+2026-11-23 운영 API 점검에서 기존 2026-10-14 export의 장소 ID가 더 이상 유효하지
+않음을 확인했다. 같은 경복궁이 옛 ID `653`에서는 404, 현재 ID `10000028`에서는
+200이었다. 현재 운영 DB에서 기존 공개 컬럼 허용 목록을 읽기 전용 트랜잭션으로
+다시 내보냈으며 장소 12,106개, 연관 링크 43,087개, 행사 209개를 검증했다.
+실제 내보내기 파일과 임베딩 캐시는 Git에 넣지 않는다. 이후 배포에서도 최신 export의
+장소 ID를 실제 혼잡도 API와 확인해야 한다.
+
+`bench/questions/hanjeok-prod-20261123.yaml`은 현재 ID와 연관 링크에 맞춘 별도 60문항
+세트다. 장소와 위키 참조 검증은 통과했지만 모델 평가는 아직 실행하지 않았다.
+기존 `hanjeok-v1.yaml`과 그 결과는 이전 데이터의 기록으로 보존한다.
+[제공자 점검](../../bench/reports/runtime/production-provider-preflight.json)과
+[새 평가 세트 점검](../../bench/reports/runtime/production-question-preflight.json)에
+외부 적재/배포/평가의 실행 여부를 구분해 기록했다.
 
 적재 캐시의 키에도 같은 식별자가 들어가므로 옛 E5 캐시와 섞이지 않는다.
 `guide eval`은 선택한 임베딩으로 두 검색 전략을 비교하고 보고서/실행 기록에

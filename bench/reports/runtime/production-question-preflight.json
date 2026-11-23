@@ -1,0 +1,75 @@
+{
+  "question_set": "hanjeok-prod-20261123",
+  "question_revision": "f9ccb49973ff",
+  "questions": 60,
+  "kinds": {
+    "place_lookup": 10,
+    "alternatives": 10,
+    "date_comparison": 10,
+    "policy": 10,
+    "multi_place": 10,
+    "unsupported": 10
+  },
+  "old_export_sha256": "e7a1694fcf3a4c10d2cd1bbf5fe3f76e6b33b2baa7c8b7ec07f28d11ea06463d",
+  "current_export_sha256": "9d82fb933020cf680d445d51f64b6e5c8ce79e1f5671f746f371dccb0d349849",
+  "place_mapping": {
+    "47": 10001408,
+    "653": 10000028,
+    "659": 10000036,
+    "674": 10000052,
+    "905": 10000279,
+    "1180": 10000556,
+    "1943": 10001317,
+    "3370": 10005148,
+    "3386": 10005164,
+    "3443": 10005224,
+    "3505": 10005286,
+    "3548": 10005326,
+    "3722": 10005503,
+    "4163": 10005998,
+    "4194": 10006029,
+    "4199": 10006034,
+    "4797": 10006599,
+    "5027": 10006848,
+    "6710": 10008526,
+    "7779": 10009594,
+    "8359": 10010177,
+    "10117": 10011931,
+    "14131": 10015914,
+    "14534": 10016315,
+    "15179": 10016963,
+    "15330": 10017115,
+    "15667": 10017446,
+    "25458": 10027910,
+    "41457": 10045842,
+    "43502": 10047869
+  },
+  "address_changes_reviewed": [
+    {
+      "old_id": 1180,
+      "new_id": 10000556,
+      "name": "인사동",
+      "basis": "unique current name and region; address changed"
+    },
+    {
+      "old_id": 674,
+      "new_id": 10000052,
+      "name": "광장시장",
+      "basis": "unique current name and region; address changed"
+    },
+    {
+      "old_id": 3370,
+      "new_id": 10005148,
+      "name": "남대문시장",
+      "basis": "unique current name and region; address changed"
+    },
+    {
+      "old_id": 14131,
+      "new_id": 10015914,
+      "name": "국제시장",
+      "basis": "unique current name and region; address changed"
+    }
+  ],
+  "multi_place_rule": "first five links ordered by rank, then related ID; prefer a different region if available",
+  "executed_evaluation": false
+}
