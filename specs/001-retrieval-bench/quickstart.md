@@ -35,7 +35,7 @@ not remain citable.
 Export `NVIDIA_API_KEY` before starting the server, as shown above. If it was
 started without the key, restart it after exporting. `.env` is
 not loaded automatically. `BENCH_ANSWER_MODEL` and `BENCH_JUDGE_MODEL` default
-to `nvidia/nemotron-3.5-super-vl-120b-a12b`. Both clients use NVIDIA's hosted endpoint
+to `nvidia/nemotron-3-ultra-550b-a55b`. Both clients use NVIDIA's hosted endpoint
 (`https://integrate.api.nvidia.com/v1`), temperature 0 and reasoning off. No
 OpenAI or other provider fallback is configured. Local embeddings remain the
 same pinned, cached multilingual model that created the graph. External model

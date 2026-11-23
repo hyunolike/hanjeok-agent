@@ -14,7 +14,7 @@ services:
       - key: HANJEOK_BASE_URL
         value: https://api.hanjeok.com
       - key: BENCH_ANSWER_MODEL
-        value: nvidia/nemotron-3.5-super-vl-120b-a12b
+        value: nvidia/nemotron-3-ultra-550b-a55b
       - key: GUIDE_TRUST_PROXY
         value: "1"
       - key: GUIDE_CLIENT_IP_HEADER

@@ -13,7 +13,8 @@ Python HTTP API만 실행하는 배포 구성이다. Neo4j와 임베딩 모델�
   최초 후보인 llama-3.2 엔드포인트는 공식 카탈로그의 deprecated 공지를 확인해 제외했다.
   [현재 모델 API](https://docs.api.nvidia.com/nim/reference/nvidia-nemotron-3_5-embed-1b-infer)
 - 기존 LangGraph 루프, 고정 조회 7개, 서비스 순위, 인용 검사, 수정 1회와 SSE 계약을 유지한다.
-- 답변 기본 모델은 `nvidia/nemotron-3.5-super-vl-120b-a12b`다. 이전 3-Super는
+- 답변 기본 모델은 `nvidia/nemotron-3-ultra-550b-a55b`다. 사용자 요청으로
+  무료 Super에서 Ultra로 전환했다. 이전 3-Super는
   실제 요청에서 HTTP 410을 반환해 교체했다. 같은 NVIDIA 키와 strict JSON 계약을 사용한다.
 - 로컬 모드는 기존처럼 `GUIDE_EMBEDDING_PROVIDER=local`이며 E5 모델을 사용한다.
   기존 `bench/Dockerfile`과 `uv.lock`은 로컬 모델 실행을 계속 지원한다.
@@ -136,7 +137,7 @@ Dockerfile/context와 환경 변수를 사용하고 인스턴스 수를 1로 유
 | --- | --- |
 | `GUIDE_CORS_ALLOWED_ORIGINS` | 필수. `https://agent.hanjeok.com` 등 정확한 오리진 |
 | `NVIDIA_API_KEY` | 필수. 기존 답변 생성과 새 임베딩에 사용 |
-| `BENCH_ANSWER_MODEL` | `nvidia/nemotron-3.5-super-vl-120b-a12b`; 실행 중 모델 폴백 없음 |
+| `BENCH_ANSWER_MODEL` | `nvidia/nemotron-3-ultra-550b-a55b`; 실행 중 모델 폴백 없음 |
 | `BENCH_NEO4J_URI`, `BENCH_NEO4J_USER`, `BENCH_NEO4J_PASSWORD` | 외부 DB 접속값 |
 | `GUIDE_EMBEDDING_PROVIDER` | API 이미지 기본값 `nvidia`; 오타 시 시작 실패 |
 | `GUIDE_LIVE_MODE`, `HANJEOK_BASE_URL` | 운영값 `live`, `https://api.hanjeok.com` |
@@ -205,7 +206,7 @@ Render/Koyeb의 무료 절전과 요청 자원 제한도 적용된다.
 [Render](https://render.com/docs/free), [Koyeb](https://www.koyeb.com/docs/reference/instances),
 [AuraDB](https://neo4j.com/docs/aura/quotas-and-limits/).
 
-2026-11-23 최종 순위/등급 검사 코드의 amd64 이미지(ARM64 호스트 에뮬레이션)는
+2026-11-23 Super를 사용한 순위/등급 검사 코드의 amd64 이미지(ARM64 호스트 에뮬레이션)는
 50회 fixture 반복을 통과했고, 512MiB 제한에서 관측한 최대 메모리는 331.6MiB였다.
 [최종 fixture JSON](../../bench/reports/runtime/512mb-fixture-amd64-final-guard.json)과
 [검토/검증 기록](../../docs/superpowers/reviews/2026-11-23-guide-512mb-review.md)을 참고한다.
@@ -217,7 +218,16 @@ Render/Koyeb의 무료 절전과 요청 자원 제한도 적용된다.
 272.2MiB, OOM은 0이었다. [실데이터 메모리 JSON](../../bench/reports/runtime/512mb-realdata-final-guard-amd64.json).
 DB는 별도의 로컬 Neo4j이며, 세 질문은 장시간 부하 검사를 대신하지 않는다.
 
-현행 60문항을 두 전략으로 실행한 [평가 감사](../../bench/reports/runtime/currentdata-evaluation-audit.json)에는
+Super로 현행 60문항을 두 전략에서 실행한 [평가 감사](../../bench/reports/runtime/currentdata-evaluation-audit.json)에는
 거절/실패와 오탐을 함께 기록했다. 판정 모델 지표는 미실행이고, 정책 두 문항의 범위
 거절 및 제공자 오류가 남아 있다. 이전 E5 점수나 수정 전 실행을 새 모델 점수로 재사용하지 않는다.
 Aura 접속 파일 미확보로 실제 Aura 적재, Render 생성과 프론트 URL 공개는 아직 미실행이다.
+
+후속 요청으로 기본 모델을 Ultra로 바꿨다. 기존 무료 체험 NVIDIA 키를 사용하며
+임베딩 모델과 캐시 식별자는 유지한다. [Ultra 실제 설정 검증](../../bench/reports/runtime/512mb-ultra-amd64.json)은
+예보/정책/대안 세 질문이 모두 인용을 포함해 완료되고, 512MiB/no-swap에서 약
+272.1MiB를 관측했다. 명시적 모델 환경 변수로 검증한 설정이며, 전체 60문항 재평가는
+실행하지 않았다. 위 Super 점수를 Ultra의 품질 점수로 사용하면 안 된다.
+최종 Ultra 기본값 이미지도 모델 환경 변수를 지정하지 않은 실제 정책 SSE를 완료했다.
+[기본값 경로 검증](../../bench/reports/runtime/512mb-ultra-default-amd64.json)의 512MiB/no-swap
+관측 최대는 268.1MiB이며 OOM은 없었다. 이전 단계와 같이 AMD64 에뮬레이션/로컬 외부 DB 검증이다.

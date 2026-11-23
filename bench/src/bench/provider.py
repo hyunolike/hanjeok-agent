@@ -7,7 +7,7 @@ import time
 from threading import Lock
 
 BASE_URL = "https://integrate.api.nvidia.com/v1"
-MODEL = "nvidia/nemotron-3.5-super-vl-120b-a12b"
+MODEL = "nvidia/nemotron-3-ultra-550b-a55b"
 EXTRA_BODY = {"chat_template_kwargs": {"enable_thinking": False}}
 
 

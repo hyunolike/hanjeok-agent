@@ -1,0 +1,112 @@
+{
+  "checked_at": "2026-11-23T10:32:38.786646+00:00",
+  "scope": "real production export/wiki and real NVIDIA/Hanjeok; local external Neo4j, not Aura/Render",
+  "questions": [
+    {
+      "http_status": 200,
+      "events": [
+        "visit",
+        "step",
+        "step",
+        "step",
+        "step",
+        "answer",
+        "path",
+        "done"
+      ],
+      "terminal": [
+        "done",
+        {
+          "outcome": "answered",
+          "model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+          "elapsed_ms": 9020,
+          "generated_at": "2026-11-23T10:33:17.893511Z"
+        }
+      ],
+      "citations": [
+        [
+          {
+            "id": "hanjeok:congestion/10000028@2026-11-25",
+            "kind": "record",
+            "label": "경복궁 혼잡 예보 (11월 25일)"
+          }
+        ]
+      ],
+      "answered": true
+    },
+    {
+      "http_status": 200,
+      "events": [
+        "visit",
+        "step",
+        "step",
+        "step",
+        "stopped"
+      ],
+      "terminal": [
+        "stopped",
+        {
+          "outcome": "failed",
+          "cause": "invalid_citations",
+          "message": "근거를 확인할 수 없는 답이 나와 보여 드리지 않았습니다. 다시 물어봐 주세요."
+        }
+      ],
+      "citations": [],
+      "answered": false
+    },
+    {
+      "http_status": 200,
+      "events": [
+        "visit",
+        "step",
+        "step",
+        "step",
+        "step",
+        "stopped"
+      ],
+      "terminal": [
+        "stopped",
+        {
+          "outcome": "failed",
+          "cause": "invalid_citations",
+          "message": "근거를 확인할 수 없는 답이 나와 보여 드리지 않았습니다. 다시 물어봐 주세요."
+        }
+      ],
+      "citations": [],
+      "answered": false
+    }
+  ],
+  "passed": false,
+  "export_sha256": "9d82fb933020cf680d445d51f64b6e5c8ce79e1f5671f746f371dccb0d349849",
+  "place_counts": {
+    "places": 12106,
+    "related": 43087,
+    "events": 209,
+    "regions": 229
+  },
+  "wiki_chunks": 83,
+  "wiki_artifact_sha256": "b09fecfd5a3d80953d01aed052319ad61544f6086ecdeb0386674e45e3a66b56",
+  "ready_http_status": 200,
+  "sampled_peak_bytes": 286064640,
+  "samples": 2580,
+  "sample_interval_ms": 20,
+  "memory_limit_bytes": 536870912,
+  "swap_limit_bytes": 0,
+  "memory_events": {
+    "low": 0,
+    "high": 0,
+    "max": 0,
+    "oom": 0,
+    "oom_kill": 0
+  },
+  "oom_killed": false,
+  "image": "sha256:862843af010fd0d3dd67487f6548e805af495106081cce2934f8c2881dc538b0",
+  "architecture": "amd64",
+  "limitations": [
+    "amd64 emulation on ARM host",
+    "three actual questions only; not concurrency or long-duration load",
+    "20ms sampled cgroup peak includes separate sampler process",
+    "Neo4j is external local community 5.26, not Aura"
+  ],
+  "runtime_constraints_passed": true
+}

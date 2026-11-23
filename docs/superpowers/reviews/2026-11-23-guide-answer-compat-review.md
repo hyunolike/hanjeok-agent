@@ -70,3 +70,25 @@ INVENTED_PLACE 1건은 `홈페이지나 인스타그램`의 공백을 없애 `�
 모두 answered였고, 관측 최대는 285,437,952bytes(272.2MiB), OOM은 0이었다.
 별도 50질문 fixture 최대는 331.6MiB였다. 실제 DB는 로컬 외부 Community이고
 AMD64 에뮬레이션 환경이다. Aura/Render의 공개 배포 검증은 아직 실행하지 않았다.
+
+## 사용자 요청에 따른 무료 Ultra 전환
+
+후속 요청으로 기본 답변 모델을 `nvidia/nemotron-3-ultra-550b-a55b`로 변경했다.
+현행 API 목록과 strict JSON 200/stop/정상 JSON을 확인했다. Qwen은 종료 응답,
+Gemma와 Mistral은 30초 read timeout, Lightning은 실제 세 질문 중 두 건이 기존
+검사를 통과하지 못해 제외했다. 이 관측을 후보 전체의 영구적인 품질 판단으로 일반화하지 않는다.
+
+새 문맥의 `/root/lightning_switch_review`가 최종 Ultra 선택을 재검토했다. 기본값,
+Render/env, 명시적 answer/judge override가 일관되고 임베딩 식별자, 캐시, 검증
+gate가 그대로임을 확인했다. focused adapter/judge 테스트 11개를 직접 실행해 통과했다.
+작성자의 최종 기본 suite는 495 passed, 43 deselected였고 Ruff와 diff 검사도 통과했다.
+
+실제 환경 변수 Ultra 설정은 예보/정책/대안 세 질문을 모두 인용과 함께 완료했다.
+최종 기본값 이미지에서는 BENCH_ANSWER_MODEL을 지정하지 않고 정책 질문을 추가
+검증해 Ultra 선택과 answered를 확인했다. 두 실행 모두 512MiB/no-swap/OOM0이었다.
+명시 설정 세 질문은 약272.1MiB, 기본값 한 질문은268.1MiB 표본 최대다.
+각 JSON에 정확한 이미지 해시와 환경 한계를 기록했다. 무료 접근은 기존 NVIDIA
+프로토타이핑 API 범위이며 계정/결제 추가나 자동 모델 폴백은 없다.
+
+이 smoke는 Ultra의 전체60문항 품질 평가나 공개 배포를 뜻하지 않는다.
+Super의 기존 점수와 데이터는 해당 모델의 역사적 결과로 보존한다.

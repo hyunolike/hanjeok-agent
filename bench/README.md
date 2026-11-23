@@ -12,7 +12,7 @@ get one repair attempt and then discard the entire answer.
 Follow the [quickstart](../specs/001-retrieval-bench/quickstart.md) to run it.
 The first graph load downloads a pinned local multilingual embedding model.
 Answering and judging use NVIDIA NIM with an exported `NVIDIA_API_KEY`.
-The default model for both is `nvidia/nemotron-3.5-super-vl-120b-a12b`, reasoning off.
+The default model for both is `nvidia/nemotron-3-ultra-550b-a55b`, reasoning off.
 The previous 3-Super endpoint returns HTTP 410; historical reports retain their original model IDs.
 The OpenAI-compatible SDK is only a transport; requests go to NVIDIA, and no
 OpenAI or other provider fallback exists. The default

@@ -114,6 +114,23 @@ DB에서 모델을 바꾸는 인플레이스 이전을 안내하지 않는다. �
 
 근거: [현행 답변 API](https://docs.api.nvidia.com/nim/reference/nvidia-nemotron-3_5-super-vl-120b-a12b-infer).
 
+## 후속 무료 답변 모델 전환
+
+후속 사용자 요청으로 답변 기본 모델을 `nvidia/nemotron-3-ultra-550b-a55b`로 전환한다.
+현행 NVIDIA 모델 목록과 실제 strict JSON 200 응답을 확인했다. 기존 무료 체험 키와
+동일 endpoint를 사용하며, thinking 비활성화, 토큰/시간 예산, 인용/순위/등급 검사를 유지한다.
+답변 모델만 바꾸므로 위키/장소의 임베딩 모델과 캐시 식별자는 바꾸지 않는다.
+명시적인 BENCH_ANSWER_MODEL 선택은 보존하며 자동 모델 폴백은 추가하지 않는다.
+한국어 실제 SSE와 기본 회귀 suite로 이번 전환을 검증한다. 이전 Super 모델의
+60문항 점수나 메모리 산출물을 Ultra 결과로 표시하지 않는다.
+
+대안 점검: Qwen 3.5 122B는 실제 410, Gemma 4 31B는 구조화 요청 30초 read timeout이었다.
+Mistral Large 4도 같은 요청에서 30초 read timeout이었다. Lightning은 JSON 요청은
+통과했지만 실제 예보/정책/대안 smoke에서 1/3만 답변해 최종 선택에서 제외했다.
+Ultra는 같은 실제 세 질문을 모두 완료했다. 이 소규모 검증을 전체 품질 점수로 일반화하지 않는다.
+이 실패를 제공자 전체나 모든 실행의 영구 장애로 일반화하지 않는다.
+근거: https://build.nvidia.com/nvidia/nemotron-3-ultra-550b-a55b/modelcard
+
 ## 위키 적재용 동일 체크포인트 산출물
 
 2026-11-23 실제 API가 관광 예보 범위 설명 청크를 422로 거절했다. 원문을 제외하거나
