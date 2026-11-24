@@ -1,0 +1,19 @@
+{
+  "fixture": "local controlled readiness and recorded SSE; no live model inference",
+  "checks": [
+    {
+      "width": 1280,
+      "readyFocusPreserved": true,
+      "draftNotSubmitted": true
+    },
+    {
+      "width": 360,
+      "queuedQuestionSentOnce": true,
+      "realHttpSseParsing": true,
+      "readyGets": 2,
+      "reducedMotion": true
+    }
+  ],
+  "errors": [],
+  "passed": true
+}

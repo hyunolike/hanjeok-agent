@@ -43,7 +43,9 @@ Movement, if any, begins from the still pose and is removed under
 
 | State | Shows |
 | --- | --- |
-| Empty | Character `waiting`, question field, four example questions as chips, the refresh time of the data |
+| Empty | Question field and four example questions; live examples fill the draft without sending, while replay examples keep starting their recording. Character `waiting` when the connection is ready |
+| Connecting | An editable question field, Ipsae `looking`, accurate connection status and optional keyboard-operated usage-tip cards. A submitted question waits visibly in the field and is sent once readiness succeeds |
+| Connection delayed | The preserved question, explicit reconnect and cancel-wait controls; GET retry never repeats a question POST |
 | Running | The question, a step list growing in order with each step's name, inputs summary and status; character `looking`; the field disabled |
 | Answered | Step list collapsed to a summary line that reopens, the answer, citation chips in two visibly different kinds (record, policy), a "show path" control that opens the path inline, the follow-up field |
 | Partial | As answered, with a notice that lookups were cut short |
@@ -58,6 +60,18 @@ policy document shows the page. The existing `CitationSheet` behaviour (Esc,
 backdrop, focus on close) is reused.
 
 Follow-up questions append below; earlier answers stay readable.
+
+The live screen starts a bounded `GET /guide/ready` check on entry and rechecks
+on each submission. Concurrent entry/submission checks share one operation.
+Its 90-second budget is separate from the answer stream’s 90 seconds; individual
+GETs time out after 12 seconds with 5 seconds between attempts. Leaving or
+cancelling invalidates late readiness results. Unsubmitted drafts are never sent.
+Ready means the data store is ready, not that a remote model will answer.
+
+The optional usage-tip card controls remain mounted when readiness completes or
+an answer starts, preserving keyboard focus. The connection message updates to
+ready; actual answer progress still comes exclusively from SSE steps. Tips are
+static product guidance, not current forecasts. All motion respects reduced motion.
 
 ## `/[lang]/graph`
 
