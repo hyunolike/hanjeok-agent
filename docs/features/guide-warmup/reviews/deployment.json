@@ -1,0 +1,32 @@
+{
+  "source_commit": "22ab1b7d4aeb3b43708ac3d925ff3b0d29716df0",
+  "public_deployment_performed": true,
+  "frontend": {
+    "url": "https://agent.hanjeok.com/ko/ask",
+    "deployment_id": "b88b9bdf-96f8-445e-9585-e9f145053a22",
+    "deployment_url": "https://b88b9bdf.hanjeok-agent.pages.dev",
+    "environment": "Production",
+    "branch_label": "main",
+    "guide_base_url": "https://hanjeok-guide.onrender.com"
+  },
+  "verification": {
+    "frontend_tests_passed": 314,
+    "test_files": 29,
+    "typecheck_passed": true,
+    "pages_build_passed": true,
+    "public_browser_report": "public-browser-check.json",
+    "public_browser_passed": true,
+    "live_answer_visible": true,
+    "terminal_done": true,
+    "question_post_count": 1
+  },
+  "git_main_merged": false,
+  "backend_redeployed": false,
+  "new_billing_enabled": false,
+  "limitations": [
+    "Public live answer verifies one forecast question, not all model requests or long-duration performance.",
+    "The mobile long-wait check intercepts readiness with 503 only inside its private browser context.",
+    "The initial desktop automation acted before hydration; awaiting initialization corrected the harness without a product change.",
+    "The observed 9284 ms includes page load and UI interaction on an awake server; it is not a cold-start or p95 measurement."
+  ]
+}

@@ -27,4 +27,25 @@
 - 독립 설계 검토 2회와 최종 코드 검토 1회 실행. 카드 포커스 지적은 재현 테스트의
   RED→GREEN과 전체 suite로 수정 확인했다. [검토 기록](reviews/review.md).
 
-구현과 로컬 검증을 완료했다. 공개 배포와 main 병합은 수행하지 않았다.
+초기 구현과 로컬 검증 뒤 사용자가 공개 배포를 승인했다. 아래 배포까지 완료했으며,
+Git main 병합은 수행하지 않았다.
+
+## 공개 배포 결과
+
+- 소스: `22ab1b7d4aeb3b43708ac3d925ff3b0d29716df0`.
+- Cloudflare Pages 운영 배포 `b88b9bdf-96f8-445e-9585-e9f145053a22`.
+  `main`은 Pages 운영 라벨이다. 작업 Git 브랜치는 `feat/guide-512mb-runtime`이다.
+- [공개 질문 화면](https://agent.hanjeok.com/ko/ask)에서 새 카드와 질문 예시의 초안 채우기 확인.
+- 실제 질문 “경복궁은 2026-11-26에 얼마나 붐벼?”에 HTTP200, `answer`, 인용,
+  terminal `done`과 화면 답변을 확인했다. 질문 POST는 한 번이며 녹화 응답을 사용하지 않았다.
+- 360px 어두운 화면의 대기 검사는 별도 브라우저 문맥에서만 readiness를 503으로 제어했다.
+  제출한 질문 보존, 카드 키보드 조작, 대기 취소 후 입력 복구, 가로 넘침 없음과
+  reduced-motion의 짧은 animation duration을 확인했다. 이 문맥에서는 POST0이었다.
+- 첫 자동화 시도는 JS 초기화 전 화면을 조작해 전송 버튼을 활성화하지 못했다.
+  초기화를 기다리는 조건을 추가한 뒤 같은 운영 코드로 통과했다. 제품 수정은 없었다.
+- 실제 서버 기동 시간이나 전체 질문 성공률, p95 지연을 측정한 결과는 아니다.
+  백엔드 재배포나 새로운 과금은 하지 않았다.
+
+[배포 기록](reviews/deployment.json), [공개 브라우저 결과](reviews/public-browser-check.json),
+[실제 예보 SSE](reviews/public-response.sse), [공개 응답 화면](reviews/public-answer.png),
+[모바일 대기 화면](reviews/public-mobile-waiting.png).
