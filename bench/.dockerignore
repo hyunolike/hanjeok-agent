@@ -9,6 +9,7 @@
 !deploy
 !runtime
 !reports/guide
+!data
 !tests/fixtures/hanjeok-export
 !tests/fixtures/hanjeok-live
 # Opt-in at build time with --build-arg; see the Dockerfile.

@@ -11,6 +11,8 @@ services:
         value: https://agent.hanjeok.com
       - key: GUIDE_LIVE_MODE
         value: live
+      - key: GUIDE_STORE
+        value: sqlite
       - key: HANJEOK_BASE_URL
         value: https://api.hanjeok.com
       - key: BENCH_ANSWER_MODEL
@@ -19,11 +21,5 @@ services:
         value: "1"
       - key: GUIDE_CLIENT_IP_HEADER
         value: cf-connecting-ip
-      - key: BENCH_NEO4J_URI
-        sync: false
-      - key: BENCH_NEO4J_USER
-        sync: false
-      - key: BENCH_NEO4J_PASSWORD
-        sync: false
       - key: NVIDIA_API_KEY
         sync: false

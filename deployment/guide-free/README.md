@@ -1,13 +1,52 @@
 # 512MiB 안내 API
 
-Python HTTP API만 실행하는 배포 구성이다. Neo4j와 임베딩 모델을 이미지 밖으로
-분리했다. 기존 Kotlin API의 배포는 포함하지 않는다. 운영 배포를 실행한 기록은 아니다.
+Python HTTP API만 실행하는 배포 구성이다. 현재 무료 프로필은 공개 관광 데이터와
+동일 공간 벡터를 읽기 전용 SQLite 파일로 이미지에 넣어 Aura 인증 없이 실행한다.
+임베딩 생성과 답변은 NVIDIA HTTP API를 사용한다. 기존 Neo4j 경로도 유지한다.
+기존 Kotlin API의 배포는 포함하지 않는다. 실제 공개 여부는 아래 검증 기록과 구분한다.
+
+## 현재 무료 프로필: SQLite
+
+`render.yaml`과 `env.example`은 `GUIDE_STORE=sqlite`를 선택한다. 필요한 시크릿은
+기존 `NVIDIA_API_KEY`이며 Aura 접속값은 필요 없다. API의 일반 기본값은 기존
+`neo4j`이므로 SQLite 선택을 생략하면 안 된다. 오타나 파일 오류 때 다른 저장소로 폴백하지 않는다.
+
+`bench/data/manifest.json`과 그것이 가리키는 content-addressed gzip을 배포한다.
+이미지 빌드에서 gzip과 원본 DB 해시를 검사해 해제하고, 실행 시 DB 해시, 스키마,
+건수, 두 코퍼스 임베딩 식별자를 다시 검사한다. 읽기 전용 연결 하나와 8MiB 페이지
+캐시를 쓰고 mmap을 끈다. 모델은 SQL을 만들지 않는다. sqlite-vec의 고정 버전 C 함수로
+정확 코사인 검색을 하므로 기존 Neo4j 근사 검색과 경계 순위가 달라질 수 있다.
+
+공개 export 12,106장소, 43,087관계, 209행사와 위키18문서/83청크를 보존했다.
+시점은 2026-11-23 export와 manifest의 고정 위키 revision이다. 오래된 날짜의 혼잡
+예보를 파일에서 제공하지 않고 질문할 때 한적 API를 호출한다. 데이터 갱신은 새
+산출물을 준비해 재배포한다. 실행 중 파일 교체는 지원하지 않는다.
+
+운영자 준비는 기존 검증 캐시를 mode=ro로 읽으며 새 모델 호출을 하지 않는다.
+아래 명령은 `bench/`에서, SQLite 확장 로드를 지원하는 Python3.13 환경에서 실행한다.
+
+```bash
+PYTHONPATH=src:. python deploy/prepare_sqlite.py prepare \
+  --export .cache/exports/hanjeok-export-20261123 \
+  --place-cache .cache/guide-nvidia-embeddings.sqlite \
+  --wiki /path/to/clean-pinned-wiki \
+  --wiki-cache .cache/wiki-nvidia-prepared.sqlite \
+  --wiki-manifest reports/runtime/offline-wiki-artifact-manifest.json \
+  --wiki-promotion reports/runtime/offline-wiki-promotion.json \
+  --output data
+```
+
+빌더는 승인된 위키 원문 청크의 id/순서/해시까지 대조한다. gzip을 먼저 쓰고
+manifest를 마지막에 원자적으로 공개하므로 실패 시 이전 파일 묶음은 유효하다.
+과거 Super/Ultra의 Neo4j 품질 수치는 SQLite 품질 수치로 재사용하지 않는다.
+[설계와 수용 기준](../../docs/superpowers/specs/2026-11-24-guide-sqlite-design.md),
+[검토/실제 확인](../../docs/superpowers/reviews/2026-11-24-guide-sqlite-review.md).
 
 ## 구성과 유지되는 동작
 
 - `bench/Dockerfile.api`: Python 3.13, 비루트 사용자, uvicorn 워커 1개.
 - `bench/runtime/requirements.txt`: 해시 잠금. torch, sentence-transformers, ragas 제외.
-- Neo4j는 `BENCH_NEO4J_URI`로 연결한다. AuraDB는 `neo4j+s://…`를 사용한다.
+- `GUIDE_STORE=neo4j` 경로는 `BENCH_NEO4J_URI`로 연결한다. AuraDB는 `neo4j+s://…`를 사용한다.
 - `GUIDE_EMBEDDING_PROVIDER=nvidia`: NVIDIA의
   `nvidia/nemotron-3.5-embed-1b`를 1024차원으로 호출한다.
   최초 후보인 llama-3.2 엔드포인트는 공식 카탈로그의 deprecated 공지를 확인해 제외했다.
@@ -138,7 +177,9 @@ Dockerfile/context와 환경 변수를 사용하고 인스턴스 수를 1로 유
 | `GUIDE_CORS_ALLOWED_ORIGINS` | 필수. `https://agent.hanjeok.com` 등 정확한 오리진 |
 | `NVIDIA_API_KEY` | 필수. 기존 답변 생성과 새 임베딩에 사용 |
 | `BENCH_ANSWER_MODEL` | `nvidia/nemotron-3-ultra-550b-a55b`; 실행 중 모델 폴백 없음 |
-| `BENCH_NEO4J_URI`, `BENCH_NEO4J_USER`, `BENCH_NEO4J_PASSWORD` | 외부 DB 접속값 |
+| `GUIDE_STORE` | 무료 프로필은 `sqlite`; 일반 코드 기본값은 `neo4j` |
+| `GUIDE_SNAPSHOT_DB`, `GUIDE_SNAPSHOT_MANIFEST` | SQLite 이미지의 `/app/data/snapshot.sqlite`, `/app/data/manifest.json` |
+| `BENCH_NEO4J_URI`, `BENCH_NEO4J_USER`, `BENCH_NEO4J_PASSWORD` | Neo4j 모드에서만 필요한 외부 DB 접속값 |
 | `GUIDE_EMBEDDING_PROVIDER` | API 이미지 기본값 `nvidia`; 오타 시 시작 실패 |
 | `GUIDE_LIVE_MODE`, `HANJEOK_BASE_URL` | 운영값 `live`, `https://api.hanjeok.com` |
 | `GUIDE_MAX_CONCURRENT` | 이미지 기본값 `1`, 허용 1~8. 512MiB에서는 1 유지 |

@@ -1,4 +1,4 @@
-# HTTP-only image; load the external graph separately before deploying it.
+# HTTP-only image with a verified read-only snapshot; external Neo4j stays opt-in.
 FROM python:3.13-slim
 WORKDIR /app
 COPY runtime/requirements.txt /app/requirements.txt
@@ -6,12 +6,18 @@ RUN pip install --require-hashes --no-cache-dir -r /app/requirements.txt \
     && useradd --create-home --uid 10001 guide
 COPY src /app/src
 COPY reports/guide /app/reports/guide
+COPY data /app/data
+COPY deploy/prepare_sqlite.py /app/prepare_sqlite.py
+RUN python /app/prepare_sqlite.py unpack --directory /app/data --output /app/data/snapshot.sqlite \
+    && rm /app/data/*.sqlite.gz /app/prepare_sqlite.py
 USER 10001
 ENV PYTHONPATH=/app/src \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     GUIDE_ENV=production \
     GUIDE_EMBEDDING_PROVIDER=nvidia \
+    GUIDE_SNAPSHOT_DB=/app/data/snapshot.sqlite \
+    GUIDE_SNAPSHOT_MANIFEST=/app/data/manifest.json \
     GUIDE_CHECKPOINT_DB=/tmp/guide/checkpoints.sqlite \
     GUIDE_RESET_CHECKPOINTS=1 \
     GUIDE_MAX_CONCURRENT=1 \

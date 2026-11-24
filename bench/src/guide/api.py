@@ -13,6 +13,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import sqlite3
 from collections.abc import Iterator
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
@@ -425,12 +426,28 @@ class EnvRuntime:
         from guide.model import GuideModel
         from guide.sources import GraphPolicy
 
-        self._driver = driver_from_env()
+        self._store_kind = os.environ.get("GUIDE_STORE", "neo4j")
+        if self._store_kind not in ("neo4j", "sqlite"):
+            raise ValueError("GUIDE_STORE must be neo4j or sqlite")
+        self._driver = driver_from_env() if self._store_kind == "neo4j" else None
         self._embedder = embedder_from_env()
         self._gazetteers: dict[str, dict] = {}
         self._snapshot_lock = Lock()
         self.model = GuideModel()
-        self.policy = GraphPolicy(self._driver, self._embedder)
+        self._sqlite = None
+        if self._store_kind == "sqlite":
+            from guide.sqlite_store import SQLiteStore
+
+            try:
+                self._sqlite = SQLiteStore(
+                    os.environ["GUIDE_SNAPSHOT_DB"], os.environ["GUIDE_SNAPSHOT_MANIFEST"],
+                    self._embedder,
+                )
+            except (KeyError, ValueError, OSError, sqlite3.Error):
+                log.warning("SQLite snapshot unavailable; readiness stays false")
+            self.policy = self._sqlite.policy if self._sqlite else None
+        else:
+            self.policy = GraphPolicy(self._driver, self._embedder)
         self.checkpointer = checkpointer_from_env(
             reset=os.environ.get("GUIDE_RESET_CHECKPOINTS") == "1"
         )
@@ -456,6 +473,14 @@ class EnvRuntime:
             return self._snapshot()
 
     def _snapshot(self) -> Snapshot | None:
+        if getattr(self, "_store_kind", "neo4j") == "sqlite":
+            if self._sqlite is None:
+                return None
+            meta = self._sqlite.meta
+            return Snapshot(
+                self._sqlite.places, meta["generation"], meta["exported_at"],
+                meta.get("wiki_as_of", ""), meta["counts"],
+            )
         from bench.graph.store import session
         from guide.embeddings import compatible
         from guide.graph import read
@@ -486,7 +511,10 @@ class EnvRuntime:
         )
 
     def close(self) -> None:
-        self._driver.close()
+        if self._driver is not None:
+            self._driver.close()
+        if self._sqlite is not None:
+            self._sqlite.close()
         close = getattr(self._embedder, "close", None)
         if close:
             close()
