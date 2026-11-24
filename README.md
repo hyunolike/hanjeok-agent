@@ -16,9 +16,10 @@ and answers citing only what it fetched for your question.
 ![Python](https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)
 ![LangGraph](https://img.shields.io/badge/LangGraph-1C3C3C?logo=langchain&logoColor=white)
-![Neo4j](https://img.shields.io/badge/Neo4j-5.26-4581C3?logo=neo4j&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white)
 ![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white)
-![Cloud Run](https://img.shields.io/badge/Cloud_Run-4285F4?logo=googlecloud&logoColor=white)
+![Render](https://img.shields.io/badge/Render_Free-000000?logo=render&logoColor=white)
+![Cloudflare Pages](https://img.shields.io/badge/Cloudflare_Pages-F38020?logo=cloudflarepages&logoColor=white)
 
 </div>
 
@@ -28,7 +29,7 @@ and answers citing only what it fetched for your question.
 
 <a href="docs/media/hanjeok-guide.mp4"><img src="docs/media/hanjeok-guide.gif" alt="A question is asked on the live site. Steps appear one by one, then an answer with a citation chip, then the path of ranked alternatives, then the evaluation table." width="760"></a>
 
-<sub>20 seconds, captured from the live site on real Hanjeok data. <b><a href="docs/media/hanjeok-guide.mp4">Watch with sound →</a></b></sub>
+<sub>A 20-second recording from the previous deployment. Current architecture and verification are documented below.</sub>
 
 </div>
 
@@ -102,15 +103,25 @@ A search box cannot answer that. It takes three things in a row: find the place,
   </tr>
 </table>
 
-Also: [browse a place's neighbours](https://agent.hanjeok.com/en/graph?place=653) without asking anything.
+Also: [browse a place's neighbours](https://agent.hanjeok.com/en/graph?place=10000028) without asking anything.
 
 <br/>
 
 ## ⚙️ How one question is handled
 
-<div align="center">
-<img src="docs/images/guide/question-flow.png" alt="Six numbered steps left to right: Question, Read by rule, Choose a lookup, Write the answer, Citation gate, Answer plus citations plus path. Read by rule can exit to Declined or to Which one do you mean. Choose a lookup loops through Run it in code, which reaches the Neo4j graph and the Hanjeok API. The citation gate can send the answer back once for repair, and refuses twice means nothing is shown." width="820">
-</div>
+```mermaid
+flowchart LR
+    Q["Question + place/date"] --> S["Scope rules"]
+    S --> A["LangGraph agent"]
+    S --> D["Decline / ask which place"]
+    A --> T["Validated fixed lookups"]
+    T --> DB[("Read-only SQLite")]
+    T --> H["Live Hanjeok API"]
+    T --> A
+    A --> G["Citation + order + source checks"]
+    G -->|"One repair"| A
+    G -->|"Pass"| R["Answer + citations + path via SSE"]
+```
 
 Five rules hold across every path through that picture.
 
@@ -122,48 +133,82 @@ Five rules hold across every path through that picture.
 
 <br/>
 
+An unambiguous single-place, single-date replacement request uses the dated alternatives API and must cite that fetched record. Semantic place search cannot stand in for the service’s alternative ranking.
+
 ## 🏗 System architecture
 
-<div align="center">
-<img src="docs/images/guide/architecture.png" alt="Four columns: the visitor's browser, Next.js screens on Vercel, one Cloud Run container holding FastAPI, an MCP server, the LangGraph agent, seven validated lookups, the citation gate, Neo4j and the embedding model, and outside services NVIDIA NIM and the Hanjeok API. A strip along the bottom shows build time: Hanjeok DB, export script, JSONL plus manifest, verify, graph built into the image." width="820">
-</div>
+```mermaid
+flowchart LR
+    subgraph Guide["Python guide service"]
+        API["FastAPI /guide/*"] --> Agent["LangGraph agent"]
+        Agent --> Lookups["Validated lookups"]
+        Lookups --> Data[("SQLite snapshot<br/>places / links / events / wiki / vectors")]
+        Agent <--> State[("Visit checkpoints<br/>SQLite in /tmp")]
+        Agent --> Gate["Citation / rank / dated-source gate"]
+        Gate --> API
+    end
+    Agent <-->|"Structured JSON"| LLM["NVIDIA Nemotron 3 Ultra"]
+    Lookups <-->|"Query embedding, 1024 dimensions"| Embed["NVIDIA Nemotron 3.5 Embed 1B"]
+    Lookups <-->|"Forecasts / alternatives"| Live["Hanjeok read-only API"]
+```
 
-**The agent holds no credentials to Hanjeok's database.** Data crosses over in two ways only:
+**Places and policy live in a read-only SQLite snapshot; date-bound facts come from Hanjeok's API.**
+Answer generation and query embeddings use NVIDIA HTTP APIs. The public API container carries no Neo4j server, local embedding model or model weights.
 
-- **Slow-changing data, as a file.** A script on the Hanjeok side exports public tourism tables with an allow-list of columns. The agent verifies hashes, row counts and columns, and refuses the whole file if a column it does not expect appears. The graph is built from that file when the container image is built.
-- **Date-bound data, at question time.** Congestion forecasts and alternatives come from two read-only Hanjeok endpoints. The place-detail endpoint is never called, because it records a view on every call.
+- **Prepared before deployment:** validate the public-column JSONL export and manifest, then package the places, pinned wiki and verified vectors into SQLite. The image build verifies and unpacks the snapshot. Updates require a new artifact and deployment.
+- **Fetched for each question:** read-only Hanjeok endpoints supply forecasts and dated alternatives. The place-detail endpoint is not called because it records views. The agent receives no credentials to Hanjeok's production DB.
+- **Search and state:** `sqlite-vec` performs exact cosine search through fixed SQL. LangGraph carries steps and clarification pauses; a separate SQLite file in `/tmp` holds checkpoints. Visits and usage limits reset with the process.
+- **Other adapters remain available:** Neo4j and the MCP CLI are retained. The deployed profile is the HTTP API with `GUIDE_STORE=sqlite`; it does not expose an MCP server port.
 
-Three parts are libraries rather than this repository's own code: LangGraph's stream, `interrupt` and checkpointer carry the steps, the "which place do you mean?" pause, and a visit's earlier questions; neo4j-graphrag's `VectorCypherRetriever` does the similarity search; and an MCP server exposes four read-only tools so another program, eventually the Hanjeok backend, can ask the agent.
+[Implementation](bench/src/guide/sqlite_store.py) · [Artifact preparation](bench/deploy/prepare_sqlite.py) · [Previous Cloud Run/Neo4j architecture and README](docs/archive/guide-before-sqlite/README.md)
+
+<br/>
+
+## ☁️ Deployment architecture
+
+```mermaid
+flowchart LR
+    Browser["Visitor browser"] <-->|"HTML / JS / CSS"| Pages["Cloudflare Pages Free<br/>Next.js + vinext"]
+    Browser <-->|"HTTPS /guide/* + SSE"| Render["Render Free<br/>FastAPI, one worker, SQLite snapshot"]
+    Render <-->|"Answer / query embedding"| NVIDIA["NVIDIA hosted APIs"]
+    Render <-->|"Date-bound facts"| Hanjeok["api.hanjeok.com"]
+    Operator["Operator: verify export + wiki + vectors"] --> Artifact["Immutable SQLite gzip + manifest"]
+    Artifact --> Build["Docker build: verify hashes + unpack"]
+    Build --> Render
+```
+
+| Part | Deployed configuration |
+| :-- | :-- |
+| Screens | [agent.hanjeok.com](https://agent.hanjeok.com/en/ask), Cloudflare Pages Free |
+| Guide API | [hanjeok-guide.onrender.com](https://hanjeok-guide.onrender.com/guide/ready), Render Free |
+| Process | Python 3.13, FastAPI, one uvicorn worker, one concurrent question |
+| Data | Read-only SQLite bundled in the image; no external DB credentials |
+| Model secret | Existing `NVIDIA_API_KEY` supplied through Render environment variables |
+| Readiness | `/guide/ready` returns 200 after file/schema/count/vector-identity validation; provider availability needs a real question |
+| Browser connection | Rebuild with `NEXT_PUBLIC_GUIDE_BASE_URL`; the browser sends SSE requests directly to the API |
+
+Deployment and a real browser answer were verified on 2026-11-24. Render deploys a specified feature-branch commit manually. Pages `--branch main` selects the production environment; it does not merge Git main.
+
+[Current deployment guide](docs/deploy.md) · [512MiB profile and data updates](deployment/guide-free/README.md) · [Deployment evidence](bench/reports/runtime/sqlite-deployment.json) · [Previous deployment guide](docs/archive/guide-before-sqlite/deploy.md)
 
 <br/>
 
 ## 📊 What has been measured
 
-Small, and stated as such.
+Observed for the deployed profile on 2026-11-24.
 
-| | |
+| Item | Evidence |
 | :-- | :-- |
-| **Data in the deployed service** | 13,403 places, 45,244 relatedness links, 353 events, exported from Hanjeok on 2026-10-14 |
-| **Tests** | 408 backend (no network, no key), 16 against a real Neo4j, 246 frontend |
-| **Waking from zero** | about 30 seconds (Neo4j 19 s, server 10 s) |
-| **One question, once awake** | 6 to 9 seconds; up to 56 seconds when the model provider rate-limits |
+| Data | 2026-11-23 export: 12,106 places, 43,087 related links, 209 events, 229 regions |
+| Wiki | Pinned revision `7fc19c0`, 18 documents / 83 chunks |
+| Default tests | 525 backend passed, 43 integration/real-model checks deselected; 296 frontend passed |
+| 512MiB check | Final image: 297.7MiB sampled peak at 20ms, no swap or OOM, local amd64 emulation. This is not a native Render memory measurement |
+| Public browser | Gyeongbokgung forecast answer, original record citation and Ultra model visible; 7.6 seconds in one observed question |
+| Live probes | Public forecast/policy source checks passed. Alternatives reached the correct API but model generation failed, so the complete smoke remains `passed=false` |
 
-The published evaluation is **sixty questions over Hanjeok's real data** (the 2026-10-14 export), ten of each of six kinds, without the RAGAS judge. Hanjeok's forecasts and alternatives were recorded once and replayed. Each strategy answered 41, declined 12 and failed on 7.
+**The full 60-question quality evaluation has not been run for SQLite.** Previous Neo4j/E5 and other-model scores are not reused as this profile's results. The old score table and its limitations remain in the [previous README](docs/archive/guide-before-sqlite/README.md).
 
-| | Text similarity only | Plus relatedness links |
-| :-- | :-: | :-: |
-| Share of needed records fetched | 0.725 (50 questions) | 0.86 (50 questions) |
-| Same, for questions about two or more linked places | 0.025 (10 questions) | 0.60 (10 questions) |
-| Unanswerable questions declined | 10 of 10 | 10 of 10 |
-| Forbidden behaviours counted, over 60 answers | 9 | 4 |
-
-Most of the forbidden counts are uncited claims (6 and 3). Record precision is 0.23 and 0.27; it is low by construction, since the place records and policy documents fetched alongside also count, and it is only meant to compare the two. The earlier twelve questions over invented places stay in the repository for tests.
-
-> [!NOTE]
-> **Not done yet: RAGAS scores.** The judge ran once on the shared model key and got an answer to 1 of 72 requests; the rest were rate-limited. The page shows those cells as "Not scored".
-
-> [!WARNING]
-> **Wrong answers have passed the citation check.** On real data the agent once said alternatives were listed "nearest first" (they are in Hanjeok's score order) and once called a beach "quiet today" without having fetched its forecast. Both cited records that were really fetched; the claims went beyond them. Two forbidden-behaviour rules now catch these cases, and the agent sends such an answer back to be rewritten once. In the sixty-question run both rules counted 0.
+[Final memory/live probe](bench/reports/runtime/sqlite-512mb-source-guard-amd64.json) · [Public SSE evidence](bench/reports/runtime/sqlite-public-sse-postguard.json) · [Browser capture](bench/reports/runtime/sqlite-public-forecast.jpg)
 
 <br/>
 
@@ -171,14 +216,15 @@ Most of the forbidden counts are uncited claims (6 and 3). Record precision is 0
 
 | Area | What is used |
 | :-- | :-- |
-| Agent service | Python 3.13 · FastAPI · LangGraph (stream, `interrupt`, checkpointer) · LangChain |
-| Graph and search | Neo4j 5.26 · neo4j-graphrag `VectorCypherRetriever` · multilingual-e5-large (1024-d, local) |
-| Model | NVIDIA NIM nemotron, structured output |
-| Other programs | MCP server, four read-only tools |
-| Evaluation | RAGAS · id-based precision and recall · eight rule-based forbidden-behaviour counters |
-| Screens | Next.js 16 · React 19 · Tailwind 4 |
-| Deployment | Cloud Run (service and Neo4j in one container) · Vercel · Cloud Build |
-| Tracing | Langfuse, off unless its keys are set |
+| Agent | Python 3.13, FastAPI, LangGraph, LangChain |
+| Deployed data/search | Read-only SQLite, `sqlite-vec` exact cosine search, fixed SQL |
+| Answer model | NVIDIA `nvidia/nemotron-3-ultra-550b-a55b`, structured JSON |
+| Query embedding | NVIDIA `nvidia/nemotron-3.5-embed-1b`, 1024 dimensions, HTTP |
+| Visit state | LangGraph SQLite checkpoints in `/tmp`, in-memory visits and limits |
+| Screens | Next.js 16, React 19, Tailwind 4, vinext |
+| Deployment | Cloudflare Pages Free + Render Free, `bench/Dockerfile.api` |
+| Separate tools/experiments | Neo4j adapter, MCP CLI, operator-only evaluation and RAGAS; not run in the public API process |
+| Tracing | Langfuse, enabled only when keys are configured |
 
 <br/>
 
@@ -188,11 +234,11 @@ Most of the forbidden counts are uncited claims (6 and 3). Record precision is 0
 | :-- | :-- |
 | [`bench/src/guide/`](bench/src/guide/) | The agent: scope rules, lookups, LangGraph loop, citation gate, API, MCP server, evaluation |
 | [`bench/tests/`](bench/tests/) | Unit, contract and Neo4j integration tests; a synthetic export of invented places |
-| [`bench/Dockerfile`](bench/Dockerfile) · [`bench/deploy/`](bench/deploy/) | The image that carries the service, Neo4j and a pre-built graph |
+| [`bench/Dockerfile.api`](bench/Dockerfile.api) · [`bench/deploy/`](bench/deploy/) | Current read-only SQLite API image and operator preparation/checking tools; `bench/Dockerfile` retains the legacy Neo4j co-located image |
 | [`frontend/`](frontend/) | The four screens, plus a home page that introduces the guide with an animated architecture diagram |
 | [`specs/002-hanjeok-guide-agent/`](specs/002-hanjeok-guide-agent/) | Specification, research decisions, data model, contracts, tasks |
 | [`docs/prd/`](docs/prd/hanjeok-guide-agent.md) | Product requirements (Korean) |
-| [`docs/deploy.md`](docs/deploy.md) | How it was deployed, with the commands that were run |
+| [`docs/deploy.md`](docs/deploy.md) | Current Render/Cloudflare deployment and links to previous deployment records |
 | [`server/`](server/) | The earlier course explainer (Kotlin, Spring AI) — see below |
 
 ### Where to read the core ideas in code
@@ -216,7 +262,16 @@ pnpm install
 pnpm dev          # http://localhost:3000/en/ask
 ```
 
-The service, on the synthetic export. Needs Python 3.13, uv and Docker.
+Run the deployed SQLite profile from the repository root. First copy the [environment template](deployment/guide-free/env.example) outside the repository and configure the NVIDIA key and local CORS origin.
+
+```bash
+docker build -f bench/Dockerfile.api -t hanjeok-guide:api bench
+docker run --rm --memory 512m --memory-swap 512m --cpus 1 \
+  --env-file /path/outside-repository/guide.env -e GUIDE_STORE=sqlite \
+  -p 127.0.0.1:8090:8000 hanjeok-guide:api
+```
+
+The legacy Neo4j adapter can still run on the synthetic export. It needs Python 3.13, uv and Docker.
 
 ```bash
 cd bench
@@ -225,7 +280,7 @@ uv sync
 uv run guide refresh --export tests/fixtures/hanjeok-export
 GUIDE_LIVE_MODE=replay uv run uvicorn guide.api:app --port 8090   # NVIDIA_API_KEY needed to answer
 
-uv run pytest                    # 408 tests, no network
+uv run pytest                    # offline tests
 uv run guide mcp                 # the same agent over MCP (stdio)
 ```
 
@@ -235,7 +290,8 @@ Then point the screens at it: `NEXT_PUBLIC_GUIDE_BASE_URL=http://localhost:8090 
 
 ## ⚠️ Known limits
 
-- **A first question after idle waits about 30 seconds.** The service scales to zero; the screen says it is waking.
+- **Free instances can sleep while idle.** Cold-start time has not been remeasured for the SQLite profile.
+- **Live model failures remain.** Alternative retrieval can succeed while answer generation fails; not every live probe passed.
 - **The model key is shared with other projects.** A rate limit slows a question or fails it.
 - **Two-character place names are matched conservatively.** "지도" (also an island) in "show me on the map" still reads as the island.
 - **Visits and usage limits live in memory.** The service runs as one instance for that reason.
@@ -246,7 +302,7 @@ Then point the screens at it: `NEXT_PUBLIC_GUIDE_BASE_URL=http://localhost:8090 
 
 ## 📚 The earlier component: course explainer
 
-Before the guide agent, this repository explained one thing: a travel course the Hanjeok backend had already built, on the screen where it is shown. That service (Kotlin, Spring AI) still runs at [agent.hanjeok.com](https://agent.hanjeok.com) and its write-up, with the harness that counts eight forbidden behaviours and the model comparison that picked `gpt-4o`, is kept in full:
+Before the guide agent, this repository explained one thing: a travel course the Hanjeok backend had already built, on the screen where it is shown. The Kotlin/Spring AI code and its deployment history remain; the current free migration covers the Python guide API and its write-up, with the harness that counts eight forbidden behaviours and the model comparison that picked `gpt-4o`, is kept in full:
 
 **[Course explainer README →](docs/explainer/README.md)** · [한국어](docs/explainer/README.ko.md)
 
