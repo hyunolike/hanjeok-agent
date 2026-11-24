@@ -354,4 +354,3 @@ curl -s "$BASE/guide/status"            # ready: true, 장소 수, 내보낸 시
 curl -sN "$BASE/guide/ask" -H 'content-type: application/json' \
   -d '{"question":"이번 토요일 경복궁 대신 조용한 곳 있어?"}'
 ```
-
