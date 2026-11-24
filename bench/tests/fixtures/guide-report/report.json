@@ -15,20 +15,21 @@
   "vector": {
    "attempted": 12,
    "outcomes": {
-    "answered": 10,
+    "answered": 9,
+    "failed": 1,
     "declined": 2
    },
    "metrics": {
     "faithfulness": {
      "value": 0.5,
-     "n": 10,
+     "n": 9,
      "total": 10,
      "status": "ok",
      "reason": null
     },
     "answer_relevancy": {
      "value": 0.5,
-     "n": 10,
+     "n": 9,
      "total": 10,
      "status": "ok",
      "reason": null
@@ -110,14 +111,14 @@
     "alternatives": {
      "faithfulness": {
       "value": 0.5,
-      "n": 2,
+      "n": 1,
       "total": 2,
       "status": "ok",
       "reason": null
      },
      "answer_relevancy": {
       "value": 0.5,
-      "n": 2,
+      "n": 1,
       "total": 2,
       "status": "ok",
       "reason": null
@@ -343,7 +344,7 @@
     },
     "UNCITED_CLAIM": {
      "runs": 12,
-     "occurrences": 0
+     "occurrences": 1
     },
     "GRADE_MISLABEL": {
      "runs": 12,
@@ -367,29 +368,30 @@
     "unanswerable_total": 2
    },
    "answer_usage": {
-    "model_calls": 12,
-    "prompt_tokens": 1200,
-    "completion_tokens": 120,
+    "model_calls": 13,
+    "prompt_tokens": 1300,
+    "completion_tokens": 130,
     "elapsed_ms": 0
    }
   },
   "graph": {
    "attempted": 12,
    "outcomes": {
-    "answered": 10,
+    "answered": 9,
+    "failed": 1,
     "declined": 2
    },
    "metrics": {
     "faithfulness": {
      "value": 0.5,
-     "n": 10,
+     "n": 9,
      "total": 10,
      "status": "ok",
      "reason": null
     },
     "answer_relevancy": {
      "value": 0.5,
-     "n": 10,
+     "n": 9,
      "total": 10,
      "status": "ok",
      "reason": null
@@ -471,14 +473,14 @@
     "alternatives": {
      "faithfulness": {
       "value": 0.5,
-      "n": 2,
+      "n": 1,
       "total": 2,
       "status": "ok",
       "reason": null
      },
      "answer_relevancy": {
       "value": 0.5,
-      "n": 2,
+      "n": 1,
       "total": 2,
       "status": "ok",
       "reason": null
@@ -704,7 +706,7 @@
     },
     "UNCITED_CLAIM": {
      "runs": 12,
-     "occurrences": 0
+     "occurrences": 1
     },
     "GRADE_MISLABEL": {
      "runs": 12,
@@ -728,9 +730,9 @@
     "unanswerable_total": 2
    },
    "answer_usage": {
-    "model_calls": 14,
-    "prompt_tokens": 1400,
-    "completion_tokens": 140,
+    "model_calls": 15,
+    "prompt_tokens": 1500,
+    "completion_tokens": 150,
     "elapsed_ms": 0
    }
   }

@@ -83,3 +83,18 @@ this plan, review record; frontend production URL configuration only after serve
 - Tasks1/2 complete: clean-cache builder produced12106 places/43087 links/209events/18docs/83chunks; 46.68MiB gzip, hashes verified and no exact API key in artifact/source.
 - Final scoped reviewer found four concrete issues; regression tests observed RED→GREEN for manifest shape, Neo4j radius/null-score parity and source-specific smoke. Full519passed/43deselected; Ruff clean.
 - Initial actual smoke3/4answered, alternatives model_failed, peak316506112bytes/noOOM preserved. Final corrected80507396 image smoke running; no public deployment claim yet.
+
+- Final image805073960242a7fd734d3a1ac1a58532347f188decd06658348eec9c2ba03f89: memory302747648bytes (288.72MiB), noOOM/noSwap. Source-sensitive forecast/policy/semantic search answered; alternatives model_failed after place search, before alternatives lookup. Full smoke passed=false preserved. No claim of all question types passing.
+- Source26c1a95 pushed after temporary per-command HTTP postBuffer resolved large-pack HTTP400 (no persistent Git setting change).
+- Render Free service srv-dc2epkrrjlhs73cgqp5g created from feature branch, SQLite backend, existing NVIDIA key only. Initial deploy dep-dc2eplbrjlhs73cgqqi0, URL https://hanjeok-guide.onrender.com. Remote build running, readiness/AI/frontend not yet claimed.
+- Initial Render deployment became live; public ready/status200 and expected corpus generation/counts.
+  Actual public forecast/policy had source-verified answers; explicit alternatives returned a wrong
+  date-specific order from semantic place search. Preserve public SSE passed=false. Frontend publication held.
+- Added scoped correction to both retrieval strategies: resolved single-place/date replacement search
+  runs alternatives API, and emission requires its exact fetched/cited ID. Existing one repair retained.
+  Fresh alternative_source_review found a date-modifier '기준' bypass; actual-policy regex plus RED→GREEN
+  regression closes it. Backend525/43 deselected, frontend296/27files, Ruff clean.
+- Detail/congestion unit questions now match their purpose; slow fixture cites already fetched alternatives.
+  Synthetic report includes the fake model's newly blocked live-list omission; frontend numeric assertions
+  reflect that measured synthetic result. Historical actual reports unchanged. Frontend build completed
+  with new URL and compiled bundle has no old GCP guide URL; awaiting corrected remote service.

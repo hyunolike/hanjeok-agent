@@ -477,6 +477,19 @@ class Agent:
             timeout=self._remaining(),
         )
 
+    def _requested_alternatives(self) -> tuple[int, str] | None:
+        # An explicitly dated replacement list has an authoritative API. A
+        # semantic place search is not that list, even if its names look right.
+        policy = re.search(
+            r"(?:기준|출처|점수|원리)(?:은|는|이|가|을|를)?\s*(?:뭐|무엇|어떻게|어디|설명|알려)"
+            r"|어떻게\s*(?:정|고르|계산)|왜\s*(?:이|그)\s*(?:순서|순위)",
+            self._question,
+        )
+        if (len(self.result.place_ids) != 1 or len(self.result.dates) != 1 or policy
+                or not ("대신" in self._question or re.search(r"대안\s*(목록|장소|관광지|추천)", self._question))):
+            return None
+        return self.result.place_ids[0], self.result.dates[0]
+
     def _act(self, state: State) -> State:
         if state["rounds"] >= MAX_LOOKUP_ROUNDS:
             return {"route": "answer"}
@@ -488,6 +501,10 @@ class Agent:
         except ModelFailure as failure:
             self.result.model_failure = failure.kind
             return self._stop("failed", "model_failed")
+        required = self._requested_alternatives()
+        if (required and reply["action"] in ("search_places", "related_places")
+                and cite.alternatives(*required) not in self._lookups.fetched.labels):
+            reply = {"action": "alternatives", "place_id": required[0], "date": required[1]}
         if reply["action"] == "answer":
             return {"draft": reply, "route": "verify"}
 
@@ -558,6 +575,15 @@ class Agent:
                 # Two drafts, both unverifiable. Neither is shown.
                 return self._stop("failed", "invalid_citations")
             return {"repaired": True, "repair": verdict.reason, "draft": None, "route": "answer"}
+
+        required = self._requested_alternatives()
+        if (required and (cite.alternatives(*required) not in fetched.labels
+                     or cite.alternatives(*required) not in verdict.citations)):
+            reason = "해당 장소와 날짜의 alternatives 조회 결과를 받아 인용해야 대안 목록을 말할 수 있습니다."
+            self.result.rejections.append(reason)
+            if state["repaired"]:
+                return self._stop("failed", "invalid_citations")
+            return {"repaired": True, "repair": reason, "draft": None, "route": "answer"}
 
         # Valid citations do not make every claim valid. Observed violations
         # share the citation gate's one repair, then nothing is shown.

@@ -56,3 +56,30 @@ SQLite 전체60문항 평가는 이 전환의 공개 응답 smoke와 다르며 �
 처음 설명했지만 최종 terminal에서 모델 호출 실패로 확인해 정정했다. 실패 원본을
 sqlite-512mb-amd64.json에 보존한다. 512MiB/no-swap, OOM0, 표본 최대316506112bytes였다.
 초기 이미지에는 수정 전 행사 거리 계산이 포함되어 있어 최종 배포 증거로 재사용하지 않는다.
+
+최종 이미지80507396의 표본 최대는302747648bytes(288.72MiB), OOM0/swap0이었다.
+실제 source-sensitive 검사에서 예보/정책/일반 검색은 답변과 필요한 원본 인용을 확인했다.
+대안 질문은 모델이 대안 API 대신 장소 검색을 선택한 뒤 model_failed로 끝났다.
+실패와 전체 passed=false를 sqlite-512mb-final-amd64.json에 보존했다.
+Render Free 서비스를 생성했지만 원격 준비/답변과 프론트 공개는 후속 확인 대상이다.
+
+## 실제 공개 응답에서 추가 발견한 대안 출처 누락
+
+26c1a95의 Render 공개 ready/status는200, live 상태였다. 예보와 정책은 실제 조회/인용을
+확인했지만 대안 질문은 장소 검색 결과를 날짜별 서비스 대안 순서라고 잘못 말했다.
+sqlite-public-sse.json은 source_verified=false/passed=false 그대로 보존한다. 프론트는
+아직 이 API로 공개하지 않은 상태에서 아래 수정에 착수했다.
+
+- 하나로 확정된 장소/날짜의 명시적 대안 요청에서 search_places/related_places를
+  실제 alternatives API로 실행하도록 두 전략에 같은 처리를 했다.
+- 최종 답변은 해당 날짜 대안 레코드의 조회와 인용을 요구한다. 문구를 바꿔도
+  빠져나가지 못하며 기존 단일 수정/차단 예산을 공유한다.
+- 새 문맥의 alternative_source_review가 '2026-10-17 기준 … 대안 목록'이 정책 키워드
+  예외에 걸려 검사를 우회함을 재현했다. 광범위 단어 제외 대신 실제 정책 질문 형태만
+  제외하도록 수정하고 같은 사례의 RED→GREEN을 확인했다. 추가 Critical/Minor는 없었다.
+- 기존 테스트의 내용/혼잡 검증 fixture는 해당 질문을 명시하게 고쳤고, 시간 제한
+  fixture는 이미 조회한 대안도 인용한다. assertion을 줄이지 않았다.
+- 가짜 평가 모델이 라이브 대안을 조회하지 않는 합성 사례는 새 계약상 실패이므로
+  합성 golden 보고서와 화면 기대 분모9/경고1건을 갱신했다. 과거 실제 평가는 그대로다.
+- 백엔드525 passed/43 deselected, 프론트27파일296 tests passed, Ruff clean.
+  수정된 image06db4b81은 별도 실제 512MiB 검사를 진행했다. 이전 이미지 결과를 최종으로 쓰지 않는다.

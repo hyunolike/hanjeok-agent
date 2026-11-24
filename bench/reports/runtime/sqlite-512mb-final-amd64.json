@@ -1,0 +1,532 @@
+{
+  "checked_at": "2026-11-24T01:44:44.625421+00:00",
+  "backend": "sqlite",
+  "questions": [
+    {
+      "kind": "forecast",
+      "question": "경복궁은 2026-11-26에 얼마나 붐벼?",
+      "http_status": 200,
+      "events": [
+        "visit",
+        "step",
+        "step",
+        "step",
+        "step",
+        "answer",
+        "path",
+        "done"
+      ],
+      "terminal": [
+        "done",
+        {
+          "outcome": "answered",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b",
+          "elapsed_ms": 12898,
+          "generated_at": "2026-11-24T01:45:32.975529Z"
+        }
+      ],
+      "answers": [
+        {
+          "text": "2026년 11월 26일 경복궁은 혼잡 등급이 '매우혼잡'으로 예보되어 있습니다. 전국 대비 상위 3%에 해당하며 집중률은 82.89%입니다. 이후 한적이 더 한적한 날로 고른 12월 1일, 8일, 15일도 모두 '매우혼잡'으로 예보되어 있습니다.",
+          "citations": [
+            {
+              "id": "hanjeok:congestion/10000028@2026-11-26",
+              "kind": "record",
+              "label": "경복궁 혼잡 예보 (11월 26일)"
+            }
+          ],
+          "partial": false
+        }
+      ],
+      "steps": [
+        {
+          "index": 0,
+          "kind": "scope",
+          "inputs": {},
+          "status": "ok",
+          "reason": null,
+          "produced": [],
+          "summary": "장소 1곳, 날짜 2026-11-26(으)로 읽었습니다 · '경복궁'은(는) 이름이 같은 2곳 중 혼잡 예보가 있는 서울 종로구 쪽으로 읽었습니다",
+          "as_of": null
+        },
+        {
+          "index": 1,
+          "kind": "resolve",
+          "inputs": {
+            "names": [
+              "경복궁"
+            ]
+          },
+          "status": "ok",
+          "reason": null,
+          "produced": [
+            "hanjeok:place/10000028"
+          ],
+          "summary": "경복궁 (서울 종로구)",
+          "as_of": "2026-11-23T02:04:18.244Z"
+        },
+        {
+          "index": 2,
+          "kind": "congestion",
+          "inputs": {
+            "place_id": 10000028,
+            "date": "2026-11-26",
+            "text": "경복궁 2026-11-26 혼잡도 조회"
+          },
+          "status": "running",
+          "reason": null,
+          "produced": [],
+          "summary": "",
+          "as_of": null
+        },
+        {
+          "index": 2,
+          "kind": "congestion",
+          "inputs": {
+            "place_id": 10000028,
+            "date": "2026-11-26"
+          },
+          "status": "ok",
+          "reason": null,
+          "produced": [
+            "hanjeok:congestion/10000028@2026-11-26",
+            "wiki:concepts/congestion-diagnosis.md"
+          ],
+          "summary": "11월 26일 예보: 매우혼잡 (상위 3%)",
+          "as_of": "2026-11-24T01:45:29.403804Z"
+        }
+      ],
+      "answered": true
+    },
+    {
+      "kind": "policy",
+      "question": "혼잡 등급은 어떤 기준으로 나눠?",
+      "http_status": 200,
+      "events": [
+        "visit",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "answer",
+        "path",
+        "done"
+      ],
+      "terminal": [
+        "done",
+        {
+          "outcome": "answered",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b",
+          "elapsed_ms": 14951,
+          "generated_at": "2026-11-24T01:45:48.183540Z"
+        }
+      ],
+      "answers": [
+        {
+          "text": "혼잡 등급은 공공 혼잡 예보 데이터의 백분위수(percentile)를 기준으로 네 단계로 나뉩니다. 여유는 50퍼센타일 이하, 보통은 50~75퍼센타일, 혼잡은 75~90퍼센타일, 매우혼잡은 90퍼센타일 이상에 해당합니다. 원시 혼잡도 수치가 아닌 백분위수로 등급을 정하며, 시간대별 구분은 없습니다.",
+          "citations": [
+            {
+              "id": "wiki:concepts/congestion-diagnosis.md",
+              "kind": "policy",
+              "label": "Congestion Diagnosis"
+            }
+          ],
+          "partial": false
+        }
+      ],
+      "steps": [
+        {
+          "index": 0,
+          "kind": "scope",
+          "inputs": {},
+          "status": "ok",
+          "reason": null,
+          "produced": [],
+          "summary": "장소 이름 없음, 날짜 없음(으)로 읽었습니다",
+          "as_of": null
+        },
+        {
+          "index": 1,
+          "kind": "search_places",
+          "inputs": {
+            "text": "혼잡 등급 기준",
+            "limit": 5
+          },
+          "status": "running",
+          "reason": null,
+          "produced": [],
+          "summary": "",
+          "as_of": null
+        },
+        {
+          "index": 1,
+          "kind": "search_places",
+          "inputs": {
+            "text": "혼잡 등급 기준"
+          },
+          "status": "ok",
+          "reason": null,
+          "produced": [
+            "hanjeok:place/10038967",
+            "hanjeok:place/10050726",
+            "hanjeok:place/10036133",
+            "hanjeok:place/10007072",
+            "hanjeok:place/10039514"
+          ],
+          "summary": "5곳: 영양국제밤하늘보호공원, 전주공예품전시관, 결성향교, 연화사(서울), 선몽대",
+          "as_of": "2026-11-23T02:04:18.244Z"
+        },
+        {
+          "index": 2,
+          "kind": "policy",
+          "inputs": {
+            "text": "혼잡 등급 기준"
+          },
+          "status": "running",
+          "reason": null,
+          "produced": [],
+          "summary": "",
+          "as_of": null
+        },
+        {
+          "index": 2,
+          "kind": "policy",
+          "inputs": {
+            "text": "혼잡 등급 기준"
+          },
+          "status": "ok",
+          "reason": null,
+          "produced": [
+            "wiki:concepts/congestion-diagnosis.md",
+            "wiki:concepts/alternative-scoring.md",
+            "wiki:concepts/course-generation-policy.md"
+          ],
+          "summary": "문서 Congestion Diagnosis, Alternative Scoring, Course Generation Policy",
+          "as_of": null
+        }
+      ],
+      "answered": true
+    },
+    {
+      "kind": "alternatives",
+      "question": "여의도한강공원 대신 2026-12-01에 갈 만한 조용한 곳 있어?",
+      "http_status": 200,
+      "events": [
+        "visit",
+        "step",
+        "step",
+        "step",
+        "step",
+        "stopped"
+      ],
+      "terminal": [
+        "stopped",
+        {
+          "outcome": "failed",
+          "cause": "model_failed",
+          "message": "답을 만드는 모델을 쓸 수 없습니다. 잠시 뒤에 다시 물어봐 주세요."
+        }
+      ],
+      "answers": [],
+      "steps": [
+        {
+          "index": 0,
+          "kind": "scope",
+          "inputs": {},
+          "status": "ok",
+          "reason": null,
+          "produced": [],
+          "summary": "장소 1곳, 날짜 2026-12-01(으)로 읽었습니다",
+          "as_of": null
+        },
+        {
+          "index": 1,
+          "kind": "resolve",
+          "inputs": {
+            "names": [
+              "여의도한강공원"
+            ]
+          },
+          "status": "ok",
+          "reason": null,
+          "produced": [
+            "hanjeok:place/10009594"
+          ],
+          "summary": "여의도한강공원 (서울 영등포구)",
+          "as_of": "2026-11-23T02:04:18.244Z"
+        },
+        {
+          "index": 2,
+          "kind": "search_places",
+          "inputs": {
+            "text": "여의도한강공원 근처 조용한 공원",
+            "region_code": "11680",
+            "limit": 5
+          },
+          "status": "running",
+          "reason": null,
+          "produced": [],
+          "summary": "",
+          "as_of": null
+        },
+        {
+          "index": 2,
+          "kind": "search_places",
+          "inputs": {
+            "text": "여의도한강공원 근처 조용한 공원",
+            "region_code": "11680"
+          },
+          "status": "ok",
+          "reason": null,
+          "produced": [
+            "hanjeok:place/10011284",
+            "hanjeok:place/10011217",
+            "hanjeok:place/10011078",
+            "hanjeok:place/10011191",
+            "hanjeok:place/10010639"
+          ],
+          "summary": "5곳: 청담근린공원, 일원에코파크, 역삼개나리공원, 율현공원, 도산공원",
+          "as_of": "2026-11-23T02:04:18.244Z"
+        }
+      ],
+      "answered": false
+    },
+    {
+      "kind": "semantic_search",
+      "question": "서울에서 궁궐과 전통 건물을 볼 수 있는 관광지는 어디야?",
+      "http_status": 200,
+      "events": [
+        "visit",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "answer",
+        "path",
+        "done"
+      ],
+      "terminal": [
+        "done",
+        {
+          "outcome": "answered",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b",
+          "elapsed_ms": 35234,
+          "generated_at": "2026-11-24T01:46:52.295885Z"
+        }
+      ],
+      "answers": [
+        {
+          "text": "서울에서 궁궐과 전통 건물을 볼 수 있는 대표적인 관광지로는 조선왕조 제일의 법궁인 경복궁, 왕족의 사저였던 운현궁, 전통 한옥이 밀집된 북촌한옥마을과 남산골한옥마을, 그리고 유교 교육기관인 서울 문묘와 성균관이 있습니다.",
+          "citations": [
+            {
+              "id": "hanjeok:place/10000028",
+              "kind": "record",
+              "label": "경복궁"
+            },
+            {
+              "id": "hanjeok:place/10000325",
+              "kind": "record",
+              "label": "서울 운현궁"
+            },
+            {
+              "id": "hanjeok:place/10000279",
+              "kind": "record",
+              "label": "북촌한옥마을"
+            },
+            {
+              "id": "hanjeok:place/10005155",
+              "kind": "record",
+              "label": "남산골한옥마을"
+            },
+            {
+              "id": "hanjeok:place/10000323",
+              "kind": "record",
+              "label": "서울 문묘와 성균관"
+            }
+          ],
+          "partial": false
+        }
+      ],
+      "steps": [
+        {
+          "index": 0,
+          "kind": "scope",
+          "inputs": {},
+          "status": "ok",
+          "reason": null,
+          "produced": [],
+          "summary": "장소 이름 없음, 날짜 없음(으)로 읽었습니다",
+          "as_of": null
+        },
+        {
+          "index": 1,
+          "kind": "search_places",
+          "inputs": {
+            "text": "서울 궁궐 전통 건물 관광지",
+            "region_code": "11",
+            "limit": 5
+          },
+          "status": "running",
+          "reason": null,
+          "produced": [],
+          "summary": "",
+          "as_of": null
+        },
+        {
+          "index": 1,
+          "kind": "search_places",
+          "inputs": {
+            "text": "서울 궁궐 전통 건물 관광지"
+          },
+          "status": "refused",
+          "reason": "region_code 는 숫자 5자리입니다.",
+          "produced": [],
+          "summary": "조회하지 않았습니다",
+          "as_of": null
+        },
+        {
+          "index": 2,
+          "kind": "search_places",
+          "inputs": {
+            "text": "서울 궁궐 전통 건물 관광지",
+            "limit": 5
+          },
+          "status": "running",
+          "reason": null,
+          "produced": [],
+          "summary": "",
+          "as_of": null
+        },
+        {
+          "index": 2,
+          "kind": "search_places",
+          "inputs": {
+            "text": "서울 궁궐 전통 건물 관광지"
+          },
+          "status": "ok",
+          "reason": null,
+          "produced": [
+            "hanjeok:place/10000028",
+            "hanjeok:place/10000279",
+            "hanjeok:place/10005155",
+            "hanjeok:place/10000323",
+            "hanjeok:place/10000325"
+          ],
+          "summary": "5곳: 경복궁, 북촌한옥마을, 남산골한옥마을, 서울 문묘와 성균관, 서울 운현궁",
+          "as_of": "2026-11-23T02:04:18.244Z"
+        },
+        {
+          "index": 3,
+          "kind": "search_places",
+          "inputs": {
+            "text": "서울 궁궐 전통 건물 관광지",
+            "region_code": "11000",
+            "limit": 5
+          },
+          "status": "running",
+          "reason": null,
+          "produced": [],
+          "summary": "",
+          "as_of": null
+        },
+        {
+          "index": 3,
+          "kind": "search_places",
+          "inputs": {
+            "text": "서울 궁궐 전통 건물 관광지",
+            "region_code": "11000"
+          },
+          "status": "no_data",
+          "reason": null,
+          "produced": [],
+          "summary": "찾은 장소가 없습니다",
+          "as_of": "2026-11-23T02:04:18.244Z"
+        }
+      ],
+      "answered": true
+    }
+  ],
+  "passed": false,
+  "public_deployment": false,
+  "ready_http_status": 200,
+  "status": {
+    "ready": true,
+    "as_of": {
+      "export": "2026-11-23T02:04:18.244Z",
+      "wiki": "2026-10-09"
+    },
+    "counts": {
+      "places": 12106,
+      "related": 43087,
+      "events": 209,
+      "regions": 229
+    },
+    "generation": "765a93cc45a149e6dcf9f0352d8332e4cff58b3ce50736ed10b253c1d8dc0875",
+    "limits": {
+      "per_visitor": 20,
+      "per_day": 400
+    }
+  },
+  "sampled_peak_bytes": 302747648,
+  "samples": 5013,
+  "sample_interval_ms": 20,
+  "memory_limit_bytes": 536870912,
+  "swap_limit_bytes": 0,
+  "memory_events": {
+    "low": 0,
+    "high": 0,
+    "max": 0,
+    "oom": 0,
+    "oom_kill": 0
+  },
+  "oom_killed": false,
+  "image": "sha256:805073960242a7fd734d3a1ac1a58532347f188decd06658348eec9c2ba03f89",
+  "architecture": "amd64",
+  "runtime_constraints_passed": true,
+  "limitations": [
+    "amd64 emulation on ARM host",
+    "four actual questions only",
+    "not a full quality evaluation or long-duration load",
+    "20ms sampled cgroup peak includes sampler process",
+    "exact SQLite cosine replaces approximate Neo4j retrieval",
+    "alternatives case failed; preserved without retry or changing the model/gates",
+    "this is not a claim that all question types succeed"
+  ],
+  "source_commit": "26c1a95",
+  "snapshot_manifest": {
+    "database_sha256": "f1e0851240efa0646f70e1f4764c9d36a9a8dbf4460443982da92ad3f1c54c87",
+    "metadata": {
+      "embedding_model": "nvidia/nemotron-3.5-embed-1b@1024:input-type-v1:truncate-END:l2",
+      "wiki_embedding_model": "nvidia/nemotron-3.5-embed-1b@1024:input-type-v1:truncate-END:l2",
+      "wiki_revision": "7fc19c0",
+      "wiki_commit": "7fc19c0c4a034868866bcf5a920e3f82050830c7",
+      "wiki_as_of": "2026-10-09",
+      "wiki_embedding_producer": "nvidia/Nemotron-3.5-Embed-1B-BF16@e24ca1e346bcc53572bd7bdc02b3e8ebf66c197c:1024:chat-template-passage-v1:cpu-fp32:l2",
+      "wiki_artifact_sha256": "b09fecfd5a3d80953d01aed052319ad61544f6086ecdeb0386674e45e3a66b56",
+      "wiki_promotion_sha256": "620810f5f18c203068ac412d7b6e4ee8b96292ff73bee8d6bb527ffcf3261e29",
+      "schema_version": 1,
+      "exported_at": "2026-11-23T02:04:18.244Z",
+      "export_sha256": "9d82fb933020cf680d445d51f64b6e5c8ce79e1f5671f746f371dccb0d349849",
+      "source": "hanjeok",
+      "counts": {
+        "places": 12106,
+        "related": 43087,
+        "events": 209,
+        "regions": 229
+      },
+      "wiki_docs": 18,
+      "wiki_chunks": 83,
+      "generation": "765a93cc45a149e6dcf9f0352d8332e4cff58b3ce50736ed10b253c1d8dc0875"
+    },
+    "gzip_file": "snapshot-f1e0851240efa0646f70e1f4764c9d36a9a8dbf4460443982da92ad3f1c54c87.sqlite.gz",
+    "gzip_sha256": "844adc8e087ae3814253969935e473bf3a832a7900e1f91fa13cf6e39e296cbd",
+    "database_bytes": 66617344,
+    "gzip_bytes": 48943587
+  },
+  "core_functional_passed": true,
+  "all_functional_cases_passed": false
+}

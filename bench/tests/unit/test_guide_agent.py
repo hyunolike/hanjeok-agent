@@ -90,6 +90,44 @@ def test_answered_steps_then_answer_then_path_then_done():
     assert result.model_calls == 3
 
 
+@pytest.mark.parametrize("strategy", ["graph", "vector"])
+def test_dated_alternative_request_cannot_substitute_semantic_place_search(strategy):
+    model = ScriptedModel(
+        action("search_places", query="가람궁 대안 목록", region_code="11110"),
+        answer("한적이 정한 대안은 솔내 한옥마을, 물빛 서원, 달맞이 숲길입니다.", ALTERNATIVES),
+    )
+    result, events = run(model, strategy=strategy)
+    assert result.outcome == "answered"
+    assert ALTERNATIVES in result.citations
+    steps = finished_steps(events)
+    assert any(s["kind"] == "alternatives" and s["status"] == "ok" for s in steps)
+    assert not any(s["kind"] == "search_places" for s in steps)
+
+
+@pytest.mark.parametrize("question", [QUESTION,
+    "2026-10-17 기준 가람궁의 대안 목록을 한적이 정한 순서대로 알려줘."])
+def test_alternative_claim_without_dated_alternative_record_is_never_shown(question):
+    bad = answer("가람궁의 그날 대안 목록은 한적이 정한 순서입니다.", "hanjeok:place/101")
+    result, events = run(ScriptedModel(bad, bad), question=question)
+    assert (result.outcome, result.cause) == ("failed", "invalid_citations")
+    assert "answer" not in names(events)
+
+
+def test_dated_replacement_request_cannot_hide_missing_source_with_different_wording():
+    bad = answer("한적이 정한 순서로 안내해 드렸습니다.", "hanjeok:place/101")
+    result, events = run(ScriptedModel(bad, bad))
+    assert (result.outcome, result.cause) == ("failed", "invalid_citations")
+    assert "answer" not in names(events)
+
+
+def test_alternative_policy_question_does_not_force_a_live_list():
+    model = ScriptedModel(action("policy", query="대안 점수 기준"),
+                          answer("대안 점수는 서비스가 정합니다.", "wiki:concepts/alternative-scoring.md"))
+    result, events = run(model, question="2026-10-17 가람궁의 대안 목록 점수 기준은 어떻게 돼?")
+    assert result.outcome == "answered"
+    assert not any(s["kind"] == "alternatives" for s in finished_steps(events))
+
+
 def test_citation_choices_follow_only_this_questions_fetched_records():
     model = ScriptedModel(*LOOK_BOTH, GOOD)
     result, _ = run(model)
@@ -156,7 +194,7 @@ def test_scope_and_resolve_are_emitted_before_the_model_is_asked_anything():
     agent = Agent(
         Watching(GOOD_AFTER_RESOLVE), ExportPlaces(), FakePolicy(), replay_live(), clock=Clock()
     )
-    agent.ask(QUESTION, lambda name, data: events.append((name, data)), today=TODAY)
+    agent.ask("가람궁은 어떤 곳이야?", lambda name, data: events.append((name, data)), today=TODAY)
 
     assert seen_before_first_call == ["scope", "resolve"]
 
@@ -208,7 +246,7 @@ def test_a_refused_lookup_is_a_visible_step_and_the_model_is_told_why():
         answer("10월 17일 가람궁은 매우혼잡 예보입니다.", CONGESTION),
     )
 
-    result, events = run(model)
+    result, events = run(model, question="이번 토요일 가람궁은 얼마나 붐벼?")
 
     refused = finished_steps(events)[2]
     assert (refused["status"], refused["inputs"]) == ("refused", {"place_id": 101})
@@ -224,7 +262,7 @@ def test_an_answer_with_an_unfetched_citation_gets_one_repair():
         answer("10월 17일 가람궁은 매우혼잡 예보입니다.", CONGESTION),
     )
 
-    result, events = run(model)
+    result, events = run(model, question="이번 토요일 가람궁은 얼마나 붐벼?")
 
     assert result.outcome == "answered"
     assert dict(events)["answer"]["text"] == "10월 17일 가람궁은 매우혼잡 예보입니다."
@@ -280,7 +318,7 @@ def test_running_short_of_time_withdraws_the_lookups_and_marks_the_answer_partia
             clock.now += 26
             return super().decide(*args, **kwargs)
 
-    model = Slow(*LOOK_BOTH, answer("10월 17일 가람궁은 매우혼잡 예보입니다.", CONGESTION))
+    model = Slow(*LOOK_BOTH, GOOD)
 
     result, events = run(model, clock=clock)
 
@@ -399,8 +437,8 @@ def test_a_follow_up_takes_its_place_and_date_from_the_earlier_question():
 def test_the_two_strategies_show_the_model_the_same_thing_except_the_offered_lookups():
     reply = answer("가람궁은 한빛시 가람구의 옛 궁궐입니다.", "hanjeok:place/101")
     graph_model, vector_model = ScriptedModel(reply), ScriptedModel(reply)
-    run(graph_model, strategy="graph")
-    run(vector_model, strategy="vector")
+    run(graph_model, question="가람궁은 어떤 곳이야?", strategy="graph")
+    run(vector_model, question="가람궁은 어떤 곳이야?", strategy="vector")
 
     graph_call, vector_call = graph_model.calls[0], vector_model.calls[0]
     assert graph_call["system"] == vector_call["system"] == SYSTEM

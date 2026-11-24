@@ -32,7 +32,7 @@ describe('EvalReportView', () => {
 
   it('모든 점수 옆에 몇 문항으로 계산했는지 있다', () => {
     render(<EvalReportView lang="ko" result={report} />)
-    expect(screen.getByTestId('metric-faithfulness-graph')).toHaveTextContent('0.5010문항 중 10문항')
+    expect(screen.getByTestId('metric-faithfulness-graph')).toHaveTextContent('0.5010문항 중 9문항')
     expect(screen.getByTestId('metric-id_recall-graph')).toHaveTextContent('0.3710문항 중 10문항')
     // 채점하지 못한 문항은 분모에 남고 분자에서 빠진다.
     expect(screen.getByTestId('metric-context_precision-vector')).toHaveTextContent('0.5010문항 중 3문항')
@@ -52,7 +52,7 @@ describe('EvalReportView', () => {
 
   it('금지 행동은 검사한 수와 함께 센다', () => {
     render(<EvalReportView lang="ko" result={report} />)
-    expect(screen.getByTestId('forbidden-UNCITED_CLAIM-vector')).toHaveTextContent('0건 · 12문항 검사')
+    expect(screen.getByTestId('forbidden-UNCITED_CLAIM-vector')).toHaveTextContent('1건 · 12문항 검사')
     expect(screen.getByTestId('abstention-graph')).toHaveTextContent('2문항 중 2문항을 거절')
   })
 
