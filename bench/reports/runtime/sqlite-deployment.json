@@ -1,0 +1,78 @@
+{
+  "source_commit": "5c576f94b0296cf3823ad77e932d52381f036735",
+  "backend": "sqlite",
+  "public_deployment_performed": true,
+  "render": {
+    "id": "srv-dc2epkrrjlhs73cgqp5g",
+    "name": "hanjeok-guide",
+    "url": "https://hanjeok-guide.onrender.com",
+    "plan": "free",
+    "branch": "feat/guide-512mb-runtime",
+    "deployId": "dep-dc2evouk1f9s73fpjemg",
+    "backend": "sqlite",
+    "deployed_commit": "5c576f94b0296cf3823ad77e932d52381f036735",
+    "deploy_status_observed": "live",
+    "ready_http_status": 200,
+    "status_http_status": 200,
+    "corpus_generation": "765a93cc45a149e6dcf9f0352d8332e4cff58b3ce50736ed10b253c1d8dc0875",
+    "corpus_counts": {
+      "places": 12106,
+      "related": 43087,
+      "events": 209,
+      "regions": 229
+    }
+  },
+  "frontend": {
+    "url": "https://agent.hanjeok.com/ko/ask",
+    "deployment_id": "6cd94b67-1e37-4ed0-853f-70c33fabde83",
+    "deployment_url": "https://6cd94b67.hanjeok-agent.pages.dev",
+    "environment": "Production",
+    "branch_label": "main",
+    "git_main_merged": false,
+    "guide_base_url": "https://hanjeok-guide.onrender.com",
+    "build_passed": true,
+    "old_guide_url_absent_from_built_js": true
+  },
+  "browser_flow": {
+    "tested_on": "https://agent.hanjeok.com/ko/ask",
+    "question": "경복궁은 2026-11-26에 얼마나 붐벼?",
+    "answer_visible": true,
+    "cited_record_visible": "경복궁 혼잡 예보 (11월 26일)",
+    "model_visible": "nvidia/nemotron-3-ultra-550b-a55b",
+    "displayed_elapsed_seconds": 7.6,
+    "screenshot": "sqlite-public-forecast.jpg",
+    "screenshot_sha256": "b77649e42694856d91c8c241d74b10028d1219d58dbbd5a547f0db872d32e818"
+  },
+  "memory": {
+    "report": "sqlite-512mb-source-guard-amd64.json",
+    "image": "sha256:06db4b81ded72cda51d064b607271c77c6ed5bfda161053852be422c88711f32",
+    "cap_bytes": 536870912,
+    "sampled_peak_bytes": 312135680,
+    "no_oom": true,
+    "swap_bytes": 0,
+    "constraints_passed": true,
+    "measured_environment": "local amd64 emulation on ARM, not Render metrics"
+  },
+  "verification": {
+    "backend_tests_passed": 525,
+    "backend_deselected": 43,
+    "frontend_tests_passed": 296,
+    "frontend_test_files": 27,
+    "ruff_passed": true,
+    "blueprint_valid": true,
+    "cors_allow_origin": "https://agent.hanjeok.com",
+    "snapshot_database_sha256": "f1e0851240efa0646f70e1f4764c9d36a9a8dbf4460443982da92ad3f1c54c87",
+    "wiki_artifact_sha256": "b09fecfd5a3d80953d01aed052319ad61544f6086ecdeb0386674e45e3a66b56"
+  },
+  "all_live_smoke_cases_passed": false,
+  "sqlite_full_60_question_evaluation_run": false,
+  "new_billing_enabled": false,
+  "aura_changed": false,
+  "limitations": [
+    "postguard public forecast and policy source checks passed, alternatives reached correct API but model call failed",
+    "postguard local alternatives and semantic search answered, policy model call failed; every failed run preserved",
+    "browser forecast answer and original citation visibly verified; not a claim every question succeeds",
+    "free platform sleep/provider quotas may affect availability; long-duration load and full SQLite quality evaluation not run",
+    "historical Neo4j quality scores are not SQLite quality scores"
+  ]
+}

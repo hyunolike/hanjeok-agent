@@ -83,3 +83,23 @@ sqlite-public-sse.json은 source_verified=false/passed=false 그대로 보존한
   합성 golden 보고서와 화면 기대 분모9/경고1건을 갱신했다. 과거 실제 평가는 그대로다.
 - 백엔드525 passed/43 deselected, 프론트27파일296 tests passed, Ruff clean.
   수정된 image06db4b81은 별도 실제 512MiB 검사를 진행했다. 이전 이미지 결과를 최종으로 쓰지 않는다.
+
+## 공개 배포와 최종 관측
+
+Render Free의 수정본5c576f9가 live이고 ready/status200과 정확한 코퍼스 건수를 확인했다.
+수정 후 공개 예보/정책은 원본 lookup/인용 검사 통과, 대안은 정확한 날짜별 API 조회
+뒤 모델 호출 실패였다. 이 결과를 passed=false로 그대로 보존했다.
+최종 소스 이미지06db4b81의 512MiB/no-swap 표본 최대는312135680bytes(297.68MiB),
+OOM0이었다. 예보/대안/일반 검색은 원본 인용 포함 answered, 정책은 model_failed였다.
+무료 모델의 가용성/응답 변동까지 해결했다고 주장하지 않는다.
+
+Cloudflare Pages Production/main에 새 API URL을 포함한 빌드를 배포했다.
+배포6cd94b67-1e37-4ed0-853f-70c33fabde83, Render deploy dep-dc2evouk1f9s73fpjemg.
+실제 Chrome에서 agent.hanjeok.com/ko/ask를 열어 경복궁 예보 질문을 제출했고,
+7.6초 표시와 실제 답변/경복궁 혼잡 예보 원본 인용이 화면에 나왔다.
+sqlite-public-forecast.jpg와 sqlite-deployment.json이 실제 관측 증거다.
+검증 화면을 얻기 위해 기존에 차단된 다운로드/잠금 보호를 우회한 것은 아니다.
+SQLite가 Aura 인증 자체를 필요 없게 했고 공개 HTTP 화면만 정상 브라우저 API로 검사했다.
+
+백엔드525/43deselected, 프론트296/27files, Ruff clean과 최종 Pages 빌드 성공을 기록했다.
+배포 기록을 저장하면서 모델/검사/코드를 추가로 바꾸지 않는다. main 병합/결제 추가는 없었다.

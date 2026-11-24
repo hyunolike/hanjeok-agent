@@ -60,11 +60,11 @@ mode=ro cache reader; `GUIDE_STORE=sqlite`, `GUIDE_SNAPSHOT_DB`, `GUIDE_SNAPSHOT
 Files: `bench/deploy/verify-sqlite-memory.py`, `bench/reports/runtime/sqlite-*.json`,
 this plan, review record; frontend production URL configuration only after server ready.
 
-- [ ] Build amd64 image and run real forecast/policy/alternatives under 512MiB/no-swap.
-- [ ] Record actual image/peak/OOM/outcomes; review final source in fresh context and fix blockers.
-- [ ] Push reviewed feature branch; create Render Free service using existing authorized workspace/key.
-- [ ] Verify remote ready/status and real SSE, then rebuild/deploy frontend and inspect public flow.
-- [ ] Record achieved results and concrete external blockers; never claim unobserved completion.
+- [x] Build amd64 image and run real forecast/policy/alternatives under 512MiB/no-swap; record failures too.
+- [x] Record actual image/peak/OOM/outcomes; review final source in fresh context and fix blockers.
+- [x] Push reviewed feature branch; create Render Free service using existing authorized workspace/key.
+- [x] Verify remote ready/status and real SSE, then rebuild/deploy frontend and inspect public flow.
+- [x] Record achieved results and remaining model failures; never claim all-case success.
 
 ## Progress
 
@@ -98,3 +98,13 @@ this plan, review record; frontend production URL configuration only after serve
   Synthetic report includes the fake model's newly blocked live-list omission; frontend numeric assertions
   reflect that measured synthetic result. Historical actual reports unchanged. Frontend build completed
   with new URL and compiled bundle has no old GCP guide URL; awaiting corrected remote service.
+- Deployment complete: Render dep-dc2evouk1f9s73fpjemg live at source5c576f9; public ready/status200,
+  source-verified forecast/policy. Alternatives reached exact dated API but model call failed; public
+  postguard report passed=false preserved. Local final source image06db4b81:312135680bytes/297.68MiB,
+  noOOM/noSwap; forecast/alternatives/semantic answered, one policy model_failed. No all-case pass claimed.
+- Cloudflare Pages Production/main deployment6cd94b67-1e37-4ed0-853f-70c33fabde83 published the new
+  Render URL. Production branch label is not a Git main merge. Browser at agent.hanjeok.com/ko/ask
+  visibly answered actual Gyeongbokgung forecast, showed original record and Ultra/7.6seconds. Screenshot
+  sqlite-public-forecast.jpg; complete receipt sqlite-deployment.json. Existing feature branch preserved.
+- Remaining limitations: provider/model failures in live probes, no full SQLite60-question quality run
+  or long-duration native Render memory measurement. Historical Neo4j artifacts unchanged.

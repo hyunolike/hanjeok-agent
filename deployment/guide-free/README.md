@@ -7,6 +7,18 @@ Python HTTP API만 실행하는 배포 구성이다. 현재 무료 프로필은 
 
 ## 현재 무료 프로필: SQLite
 
+2026-11-24 공개 배포를 완료했다. [실제 질문 화면](https://agent.hanjeok.com/ko/ask)은
+`https://hanjeok-guide.onrender.com`을 사용한다. 공개 ready/status200, 실제 화면의
+경복궁 예보 답변과 근거 레코드, Ultra 모델/7.6초 표시를 확인했다.
+[배포 확인 기록](../../bench/reports/runtime/sqlite-deployment.json)과
+[실제 화면](../../bench/reports/runtime/sqlite-public-forecast.jpg)을 보존했다.
+
+모든 질문이 성공한 것은 아니다. 수정 후 공개 예보/정책은 조회와 인용 검사를 통과했지만
+대안은 올바른 API 조회 뒤 모델 호출이 실패한 사례가 남아 있다. 로컬 512MiB 검사에서는
+대안/일반 검색/예보가 답변됐고 정책 한 건이 모델 호출 실패였다. 원시 실패 보고서는
+passed=false를 유지한다. 전체 SQLite 60문항 평가는 미실행이며 과거 Neo4j 점수를 재사용하지 않는다.
+최종 소스 이미지의 로컬 512MiB/no-swap 검사 표본 최대는297.7MiB, OOM0이었다.
+
 `render.yaml`과 `env.example`은 `GUIDE_STORE=sqlite`를 선택한다. 필요한 시크릿은
 기존 `NVIDIA_API_KEY`이며 Aura 접속값은 필요 없다. API의 일반 기본값은 기존
 `neo4j`이므로 SQLite 선택을 생략하면 안 된다. 오타나 파일 오류 때 다른 저장소로 폴백하지 않는다.
@@ -246,6 +258,8 @@ python3 bench/deploy/verify-api-memory.py \
 Render/Koyeb의 무료 절전과 요청 자원 제한도 적용된다.
 [Render](https://render.com/docs/free), [Koyeb](https://www.koyeb.com/docs/reference/instances),
 [AuraDB](https://neo4j.com/docs/aura/quotas-and-limits/).
+
+아래는 SQLite 전환 이전 Neo4j 프로필의 역사적 검증 기록이다.
 
 2026-11-23 Super를 사용한 순위/등급 검사 코드의 amd64 이미지(ARM64 호스트 에뮬레이션)는
 50회 fixture 반복을 통과했고, 512MiB 제한에서 관측한 최대 메모리는 331.6MiB였다.
