@@ -134,7 +134,8 @@ def test_congestion_says_the_grade_in_korean_and_brings_its_policy_page():
         p for p in subject.fetched.passages if p.id == "hanjeok:congestion/101@2026-10-17"
     )
     assert outcome.status == "ok"
-    assert outcome.summary == "10월 17일 예보: 매우혼잡 (상위 8%)"
+    assert outcome.summary == "10월 17일 예보: 매우혼잡 (붐비는 순 상위 8%)"
+    assert "전국에서 붐비는 순 상위 8%" in passage.text
     assert "매우혼잡" in passage.text and "VERY_CROWDED" not in passage.text
     assert "10월 20일(2026-10-20) 보통" in passage.text
     assert outcome.produced == (
@@ -303,3 +304,15 @@ def test_a_policy_question_gets_the_page_its_words_name_before_anything_search_f
         "wiki:decisions/keep-llm-out-of-ranking.md",
     )
     assert subject.run("policy", {"text": "그 밖의 것"}).status == "no_data"
+
+
+def test_rank_label_turns_the_axis_for_quiet_places():
+    # "상위 100%" for the quietest place reads as "top of the country" — the
+    # opposite. Hanjeok's percentileLabel names the axis and turns it.
+    from guide.lookups import _rank_label
+
+    assert _rank_label(0.0, "RELAXED") == "한적한 순 상위 1%"
+    assert _rank_label(12.4, "RELAXED") == "한적한 순 상위 12%"
+    assert _rank_label(92.0, "VERY_CROWDED") == "붐비는 순 상위 8%"
+    assert _rank_label(100.0, "CROWDED") == "붐비는 순 상위 1%"
+    assert _rank_label(60.0, "NORMAL") == "붐비는 순 상위 40%"

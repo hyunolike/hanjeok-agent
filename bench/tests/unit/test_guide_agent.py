@@ -699,3 +699,25 @@ def test_only_the_screens_date_can_be_written_into_a_lookup():
 
     assert model.calls[0]["schema"]["properties"]["date"]["enum"] == ["2026-10-17", None]
     assert "enum" not in _schema(("congestion", "answer"))["properties"]["date"]
+
+
+def test_citation_ids_copied_into_the_sentence_are_removed():
+    # Observed in production (2026-11-26): "…나타났습니다. [hanjeok:congestion/…]".
+    # The citations field carries the id; in the sentence a visitor cannot read it.
+    copied = answer(
+        f"10월 17일 가람궁은 매우혼잡 예보입니다 [{CONGESTION}]. "
+        f"한적이 정한 순서로 솔내 한옥마을, 물빛 서원, 달맞이 숲길이 대안입니다.[{ALTERNATIVES}] "
+        "[wiki:concepts/alternative-scoring.md]",
+        CONGESTION,
+        ALTERNATIVES,
+        "wiki:concepts/alternative-scoring.md",
+    )
+    result, events = run(ScriptedModel(*LOOK_BOTH, copied))
+
+    text = dict(events)["answer"]["text"]
+    assert "hanjeok:" not in text and "wiki:" not in text and "[" not in text
+    assert text == (
+        "10월 17일 가람궁은 매우혼잡 예보입니다. "
+        "한적이 정한 순서로 솔내 한옥마을, 물빛 서원, 달맞이 숲길이 대안입니다."
+    )
+    assert result.answer == text

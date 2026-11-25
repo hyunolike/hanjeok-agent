@@ -83,7 +83,12 @@ UNKNOWN_SCREEN_PLACE = (
 )
 
 Emit = Callable[[str, dict], None]
-_INTERNAL_ID = re.compile(r"\s*\(\s*place_id\s*\d+\s*\)|\s*,?\s*place_id\s*\d+")
+_INTERNAL_ID = re.compile(
+    r"\s*\(\s*place_id\s*\d+\s*\)|\s*,?\s*place_id\s*\d+"
+    # A citation id copied into the sentence ("…입니다 [hanjeok:congestion/1@2026-11-26]").
+    # The citations field carries it; in the text it is noise a visitor cannot read.
+    r"|\s*\[\s*(?:hanjeok|wiki):[^\]]*\]"
+)
 
 
 @dataclass(slots=True)

@@ -58,7 +58,7 @@ const congestionGaram: Frame = {
     inputs: { place_id: 101, date: '2026-10-17' },
     status: 'ok',
     produced: ['hanjeok:congestion/101@2026-10-17', 'wiki:concepts/congestion-diagnosis.md'],
-    summary: '10월 17일 예보: 매우혼잡 (상위 8%)',
+    summary: '10월 17일 예보: 매우혼잡 (붐비는 순 상위 8%)',
     as_of: '2026-10-13T14:20:05Z',
   },
 }
@@ -349,7 +349,7 @@ export const RECORDED_AFTER_CHOICE: Frame[] = [
       inputs: { place_id: 140, date: '2026-10-17' },
       status: 'ok',
       produced: ['hanjeok:congestion/140@2026-10-17', 'wiki:concepts/congestion-diagnosis.md'],
-      summary: '10월 17일 예보: 보통 (상위 46%)',
+      summary: '10월 17일 예보: 보통 (붐비는 순 상위 46%)',
       as_of: '2026-10-13T14:25:11Z',
     },
   },

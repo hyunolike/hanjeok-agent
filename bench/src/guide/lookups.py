@@ -107,8 +107,18 @@ class Fetched:
             self.labels[passage.id] = passage.label
 
 
-def _percent_top(percentile: float) -> int:
-    return max(1, round(100 - percentile))
+def _rank_label(percentile: float, grade: str) -> str:
+    """Hanjeok's `percentileLabel`, kept in the same words.
+
+    `percentile` is the share of places quieter than this one: the larger, the
+    busier. Written as "상위 {100 - p}%" for every grade, the quietest places
+    read "상위 100%" — "top of the country", the opposite of what is meant
+    (Hanjeok fixed the same mistake on its own screens). So the axis is named,
+    and for a quiet place it is turned: quietness first.
+    """
+    if grade == "RELAXED":
+        return f"한적한 순 상위 {max(1, round(percentile))}%"
+    return f"붐비는 순 상위 {max(1, round(100 - percentile))}%"
 
 
 def _day(value: str) -> str:
@@ -387,7 +397,7 @@ class Lookups:
             )
         text = (
             f"{result.name} {_day(day)}({day}) 혼잡 예보: {GRADE_KO[result.grade]} "
-            f"(전국 대비 상위 {_percent_top(result.percentile)}%, 집중률 {result.concentration:g})"
+            f"(전국에서 {_rank_label(result.percentile, result.grade)}, 집중률 {result.concentration:g})"
         )
         if result.better_dates:
             better = ", ".join(
@@ -401,7 +411,7 @@ class Lookups:
         return Outcome(
             "ok",
             inputs,
-            f"{_day(day)} 예보: {GRADE_KO[result.grade]} (상위 {_percent_top(result.percentile)}%)",
+            f"{_day(day)} 예보: {GRADE_KO[result.grade]} ({_rank_label(result.percentile, result.grade)})",
             produced=tuple(produced),
             as_of=result.fetched_at,
         )
