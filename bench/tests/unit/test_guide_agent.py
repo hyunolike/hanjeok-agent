@@ -721,3 +721,9 @@ def test_citation_ids_copied_into_the_sentence_are_removed():
         "한적이 정한 순서로 솔내 한옥마을, 물빛 서원, 달맞이 숲길이 대안입니다."
     )
     assert result.answer == text
+
+
+def test_system_forbids_the_words_hanjeok_never_shows():
+    # Hanjeok's screens never say these (its AGENTS.md); the answers are shown there as written.
+    for word in ("추천", "인기", "명소", "명당", "실시간"):
+        assert f"'{word}'" in SYSTEM
