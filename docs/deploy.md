@@ -24,7 +24,7 @@ flowchart LR
 | 프론트 프로젝트 | Cloudflare Pages `hanjeok-agent`, Production `main` |
 | 안내 API | `https://hanjeok-guide.onrender.com` |
 | Render 서비스 | `hanjeok-guide`, `srv-dc2epkrrjlhs73cgqp5g`, Free, Singapore |
-| 소스 | `feat/guide-512mb-runtime`, 배포 확인 커밋 `5c576f9` |
+| 소스 | `production` 브랜치(마지막 릴리즈 태그), 자동 배포 |
 | 이미지 정의 | [`bench/Dockerfile.api`](../bench/Dockerfile.api), context `bench/` |
 | 공개 프로필 | [`deployment/guide-free/render.yaml`](../deployment/guide-free/render.yaml), `GUIDE_STORE=sqlite` |
 | 프론트 패키징 | Next.js 16 + vinext → ESM Pages Worker와 정적 자산 |
@@ -52,10 +52,14 @@ API 시작 시 원본 해시와 스키마, 건수, 두 코퍼스 벡터 식별�
 
 ## 배포 순서
 
-1. 작업 브랜치에 코드와 검증한 SQLite gzip/manifest를 커밋하고 푸시한다.
-2. 로컬 이미지와 테스트를 확인한다. 실제 모델 검사는 기존 NVIDIA 키와 호출 한도를 사용한다.
-3. Render에서 Dockerfile/context와 Free 플랜을 확인하고 지정 커밋을 배포한다.
-   현재 서비스는 자동 배포를 사용하지 않으므로 Git push만으로 새 버전이 올라가지는 않는다.
+1. 작업 브랜치에 코드와 검증한 SQLite gzip/manifest를 커밋하고 PR로 `main`에 머지한다.
+   커밋 제목은 Conventional Commits(`feat:`, `fix:`, `docs:` …)를 따른다 — 버전과
+   변경 기록이 거기서 나온다.
+2. `main`의 `build`가 통과하면 `release` 워크플로가 릴리즈 PR(`chore(main): release x.y.z`)을
+   만들거나 고친다. `main`에 머지하는 것만으로는 배포되지 않는다.
+3. 릴리즈 PR을 머지하면 `build`가 한 번 더 돌고, 통과하면 태그 `vX.Y.Z`와 GitHub Release가
+   생기고 `production` 브랜치가 그 커밋으로 옮겨진다. Render는 `production`을 자동 배포한다.
+   되돌릴 때는 `git push --force origin vX.Y.Z:production`(이전 태그)이다.
 4. API의 ready/status와 실제 SSE 질문, 원본 인용 및 CORS를 확인한다.
 5. 새 API 주소를 프론트 환경 변수에 넣고 다시 빌드한 뒤 Pages 운영 환경에 배포한다.
 6. 공개 사용자 도메인에서 질문과 최종 답변이 실제로 보이는지 확인한다.
