@@ -1,0 +1,39 @@
+{
+  "checked_at": "2026-11-23T06:21:34.478072+00:00",
+  "checkpoint": "nvidia/Nemotron-3.5-Embed-1B-BF16@e24ca1e346bcc53572bd7bdc02b3e8ebf66c197c:1024:chat-template-passage-v1:l2",
+  "api_model": "nvidia/nemotron-3.5-embed-1b@1024:input-type-v1:truncate-END:l2",
+  "torch": "2.14.1",
+  "transformers": "5.20.0",
+  "device": "cpu",
+  "dtype": "bfloat16",
+  "attention": "eager",
+  "thresholds": {
+    "minimum_cosine": 0.999,
+    "maximum_component_error": 0.005
+  },
+  "anchors": [
+    {
+      "id": "wiki:concepts/alternative-scoring.md#0",
+      "text_sha256": "7743992255325cb426dd20ab68f7660b9bd27d3f8744e6a36aa84646f861a58b",
+      "cosine": 0.9999801419041275,
+      "maximum_component_error": 0.0009842775762081146
+    },
+    {
+      "id": "wiki:concepts/alternative-scoring.md#1",
+      "text_sha256": "330ec1e6df2a752c1263102389eecdde75352206b80d9205621e66c0d042c58b",
+      "cosine": 0.9999847835813068,
+      "maximum_component_error": 0.0010181069374084473
+    },
+    {
+      "id": "wiki:concepts/alternative-scoring.md#2",
+      "text_sha256": "559273d4c30b873a35eabd51ce42fb6cff0032895f048436e43a16050933f2ef",
+      "cosine": 0.9999445028899386,
+      "maximum_component_error": 0.00592556968331337
+    }
+  ],
+  "accepted_for_load": false,
+  "server_model_unchanged": true,
+  "error_category": "hosted_reference_mismatch",
+  "elapsed_s": 44.35794850002276,
+  "peak_operator_rss_bytes": 1721122816
+}

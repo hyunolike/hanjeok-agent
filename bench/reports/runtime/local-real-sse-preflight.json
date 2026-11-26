@@ -1,0 +1,73 @@
+{
+  "scope": "local ASGI HTTP/SSE; real local Neo4j, NVIDIA and Hanjeok; not public deployment",
+  "rows": [
+    {
+      "question": "경복궁은 2026-11-25에 얼마나 붐벼?",
+      "http_status": 200,
+      "events": [
+        "visit",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "answer",
+        "path",
+        "done"
+      ],
+      "terminal": [
+        "done",
+        {
+          "outcome": "answered",
+          "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "elapsed_ms": 7543,
+          "generated_at": "2026-11-23T07:28:42.764515Z"
+        }
+      ],
+      "answer_citations": [
+        [
+          {
+            "id": "hanjeok:congestion/10000028@2026-11-25",
+            "kind": "record",
+            "label": "경복궁 혼잡 예보 (11월 25일)"
+          }
+        ]
+      ]
+    },
+    {
+      "question": "혼잡 등급은 어떤 기준으로 나눠?",
+      "http_status": 200,
+      "events": [
+        "visit",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "answer",
+        "path",
+        "done"
+      ],
+      "terminal": [
+        "done",
+        {
+          "outcome": "answered",
+          "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "elapsed_ms": 15356,
+          "generated_at": "2026-11-23T07:28:58.148207Z"
+        }
+      ],
+      "answer_citations": [
+        [
+          {
+            "id": "wiki:concepts/congestion-diagnosis.md",
+            "kind": "policy",
+            "label": "Congestion Diagnosis"
+          }
+        ]
+      ]
+    }
+  ],
+  "ready_http_status": 200
+}

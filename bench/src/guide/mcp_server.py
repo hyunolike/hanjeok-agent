@@ -84,7 +84,13 @@ def build_server(runtime: Runtime) -> MCPServer:
                 }
         context = {k: v for k, v in (("place_id", place_id), ("date", date)) if v is not None}
         current = snapshot()
-        visit = runtime.visits.open(visit_id)
+        from guide.visits import VisitCapacity
+
+        try:
+            visit = runtime.visits.open(visit_id)
+        except VisitCapacity:
+            return {"outcome": "failed", "cause": "usage_limit", "scope": "day",
+                    "retry_after_s": 30}
         agent = Agent(
             runtime.model,
             current.places,

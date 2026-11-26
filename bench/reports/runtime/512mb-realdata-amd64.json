@@ -1,0 +1,101 @@
+{
+  "checked_at": "2026-11-23T07:47:48.175671+00:00",
+  "scope": "real production export/wiki and real NVIDIA/Hanjeok; local external Neo4j, not Aura/Render",
+  "questions": [
+    {
+      "http_status": 200,
+      "events": [
+        "visit",
+        "step",
+        "step",
+        "step",
+        "step",
+        "answer",
+        "path",
+        "done"
+      ],
+      "terminal": [
+        "done",
+        {
+          "outcome": "answered",
+          "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "elapsed_ms": 9240,
+          "generated_at": "2026-11-23T07:48:25.500486Z"
+        }
+      ],
+      "citations": [
+        [
+          {
+            "id": "hanjeok:congestion/10000028@2026-11-25",
+            "kind": "record",
+            "label": "경복궁 혼잡 예보 (11월 25일)"
+          }
+        ]
+      ]
+    },
+    {
+      "http_status": 200,
+      "events": [
+        "visit",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "answer",
+        "path",
+        "done"
+      ],
+      "terminal": [
+        "done",
+        {
+          "outcome": "answered",
+          "model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+          "elapsed_ms": 14425,
+          "generated_at": "2026-11-23T07:48:40.120206Z"
+        }
+      ],
+      "citations": [
+        [
+          {
+            "id": "wiki:concepts/congestion-diagnosis.md",
+            "kind": "policy",
+            "label": "Congestion Diagnosis"
+          }
+        ]
+      ]
+    }
+  ],
+  "passed": true,
+  "export_sha256": "9d82fb933020cf680d445d51f64b6e5c8ce79e1f5671f746f371dccb0d349849",
+  "place_counts": {
+    "places": 12106,
+    "related": 43087,
+    "events": 209,
+    "regions": 229
+  },
+  "wiki_chunks": 83,
+  "wiki_artifact_sha256": "b09fecfd5a3d80953d01aed052319ad61544f6086ecdeb0386674e45e3a66b56",
+  "ready_http_status": 200,
+  "sampled_peak_bytes": 282988544,
+  "samples": 2161,
+  "sample_interval_ms": 20,
+  "memory_limit_bytes": 536870912,
+  "swap_limit_bytes": 0,
+  "memory_events": {
+    "low": 0,
+    "high": 0,
+    "max": 0,
+    "oom": 0,
+    "oom_kill": 0
+  },
+  "oom_killed": false,
+  "image": "sha256:e9195a6e3cc113bff03224e8c9aa6d00e14f3854b109c3d76772dd7421111d61",
+  "architecture": "amd64",
+  "limitations": [
+    "amd64 emulation on ARM host",
+    "two actual questions only; not concurrency or long-duration load",
+    "20ms sampled cgroup peak includes separate sampler process",
+    "Neo4j is external local community 5.26, not Aura"
+  ]
+}

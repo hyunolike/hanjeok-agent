@@ -22,6 +22,7 @@ from bench.graph.store import (
     drop_corpus,
     ensure_schema,
     record_corpus,
+    session,
 )
 
 
@@ -60,6 +61,7 @@ class BenchRuntime:
                 snapshot = corpus_snapshot(self.driver, corpus)
                 if snapshot is None:
                     raise BenchError("load_failed", "corpus is not loaded", 409)
+                self._check_embedding(corpus)
                 paths = document_paths(self.driver, corpus)
                 if corpus_snapshot(self.driver, corpus) != snapshot:
                     raise BenchError("load_failed", "corpus changed during preflight", 409)
@@ -91,7 +93,10 @@ class BenchRuntime:
                 ensure_schema(self.driver)
                 drop_corpus(self.driver, name)
                 counts = build(self.driver, loaded.docs, self.embedder)
-                record_corpus(self.driver, name, loaded.revision, counts.docs, counts.chunks)
+                record_corpus(
+                    self.driver, name, loaded.revision, counts.docs, counts.chunks,
+                    embedding_model=getattr(self.embedder, "model_id", None),
+                )
                 return {
                     "name": name,
                     "revision": loaded.revision,
@@ -120,6 +125,7 @@ class BenchRuntime:
                 if snapshot is None:
                     raise BenchError("load_failed", "corpus is not loaded", 409)
                 revision = snapshot[0]
+                self._check_embedding(corpus)
                 known = document_paths(self.driver, corpus)
                 select = (
                     WholeStrategy(self.driver)
@@ -151,8 +157,22 @@ class BenchRuntime:
                 )
                 raise BenchError("load_failed", cause, result=failed) from None
 
+    def _check_embedding(self, corpus: str) -> None:
+        from guide.embeddings import compatible
+
+        with session(self.driver) as s:
+            row = s.run(
+                "MATCH (c:Corpus {name: $corpus}) RETURN c.embedding_model AS embedding_model",
+                corpus=corpus,
+            ).single()
+        if not compatible(self.embedder, row["embedding_model"] if row else None):
+            raise BenchError("load_failed", "corpus embedding is incompatible", 409)
+
     def close(self) -> None:
         self.driver.close()
+        close = getattr(self.embedder, "close", None)
+        if close:
+            close()
 
 
 def _safe_ref(value: str) -> str:
@@ -163,8 +183,8 @@ def _safe_ref(value: str) -> str:
 
 
 def runtime_from_env() -> BenchRuntime:
-    from bench.embeddings import LocalEmbedder
     from bench.models import LazyAnswerModel
+    from guide.embeddings import embedder_from_env
 
     loaders = {}
     if root := os.environ.get("BENCH_WIKI_ROOT"):
@@ -174,7 +194,7 @@ def runtime_from_env() -> BenchRuntime:
         raise ValueError("invalid input budget")
     return BenchRuntime(
         driver_from_env(),
-        LocalEmbedder(),
+        embedder_from_env(),
         LazyAnswerModel(),
         loaders,
         max_input_bytes=max_input_bytes,

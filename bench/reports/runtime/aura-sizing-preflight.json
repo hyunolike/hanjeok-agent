@@ -1,0 +1,15 @@
+{
+  "scope": "local Community corpus counts and file measurements; not an Aura load",
+  "nodes": 12676,
+  "relationships": 55477,
+  "aura_free_documented_limits": {
+    "nodes": 200000,
+    "relationships": 400000,
+    "storage": "1GB"
+  },
+  "counts_within_limits": true,
+  "local_database_files_kib": 219664,
+  "local_transaction_logs_kib": 526356,
+  "aura_storage_verified": false,
+  "reference": "https://neo4j.com/docs/aura/quotas-and-limits/"
+}

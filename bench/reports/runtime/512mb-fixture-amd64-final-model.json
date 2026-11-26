@@ -1,0 +1,27 @@
+{
+  "status": "passed",
+  "image": "sha256:e9195a6e3cc113bff03224e8c9aa6d00e14f3854b109c3d76772dd7421111d61",
+  "architecture": "amd64",
+  "memory_limit_bytes": 536870912,
+  "kernel_peak_bytes": null,
+  "sampled_peak_bytes": 348659712,
+  "sample_interval_ms": 20,
+  "repeated_questions": 50,
+  "fixture_places": 13403,
+  "scenarios": [
+    "ready",
+    "vector_search",
+    "graph_lookup",
+    "verified_sse",
+    "invalid_citations",
+    "same_visit_busy",
+    "visit_capacity"
+  ],
+  "external_inference": "mocked",
+  "database": "local Neo4j 5.26 in separate container",
+  "limitations": [
+    "No real NVIDIA/Aura call or 60-question quality evaluation",
+    "Synthetic names at production count; only 41 embedded fixture places",
+    "Sampled peak includes test instrumentation; not a concurrency benchmark"
+  ]
+}

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import date
 
+import pytest
 from tests.guide_fakes import (
     TODAY,
     ExportPlaces,
@@ -89,6 +90,95 @@ def test_answered_steps_then_answer_then_path_then_done():
     assert result.model_calls == 3
 
 
+@pytest.mark.parametrize("strategy", ["graph", "vector"])
+def test_dated_alternative_request_cannot_substitute_semantic_place_search(strategy):
+    model = ScriptedModel(
+        action("search_places", query="가람궁 대안 목록", region_code="11110"),
+        answer("한적이 정한 대안은 솔내 한옥마을, 물빛 서원, 달맞이 숲길입니다.", ALTERNATIVES),
+    )
+    result, events = run(model, strategy=strategy)
+    assert result.outcome == "answered"
+    assert ALTERNATIVES in result.citations
+    steps = finished_steps(events)
+    assert any(s["kind"] == "alternatives" and s["status"] == "ok" for s in steps)
+    assert not any(s["kind"] == "search_places" for s in steps)
+
+
+@pytest.mark.parametrize("question", [QUESTION,
+    "2026-10-17 기준 가람궁의 대안 목록을 한적이 정한 순서대로 알려줘."])
+def test_alternative_claim_without_dated_alternative_record_is_never_shown(question):
+    bad = answer("가람궁의 그날 대안 목록은 한적이 정한 순서입니다.", "hanjeok:place/101")
+    result, events = run(ScriptedModel(bad, bad), question=question)
+    assert (result.outcome, result.cause) == ("failed", "invalid_citations")
+    assert "answer" not in names(events)
+
+
+def test_dated_replacement_request_cannot_hide_missing_source_with_different_wording():
+    bad = answer("한적이 정한 순서로 안내해 드렸습니다.", "hanjeok:place/101")
+    result, events = run(ScriptedModel(bad, bad))
+    assert (result.outcome, result.cause) == ("failed", "invalid_citations")
+    assert "answer" not in names(events)
+
+
+def test_alternative_policy_question_does_not_force_a_live_list():
+    model = ScriptedModel(action("policy", query="대안 점수 기준"),
+                          answer("대안 점수는 서비스가 정합니다.", "wiki:concepts/alternative-scoring.md"))
+    result, events = run(model, question="2026-10-17 가람궁의 대안 목록 점수 기준은 어떻게 돼?")
+    assert result.outcome == "answered"
+    assert not any(s["kind"] == "alternatives" for s in finished_steps(events))
+
+
+def test_citation_choices_follow_only_this_questions_fetched_records():
+    model = ScriptedModel(*LOOK_BOTH, GOOD)
+    result, _ = run(model)
+    assert result.outcome == "answered"
+    first = model.calls[0]["schema"]["properties"]["citations"]["items"]["enum"]
+    final = model.calls[-1]["schema"]["properties"]["citations"]["items"]["enum"]
+    assert "hanjeok:place/101" in first
+    assert ALTERNATIVES not in first
+    assert CONGESTION in final and ALTERNATIVES in final
+    assert f"[{CONGESTION}]" not in final
+    assert "hanjeok:place/999999" not in final
+
+
+def test_model_ignoring_schema_cannot_bypass_citation_gate_with_brackets():
+    malformed = answer("가람궁은 매우혼잡 예보입니다.", f"[{CONGESTION}]")
+    result, events = run(ScriptedModel(action("congestion", place_id=101,
+                                         date="2026-10-17"), malformed, malformed))
+    assert (result.outcome, result.cause) == ("failed", "invalid_citations")
+    assert "answer" not in names(events)
+
+
+def test_policy_without_fetched_evidence_can_only_return_empty_citations():
+    model = ScriptedModel(action("policy", text="혼잡 등급"),
+                          answer("혼잡 등급은 전국 분포 기준입니다.",
+                                 "wiki:concepts/congestion-diagnosis.md"))
+    run(model, question="혼잡 등급은 어떻게 정해?")
+    assert model.calls[0]["schema"]["properties"]["citations"]["maxItems"] == 0
+
+
+@pytest.mark.parametrize('bad', [
+    answer('물빛 서원, 솔내 한옥마을, 달맞이 숲길 순으로 대안입니다.', ALTERNATIVES),
+    answer('가람궁은 VERY_CROWDED 예보입니다.', CONGESTION),
+])
+def test_rank_and_grade_violations_are_repaired_before_answer_event(bad):
+    result, events = run(ScriptedModel(*LOOK_BOTH, bad, GOOD))
+    assert result.answer == GOOD['answer']
+    assert len(result.rejections) == 1
+    assert [data['text'] for name, data in events if name == 'answer'] == [GOOD['answer']]
+
+
+@pytest.mark.parametrize('bad', [
+    answer('물빛 서원, 솔내 한옥마을, 달맞이 숲길 순으로 대안입니다.', ALTERNATIVES),
+    answer('가람궁은 VERY_CROWDED 예보입니다.', CONGESTION),
+])
+def test_repeated_rank_and_grade_violations_never_emit_answer(bad):
+    result, events = run(ScriptedModel(*LOOK_BOTH, bad, bad))
+    assert (result.outcome, result.cause) == ('failed', 'invalid_citations')
+    assert len(result.rejections) == 2
+    assert 'answer' not in names(events)
+
+
 def test_scope_and_resolve_are_emitted_before_the_model_is_asked_anything():
     seen_before_first_call: list[str] = []
     events: list[tuple[str, dict]] = []
@@ -104,7 +194,7 @@ def test_scope_and_resolve_are_emitted_before_the_model_is_asked_anything():
     agent = Agent(
         Watching(GOOD_AFTER_RESOLVE), ExportPlaces(), FakePolicy(), replay_live(), clock=Clock()
     )
-    agent.ask(QUESTION, lambda name, data: events.append((name, data)), today=TODAY)
+    agent.ask("가람궁은 어떤 곳이야?", lambda name, data: events.append((name, data)), today=TODAY)
 
     assert seen_before_first_call == ["scope", "resolve"]
 
@@ -156,7 +246,7 @@ def test_a_refused_lookup_is_a_visible_step_and_the_model_is_told_why():
         answer("10월 17일 가람궁은 매우혼잡 예보입니다.", CONGESTION),
     )
 
-    result, events = run(model)
+    result, events = run(model, question="이번 토요일 가람궁은 얼마나 붐벼?")
 
     refused = finished_steps(events)[2]
     assert (refused["status"], refused["inputs"]) == ("refused", {"place_id": 101})
@@ -172,7 +262,7 @@ def test_an_answer_with_an_unfetched_citation_gets_one_repair():
         answer("10월 17일 가람궁은 매우혼잡 예보입니다.", CONGESTION),
     )
 
-    result, events = run(model)
+    result, events = run(model, question="이번 토요일 가람궁은 얼마나 붐벼?")
 
     assert result.outcome == "answered"
     assert dict(events)["answer"]["text"] == "10월 17일 가람궁은 매우혼잡 예보입니다."
@@ -228,7 +318,7 @@ def test_running_short_of_time_withdraws_the_lookups_and_marks_the_answer_partia
             clock.now += 26
             return super().decide(*args, **kwargs)
 
-    model = Slow(*LOOK_BOTH, answer("10월 17일 가람궁은 매우혼잡 예보입니다.", CONGESTION))
+    model = Slow(*LOOK_BOTH, GOOD)
 
     result, events = run(model, clock=clock)
 
@@ -347,8 +437,8 @@ def test_a_follow_up_takes_its_place_and_date_from_the_earlier_question():
 def test_the_two_strategies_show_the_model_the_same_thing_except_the_offered_lookups():
     reply = answer("가람궁은 한빛시 가람구의 옛 궁궐입니다.", "hanjeok:place/101")
     graph_model, vector_model = ScriptedModel(reply), ScriptedModel(reply)
-    run(graph_model, strategy="graph")
-    run(vector_model, strategy="vector")
+    run(graph_model, question="가람궁은 어떤 곳이야?", strategy="graph")
+    run(vector_model, question="가람궁은 어떤 곳이야?", strategy="vector")
 
     graph_call, vector_call = graph_model.calls[0], vector_model.calls[0]
     assert graph_call["system"] == vector_call["system"] == SYSTEM
@@ -371,13 +461,13 @@ def test_the_prompt_never_shows_the_model_a_raw_grade_token():
 
 def test_internal_place_ids_are_removed_from_the_answer_text():
     reply = answer(
-        "달맞이 숲길(place_id 131)으로 가세요. 솔내 한옥마을, place_id 118 도 있습니다.",
+        "솔내 한옥마을(place_id 118)을 안내합니다. 달맞이 숲길, place_id 131 도 있습니다.",
         ALTERNATIVES,
     )
 
     _, events = run(ScriptedModel(action("alternatives", place_id=101, date="2026-10-17"), reply))
 
-    assert dict(events)["answer"]["text"] == "달맞이 숲길으로 가세요. 솔내 한옥마을 도 있습니다."
+    assert dict(events)["answer"]["text"] == "솔내 한옥마을을 안내합니다. 달맞이 숲길 도 있습니다."
 
 
 def test_the_kind_of_model_failure_and_gate_refusals_are_kept_for_the_record():
@@ -609,3 +699,77 @@ def test_only_the_screens_date_can_be_written_into_a_lookup():
 
     assert model.calls[0]["schema"]["properties"]["date"]["enum"] == ["2026-10-17", None]
     assert "enum" not in _schema(("congestion", "answer"))["properties"]["date"]
+
+
+def test_citation_ids_copied_into_the_sentence_are_removed():
+    # Observed in production (2026-11-26): "…나타났습니다. [hanjeok:congestion/…]".
+    # The citations field carries the id; in the sentence a visitor cannot read it.
+    copied = answer(
+        f"10월 17일 가람궁은 매우혼잡 예보입니다 [{CONGESTION}]. "
+        f"한적이 정한 순서로 솔내 한옥마을, 물빛 서원, 달맞이 숲길이 대안입니다.[{ALTERNATIVES}] "
+        "[wiki:concepts/alternative-scoring.md]",
+        CONGESTION,
+        ALTERNATIVES,
+        "wiki:concepts/alternative-scoring.md",
+    )
+    result, events = run(ScriptedModel(*LOOK_BOTH, copied))
+
+    text = dict(events)["answer"]["text"]
+    assert "hanjeok:" not in text and "wiki:" not in text and "[" not in text
+    assert text == (
+        "10월 17일 가람궁은 매우혼잡 예보입니다. "
+        "한적이 정한 순서로 솔내 한옥마을, 물빛 서원, 달맞이 숲길이 대안입니다."
+    )
+    assert result.answer == text
+
+
+def test_system_forbids_the_words_hanjeok_never_shows():
+    # Hanjeok's screens never say these (its AGENTS.md); the answers are shown there as written.
+    for word in ("추천", "인기", "명소", "명당", "실시간"):
+        assert f"'{word}'" in SYSTEM
+
+
+EVENTS = "hanjeok:events/101@2026-10-17"
+SCREEN = {"place_id": 101, "date": "2026-10-17"}
+
+
+@pytest.mark.parametrize("first", [
+    # Seen in production (2026-11-26): the model answered from the place
+    # record alone, or searched the question's words, and never looked up events.
+    answer("현재 조회된 정보에는 행사 일정이 없습니다.", "hanjeok:place/101"),
+    action("search_places", query="가람궁 근처 행사", region_code="11110"),
+])
+def test_an_events_question_about_the_screens_place_looks_up_its_events(first):
+    model = ScriptedModel(first, answer("10월 17일 가람궁에 한적에 등록된 행사가 없습니다.", EVENTS))
+
+    result, events = run(model, "근처에서 열리는 행사 있어요?", context=SCREEN)
+
+    assert result.outcome == "answered"
+    assert EVENTS in result.citations
+    kinds = [s["kind"] for s in finished_steps(events)]
+    assert "events" in kinds
+    assert "search_places" not in kinds
+
+
+def test_once_events_are_fetched_the_models_next_choice_is_kept():
+    model = ScriptedModel(
+        action("events", place_id=101, date="2026-10-17"),
+        action("congestion", place_id=101, date="2026-10-17"),
+        answer("10월 17일 가람궁은 매우혼잡 예보이고 등록된 행사는 없습니다.", EVENTS, CONGESTION),
+    )
+
+    result, events = run(model, "이날 행사 있어요? 붐비나요?", context=SCREEN)
+
+    assert result.outcome == "answered"
+    assert [s["kind"] for s in finished_steps(events)][2:] == ["events", "congestion"]
+
+
+def test_a_question_without_events_words_is_not_sent_to_events():
+    model = ScriptedModel(
+        action("congestion", place_id=101, date="2026-10-17"),
+        answer("10월 17일 가람궁은 매우혼잡 예보입니다.", CONGESTION),
+    )
+
+    _, events = run(model, "여기 붐벼?", context=SCREEN)
+
+    assert not any(s["kind"] == "events" for s in finished_steps(events))

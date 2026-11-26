@@ -1,0 +1,237 @@
+{
+ "status": 200,
+ "fetched_at": "2026-11-23T07:34:39.559419Z",
+ "body": {
+  "success": true,
+  "data": {
+   "hasCongestionData": true,
+   "attraction": {
+    "id": 10047917,
+    "name": "외옹치해변",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/95/4120695_image2_1.jpg"
+   },
+   "diagnosis": {
+    "date": "2026-11-27",
+    "concentration": 34.18,
+    "percentile": 45,
+    "grade": "RELAXED",
+    "message": "외옹치해변, 지금 가면 여유롭게 둘러볼 수 있어요."
+   },
+   "dailyForecasts": [
+    {
+     "date": "2026-11-22",
+     "concentration": 67.15,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-11-23",
+     "concentration": 29.53,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-24",
+     "concentration": 29.2,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-25",
+     "concentration": 31.34,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-26",
+     "concentration": 33.43,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-11-27",
+     "concentration": 34.18,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-28",
+     "concentration": 82.82,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-11-29",
+     "concentration": 70.11,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-11-30",
+     "concentration": 39.16,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-01",
+     "concentration": 20.71,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-02",
+     "concentration": 21.75,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-03",
+     "concentration": 27.37,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-04",
+     "concentration": 47.24,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-05",
+     "concentration": 48.54,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-06",
+     "concentration": 45.91,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-07",
+     "concentration": 28.81,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-08",
+     "concentration": 22.3,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-09",
+     "concentration": 24.15,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-10",
+     "concentration": 27.34,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-11",
+     "concentration": 37.72,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-12",
+     "concentration": 73.05,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-13",
+     "concentration": 61.74,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-14",
+     "concentration": 28.97,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-15",
+     "concentration": 23.03,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-16",
+     "concentration": 26.59,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-17",
+     "concentration": 28.3,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-18",
+     "concentration": 40.74,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-19",
+     "concentration": 69.4,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-20",
+     "concentration": 64.6,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-21",
+     "concentration": 31.55,
+     "grade": "NORMAL",
+     "weather": null
+    }
+   ],
+   "betterDates": [
+    {
+     "date": "2026-12-01",
+     "concentration": 20.71,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-02",
+     "concentration": 21.75,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-08",
+     "concentration": 22.3,
+     "grade": "RELAXED",
+     "weather": null
+    }
+   ],
+   "nearbyFestivals": [],
+   "ongoingExhibitions": [],
+   "feltCongestion": {
+    "moreCrowded": 0,
+    "asForecast": 0,
+    "lessCrowded": 0
+   },
+   "usual": {
+    "baseline": 40.5577,
+    "days": 30,
+    "delta": -6.4
+   }
+  },
+  "error": null
+ }
+}

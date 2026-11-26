@@ -54,6 +54,34 @@ def client(runtime) -> TestClient:
     return TestClient(create_app(runtime, origins=["https://agent.example"]))
 
 
+@pytest.mark.parametrize("ready,status", [(True, 200), (False, 503)])
+def test_readiness_probe_returns_non_success_when_data_is_unavailable(ready, status):
+    response = client(TestRuntime(ready=ready)).get("/guide/ready")
+    assert response.status_code == status
+
+
+def test_rejected_new_visits_do_not_fill_the_visit_registry():
+    runtime = TestRuntime(ready=False, visits=Visits(max_visits=2))
+    http = client(runtime)
+    for _ in range(5):
+        assert ask(http).status_code == 503
+    assert runtime.visits._visits == {}
+
+
+def test_render_uses_ingress_controlled_ip_instead_of_spoofed_xff(monkeypatch):
+    from starlette.requests import Request
+
+    from guide.api import _address
+
+    monkeypatch.setenv("GUIDE_CLIENT_IP_HEADER", "cf-connecting-ip")
+    monkeypatch.setenv("GUIDE_TRUST_PROXY", "1")
+    request = Request({"type": "http", "client": ("10.0.0.1", 123), "headers": [
+        (b"x-forwarded-for", b"spoofed, 192.0.2.1"),
+        (b"cf-connecting-ip", b"198.51.100.2"),
+    ]})
+    assert _address(request) == "198.51.100.2"
+
+
 def frames(response) -> list[tuple[str, dict]]:
     parsed = []
     for block in response.text.strip().split("\n\n"):

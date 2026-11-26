@@ -11,6 +11,9 @@ REVISION = "3d7cfbdacd47fdda877c5cd8a79fbcc4f2a574f3"
 
 
 class LocalEmbedder(Embeddings):
+    model_id = f"{MODEL}@{REVISION}"
+    settings = {"name": MODEL, "revision": REVISION, "prefix": "query: ", "model_id": model_id}
+
     def __init__(self, *, encoder=None):
         self._encoder = encoder
 

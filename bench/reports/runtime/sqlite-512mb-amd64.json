@@ -1,0 +1,213 @@
+{
+  "checked_at": "2026-11-24T01:39:30.672353+00:00",
+  "backend": "sqlite",
+  "questions": [
+    {
+      "kind": "forecast",
+      "question": "경복궁은 2026-11-26에 얼마나 붐벼?",
+      "http_status": 200,
+      "events": [
+        "visit",
+        "step",
+        "step",
+        "step",
+        "step",
+        "answer",
+        "path",
+        "done"
+      ],
+      "terminal": [
+        "done",
+        {
+          "outcome": "answered",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b",
+          "elapsed_ms": 12551,
+          "generated_at": "2026-11-24T01:40:22.737908Z"
+        }
+      ],
+      "answers": [
+        {
+          "text": "경복궁은 2026년 11월 26일에 '매우혼잡' 등급으로 예보되어 있습니다. 전국 대비 상위 3%에 해당하며 집중률은 82.89%입니다. 한적이 제시한 이후 더 한적한 날짜들(12월 1일, 8일, 15일)도 모두 '매우혼잡'으로 예보되어 있습니다.",
+          "citations": [
+            {
+              "id": "hanjeok:congestion/10000028@2026-11-26",
+              "kind": "record",
+              "label": "경복궁 혼잡 예보 (11월 26일)"
+            }
+          ],
+          "partial": false
+        }
+      ],
+      "answered": true
+    },
+    {
+      "kind": "policy",
+      "question": "혼잡 등급은 어떤 기준으로 나눠?",
+      "http_status": 200,
+      "events": [
+        "visit",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "answer",
+        "path",
+        "done"
+      ],
+      "terminal": [
+        "done",
+        {
+          "outcome": "answered",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b",
+          "elapsed_ms": 30495,
+          "generated_at": "2026-11-24T01:40:53.513665Z"
+        }
+      ],
+      "answers": [
+        {
+          "text": "혼잡 등급은 공공 혼잡 예보 데이터의 백분위수(percentile)를 기준으로 네 단계로 나뉩니다. 여유는 50퍼센타일 이하, 보통은 50~75퍼센타일, 혼잡은 75~90퍼센타일, 매우혼잡은 90퍼센타일 이상입니다. 원시 혼잡도 수치가 아닌 백분위수로 등급을 정합니다.",
+          "citations": [
+            {
+              "id": "wiki:concepts/congestion-diagnosis.md",
+              "kind": "policy",
+              "label": "Congestion Diagnosis"
+            }
+          ],
+          "partial": false
+        }
+      ],
+      "answered": true
+    },
+    {
+      "kind": "alternatives",
+      "question": "여의도한강공원 대신 2026-12-01에 갈 만한 조용한 곳 있어?",
+      "http_status": 200,
+      "events": [
+        "visit",
+        "step",
+        "step",
+        "step",
+        "step",
+        "stopped"
+      ],
+      "terminal": [
+        "stopped",
+        {
+          "outcome": "failed",
+          "cause": "model_failed",
+          "message": "답을 만드는 모델을 쓸 수 없습니다. 잠시 뒤에 다시 물어봐 주세요."
+        }
+      ],
+      "answers": [],
+      "answered": false
+    },
+    {
+      "kind": "semantic_search",
+      "question": "서울에서 궁궐과 전통 건물을 볼 수 있는 관광지는 어디야?",
+      "http_status": 200,
+      "events": [
+        "visit",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "answer",
+        "path",
+        "done"
+      ],
+      "terminal": [
+        "done",
+        {
+          "outcome": "answered",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b",
+          "elapsed_ms": 55138,
+          "generated_at": "2026-11-24T01:42:17.239834Z"
+        }
+      ],
+      "answers": [
+        {
+          "text": "서울에서 궁궐과 전통 건물을 볼 수 있는 대표적인 관광지로는 조선왕조 제일의 법궁인 경복궁, 왕족의 사저였던 운현궁, 전통 한옥이 밀집된 북촌한옥마을과 남산골한옥마을, 그리고 조선시대 최고 교육기관인 서울 문묘와 성균관이 있습니다. 이들 장소는 모두 종로구와 중구 등 서울 도심에 위치해 있습니다.",
+          "citations": [
+            {
+              "id": "hanjeok:place/10000028",
+              "kind": "record",
+              "label": "경복궁"
+            },
+            {
+              "id": "hanjeok:place/10000325",
+              "kind": "record",
+              "label": "서울 운현궁"
+            },
+            {
+              "id": "hanjeok:place/10000279",
+              "kind": "record",
+              "label": "북촌한옥마을"
+            },
+            {
+              "id": "hanjeok:place/10005155",
+              "kind": "record",
+              "label": "남산골한옥마을"
+            },
+            {
+              "id": "hanjeok:place/10000323",
+              "kind": "record",
+              "label": "서울 문묘와 성균관"
+            }
+          ],
+          "partial": false
+        }
+      ],
+      "answered": true
+    }
+  ],
+  "passed": false,
+  "public_deployment": false,
+  "ready_http_status": 200,
+  "status": {
+    "ready": true,
+    "as_of": {
+      "export": "2026-11-23T02:04:18.244Z",
+      "wiki": "2026-10-09"
+    },
+    "counts": {
+      "places": 12106,
+      "related": 43087,
+      "events": 209,
+      "regions": 229
+    },
+    "generation": "765a93cc45a149e6dcf9f0352d8332e4cff58b3ce50736ed10b253c1d8dc0875",
+    "limits": {
+      "per_visitor": 20,
+      "per_day": 400
+    }
+  },
+  "sampled_peak_bytes": 316506112,
+  "samples": 6680,
+  "sample_interval_ms": 20,
+  "memory_limit_bytes": 536870912,
+  "swap_limit_bytes": 0,
+  "memory_events": {
+    "low": 0,
+    "high": 0,
+    "max": 0,
+    "oom": 0,
+    "oom_kill": 0
+  },
+  "oom_killed": false,
+  "image": "sha256:be356a17a003dfd0c0ce3be78111e799842e818125d4e20811916f6b5abe6764",
+  "architecture": "amd64",
+  "runtime_constraints_passed": true,
+  "limitations": [
+    "amd64 emulation on ARM host",
+    "four actual questions only",
+    "not a full quality evaluation or long-duration load",
+    "20ms sampled cgroup peak includes sampler process",
+    "exact SQLite cosine replaces approximate Neo4j retrieval"
+  ]
+}

@@ -2,6 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import Link from 'next/link'
+import { waitForGuideReady } from '@/lib/guide-ready'
+import { useGuideConnection } from '@/lib/use-guide-connection'
+import { WarmupPanel } from '@/components/guide/WarmupPanel'
 import { Character } from '@/components/guide/Character'
 import { CitationChip } from '@/components/guide/CitationChip'
 import { PathView } from '@/components/guide/PathView'
@@ -28,12 +31,7 @@ type Turn = {
   answer: { text: string; citations: Citation[]; partial: boolean } | null
   path: GuidePath | null
   ending: Ending | null
-  /** 서버에서 무엇이든 하나라도 왔는가. 아직이면 서버가 깨어나는 중일 수 있다. */
-  connected: boolean
 }
-
-/** 이만큼 기다려도 서버에서 아무것도 오지 않으면, 깨어나는 중이라고 알린다. */
-export const WAKING_AFTER_MS = 4000
 
 /** 같은 index 로 다시 온 단계는 "진행 중"이 결과로 바뀐 것이다. 덧붙이지 않고 갈아 끼운다. */
 function upsertStep(steps: Step[], step: Step): Step[] {
@@ -45,7 +43,7 @@ function upsertStep(steps: Step[], step: Step): Step[] {
 function applyEvent(turn: Turn, event: GuideEvent): Turn {
   switch (event.type) {
     case 'visit':
-      return { ...turn, connected: true }
+      return turn
     case 'step':
       return { ...turn, steps: upsertStep(turn.steps, event.step) }
     case 'answer':
@@ -53,7 +51,7 @@ function applyEvent(turn: Turn, event: GuideEvent): Turn {
     case 'path':
       return { ...turn, path: { nodes: event.nodes, edges: event.edges } }
     default:
-      return { ...turn, connected: true, ending: event }
+      return { ...turn, ending: event }
   }
 }
 
@@ -68,12 +66,14 @@ export function AskGuide({
   demo,
   place,
   ask = askGuide,
+  prepare = waitForGuideReady,
 }: {
   lang: Lang
   demo?: DemoKey
   place?: Pick<PlaceHit, 'place_id' | 'name' | 'region'>
   /** 테스트가 스트림을 한 사건씩 밀어 넣을 수 있게 한다. */
   ask?: typeof askGuide
+  prepare?: typeof waitForGuideReady
 }) {
   const t = dict(lang).guide
   const [turns, setTurns] = useState<Turn[]>([])
@@ -85,10 +85,11 @@ export function AskGuide({
   const [pathOpen, setPathOpen] = useState<number | null>(null)
   const nextId = useRef(0)
   const abort = useRef<AbortController | null>(null)
-  // 오래 기다리게 한 질문의 id. 그 질문이 서버와 닿는 순간 안내는 저절로 사라진다 —
-  // 지우는 코드를 따로 두지 않고, 그릴 때 `connected` 를 함께 본다.
-  const [slow, setSlow] = useState<number | null>(null)
-  const wakeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const connection = useGuideConnection(prepare, !isReplay || prepare !== waitForGuideReady)
+  type Pending = { question: string; choice?: number }
+  const pending = useRef<Pending | null>(null)
+  const [queued, setQueued] = useState<Pending | null>(null)
+  const attempt = useRef(0)
 
   const last = turns[turns.length - 1]
   const busy = last !== undefined && last.ending === null
@@ -96,21 +97,17 @@ export function AskGuide({
   useEffect(
     () => () => {
       abort.current?.abort()
-      if (wakeTimer.current) clearTimeout(wakeTimer.current)
+      attempt.current++
+      pending.current = null
     },
     [],
   )
 
-  const submit = useCallback(
-    (question: string, choice?: number) => {
-      const text = question.trim()
-      if (text === '' || busy || inFlight.current) return
-      inFlight.current = true
+  const send = useCallback(
+    (text: string, choice?: number) => {
       const id = nextId.current++
-      setTurns((prev) => [...prev, { id, question: text, steps: [], answer: null, path: null, ending: null, connected: false }])
+      setTurns((prev) => [...prev, { id, question: text, steps: [], answer: null, path: null, ending: null }])
       setDraft('')
-      if (wakeTimer.current) clearTimeout(wakeTimer.current)
-      wakeTimer.current = setTimeout(() => setSlow(id), WAKING_AFTER_MS)
 
       const controller = new AbortController()
       abort.current = controller
@@ -131,13 +128,72 @@ export function AskGuide({
         setTurns(prev => prev.map(turn => turn.id === id && turn.ending === null ? applyEvent(turn, { type: 'cut' }) : turn))
       })
     },
-    [ask, busy, demo, visitId, place],
+    [ask, demo, visitId, place],
   )
+
+  const runPending = useCallback(() => {
+    const request = pending.current
+    if (!request || inFlight.current) return
+    inFlight.current = true
+    const token = ++attempt.current
+    void connection.ensureReady().then(ready => {
+      if (attempt.current !== token || pending.current !== request) return
+      if (!ready) { inFlight.current = false; return }
+      pending.current = null
+      setQueued(null)
+      send(request.question, request.choice)
+    })
+  }, [connection.ensureReady, send])
+
+  const submit = useCallback((question: string, choice?: number) => {
+    const text = question.trim()
+    if (!text || busy || inFlight.current || pending.current) return
+    if (!connection.enabled) {
+      inFlight.current = true
+      send(text, choice)
+      return
+    }
+    const request = { question: text, choice }
+    pending.current = request
+    setQueued(request)
+    setDraft(text)
+    runPending()
+  }, [busy, connection.enabled, runPending, send])
+
+  const cancelWait = () => {
+    attempt.current++
+    pending.current = null
+    inFlight.current = false
+    setQueued(null)
+    connection.cancel()
+    // 확인을 취소한 뒤에는 입력과 다음 제출을 바로 사용할 수 있다.
+  }
 
   const onSubmit = (event: FormEvent) => {
     event.preventDefault()
     submit(draft)
   }
+
+  const questionForm = (
+    <form onSubmit={onSubmit} aria-busy={busy || queued !== null} className="flex flex-col gap-3 sm:flex-row sm:items-end">
+      <Field
+        id="guide-question"
+        label={t.fieldLabel}
+        hideLabel
+        className="flex-1"
+        value={draft}
+        maxLength={500}
+        disabled={busy || queued !== null}
+        placeholder={
+          turns.length > 0 ? t.followUpPlaceholder : isReplay ? t.fieldPlaceholder : t.fieldPlaceholderLive
+        }
+        onChange={(event) => setDraft(event.target.value)}
+      />
+      <Button type="submit" disabled={busy || queued !== null || draft.trim() === ''}>
+        {queued ? t.warmup.queued : busy ? lang === 'ko' ? '답을 찾는 중' : 'Finding an answer' : t.submit}
+      </Button>
+    </form>
+  )
 
   return (
     <div className="flex flex-col gap-8">
@@ -160,16 +216,26 @@ export function AskGuide({
         </Notice>
       )}
 
+      {turns.length === 0 && questionForm}
+
+      {connection.enabled && (
+        <WarmupPanel lang={lang} state={connection.state} queued={queued !== null}
+          onRetry={() => { if (pending.current) runPending(); else void connection.ensureReady() }}
+          onCancel={cancelWait} />
+      )}
+
       {turns.length === 0 && (
         <Card>
-          <Character state="waiting" title={t.waitingTitle}>
-            <p className="text-body text-ink-body">{t.waitingBody}</p>
-          </Character>
+          {(!connection.enabled || connection.state === 'ready') && !queued && (
+            <Character state="waiting" title={t.waitingTitle} size="sm">
+              <p className="text-body text-ink-body">{t.waitingBody}</p>
+            </Character>
+          )}
           <p className="mt-5 mb-2 text-caption text-ink-muted">{t.examplesLabel}</p>
           <ul className="flex flex-col gap-2">
             {(isReplay ? t.examples : t.examplesLive).map((example) => (
               <li key={example}>
-                <Chip onClick={() => submit(example)}>{example}</Chip>
+                <Chip disabled={queued !== null} onClick={() => connection.enabled ? setDraft(example) : submit(example)}>{example}</Chip>
               </li>
             ))}
           </ul>
@@ -183,15 +249,7 @@ export function AskGuide({
           </p>
 
           {turn.ending === null && (
-            <div className="space-y-3"><LoadingPanel compact title={t.lookingTitle} />
-              {/* 한동안 쓰이지 않은 서버는 잠들어 있다. 깨어나는 30초 남짓 동안 화면이
-                  멈춘 것처럼 보이면 방문자는 고장으로 읽는다. */}
-              {slow === turn.id && !turn.connected && (
-                <p role="status" className="text-caption text-ink-muted">
-                  {t.wakingBody}
-                </p>
-              )}
-            </div>
+            <LoadingPanel compact title={t.lookingTitle} />
           )}
 
           {turn.steps.length > 0 &&
@@ -256,7 +314,7 @@ export function AskGuide({
                 <ul className="flex flex-col gap-2">
                   {turn.ending.candidates.map((candidate) => (
                     <li key={candidate.place_id}>
-                      <Chip disabled={busy || turn !== last} onClick={() => submit(turn.question, candidate.place_id)}>
+                      <Chip disabled={busy || queued !== null || turn !== last} onClick={() => submit(turn.question, candidate.place_id)}>
                         {candidate.name} · {candidate.region}
                       </Chip>
                     </li>
@@ -313,24 +371,7 @@ export function AskGuide({
         </article>
       ))}
 
-      <form onSubmit={onSubmit} aria-busy={busy} className="flex flex-col gap-3 sm:flex-row sm:items-end">
-        <Field
-          id="guide-question"
-          label={t.fieldLabel}
-          hideLabel
-          className="flex-1"
-          value={draft}
-          maxLength={500}
-          disabled={busy}
-          placeholder={
-            turns.length > 0 ? t.followUpPlaceholder : isReplay ? t.fieldPlaceholder : t.fieldPlaceholderLive
-          }
-          onChange={(event) => setDraft(event.target.value)}
-        />
-        <Button type="submit" disabled={busy || draft.trim() === ''}>
-          {busy ? lang === 'ko' ? '답을 찾는 중' : 'Finding an answer' : t.submit}
-        </Button>
-      </form>
+      {turns.length > 0 && questionForm}
 
       {opened && (
         <Sheet title={opened.citation.label} closeLabel={t.close} onClose={() => setOpened(null)}>

@@ -1,0 +1,241 @@
+{
+ "status": 200,
+ "fetched_at": "2026-11-23T22:04:20.644027Z",
+ "body": {
+  "success": true,
+  "data": [
+   {
+    "attractionId": 10010929,
+    "name": "송은",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/84/4072584_image2_1.jpg",
+    "latitude": 37.5241627892,
+    "longitude": 127.0441206423,
+    "grade": "RELAXED",
+    "concentration": 6.08,
+    "distanceKm": 2.113,
+    "relationScore": 0,
+    "score": 0.5475066666666667,
+    "summary": "송은문화재단은 1989년에 설립된 비영리 기관으로, ‘숨어 있는 소나무’라는 뜻을 가진 명칭에 걸맞게 국내 젊은 작가들의 안정적인 작업 활동을…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "92",
+       "origin": "서울숲"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 5분 예상돼요.",
+      "evidence": {
+       "minutes": "5"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 5,
+    "rating": null
+   },
+   {
+    "attractionId": 10006835,
+    "name": "노룬산골목시장",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/56/2779656_image2_1.png",
+    "latitude": 37.5368743234,
+    "longitude": 127.0647333285,
+    "grade": "RELAXED",
+    "concentration": 36.2,
+    "distanceKm": 2.136,
+    "relationScore": 0,
+    "score": 0.42672,
+    "summary": "1970년대에 개설된 광진구에서 가장 역사 깊은 전통시장으로 정비가 잘되어 있는 골목형 시장이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "53",
+       "origin": "서울숲"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 5분 예상돼요.",
+      "evidence": {
+       "minutes": "5"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 5,
+    "rating": null
+   },
+   {
+    "attractionId": 10006983,
+    "name": "키즈오토파크",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/03/3567303_image2_1.jpg",
+    "latitude": 37.5493063511,
+    "longitude": 127.076276292,
+    "grade": "NORMAL",
+    "concentration": 38.64,
+    "distanceKm": 3.118,
+    "relationScore": 0,
+    "score": 0.4038666666666667,
+    "summary": "키즈오토파크는 서울 어린이대공원 내 상상나라 뒤편에 있는 어린이교통안전체험관이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "50",
+       "origin": "서울숲"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 7분 예상돼요.",
+      "evidence": {
+       "minutes": "7"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 7,
+    "rating": null
+   },
+   {
+    "attractionId": 10006718,
+    "name": "응봉체육공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/53/3455553_image2_1.JPG",
+    "latitude": 37.5519542217,
+    "longitude": 127.0374160667,
+    "grade": "NORMAL",
+    "concentration": 50.13,
+    "distanceKm": 1.061,
+    "relationScore": 0,
+    "score": 0.3853333333333333,
+    "summary": "서울 성동구 응봉산 아래 중랑천 변에 위치한 체육공원으로 축구, 테니스, 야구 등 다양한 종목의 스포츠를 즐길 수 있는 시설이 있다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "35",
+       "origin": "서울숲"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 3분 예상돼요.",
+      "evidence": {
+       "minutes": "3"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 3,
+    "rating": null
+   },
+   {
+    "attractionId": 10006821,
+    "name": "광나루안전체험관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/02/3540002_image2_1.jpg",
+    "latitude": 37.5512561292,
+    "longitude": 127.0771455959,
+    "grade": "NORMAL",
+    "concentration": 43.42,
+    "distanceKm": 3.246,
+    "relationScore": 0,
+    "score": 0.38304,
+    "summary": "서울어린이대공원 정문 옆에 위치한 광나루안전체험관은 화재나 지진, 태풍 등 각종 재난 상황을 가상으로 설정하여 일반 시민들이 직접 체험하면서…",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "44",
+       "origin": "서울숲"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 7분 예상돼요.",
+      "evidence": {
+       "minutes": "7"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 7,
+    "rating": null
+   },
+   {
+    "attractionId": 10006848,
+    "name": "뚝섬한강공원",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/61/3534561_image2_1.jpg",
+    "latitude": 37.5293645661,
+    "longitude": 127.073978184,
+    "grade": "NORMAL",
+    "concentration": 46.66,
+    "distanceKm": 3.221,
+    "relationScore": 0,
+    "score": 0.37041333333333337,
+    "summary": "뚝섬한강공원은 한강공원으로 새 단장하기 이전부터 강변유원지로 유명했던 곳이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "39",
+       "origin": "서울숲"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 7분 예상돼요.",
+      "evidence": {
+       "minutes": "7"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 7,
+    "rating": null
+   },
+   {
+    "attractionId": 10007058,
+    "name": "서울풍물시장",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/44/4137744_image2_1.jpg",
+    "latitude": 37.5727131508,
+    "longitude": 127.0255029032,
+    "grade": "NORMAL",
+    "concentration": 48.5,
+    "distanceKm": 3.595,
+    "relationScore": 0,
+    "score": 0.3580666666666667,
+    "summary": "서울풍물시장은 골동품과 근현대사 상품, 우리 고유의 옛 물건부터 생활 잡화와 가방, 구제 의류까지 다양한 상품을 만날 수 있는 시장이다.",
+    "recommendReasons": [
+     {
+      "kind": "CONGESTION_DELTA",
+      "text": "예측 집중률 값이 더 낮은 장소예요.",
+      "evidence": {
+       "delta": "37",
+       "origin": "서울숲"
+      }
+     },
+     {
+      "kind": "TRAVEL",
+      "text": "서울숲에서 차로 약 8분 예상돼요.",
+      "evidence": {
+       "minutes": "8"
+      }
+     }
+    ],
+    "recommendReason": "예측 집중률 값이 더 낮은 장소예요.",
+    "travelMinutes": 8,
+    "rating": null
+   }
+  ],
+  "error": null
+ }
+}

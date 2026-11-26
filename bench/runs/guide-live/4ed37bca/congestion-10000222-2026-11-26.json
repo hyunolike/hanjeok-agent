@@ -1,0 +1,265 @@
+{
+ "status": 200,
+ "fetched_at": "2026-11-23T07:52:50.887365Z",
+ "body": {
+  "success": true,
+  "data": {
+   "hasCongestionData": true,
+   "attraction": {
+    "id": 10000222,
+    "name": "무궁화동산",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/24/3399924_image2_1.JPG"
+   },
+   "diagnosis": {
+    "date": "2026-11-26",
+    "concentration": 35.65,
+    "percentile": 56,
+    "grade": "NORMAL",
+    "message": "무궁화동산, 붐비지 않는 편이라 둘러보기 무난해요."
+   },
+   "dailyForecasts": [
+    {
+     "date": "2026-11-22",
+     "concentration": 24.12,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-23",
+     "concentration": 39.23,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-11-24",
+     "concentration": 35.86,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-11-25",
+     "concentration": 35.53,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-11-26",
+     "concentration": 35.65,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-11-27",
+     "concentration": 33.15,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-28",
+     "concentration": 29.98,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-29",
+     "concentration": 24.06,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-30",
+     "concentration": 30.26,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-01",
+     "concentration": 30.95,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-02",
+     "concentration": 31.49,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-03",
+     "concentration": 30.66,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-04",
+     "concentration": 30.9,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-05",
+     "concentration": 27.65,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-06",
+     "concentration": 23.92,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-07",
+     "concentration": 33.62,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-08",
+     "concentration": 34.05,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-09",
+     "concentration": 33.92,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-10",
+     "concentration": 31.84,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-11",
+     "concentration": 32.82,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-12",
+     "concentration": 27.77,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-13",
+     "concentration": 23.75,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-14",
+     "concentration": 31.53,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-15",
+     "concentration": 34.41,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-16",
+     "concentration": 34.05,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-17",
+     "concentration": 34.73,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-18",
+     "concentration": 34.59,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-19",
+     "concentration": 33.41,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-20",
+     "concentration": 24.09,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-21",
+     "concentration": 33.14,
+     "grade": "NORMAL",
+     "weather": null
+    }
+   ],
+   "betterDates": [
+    {
+     "date": "2026-12-13",
+     "concentration": 23.75,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-06",
+     "concentration": 23.92,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-29",
+     "concentration": 24.06,
+     "grade": "RELAXED",
+     "weather": null
+    }
+   ],
+   "nearbyFestivals": [
+    {
+     "id": 21,
+     "contentId": "4082595",
+     "name": "팔색찬란",
+     "startDate": "2026-06-04",
+     "endDate": "2026-12-31",
+     "distanceKm": 0.2,
+     "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/70/4082670_image2_1.png"
+    },
+    {
+     "id": 23,
+     "contentId": "2720203",
+     "name": "2026 서울거리공연 구석구석라이브",
+     "startDate": "2026-05-01",
+     "endDate": "2026-12-31",
+     "distanceKm": 1.5,
+     "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/74/4060474_image2_1.png"
+    },
+    {
+     "id": 43,
+     "contentId": "3481597",
+     "name": "페인터즈",
+     "startDate": "2022-11-01",
+     "endDate": "2026-12-31",
+     "distanceKm": 1.8,
+     "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/01/4060301_image2_1.png"
+    }
+   ],
+   "ongoingExhibitions": [],
+   "feltCongestion": {
+    "moreCrowded": 0,
+    "asForecast": 0,
+    "lessCrowded": 0
+   },
+   "usual": {
+    "baseline": 31.371,
+    "days": 30,
+    "delta": 4.3
+   }
+  },
+  "error": null
+ }
+}

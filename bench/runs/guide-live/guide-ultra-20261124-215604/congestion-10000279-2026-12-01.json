@@ -1,0 +1,265 @@
+{
+ "status": 200,
+ "fetched_at": "2026-11-23T21:58:03.477730Z",
+ "body": {
+  "success": true,
+  "data": {
+   "hasCongestionData": true,
+   "attraction": {
+    "id": 10000279,
+    "name": "북촌한옥마을",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/04/3304404_image2_1.jpg"
+   },
+   "diagnosis": {
+    "date": "2026-12-01",
+    "concentration": 63.54,
+    "percentile": 96,
+    "grade": "VERY_CROWDED",
+    "message": "북촌한옥마을은 이날 매우 붐빌 것으로 보여요. 다른 날이나 다른 장소를 권해요."
+   },
+   "dailyForecasts": [
+    {
+     "date": "2026-11-23",
+     "concentration": 77.89,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-24",
+     "concentration": 76.43,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-25",
+     "concentration": 82.94,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-26",
+     "concentration": 81.75,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-27",
+     "concentration": 90.15,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-28",
+     "concentration": 99.39,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-29",
+     "concentration": 95.59,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-30",
+     "concentration": 81.35,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-01",
+     "concentration": 63.54,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-02",
+     "concentration": 60.85,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-03",
+     "concentration": 65.14,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-04",
+     "concentration": 66.14,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-05",
+     "concentration": 96.49,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-06",
+     "concentration": 75.51,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-07",
+     "concentration": 57.79,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-08",
+     "concentration": 61.84,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-09",
+     "concentration": 59.12,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-10",
+     "concentration": 64.04,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-11",
+     "concentration": 71.89,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-12",
+     "concentration": 91.49,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-13",
+     "concentration": 79.36,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-14",
+     "concentration": 65.22,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-15",
+     "concentration": 64.49,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-16",
+     "concentration": 62.16,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-17",
+     "concentration": 64.7,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-18",
+     "concentration": 74.54,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-19",
+     "concentration": 88.13,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-20",
+     "concentration": 82.51,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-21",
+     "concentration": 64.22,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-22",
+     "concentration": 67.54,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    }
+   ],
+   "betterDates": [
+    {
+     "date": "2026-12-07",
+     "concentration": 57.79,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-09",
+     "concentration": 59.12,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-02",
+     "concentration": 60.85,
+     "grade": "VERY_CROWDED",
+     "weather": null
+    }
+   ],
+   "nearbyFestivals": [
+    {
+     "id": 4,
+     "contentId": "4060434",
+     "name": "국악공연 진연",
+     "startDate": "2026-01-01",
+     "endDate": "2026-12-31",
+     "distanceKm": 0.7,
+     "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/35/4060435_image2_1.jpg"
+    },
+    {
+     "id": 6,
+     "contentId": "2809535",
+     "name": "남산봉수의식 등 전통문화행사",
+     "startDate": "2026-01-01",
+     "endDate": "2026-12-31",
+     "distanceKm": 1.1,
+     "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/57/4001657_image2_1.jpg"
+    },
+    {
+     "id": 23,
+     "contentId": "2720203",
+     "name": "2026 서울거리공연 구석구석라이브",
+     "startDate": "2026-05-01",
+     "endDate": "2026-12-31",
+     "distanceKm": 1.2,
+     "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/74/4060474_image2_1.png"
+    }
+   ],
+   "ongoingExhibitions": [],
+   "feltCongestion": {
+    "moreCrowded": 0,
+    "asForecast": 0,
+    "lessCrowded": 0
+   },
+   "usual": {
+    "baseline": 74.4067,
+    "days": 30,
+    "delta": -10.9
+   }
+  },
+  "error": null
+ }
+}

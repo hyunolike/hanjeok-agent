@@ -1,0 +1,73 @@
+{
+  "checked_at": "2026-11-23T10:53:59.494164+00:00",
+  "scope": "real production export/wiki and real NVIDIA/Hanjeok; local external Neo4j, not Aura/Render",
+  "questions": [
+    {
+      "http_status": 200,
+      "events": [
+        "visit",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "answer",
+        "path",
+        "done"
+      ],
+      "terminal": [
+        "done",
+        {
+          "outcome": "answered",
+          "model": "nvidia/nemotron-3-ultra-550b-a55b",
+          "elapsed_ms": 33188,
+          "generated_at": "2026-11-23T10:54:59.718707Z"
+        }
+      ],
+      "citations": [
+        [
+          {
+            "id": "wiki:concepts/congestion-diagnosis.md",
+            "kind": "policy",
+            "label": "Congestion Diagnosis"
+          }
+        ]
+      ],
+      "answered": true
+    }
+  ],
+  "passed": true,
+  "answer_model_selection": "default; BENCH_ANSWER_MODEL unset",
+  "export_sha256": "9d82fb933020cf680d445d51f64b6e5c8ce79e1f5671f746f371dccb0d349849",
+  "place_counts": {
+    "places": 12106,
+    "related": 43087,
+    "events": 209,
+    "regions": 229
+  },
+  "wiki_chunks": 83,
+  "wiki_artifact_sha256": "b09fecfd5a3d80953d01aed052319ad61544f6086ecdeb0386674e45e3a66b56",
+  "ready_http_status": 200,
+  "sampled_peak_bytes": 281079808,
+  "samples": 2501,
+  "sample_interval_ms": 20,
+  "memory_limit_bytes": 536870912,
+  "swap_limit_bytes": 0,
+  "memory_events": {
+    "low": 0,
+    "high": 0,
+    "max": 0,
+    "oom": 0,
+    "oom_kill": 0
+  },
+  "oom_killed": false,
+  "image": "sha256:cc5ce265c636f32341e8ec15732621a811d25819c658321a19967cf1b7cc8faa",
+  "architecture": "amd64",
+  "limitations": [
+    "amd64 emulation on ARM host",
+    "one actual question only; not concurrency or long-duration load",
+    "20ms sampled cgroup peak includes separate sampler process",
+    "Neo4j is external local community 5.26, not Aura"
+  ],
+  "runtime_constraints_passed": true
+}

@@ -1,0 +1,44 @@
+{
+  "checked_at": "2026-11-23T10:33:55.598741+00:00",
+  "previous_answer_model": "nvidia/nemotron-3.5-super-vl-120b-a12b",
+  "provider": "nvidia",
+  "endpoint_unchanged": true,
+  "existing_key_reused": true,
+  "model_catalog_sha256": "f88748207f8b2d5608abd2644afa7da21dcf317a1f02edf31c85ae99188ed62e",
+  "strict_json_probe": {
+    "http_status": 200,
+    "finish_reason": "stop",
+    "valid_json": true
+  },
+  "rejected_candidates": [
+    {
+      "model": "qwen/qwen3.5-122b-a10b",
+      "http_status": 410,
+      "reason": "end_of_life"
+    },
+    {
+      "model": "google/gemma-4-31b-it",
+      "reason": "read_timeout_30s"
+    },
+    {
+      "model": "mistralai/mistral-large-4-1t-a52b",
+      "reason": "read_timeout_30s"
+    }
+  ],
+  "embedding_model_unchanged": true,
+  "embedding_identity": "nvidia/nemotron-3.5-embed-1b@1024:input-type-v1:truncate-END:l2",
+  "offline_tests": {
+    "passed": 495,
+    "deselected": 43
+  },
+  "review_tests_passed": 11,
+  "blueprint_valid": true,
+  "previous_quality_scores_reused": false,
+  "full_60_question_evaluation_run": false,
+  "public_deployment_performed": false,
+  "model_card": "https://build.nvidia.com/nvidia/nemotron-3.5-lightning-30b-a3b/modelcard",
+  "candidate_answer_model": "nvidia/nemotron-3.5-lightning-30b-a3b",
+  "accepted_for_switch": false,
+  "functional_smoke": "bench/reports/runtime/512mb-lightning-amd64.json",
+  "functional_smoke_passed": false
+}

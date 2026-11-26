@@ -1,0 +1,38 @@
+{
+  "url": "https://agent.hanjeok.com/ko/ask",
+  "source_commit": "22ab1b7",
+  "checked_at": "2026-11-24T04:42:00.282Z",
+  "live": {
+    "ask_http_status": 200,
+    "terminal": "answered",
+    "post_count": 1,
+    "question": "경복궁은 2026-11-26에 얼마나 붐벼?",
+    "readiness_gets": [
+      {
+        "started_ms": 373
+      },
+      {
+        "started_ms": 1549
+      }
+    ],
+    "answer_visible": true,
+    "wall_ms": 9284,
+    "answer": "2026년 11월 26일 경복궁은 혼잡 등급이 '매우혼잡'으로 예보되어 있습니다. 전국 대비 상위 3%에 해당하며 집중률은 82.89%입니다. 그 뒤의 더 한적한 날로 한적이 고른 순서대로 12월 1일, 12월 8일, 12월 15일이 제시되었으나 모두 '매우혼잡' 등급입니다.",
+    "citation_labels": [
+      "한적 레코드경복궁 혼잡 예보 (11월 26일)"
+    ],
+    "terminal_done": true,
+    "passed": true
+  },
+  "controlled_mobile": {
+    "readiness": "intercepted 503 only in this private browser context",
+    "draft_preserved": true,
+    "queued_post_count": 0,
+    "cancel_kept_draft": true,
+    "no_horizontal_overflow": true,
+    "reduced_motion_duration": "1e-05s",
+    "passed": true
+  },
+  "errors": [],
+  "passed": true
+}

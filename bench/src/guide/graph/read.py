@@ -41,6 +41,7 @@ class Active:
     export_sha256: str
     counts: dict[str, int]
     source: str = ""
+    embedding_model: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -88,7 +89,8 @@ def active(driver: Driver, corpus: str = CORPUS) -> Active | None:
         row = s.run(
             "MATCH (c:Corpus {name: $corpus}) WHERE c.active_generation IS NOT NULL "
             "RETURN c.active_generation AS generation, c.exported_at AS exported_at, "
-            "c.export_sha256 AS sha, c.counts_json AS counts, c.export_source AS source",
+            "c.export_sha256 AS sha, c.counts_json AS counts, c.export_source AS source, "
+            "c.embedding_model AS embedding_model",
             corpus=corpus,
         ).single()
     if row is None:
@@ -99,6 +101,7 @@ def active(driver: Driver, corpus: str = CORPUS) -> Active | None:
         row["sha"],
         json.loads(row["counts"]),
         row["source"] or "",
+        row["embedding_model"],
     )
 
 

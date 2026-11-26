@@ -1,0 +1,6 @@
+# Operator-only additions to runtime/requirements.txt. Never install into the API image.
+torch==2.14.1
+torchvision==0.29.2
+transformers==5.20.0
+accelerate==1.16.0
+pillow==12.3.0

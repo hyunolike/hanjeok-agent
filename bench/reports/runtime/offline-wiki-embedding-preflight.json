@@ -1,0 +1,176 @@
+{
+  "checked_at": "2026-11-23T06:23:34.299308+00:00",
+  "checkpoint": "nvidia/Nemotron-3.5-Embed-1B-BF16@e24ca1e346bcc53572bd7bdc02b3e8ebf66c197c:1024:chat-template-passage-v1:cpu-fp32:l2",
+  "api_model": "nvidia/nemotron-3.5-embed-1b@1024:input-type-v1:truncate-END:l2",
+  "torch": "2.14.1",
+  "transformers": "5.20.0",
+  "device": "cpu",
+  "dtype": "float32",
+  "attention": "eager",
+  "thresholds": {
+    "minimum_cosine": 0.999,
+    "maximum_component_error": 0.005
+  },
+  "anchors": [
+    {
+      "id": "wiki:concepts/alternative-scoring.md#0",
+      "text_sha256": "7743992255325cb426dd20ab68f7660b9bd27d3f8744e6a36aa84646f861a58b",
+      "cosine": 0.9999997832395565,
+      "maximum_component_error": 9.575486183166504e-05
+    },
+    {
+      "id": "wiki:concepts/alternative-scoring.md#1",
+      "text_sha256": "330ec1e6df2a752c1263102389eecdde75352206b80d9205621e66c0d042c58b",
+      "cosine": 0.9999996309832574,
+      "maximum_component_error": 0.00048198550939559937
+    },
+    {
+      "id": "wiki:concepts/alternative-scoring.md#2",
+      "text_sha256": "559273d4c30b873a35eabd51ce42fb6cff0032895f048436e43a16050933f2ef",
+      "cosine": 0.9999996495154051,
+      "maximum_component_error": 0.00024688243865966797
+    },
+    {
+      "id": "wiki:concepts/alternative-scoring.md#3",
+      "text_sha256": "2d5e76eff50a712462156eb586d15efb40b5e610b0dbec2d073bf2d5e2b56727",
+      "cosine": 0.9999996036388642,
+      "maximum_component_error": 0.000529702752828598
+    },
+    {
+      "id": "wiki:concepts/alternative-scoring.md#4",
+      "text_sha256": "daa82fa79dd3f8e44fb66b28c5cd583a596fd1a7cf93d559aeee10dab7256c21",
+      "cosine": 0.999999597193217,
+      "maximum_component_error": 0.00016878359019756317
+    },
+    {
+      "id": "wiki:concepts/congestion-diagnosis.md#0",
+      "text_sha256": "7d2553aef4e7a1ca681dc5ef7e75632a0e100564ee73bc73998391829418c40b",
+      "cosine": 0.9999996917333968,
+      "maximum_component_error": 0.00027930736541748047
+    },
+    {
+      "id": "wiki:concepts/congestion-diagnosis.md#1",
+      "text_sha256": "07b986cde45eb7674b121eaf14ba5c620c85fbaefb37c8e4daab9ecd61cc2f8f",
+      "cosine": 0.9999997608350216,
+      "maximum_component_error": 0.00023268535733222961
+    },
+    {
+      "id": "place:10000003",
+      "text_sha256": "5d113acf7788b841c25fc2184c532463d3a7fbaaaff96a89e4033d144d8e5203",
+      "cosine": 0.9999996539779935,
+      "maximum_component_error": 0.0002676546573638916
+    },
+    {
+      "id": "place:10002929",
+      "text_sha256": "17157741be639895cc0f46aa6614deed08f53a6cc7a0be71806a5fc80f2ca76d",
+      "cosine": 0.9999997840306163,
+      "maximum_component_error": 0.0001618601381778717
+    },
+    {
+      "id": "place:10008645",
+      "text_sha256": "8e037d765e2f85f4c9f73fc8f1ac18a5364c4ef8bef4ba2b055d3d46f7ee3d0e",
+      "cosine": 0.999999659253574,
+      "maximum_component_error": 0.00030203908681869507
+    },
+    {
+      "id": "place:10017249",
+      "text_sha256": "26c4e742e3ca689b3354f49f0101ed5cbf21de3c5d352ed14da71bcd6ffabd0b",
+      "cosine": 0.9999997949315447,
+      "maximum_component_error": 0.0001423954963684082
+    },
+    {
+      "id": "place:10020933",
+      "text_sha256": "77be6d9f235aa066f5e1450536a2c8a3fce8fa75a6394ed6de62ab15babfc3bf",
+      "cosine": 0.999999731449321,
+      "maximum_component_error": 0.00012242794036865234
+    },
+    {
+      "id": "place:10023222",
+      "text_sha256": "53854d6d969b9b1197d39b8ea4b891d3fb57d40bf61590c039c8f7857cb94353",
+      "cosine": 0.9999997980909004,
+      "maximum_component_error": 0.00011092424392700195
+    },
+    {
+      "id": "place:10026943",
+      "text_sha256": "248262144aa2d76ffcfdeb23749b50d62797aa5ff7f5ec9b2db90db6bccd51f3",
+      "cosine": 0.9999997524289003,
+      "maximum_component_error": 0.00012797117233276367
+    },
+    {
+      "id": "place:10030540",
+      "text_sha256": "9e4b2a5cd6d3509c94478819bc1f816f055c7e7aaa0a8992f100da5f40b49145",
+      "cosine": 0.9999997662398951,
+      "maximum_component_error": 0.00021534785628318787
+    },
+    {
+      "id": "place:10032958",
+      "text_sha256": "15cacd4c12a0e94a1dfb1cd28f6c77eddea122353c19d98addd2556278bb16be",
+      "cosine": 0.9999996477864638,
+      "maximum_component_error": 0.00022909417748451233
+    },
+    {
+      "id": "place:10034451",
+      "text_sha256": "c21046dfbcc0d741749e798800b5e890ca2bcfbe2e2d594f8150fa3215eadff3",
+      "cosine": 0.9999997305425655,
+      "maximum_component_error": 0.00022482872009277344
+    },
+    {
+      "id": "place:10035851",
+      "text_sha256": "9ba10be544227e0006918d815e1a88a035aca18a47b630e3516a0ada344d5d02",
+      "cosine": 0.9999997672649662,
+      "maximum_component_error": 0.00010447204113006592
+    },
+    {
+      "id": "place:10038217",
+      "text_sha256": "2771d7409822cd53b7ecf3b4944b68f6a0cdc35d7e24d1cadb340b3815e61e9a",
+      "cosine": 0.9999997911657634,
+      "maximum_component_error": 0.00011072307825088501
+    },
+    {
+      "id": "place:10039792",
+      "text_sha256": "74ae1bf7063bf357a4fc3cb3ff0f30d8af971227027bb8a7169925aee49ba064",
+      "cosine": 0.999999741549989,
+      "maximum_component_error": 0.00014209747314453125
+    },
+    {
+      "id": "place:10041885",
+      "text_sha256": "5566410646432bf29e443852f4d8146fbcf90d08d86d3525f651266584cba065",
+      "cosine": 0.9999996571005518,
+      "maximum_component_error": 0.00037914514541625977
+    },
+    {
+      "id": "place:10043385",
+      "text_sha256": "18fb315f51ae7ff9c9208d360f069e7b9602a180802696d6e03a9c99f2b57144",
+      "cosine": 0.9999990901477778,
+      "maximum_component_error": 0.00013774633407592773
+    },
+    {
+      "id": "place:10047597",
+      "text_sha256": "5e65b73dcad9aff8d0ff664b76eef2e0e83b51f9234d91becffff531609a610a",
+      "cosine": 0.9999997807747468,
+      "maximum_component_error": 8.01384449005127e-05
+    },
+    {
+      "id": "place:10049746",
+      "text_sha256": "e436e333a2c995db56f944ab0725e3d6765a2fb83575dfa44f3fb3427afb233f",
+      "cosine": 0.9999997726031812,
+      "maximum_component_error": 0.0002257116138935089
+    },
+    {
+      "id": "place:10051621",
+      "text_sha256": "84a46aed97016084e861d9f508bf3b29461702de9474d02a7e8c1bf57b349b6b",
+      "cosine": 0.9999997207380016,
+      "maximum_component_error": 7.46697187423706e-05
+    }
+  ],
+  "accepted_for_load": false,
+  "server_model_unchanged": true,
+  "reference_comparison_passed": true,
+  "wiki_revision": "7fc19c0",
+  "wiki_documents": 18,
+  "wiki_chunks": 83,
+  "candidate_complete": true,
+  "promotion_requires_recorded_review": true,
+  "elapsed_s": 85.58336495800177,
+  "peak_operator_rss_bytes": 3768287232
+}

@@ -16,11 +16,12 @@
 ![Python](https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white)
 ![LangGraph](https://img.shields.io/badge/LangGraph-1C3C3C?logo=langchain&logoColor=white)
-![Neo4j](https://img.shields.io/badge/Neo4j-5.26-4581C3?logo=neo4j&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?logo=sqlite&logoColor=white)
 ![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=nextdotjs&logoColor=white)
-![Cloud Run](https://img.shields.io/badge/Cloud_Run-4285F4?logo=googlecloud&logoColor=white)
+![Render](https://img.shields.io/badge/Render_Free-000000?logo=render&logoColor=white)
+![Cloudflare Pages](https://img.shields.io/badge/Cloudflare_Pages-F38020?logo=cloudflarepages&logoColor=white)
 
-<sub>本文档译自<a href="./README.md">英文版</a>。内容如有出入,以英文版为准。界面与回答以韩语和英语提供。</sub>
+<sub>这是旧部署录制的20秒演示。当前架构与验证结果见下文。</sub>
 
 </div>
 
@@ -104,15 +105,25 @@
   </tr>
 </table>
 
-也可以不提问,直接[浏览某个地点的相邻地点](https://agent.hanjeok.com/en/graph?place=653)。
+也可以不提问,直接[浏览某个地点的相邻地点](https://agent.hanjeok.com/en/graph?place=10000028)。
 
 <br/>
 
 ## ⚙️ 一个问题是怎样被处理的
 
-<div align="center">
-<img src="docs/images/guide/question-flow.png" alt="从左到右六个步骤:问题、按规则读取、选择查询、撰写答案、引用关卡、答案加引用加路径。按规则读取可能分流到拒绝或反问。选择查询经由代码执行到达 Neo4j 图和 Hanjeok API。引用关卡可以退回重写一次,两次被拒则不显示任何内容。" width="820">
-</div>
+```mermaid
+flowchart LR
+    Q["Question + place/date"] --> S["Scope rules"]
+    S --> A["LangGraph agent"]
+    S --> D["Decline / ask which place"]
+    A --> T["Validated fixed lookups"]
+    T --> DB[("Read-only SQLite")]
+    T --> H["Live Hanjeok API"]
+    T --> A
+    A --> G["Citation + order + source checks"]
+    G -->|"One repair"| A
+    G -->|"Pass"| R["Answer + citations + path via SSE"]
+```
 
 无论走图中的哪条路,都遵守五条规则。
 
@@ -124,63 +135,97 @@
 
 <br/>
 
+对于已明确单个地点与日期的替代地点请求，必须查询并引用当日替代地点 API 的记录。不能把地点相似检索结果描述成服务的替代排名。
+
 ## 🏗 系统架构
 
-<div align="center">
-<img src="docs/images/guide/architecture.png" alt="四列:访问者的浏览器;Vercel 上的 Next.js 界面;一个 Cloud Run 容器,内含 FastAPI、MCP 服务器、LangGraph 智能体、七种查询、引用关卡、Neo4j 和嵌入模型;外部服务 NVIDIA NIM 与 Hanjeok API。底部一条是构建阶段:Hanjeok 数据库、导出脚本、JSONL 与清单、校验、内置于镜像的图。" width="820">
-</div>
+```mermaid
+flowchart LR
+    subgraph Guide["Python guide service"]
+        API["FastAPI /guide/*"] --> Agent["LangGraph agent"]
+        Agent --> Lookups["Validated lookups"]
+        Lookups --> Data[("SQLite snapshot<br/>places / links / events / wiki / vectors")]
+        Agent <--> State[("Visit checkpoints<br/>SQLite in /tmp")]
+        Agent --> Gate["Citation / rank / dated-source gate"]
+        Gate --> API
+    end
+    Agent <-->|"Structured JSON"| LLM["NVIDIA Nemotron 3 Ultra"]
+    Lookups <-->|"Query embedding, 1024 dimensions"| Embed["NVIDIA Nemotron 3.5 Embed 1B"]
+    Lookups <-->|"Forecasts / alternatives"| Live["Hanjeok read-only API"]
+```
 
-**智能体不持有 Hanjeok 数据库的任何凭据。** 数据只通过两条途径进入:
+**地点和政策保存在只读 SQLite 中，按日期变化的事实来自 Hanjeok API。** 回答生成与查询嵌入使用 NVIDIA HTTP API。公开 API 容器不包含 Neo4j 服务器、本地模型或模型权重。
 
-- **变化缓慢的数据以文件形式交付。** Hanjeok 一侧的脚本导出公开的旅游数据表,且只导出允许列表中的列。智能体校验哈希、行数和列,只要出现一个预期之外的列就拒绝整个文件。图在构建容器镜像时由该文件生成。
-- **与日期绑定的数据在提问时获取。** 拥挤预报和替代地点来自两个只读的 Hanjeok 接口。地点详情接口每调用一次就会记录一次浏览,因此从不调用。
+- **部署前准备：** 校验仅含公开列的 JSONL 与 manifest，将地点、固定版本 wiki 和验证过的向量打包为 SQLite。镜像构建时校验哈希并解压。更新数据需要生成新文件并重新部署。
+- **提问时查询：** 拥挤预报与当日替代地点来自只读 API。不调用会记录浏览量的地点详情接口，也不持有 Hanjeok 生产数据库凭据。
+- **检索与状态：** 使用 `sqlite-vec` 精确余弦检索和固定 SQL。LangGraph 处理步骤与反问，检查点保存在 `/tmp` 的独立 SQLite 中。访问状态和用量上限随进程重启清空。
+- **保留的接口：** Neo4j 适配器和 MCP CLI 仍在代码中。公开配置是 `GUIDE_STORE=sqlite` 的 HTTP API，不开放 MCP 服务器端口。
 
-有三个部分用的是库而非本仓库自写的代码:步骤的推送、"你指的是哪一个地点?"的暂停与恢复、一次访问中此前问题的记忆,由 LangGraph 的流、`interrupt` 和检查点承担;相似度检索由 neo4j-graphrag 的 `VectorCypherRetriever` 完成;MCP 服务器提供四个只读工具,让其他程序(将来是 Hanjeok 后端)可以向智能体提问。
+[实现](bench/src/guide/sqlite_store.py) · [数据准备](bench/deploy/prepare_sqlite.py) · [旧架构与 README](docs/archive/guide-before-sqlite/README.zh.md)
+
+<br/>
+
+## ☁️ 部署结构
+
+```mermaid
+flowchart LR
+    Browser["Visitor browser"] <-->|"HTML / JS / CSS"| Pages["Cloudflare Pages Free<br/>Next.js + vinext"]
+    Browser <-->|"HTTPS /guide/* + SSE"| Render["Render Free<br/>FastAPI, one worker, SQLite snapshot"]
+    Render <-->|"Answer / query embedding"| NVIDIA["NVIDIA hosted APIs"]
+    Render <-->|"Date-bound facts"| Hanjeok["api.hanjeok.com"]
+    Operator["Operator: verify export + wiki + vectors"] --> Artifact["Immutable SQLite gzip + manifest"]
+    Artifact --> Build["Docker build: verify hashes + unpack"]
+    Build --> Render
+```
+
+| 部分 | 当前配置 |
+| :-- | :-- |
+| 界面 | [agent.hanjeok.com](https://agent.hanjeok.com/en/ask)，Cloudflare Pages Free |
+| API | [hanjeok-guide.onrender.com](https://hanjeok-guide.onrender.com/guide/ready)，Render Free |
+| 进程 | Python 3.13、FastAPI、一个 uvicorn worker、一个并发问题 |
+| 数据 | 镜像内的只读 SQLite，无需外部数据库凭据 |
+| 密钥 | 通过 Render 环境变量注入现有 `NVIDIA_API_KEY` |
+| 就绪检查 | `/guide/ready` 校验文件、schema、数量与向量标识后返回200；模型可用性需用真实问题另行确认 |
+| 浏览器连接 | 设置 `NEXT_PUBLIC_GUIDE_BASE_URL` 后重新构建，浏览器直接向 API 发起 SSE 请求 |
+
+2026-11-24 已验证公开部署及真实浏览器回答。Render 手动部署工作分支的指定提交。Pages 的 `--branch main` 是生产环境标签，不代表合并 Git main。
+
+[当前部署说明](docs/deploy.md) · [512MiB 配置与数据更新](deployment/guide-free/README.md) · [验证记录](bench/reports/runtime/sqlite-deployment.json) · [旧部署说明](docs/archive/guide-before-sqlite/deploy.md)
 
 <br/>
 
 ## 📊 目前测量过的内容
 
-测得不多,并如实写明。
+以下为2026-11-24确认的当前部署结果。
 
-| | |
+| 项目 | 观测结果 |
 | :-- | :-- |
-| **已部署服务中的数据** | 地点 13,403 个、关联链接 45,244 条、活动 353 个,于 2026-10-14 从 Hanjeok 导出 |
-| **测试** | 后端 408 个(无需网络和密钥)、真实 Neo4j 上 16 个、前端 246 个 |
-| **从零唤醒** | 约 30 秒(Neo4j 19 秒,服务器 10 秒) |
-| **唤醒后的一次提问** | 6 到 9 秒;模型提供方限流时最长 56 秒 |
+| 数据 | 2026-11-23 export：12,106个地点、43,087条关联、209个活动、229个地区 |
+| Wiki | 固定 revision `7fc19c0`，18篇文档 / 83个分块 |
+| 默认测试 | 后端525项通过，排除43项集成/真实模型检查；前端296项通过 |
+| 512MiB 检查 | 最终镜像在本地 amd64 模拟中以20ms采样，峰值297.7MiB，无 swap/OOM；不是 Render 原生测量 |
+| 公开浏览器 | 已看到景福宫预报的真实回答、原始记录引用和 Ultra 模型标识；单次观察为7.6秒 |
+| 真实请求 | 公开预报/政策通过来源与引用检查；替代地点在正确 API 查询后出现模型调用失败，整体 smoke 保留 `passed=false` |
 
-已公开的评估是**针对 Hanjeok 真实数据的 60 道题**,使用 2026-10-14 的导出数据,六类问题各 10 道,未运行 RAGAS 评判。Hanjeok 的拥挤预报和替代地点使用了事先录制一次的响应。两种方式都回答了 41 道,拒绝了 12 道,失败了 7 道。
+**SQLite 配置尚未运行完整60题质量评估。** 不将旧 Neo4j/E5 或其他模型分数当作当前结果。旧评估表和限制保存在[旧 README](docs/archive/guide-before-sqlite/README.zh.md)。
 
-| | 仅文本相似度 | 再沿关联链接 |
-| :-- | :-: | :-: |
-| 取到所需记录的比例 | 0.725(50 题) | 0.86(50 题) |
-| 同上,询问两个以上相连地点的问题 | 0.025(10 题) | 0.60(10 题) |
-| 不应回答的问题被拒绝 | 10 题中 10 题 | 10 题中 10 题 |
-| 禁止行为次数(60 个答案) | 9 次 | 4 次 |
-
-禁止行为大多是没有依据的说法(6 次和 3 次)。记录精确率为 0.23 和 0.27。查询顺带取回的地点记录和政策文档也计入分母,所以数值偏低,只用于比较两种方式。早先基于虚构地点的 12 道题作为测试用留在仓库中。
-
-> [!NOTE]
-> **尚未完成。** RAGAS 分数。评判运行过一次,但在与其他项目共用的模型密钥下,72 个请求只有 1 个得到答复,其余都被限流。评估页面把这些单元格显示为"Not scored"。
-
-> [!WARNING]
-> **出现过错误答案通过引用检查的情况。** 在真实数据上,智能体曾把替代地点说成"由近到远"(实际按 Hanjeok 的评分排序),也曾在没有取得预报的情况下称某个海水浴场"今天很清静"。两次引用的都是确实取到的记录,但说法超出了记录本身。现在有两条禁止行为规则专门捕捉这两种情况,智能体会把这样的答案退回重写一次。在 60 道题的评估中,这两条规则都记为 0 次。
+[内存与真实请求](bench/reports/runtime/sqlite-512mb-source-guard-amd64.json) · [公开 SSE](bench/reports/runtime/sqlite-public-sse-postguard.json) · [实际界面](bench/reports/runtime/sqlite-public-forecast.jpg)
 
 <br/>
 
 ## 🛠 技术栈
 
-| 领域 | 所用技术 |
+| 领域 | 技术 |
 | :-- | :-- |
-| 智能体服务 | Python 3.13 · FastAPI · LangGraph(流、`interrupt`、检查点)· LangChain |
-| 图与检索 | Neo4j 5.26 · neo4j-graphrag `VectorCypherRetriever` · multilingual-e5-large(1024 维,本地) |
-| 模型 | NVIDIA NIM nemotron,结构化输出 |
-| 与其他程序的连接 | MCP 服务器,四个只读工具 |
-| 评估 | RAGAS · 基于记录 ID 的精确率与召回率 · 八个基于规则的禁止行为计数器 |
-| 界面 | Next.js 16 · React 19 · Tailwind 4 |
-| 部署 | Cloud Run(服务与 Neo4j 同在一个容器)· Vercel · Cloud Build |
-| 追踪 | Langfuse,仅在配置密钥后启用 |
+| 智能体 | Python 3.13、FastAPI、LangGraph、LangChain |
+| 当前数据与检索 | 只读 SQLite、`sqlite-vec` 精确余弦检索、固定 SQL |
+| 回答模型 | NVIDIA `nvidia/nemotron-3-ultra-550b-a55b`，结构化 JSON |
+| 查询嵌入 | NVIDIA `nvidia/nemotron-3.5-embed-1b`，1024维，HTTP |
+| 访问状态 | `/tmp` 中的 LangGraph SQLite 检查点，内存中的访问与用量限制 |
+| 界面 | Next.js 16、React 19、Tailwind 4、vinext |
+| 部署 | Cloudflare Pages Free + Render Free，`bench/Dockerfile.api` |
+| 独立工具与实验 | Neo4j 适配器、MCP CLI、运维评估和 RAGAS，不在公开 API 进程内运行 |
+| 追踪 | 配置密钥后才启用 Langfuse |
 
 <br/>
 
@@ -190,11 +235,11 @@
 | :-- | :-- |
 | [`bench/src/guide/`](bench/src/guide/) | 智能体本体:范围规则、查询、LangGraph 循环、引用关卡、API、MCP 服务器、评估 |
 | [`bench/tests/`](bench/tests/) | 单元、契约与 Neo4j 集成测试,以及用虚构地点制作的合成导出文件 |
-| [`bench/Dockerfile`](bench/Dockerfile) · [`bench/deploy/`](bench/deploy/) | 装有服务、Neo4j 和预构建图的镜像 |
+| [`bench/Dockerfile.api`](bench/Dockerfile.api) · [`bench/deploy/`](bench/deploy/) | 当前只读 SQLite API 镜像及数据准备/验证工具；`bench/Dockerfile` 保留旧 Neo4j 同容器配置 |
 | [`frontend/`](frontend/) | 四个界面,以及用动态架构图介绍代理的首页 |
 | [`specs/002-hanjeok-guide-agent/`](specs/002-hanjeok-guide-agent/) | 规格、调研决策、数据模型、契约、任务 |
 | [`docs/prd/`](docs/prd/hanjeok-guide-agent.md) | 产品需求(韩语) |
-| [`docs/deploy.md`](docs/deploy.md) | 部署方式及实际执行的命令(韩语) |
+| [`docs/deploy.md`](docs/deploy.md) | 当前 Render/Cloudflare 部署及旧部署记录链接 |
 | [`server/`](server/) | 早先的行程解说服务(Kotlin、Spring AI),见下文 |
 
 ### 在代码中阅读核心思路
@@ -218,7 +263,16 @@ pnpm install
 pnpm dev          # http://localhost:3000/en/ask
 ```
 
-用合成数据启动服务。需要 Python 3.13、uv 和 Docker。
+从仓库根目录运行当前 SQLite API。先将[环境变量示例](deployment/guide-free/env.example)复制到仓库之外，并配置 NVIDIA 密钥及本地 CORS origin。
+
+```bash
+docker build -f bench/Dockerfile.api -t hanjeok-guide:api bench
+docker run --rm --memory 512m --memory-swap 512m --cpus 1 \
+  --env-file /path/outside-repository/guide.env -e GUIDE_STORE=sqlite \
+  -p 127.0.0.1:8090:8000 hanjeok-guide:api
+```
+
+也保留了用合成数据运行旧 Neo4j 适配器的方法，需要 Python 3.13、uv 和 Docker。
 
 ```bash
 cd bench
@@ -227,7 +281,7 @@ uv sync
 uv run guide refresh --export tests/fixtures/hanjeok-export
 GUIDE_LIVE_MODE=replay uv run uvicorn guide.api:app --port 8090   # 回答需要 NVIDIA_API_KEY
 
-uv run pytest                    # 408 个测试,无需网络
+uv run pytest                    # offline tests
 uv run guide mcp                 # 以 MCP 方式提供同一个智能体(stdio)
 ```
 
@@ -237,7 +291,8 @@ uv run guide mcp                 # 以 MCP 方式提供同一个智能体(stdio)
 
 ## ⚠️ 已知限制
 
-- **闲置之后的第一个问题要等约 30 秒。** 服务会缩减到零;界面会提示正在唤醒。
+- **免费实例可能在空闲时休眠。** SQLite 迁移后的冷启动时间尚未重新测量。
+- **真实模型调用仍有失败。** 替代地点查询成功后也可能生成失败，并非所有真实请求检查都通过。
 - **模型密钥与其他项目共用。** 遇到限流时,提问会变慢或失败。
 - **两个字的地名采用保守匹配。** 即便如此,"在地图上离得近的地方"里的"지도(地图)"仍会被读成同名的岛屿。
 - **访问记录和用量上限保存在内存中。** 因此服务只运行一个实例。
@@ -248,7 +303,7 @@ uv run guide mcp                 # 以 MCP 方式提供同一个智能体(stdio)
 
 ## 📚 早先的组成部分:行程解说服务
 
-在导览智能体之前,本仓库只解说一件事:Hanjeok 后端已经生成的旅行行程,就在显示该行程的界面上解说。该服务(Kotlin、Spring AI)如今仍运行在 [agent.hanjeok.com](https://agent.hanjeok.com)。其完整说明,包括统计八种禁止行为的测试框架以及最终选定 `gpt-4o` 的模型对比,均原样保留。
+在导览智能体之前,本仓库只解说一件事:Hanjeok 后端已经生成的旅行行程,就在显示该行程的界面上解说。Kotlin/Spring AI 代码和当时的部署记录仍然保留；本次免费迁移仅覆盖 Python 导览 API。其完整说明,包括统计八种禁止行为的测试框架以及最终选定 `gpt-4o` 的模型对比,均原样保留。
 
 **[行程解说服务 README →](docs/explainer/README.md)** · [한국어](docs/explainer/README.ko.md)
 

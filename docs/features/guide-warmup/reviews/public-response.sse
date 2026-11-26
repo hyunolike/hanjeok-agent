@@ -1,0 +1,24 @@
+event: visit
+data: {"visit_id": "JF5P57HVpFzCbqocKc_MOg", "as_of": {"export": "2026-11-23T02:04:18.244Z", "wiki": "2026-10-09"}}
+
+event: step
+data: {"index": 0, "kind": "scope", "inputs": {}, "status": "ok", "reason": null, "produced": [], "summary": "장소 1곳, 날짜 2026-11-26(으)로 읽었습니다 · '경복궁'은(는) 이름이 같은 2곳 중 혼잡 예보가 있는 서울 종로구 쪽으로 읽었습니다", "as_of": null}
+
+event: step
+data: {"index": 1, "kind": "resolve", "inputs": {"names": ["경복궁"]}, "status": "ok", "reason": null, "produced": ["hanjeok:place/10000028"], "summary": "경복궁 (서울 종로구)", "as_of": "2026-11-23T02:04:18.244Z"}
+
+event: step
+data: {"index": 2, "kind": "congestion", "inputs": {"place_id": 10000028, "date": "2026-11-26", "text": "경복궁 2026-11-26 혼잡도 조회"}, "status": "running", "reason": null, "produced": [], "summary": "", "as_of": null}
+
+event: step
+data: {"index": 2, "kind": "congestion", "inputs": {"place_id": 10000028, "date": "2026-11-26"}, "status": "ok", "reason": null, "produced": ["hanjeok:congestion/10000028@2026-11-26", "wiki:concepts/congestion-diagnosis.md"], "summary": "11월 26일 예보: 매우혼잡 (상위 3%)", "as_of": "2026-11-24T04:42:05.591666Z"}
+
+event: answer
+data: {"text": "2026년 11월 26일 경복궁은 혼잡 등급이 '매우혼잡'으로 예보되어 있습니다. 전국 대비 상위 3%에 해당하며 집중률은 82.89%입니다. 그 뒤의 더 한적한 날로 한적이 고른 순서대로 12월 1일, 12월 8일, 12월 15일이 제시되었으나 모두 '매우혼잡' 등급입니다.", "citations": [{"id": "hanjeok:congestion/10000028@2026-11-26", "kind": "record", "label": "경복궁 혼잡 예보 (11월 26일)"}], "partial": false}
+
+event: path
+data: {"nodes": [{"id": "hanjeok:place/10000028", "kind": "place", "label": "경복궁", "region": "서울 종로구"}, {"id": "region:11110", "kind": "region", "label": "서울 종로구", "region": null}, {"id": "wiki:concepts/congestion-diagnosis.md", "kind": "document", "label": "Congestion Diagnosis", "region": null}], "edges": [{"from": "hanjeok:place/10000028", "to": "region:11110", "kind": "in_region", "rank": null}, {"from": "wiki:concepts/congestion-diagnosis.md", "to": "hanjeok:place/10000028", "kind": "explains", "rank": null}]}
+
+event: done
+data: {"outcome": "answered", "model": "nvidia/nemotron-3-ultra-550b-a55b", "elapsed_ms": 6880, "generated_at": "2026-11-24T04:42:09.806632Z"}
+

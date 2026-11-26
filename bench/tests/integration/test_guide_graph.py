@@ -50,7 +50,7 @@ def test_schema_has_the_place_index(driver):
 
 
 def test_refresh_writes_what_the_export_holds_and_activates_it(driver, corpus, embedder):
-    result = refresh(driver, EXPORT, embedder, corpus=corpus)
+    result = refresh(driver, EXPORT, embedder, corpus=corpus, model_id="fake@1024:v1")
 
     current = read.active(driver, corpus)
     assert result.counts == EXPORT.counts
@@ -58,6 +58,7 @@ def test_refresh_writes_what_the_export_holds_and_activates_it(driver, corpus, e
     assert current.export_sha256 == EXPORT.sha256
     assert current.exported_at == "2026-10-13T02:00:00Z"
     assert current.counts == EXPORT.counts
+    assert current.embedding_model == "fake@1024:v1"
 
 
 def test_no_copy_means_none_rather_than_an_empty_one(driver):
@@ -67,16 +68,19 @@ def test_no_copy_means_none_rather_than_an_empty_one(driver):
 def test_a_refresh_that_fails_before_activation_leaves_the_previous_copy_serving(
     driver, corpus, embedder
 ):
-    first = refresh(driver, EXPORT, embedder, corpus=corpus)
+    first = refresh(driver, EXPORT, embedder, corpus=corpus, model_id="first@1024:v1")
 
     def fail(generation):
         raise RuntimeError("stopped just before the pointer moved")
 
     with pytest.raises(RefreshError) as caught:
-        refresh(driver, EXPORT, embedder, corpus=corpus, before_activate=fail)
+        refresh(
+            driver, EXPORT, embedder, corpus=corpus, model_id="second@1024:v1", before_activate=fail
+        )
 
     assert caught.value.cause == "refresh_failed"
     assert read.active(driver, corpus).generation == first.generation
+    assert read.active(driver, corpus).embedding_model == "first@1024:v1"
     assert read.detail(driver, first.generation, 101).name == "가람궁"
     with session(driver) as s:
         generations = s.run(

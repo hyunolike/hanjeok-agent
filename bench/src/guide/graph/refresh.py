@@ -299,7 +299,7 @@ def refresh(
                 MERGE (c:Corpus {name: $corpus})
                 SET c.active_generation = $generation, c.generation = $generation,
                     c.exported_at = $exported_at, c.export_sha256 = $sha, c.revision = $sha,
-                    c.export_source = $source,
+                    c.export_source = $source, c.embedding_model = $embedding_model,
                     c.counts_json = $counts, c.docs = $docs, c.chunks = 0,
                     c.loaded_at = $loaded_at
                 """,
@@ -307,6 +307,7 @@ def refresh(
                 generation=generation,
                 exported_at=export.exported_at,
                 source=export.source,
+                embedding_model=model_id,
                 sha=export.sha256,
                 counts=json.dumps(counts),
                 docs=counts["places"] + counts["events"],

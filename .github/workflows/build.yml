@@ -103,3 +103,25 @@ jobs:
       # Neo4j 도, 모델도, API 키도 없이 돈다. `integration` 과 `costly` 표시는
       # pyproject 에서 기본으로 빠져 있다 — 여기서 플래그로 빼면 누군가 잊는다.
       - run: uv run pytest
+
+  guide-api-512mb:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+      - name: Install only the HTTP runtime and offline test tools
+        working-directory: bench
+        run: |
+          uv venv .venv --python 3.13
+          uv pip install -r runtime/requirements.txt pytest==9.1.1 pytest-asyncio==1.5.0 mcp==2.3.0
+      - name: Verify guide contracts without a local embedding model
+        working-directory: bench
+        run: .venv/bin/python -m pytest tests/unit/test_guide_*.py tests/contract/test_guide_*.py
+      - name: Build HTTP-only image
+        run: docker build -f bench/Dockerfile.api -t hanjeok-guide:512mb-check bench
+      - name: Exercise isolated fixtures under 512MiB without swap
+        run: python3 bench/deploy/verify-api-memory.py --output /tmp/guide-512mb.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: guide-512mb-memory
+          path: /tmp/guide-512mb.json

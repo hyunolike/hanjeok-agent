@@ -13,23 +13,26 @@ from __future__ import annotations
 import json
 import logging
 import os
+import sqlite3
 from collections.abc import Iterator
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
+from threading import Lock
 from typing import Any, Protocol
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import JSONResponse
 
+from guide.admission import Admission, ManagedStream, complete_in_thread
 from guide.agent import Agent
 from guide.eval.store import ReportStore
 from guide.live import LiveClient, Recording
 from guide.model import Model
 from guide.sources import Places, Policy
-from guide.visits import Visits
+from guide.visits import VisitCapacity, Visits
 
 log = logging.getLogger("guide")
 
@@ -74,6 +77,13 @@ def _address(request: Request) -> str:
     # Behind a proxy every visitor would share the proxy's address. The header
     # is trusted only when the deployment says a proxy it controls sets it.
     if os.environ.get("GUIDE_TRUST_PROXY") == "1":
+        if os.environ.get("GUIDE_CLIENT_IP_HEADER") == "cf-connecting-ip":
+            from ipaddress import ip_address
+
+            try:
+                return str(ip_address(request.headers.get("cf-connecting-ip", "")))
+            except ValueError:
+                return request.client.host if request.client else "unknown"
         forwarded = request.headers.get("x-forwarded-for", "").split(",")[0].strip()
         if forwarded:
             return forwarded
@@ -106,18 +116,25 @@ def create_app(
     *,
     origins: list[str] | None = None,
     reports: ReportStore | None = None,
+    max_concurrent: int | None = None,
 ) -> FastAPI:
     state: dict[str, Any] = {"runtime": runtime}
     reports = reports or ReportStore()
+    admission = Admission(
+        max_concurrent if max_concurrent is not None
+        else int(os.environ.get("GUIDE_MAX_CONCURRENT", "2"))
+    )
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
         owned = state["runtime"] is None
         if owned:
             state["runtime"] = EnvRuntime()
-        yield
-        if owned:
-            state["runtime"].close()
+        try:
+            yield
+        finally:
+            if owned:
+                state["runtime"].close()
 
     app = FastAPI(
         title="Hanjeok guide", lifespan=lifespan, docs_url=None, redoc_url=None, openapi_url=None
@@ -172,76 +189,92 @@ def create_app(
             except (TypeError, ValueError):
                 return _error(400, "invalid_request", detail="context.date must be YYYY-MM-DD")
 
-        current, snapshot = ready()
-        if snapshot is None:
-            return _error(503, "not_ready", detail="no data is loaded")
-
+        current = state["runtime"]
         visits = current.visits
-        visit = visits.open(visit_id)
+        try:
+            visit, created = visits.open_provisional(visit_id)
+        except VisitCapacity:
+            return _error(429, "usage_limit", scope="day", retry_after_s=30)
+        delivered = False
 
-        def agent() -> Agent:
-            return Agent(
-                current.model,
-                snapshot.places,
-                current.policy,
-                current.live,
-                strategy=strategy,
-                checkpointer=current.checkpointer,
-                callbacks=current.callbacks,
-            )
+        def release_visit():
+            visits.unpin(visit)
+            if created and not delivered:
+                visits.discard(visit)
 
-        if choice is not None:
-            # A choice answers a question this visit was asked. It must be one
-            # of the places offered then; otherwise the field would be a way
-            # to reach any place by guessing its id.
-            offered = agent().pending(visit) or []
-            if choice not in [candidate["place_id"] for candidate in offered]:
-                return _error(
-                    400, "invalid_request", detail="choice is not one of the offered candidates"
+        lease = admission.acquire(visit, on_release=release_visit)
+        if lease is None:
+            if created:
+                visits.discard(visit)
+            return _error(429, "usage_limit", scope="visitor", retry_after_s=5)
+        visits.pin(visit)
+        handed_off = False
+        try:
+            current, snapshot = await complete_in_thread(ready)
+            if snapshot is None:
+                return _error(503, "not_ready", detail="no compatible data is loaded")
+
+            def agent() -> Agent:
+                return Agent(
+                    current.model,
+                    snapshot.places,
+                    current.policy,
+                    current.live,
+                    strategy=strategy,
+                    checkpointer=current.checkpointer,
+                    callbacks=current.callbacks,
                 )
-        limit = visits.admit(visit, _address(request))
-        if limit is not None:
-            return _error(429, "usage_limit", scope=limit.scope, retry_after_s=limit.retry_after_s)
 
-        def stream() -> Iterator[str]:
-            yield _sse(
-                "visit",
-                {
-                    "visit_id": visit,
-                    "as_of": {"export": snapshot.exported_at, "wiki": snapshot.wiki_as_of},
-                },
-            )
-            ended = False
-            try:
-                # The visit id is the graph's thread: its earlier questions and
-                # any paused question are found under it.
-                for name, data in agent().stream(
-                    question, thread_id=visit, resume=choice, context=context
-                ):
-                    if ended:
-                        continue
-                    ended = name in TERMINAL
-                    yield _sse(name, data)
-            except Exception:
-                # Logged here; the visitor gets a cause, not the exception.
-                log.exception("question failed")
-            if not ended:
-                # Every stream ends with exactly one terminal event, including
-                # the ones that end because something broke.
+            if choice is not None:
+                offered = agent().pending(visit) or []
+                if choice not in [candidate["place_id"] for candidate in offered]:
+                    return _error(
+                        400, "invalid_request", detail="choice is not one of the offered candidates"
+                    )
+            limit = visits.admit(visit, _address(request))
+            if limit is not None:
+                return _error(
+                    429, "usage_limit", scope=limit.scope, retry_after_s=limit.retry_after_s
+                )
+
+            def stream() -> Iterator[str]:
+                nonlocal delivered
                 yield _sse(
-                    "stopped",
+                    "visit",
                     {
-                        "outcome": "failed",
-                        "cause": "service_unreachable",
-                        "message": INTERNAL_MESSAGE,
+                        "visit_id": visit,
+                        "as_of": {"export": snapshot.exported_at, "wiki": snapshot.wiki_as_of},
                     },
                 )
+                delivered = True
+                ended = False
+                events = agent().stream(question, thread_id=visit, resume=choice, context=context)
+                try:
+                    for name, data in events:
+                        if ended:
+                            continue
+                        ended = name in TERMINAL
+                        yield _sse(name, data)
+                except Exception:
+                    log.exception("question failed")
+                finally:
+                    events.close()
+                if not ended:
+                    yield _sse(
+                        "stopped",
+                        {"outcome": "failed", "cause": "service_unreachable",
+                         "message": INTERNAL_MESSAGE},
+                    )
 
-        return StreamingResponse(
-            stream(),
-            media_type="text/event-stream",
-            headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no"},
-        )
+            response = ManagedStream(
+                stream(), lease, media_type="text/event-stream",
+                headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no"},
+            )
+            handed_off = True
+            return response
+        finally:
+            if not handed_off:
+                lease.release()
 
     @app.get("/guide/places")
     def places(query: str = ""):
@@ -312,6 +345,13 @@ def create_app(
             "limits": limits,
         }
 
+    @app.get("/guide/ready")
+    def readiness():
+        _, snapshot = ready()
+        if snapshot is None:
+            return _error(503, "not_ready")
+        return {"ready": True}
+
     # Reports are files written by `guide eval`. Reading them needs neither the
     # graph nor a model, so the page works while the rest is starting or down.
     @app.get("/guide/eval/latest")
@@ -329,9 +369,12 @@ def create_app(
     return app
 
 
-def checkpointer_from_env():
-    """Where a visit's thread is kept. In memory unless a file is named, in
-    which case a visit survives a restart for as long as it has left."""
+def checkpointer_from_env(*, reset: bool = False):
+    """Checkpoint storage; persisting it alone does not persist the Visits registry.
+
+    The lean API resets unreachable threads on process startup. Other callers
+    may retain the file by leaving reset off.
+    """
     path = os.environ.get("GUIDE_CHECKPOINT_DB")
     if not path:
         from langgraph.checkpoint.memory import InMemorySaver
@@ -344,6 +387,13 @@ def checkpointer_from_env():
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     saver = SqliteSaver(sqlite3.connect(path, check_same_thread=False))
     saver.setup()
+    if reset:
+        # The API's Visits registry is process-local; prior process threads
+        # have no reachable visit and must not accumulate on disk forever.
+        with saver.conn:
+            saver.conn.execute("DELETE FROM writes")
+            saver.conn.execute("DELETE FROM checkpoints")
+        saver.conn.execute("VACUUM")
     return saver
 
 
@@ -371,22 +421,42 @@ class EnvRuntime:
     """
 
     def __init__(self) -> None:
-        from bench.embeddings import LocalEmbedder
         from bench.graph.store import driver_from_env
+        from guide.embeddings import embedder_from_env
         from guide.model import GuideModel
         from guide.sources import GraphPolicy
 
-        self._driver = driver_from_env()
-        self._embedder = LocalEmbedder()
+        self._store_kind = os.environ.get("GUIDE_STORE", "neo4j")
+        if self._store_kind not in ("neo4j", "sqlite"):
+            raise ValueError("GUIDE_STORE must be neo4j or sqlite")
+        self._driver = driver_from_env() if self._store_kind == "neo4j" else None
+        self._embedder = embedder_from_env()
         self._gazetteers: dict[str, dict] = {}
+        self._snapshot_lock = Lock()
         self.model = GuideModel()
-        self.policy = GraphPolicy(self._driver, self._embedder)
-        self.checkpointer = checkpointer_from_env()
+        self._sqlite = None
+        if self._store_kind == "sqlite":
+            from guide.sqlite_store import SQLiteStore
+
+            try:
+                self._sqlite = SQLiteStore(
+                    os.environ["GUIDE_SNAPSHOT_DB"], os.environ["GUIDE_SNAPSHOT_MANIFEST"],
+                    self._embedder,
+                )
+            except (KeyError, ValueError, OSError, sqlite3.Error):
+                log.warning("SQLite snapshot unavailable; readiness stays false")
+            self.policy = self._sqlite.policy if self._sqlite else None
+        else:
+            self.policy = GraphPolicy(self._driver, self._embedder)
+        self.checkpointer = checkpointer_from_env(
+            reset=os.environ.get("GUIDE_RESET_CHECKPOINTS") == "1"
+        )
         self.callbacks = tracing_callbacks()
         self.visits = Visits(
             per_visitor=int(os.environ.get("GUIDE_LIMIT_PER_VISITOR", "20")),
             per_day=int(os.environ.get("GUIDE_LIMIT_PER_DAY", "400")),
             on_expire=self.checkpointer.delete_thread,
+            max_visits=int(os.environ.get("GUIDE_MAX_VISITS", "128")),
         )
         mode = os.environ.get("GUIDE_LIVE_MODE", "live")
         directory = os.environ.get("GUIDE_LIVE_RECORDING") or (
@@ -399,23 +469,39 @@ class EnvRuntime:
         )
 
     def snapshot(self) -> Snapshot | None:
+        with self._snapshot_lock:
+            return self._snapshot()
+
+    def _snapshot(self) -> Snapshot | None:
+        if getattr(self, "_store_kind", "neo4j") == "sqlite":
+            if self._sqlite is None:
+                return None
+            meta = self._sqlite.meta
+            return Snapshot(
+                self._sqlite.places, meta["generation"], meta["exported_at"],
+                meta.get("wiki_as_of", ""), meta["counts"],
+            )
         from bench.graph.store import session
+        from guide.embeddings import compatible
         from guide.graph import read
         from guide.sources import WIKI_CORPUS, GraphPlaces, group_gazetteer
 
         active = read.active(self._driver)
         if active is None:
             return None
+        with session(self._driver) as s:
+            row = s.run(
+                "MATCH (c:Corpus {name: $name}) RETURN c.loaded_at AS at, "
+                "c.embedding_model AS embedding_model", name=WIKI_CORPUS
+            ).single()
+        if not compatible(
+            self._embedder, active.embedding_model, row["embedding_model"] if row else None
+        ):
+            return None
         if active.generation not in self._gazetteers:
-            # One generation's names, read once. The old generation's entry is
-            # dropped so a long-running process does not keep every copy.
             self._gazetteers = {
                 active.generation: group_gazetteer(read.gazetteer(self._driver, active.generation))
             }
-        with session(self._driver) as s:
-            row = s.run(
-                "MATCH (c:Corpus {name: $name}) RETURN c.loaded_at AS at", name=WIKI_CORPUS
-            ).single()
         return Snapshot(
             GraphPlaces(self._driver, active, self._embedder, self._gazetteers[active.generation]),
             active.generation,
@@ -425,7 +511,16 @@ class EnvRuntime:
         )
 
     def close(self) -> None:
-        self._driver.close()
+        if self._driver is not None:
+            self._driver.close()
+        if self._sqlite is not None:
+            self._sqlite.close()
+        close = getattr(self._embedder, "close", None)
+        if close:
+            close()
+        conn = getattr(self.checkpointer, "conn", None)
+        if conn is not None:
+            conn.close()
 
 
 def __getattr__(name: str):

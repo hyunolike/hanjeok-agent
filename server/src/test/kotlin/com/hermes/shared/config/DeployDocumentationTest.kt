@@ -14,7 +14,10 @@ import java.io.File
 class DeployDocumentationTest {
 
     private val yaml = File("server/src/main/resources/application.yml").readText()
-    private val doc = File("docs/deploy.md").readText()
+    // 2026-11-24에 docs/deploy.md 는 Render로 옮긴 Python 안내 API의 문서가 됐고,
+    // Kotlin 서버(Cloud Run, 현재 중단)의 배포 안내는 아래 보존본으로 옮겨졌다.
+    // 이 서버를 다시 띄우는 사람이 읽는 문서가 그것이라 이 검사도 그것을 본다.
+    private val doc = File("docs/archive/guide-before-sqlite/deploy.md").readText()
 
     /** `${NAME}` 과 `${NAME:default}` 양쪽을 잡는다. */
     private val referenced: Set<String> =

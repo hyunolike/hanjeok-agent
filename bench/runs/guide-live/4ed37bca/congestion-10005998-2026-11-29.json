@@ -1,0 +1,265 @@
+{
+ "status": 200,
+ "fetched_at": "2026-11-23T07:59:08.062670Z",
+ "body": {
+  "success": true,
+  "data": {
+   "hasCongestionData": true,
+   "attraction": {
+    "id": 10005998,
+    "name": "국립중앙박물관",
+    "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/12/3495012_image2_1.jpg"
+   },
+   "diagnosis": {
+    "date": "2026-11-29",
+    "concentration": 58.22,
+    "percentile": 48,
+    "grade": "RELAXED",
+    "message": "국립중앙박물관, 지금 가면 여유롭게 둘러볼 수 있어요."
+   },
+   "dailyForecasts": [
+    {
+     "date": "2026-11-22",
+     "concentration": 72.05,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-11-23",
+     "concentration": 41.41,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-11-24",
+     "concentration": 42.69,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-11-25",
+     "concentration": 55.78,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-26",
+     "concentration": 52.71,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-27",
+     "concentration": 56.78,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-28",
+     "concentration": 61.9,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-29",
+     "concentration": 58.22,
+     "grade": "RELAXED",
+     "weather": null
+    },
+    {
+     "date": "2026-11-30",
+     "concentration": 41.41,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-01",
+     "concentration": 39.21,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-02",
+     "concentration": 40.58,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-03",
+     "concentration": 37.75,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-04",
+     "concentration": 39.98,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-05",
+     "concentration": 48,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-06",
+     "concentration": 47.36,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-07",
+     "concentration": 35.51,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-08",
+     "concentration": 36.34,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-09",
+     "concentration": 39.92,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-10",
+     "concentration": 38.33,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-11",
+     "concentration": 41.08,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-12",
+     "concentration": 54.41,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-13",
+     "concentration": 54.83,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-14",
+     "concentration": 37.62,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-15",
+     "concentration": 38.66,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-16",
+     "concentration": 40.78,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-17",
+     "concentration": 40.57,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-18",
+     "concentration": 41.71,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-19",
+     "concentration": 59.39,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-20",
+     "concentration": 54.25,
+     "grade": "NORMAL",
+     "weather": null
+    },
+    {
+     "date": "2026-12-21",
+     "concentration": 38.32,
+     "grade": "CROWDED",
+     "weather": null
+    }
+   ],
+   "betterDates": [
+    {
+     "date": "2026-12-07",
+     "concentration": 35.51,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-08",
+     "concentration": 36.34,
+     "grade": "CROWDED",
+     "weather": null
+    },
+    {
+     "date": "2026-12-14",
+     "concentration": 37.62,
+     "grade": "CROWDED",
+     "weather": null
+    }
+   ],
+   "nearbyFestivals": [
+    {
+     "id": 52,
+     "contentId": "3107059",
+     "name": "2026 숭례문 파수의식",
+     "startDate": "2026-01-01",
+     "endDate": "2026-12-31",
+     "distanceKm": 4.3,
+     "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/99/4001599_image2_1.jpg"
+    },
+    {
+     "id": 31,
+     "contentId": "292961",
+     "name": "서울 왕궁수문장 교대의식",
+     "startDate": "2026-01-01",
+     "endDate": "2026-12-31",
+     "distanceKm": 4.9,
+     "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/79/4039379_image2_1.jpg"
+    },
+    {
+     "id": 30,
+     "contentId": "2598331",
+     "name": "문화가 흐르는 서울광장",
+     "startDate": "2026-05-06",
+     "endDate": "2026-12-31",
+     "distanceKm": 4.9,
+     "imageUrl": "https://tong.visitkorea.or.kr/cms/resource/68/4059668_image2_1.jpg"
+    }
+   ],
+   "ongoingExhibitions": [],
+   "feltCongestion": {
+    "moreCrowded": 0,
+    "asForecast": 0,
+    "lessCrowded": 0
+   },
+   "usual": {
+    "baseline": 46.2517,
+    "days": 30,
+    "delta": 12
+   }
+  },
+  "error": null
+ }
+}

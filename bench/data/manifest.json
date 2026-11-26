@@ -1,0 +1,30 @@
+{
+  "database_sha256": "f1e0851240efa0646f70e1f4764c9d36a9a8dbf4460443982da92ad3f1c54c87",
+  "metadata": {
+    "embedding_model": "nvidia/nemotron-3.5-embed-1b@1024:input-type-v1:truncate-END:l2",
+    "wiki_embedding_model": "nvidia/nemotron-3.5-embed-1b@1024:input-type-v1:truncate-END:l2",
+    "wiki_revision": "7fc19c0",
+    "wiki_commit": "7fc19c0c4a034868866bcf5a920e3f82050830c7",
+    "wiki_as_of": "2026-10-09",
+    "wiki_embedding_producer": "nvidia/Nemotron-3.5-Embed-1B-BF16@e24ca1e346bcc53572bd7bdc02b3e8ebf66c197c:1024:chat-template-passage-v1:cpu-fp32:l2",
+    "wiki_artifact_sha256": "b09fecfd5a3d80953d01aed052319ad61544f6086ecdeb0386674e45e3a66b56",
+    "wiki_promotion_sha256": "620810f5f18c203068ac412d7b6e4ee8b96292ff73bee8d6bb527ffcf3261e29",
+    "schema_version": 1,
+    "exported_at": "2026-11-23T02:04:18.244Z",
+    "export_sha256": "9d82fb933020cf680d445d51f64b6e5c8ce79e1f5671f746f371dccb0d349849",
+    "source": "hanjeok",
+    "counts": {
+      "places": 12106,
+      "related": 43087,
+      "events": 209,
+      "regions": 229
+    },
+    "wiki_docs": 18,
+    "wiki_chunks": 83,
+    "generation": "765a93cc45a149e6dcf9f0352d8332e4cff58b3ce50736ed10b253c1d8dc0875"
+  },
+  "gzip_file": "snapshot-f1e0851240efa0646f70e1f4764c9d36a9a8dbf4460443982da92ad3f1c54c87.sqlite.gz",
+  "gzip_sha256": "844adc8e087ae3814253969935e473bf3a832a7900e1f91fa13cf6e39e296cbd",
+  "database_bytes": 66617344,
+  "gzip_bytes": 48943587
+}
