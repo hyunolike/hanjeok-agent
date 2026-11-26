@@ -727,3 +727,49 @@ def test_system_forbids_the_words_hanjeok_never_shows():
     # Hanjeok's screens never say these (its AGENTS.md); the answers are shown there as written.
     for word in ("추천", "인기", "명소", "명당", "실시간"):
         assert f"'{word}'" in SYSTEM
+
+
+EVENTS = "hanjeok:events/101@2026-10-17"
+SCREEN = {"place_id": 101, "date": "2026-10-17"}
+
+
+@pytest.mark.parametrize("first", [
+    # Seen in production (2026-11-26): the model answered from the place
+    # record alone, or searched the question's words, and never looked up events.
+    answer("현재 조회된 정보에는 행사 일정이 없습니다.", "hanjeok:place/101"),
+    action("search_places", query="가람궁 근처 행사", region_code="11110"),
+])
+def test_an_events_question_about_the_screens_place_looks_up_its_events(first):
+    model = ScriptedModel(first, answer("10월 17일 가람궁에 한적에 등록된 행사가 없습니다.", EVENTS))
+
+    result, events = run(model, "근처에서 열리는 행사 있어요?", context=SCREEN)
+
+    assert result.outcome == "answered"
+    assert EVENTS in result.citations
+    kinds = [s["kind"] for s in finished_steps(events)]
+    assert "events" in kinds
+    assert "search_places" not in kinds
+
+
+def test_once_events_are_fetched_the_models_next_choice_is_kept():
+    model = ScriptedModel(
+        action("events", place_id=101, date="2026-10-17"),
+        action("congestion", place_id=101, date="2026-10-17"),
+        answer("10월 17일 가람궁은 매우혼잡 예보이고 등록된 행사는 없습니다.", EVENTS, CONGESTION),
+    )
+
+    result, events = run(model, "이날 행사 있어요? 붐비나요?", context=SCREEN)
+
+    assert result.outcome == "answered"
+    assert [s["kind"] for s in finished_steps(events)][2:] == ["events", "congestion"]
+
+
+def test_a_question_without_events_words_is_not_sent_to_events():
+    model = ScriptedModel(
+        action("congestion", place_id=101, date="2026-10-17"),
+        answer("10월 17일 가람궁은 매우혼잡 예보입니다.", CONGESTION),
+    )
+
+    _, events = run(model, "여기 붐벼?", context=SCREEN)
+
+    assert not any(s["kind"] == "events" for s in finished_steps(events))

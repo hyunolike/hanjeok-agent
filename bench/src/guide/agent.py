@@ -496,6 +496,16 @@ class Agent:
             return None
         return self.result.place_ids[0], self.result.dates[0]
 
+    def _requested_events(self) -> tuple[int, str | None] | None:
+        # Seen in production (2026-11-26): asked "근처에서 열리는 행사 있어요?" about the
+        # screen's place, the model answered from the place record alone or
+        # searched the question's words, and never looked up the events it has.
+        if len(self.result.place_ids) != 1 or len(self.result.dates) > 1:
+            return None
+        if not re.search(r"행사|축제|이벤트|공연", self._question):
+            return None
+        return self.result.place_ids[0], (self.result.dates[0] if self.result.dates else None)
+
     def _act(self, state: State) -> State:
         if state["rounds"] >= MAX_LOOKUP_ROUNDS:
             return {"route": "answer"}
@@ -511,6 +521,10 @@ class Agent:
         if (required and reply["action"] in ("search_places", "related_places")
                 and cite.alternatives(*required) not in self._lookups.fetched.labels):
             reply = {"action": "alternatives", "place_id": required[0], "date": required[1]}
+        asked_events = self._requested_events()
+        if (asked_events and reply["action"] != "events"
+                and cite.events(*asked_events) not in self._lookups.fetched.labels):
+            reply = {"action": "events", "place_id": asked_events[0], "date": asked_events[1]}
         if reply["action"] == "answer":
             return {"draft": reply, "route": "verify"}
 
