@@ -165,7 +165,8 @@ def verify(image, repetitions):
         used = [
             ipaddress.ip_network(item["Subnet"])
             for net in json.loads(docker("network", "inspect", *networks))
-            for item in net.get("IPAM", {}).get("Config", [])
+            # Docker reports `"Config": null` for networks without a subnet.
+            for item in (net.get("IPAM") or {}).get("Config") or []
             if item.get("Subnet")
         ]
         subnet = next(
